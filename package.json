@@ -17,6 +17,7 @@
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "swr": "^2.2.5",
     "use-stripe-subscription": "^1.0.6"
   },
   "devDependencies": {
