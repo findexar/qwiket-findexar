@@ -19,6 +19,7 @@
     "use-stripe-subscription": "^1.0.6"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "tailwindcss/typography",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
