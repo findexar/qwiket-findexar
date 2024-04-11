@@ -14,6 +14,7 @@
     "clerk": "^0.8.3",
     "iron-session": "6.3.1",
     "next": "14.1.4",
+    "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
     "use-stripe-subscription": "^1.0.6"
