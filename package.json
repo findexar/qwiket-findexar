@@ -9,10 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.29.12",
+    "@stripe/stripe-js": "^3.3.0",
+    "clerk": "^0.8.3",
     "iron-session": "6.3.1",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "use-stripe-subscription": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^20",
