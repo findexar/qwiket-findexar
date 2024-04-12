@@ -2,8 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
-import { defaultSession, sessionOptions,SessionData } from "@/lib/session.ts";
-import { sleep } from ".@/lib/sleep.ts";
+import { sessionOptions,SessionData } from "@/lib/session";
+
 //import {updateUserSession} from "../../../lib/lake-api"
 
 
