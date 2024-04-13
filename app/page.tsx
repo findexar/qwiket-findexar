@@ -1,20 +1,21 @@
-
-'use server'
-import Image from "next/image";
 import { cookies, headers } from "next/headers";
+
+import { revalidatePath } from "next/cache";
+import { getIronSession } from "iron-session";
+import { sessionOptions,SessionData } from "@/lib/session";
 import { unstable_serialize } from 'swr'
 import { unstable_serialize as us } from 'swr/infinite';
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
-import { getIronSession } from "iron-session";
+
 import { clerkClient } from "@clerk/nextjs";
 import { SWRProvider } from './swr-provider'
 
-import {initSession} from './actions';
+import {initSessionClient} from '@/app/client';
 
 import fetchMyTeam from '@/lib/server-fetch/myteam';
 import fetchLeagues from '@/lib/server-fetch/leagues';
 import fetchFavorites from '@/lib/server-fetch/favorites';
-import fetchSessionId from '@/lib/server-fetch/sessionid';
+import fetchSession from '@/lib/server-fetch/session';
 import fetchSlugStory from '@/lib/server-fetch/slug-story';
 import fetchMention from '@/lib/server-fetch/mention';
 import fetchMetaLink from '@/lib/server-fetch/meta-link';
@@ -34,12 +35,13 @@ export default async function Page({
   params: { slug: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+ 
   const t1 = new Date().getTime();
   console.log("entered root page", t1)
   let sessionid="";
   try {
-      const session = await initSession();
-      console.log("session",session)
+      const session = await fetchSession();
+      console.log("=>",session)
       sessionid=session.sessionid;
   }
   catch (x) {
