@@ -294,12 +294,12 @@ export const recordEvent = async (name: string, params: string) => {
     }
   }
   
-  export type FavoritesKey = { type: string, noUser: boolean, noLoad: boolean };
-  export const getFavorites = async ({ type, noUser, noLoad }: FavoritesKey) => {
+  export type FavoritesKey = { type: string, league:string,noLoad: boolean };
+  export const getFavorites = async ({ type, league,noLoad }: FavoritesKey) => {
     try {
-      if (noUser || noLoad) return [];
+      if (noLoad) return [];
       console.log("getFavorites")
-      const url = `${process.env.NEXT_PUBLIC_SERVER}/api/user/get-favorites`;
+      const url = `${process.env.NEXT_PUBLIC_SERVER}/api/user/get-favorites?league=${encodeURIComponent(league)}`;
       const fetchResponse = await fetch(url);
       const data = await fetchResponse.json();
       return data.favorites;
