@@ -37,7 +37,7 @@ export default async function Page({
 }) {
  
   const t1 = new Date().getTime();
-  console.log("entered root page", t1)
+  //console.log("entered root page", t1)
   let sessionid="";
   try {
       const session = await fetchSession();
