@@ -78,6 +78,7 @@ export default async function Page({
 
   /**
    * Fill an array of fetch promises for parallel execution
+   * note: view - only on mobile, tab - on both
    * 
    */
   if (findexarxid) {  // if a mention story is opened
@@ -98,7 +99,7 @@ export default async function Page({
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
   if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
-    calls.push(fetchStories({ userId, sessionid, league, page: 0}));
+    calls.push(fetchStories({ userId, sessionid, league}));
   }
   await fetchData(t1, fallback, calls);
   console.log("final fallback:",fallback)

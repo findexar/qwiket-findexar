@@ -17,8 +17,8 @@ const fetchMyFeed=async (key:FetchMyFeedKey,userId:string,sessionid:string)=>{
     const {league, page}=key;
     const url=`${lake_api}/api/v50/findexar/get-my-feed?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
     const fetchResponse = await fetch(url);
-    const dataTrackListMembers = await fetchResponse.json();
-    return dataTrackListMembers.members;
+    const res = await fetchResponse.json();
+    return res.mentions;
 }
 
 const promiseMyFeed =({userId,sessionid,league}:FetchMyFeedProps)=>{

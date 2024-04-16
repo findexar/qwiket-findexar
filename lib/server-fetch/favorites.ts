@@ -15,8 +15,8 @@ const fetchFavorites = async (key: FavoritesKey, userId: string, sessionid: stri
     const { league, page } = key;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-favorites?api_key=${api_key}&userid=${userId}&sessionId=${sessionid}&league=${league}&page=${page}`;
     const fetchResponse = await fetch(url);
-    const dataTrackListMembers = await fetchResponse.json();
-    return dataTrackListMembers.members;
+    const res = await fetchResponse.json();
+    return res.mentions;
 }
 const promiseFavoites = ({ userId, sessionid, league = "", page }: FetchFavoritesProps) => {
     const key: FavoritesKey = { type: "favorites", league, page };
