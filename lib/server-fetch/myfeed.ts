@@ -4,25 +4,25 @@ import { FetchedStoriesKey } from '@/lib/api';
 
 const lake_api=process.env.NEXT_PUBLIC_LAKEAPI
 const api_key=process.env.LAKE_API_KEY;;
-interface FetchStoriesProps{
+interface FetchMyFeedProps{
     userId:string;
     sessionid:string;
     league:string;
     noLoad:boolean;
 
 }
-const fetchStories=async ({userId,sessionid,league}:FetchStoriesProps)=>{
+const fetchMyFeed=async ({userId,sessionid,league}:FetchMyFeedProps)=>{
     const url=`${lake_api}/api/v50/findexar/get-my-team?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}`;
     const fetchResponse = await fetch(url);
     const dataTrackListMembers = await fetchResponse.json();
     return dataTrackListMembers.members;
 }
-const promiseStories =({userId,sessionid,league,noLoad}:FetchStoriesProps)=>{
+const promiseMyfeed =({userId,sessionid,league,noLoad}:FetchMyFeedProps)=>{
     let keyStories = us(page => {
-        const keyFetchedStories: FetchedStoriesKey = { type: "FetchedStories", noUser: userId ? false : true, page: page, league: league || "", noLoad }
+        const keyFetchedStories: FetchedStoriesKey = { type: "FetchedMyFeed", noUser: userId ? false : true, page: page, league: league || "", noLoad }
         return keyFetchedStories;
     });
-    return { key: keyStories, call: fetchStories({userId,sessionid,league,noLoad}) };
+    return { key: keyStories, call: fetchMyFeed({userId,sessionid,league,noLoad}) };
 
 }
-export default promiseStories;
+export default promiseMyFeed;
