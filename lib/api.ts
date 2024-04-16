@@ -13,7 +13,7 @@ export const recordEvent = async (name: string, params: string) => {
   }
   
   // Get all Leagues
-  export const getLeagues = async () => {
+  export const getLeagues = () => {
     try {
       return ["NFL", "NHL", "MLB", "NBA"];
       /*const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-leagues`;

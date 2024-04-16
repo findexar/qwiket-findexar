@@ -19,6 +19,7 @@ import fetchSession from '@/lib/server-fetch/session';
 import fetchSlugStory from '@/lib/server-fetch/slug-story';
 import fetchMention from '@/lib/server-fetch/mention';
 import fetchMetaLink from '@/lib/server-fetch/meta-link';
+import fetchStories from '@/lib/server-fetch/stories';
 
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
@@ -70,7 +71,7 @@ export default async function Page({
   view = view.toLowerCase();
   if (view == 'feed')
     view = 'mentions';
-  console.log("VIEW:", view)
+  console.log("VIEW:", view,isMobile)
   if (view == 'home')
     view = 'mentions';
   let calls: { key: any, call: Promise<any> }[] = [];
@@ -87,6 +88,7 @@ export default async function Page({
     calls.push(fetchSlugStory({ type: "ASlugStory", slug: story, noLoad: story == "" ? true : false }));
   }
   if (!isMobile || view == 'my team') { // if my team roster is opened
+    console.log("my team=>",)
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
   if (tab == 'fav' && view == 'mentions') { //favorites
@@ -95,7 +97,11 @@ export default async function Page({
   if (tab == 'myteam' && view == 'mentions') { //my feed
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
+  if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
+    calls.push(fetchStories({ userId, sessionid, league,noLoad: false }));
+  }
   await fetchData(t1, fallback, calls);
+  console.log("final fallback:",fallback)
   return (
     <SWRProvider value={fallback}>
       <main className="flex min-h-screen flex-col items-center justify-between p-24" >
