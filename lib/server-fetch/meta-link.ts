@@ -1,5 +1,5 @@
 import { unstable_serialize } from 'swr'
-import { MetaLinkKey } from '@/lib/api';
+import { MetaLinkKey } from '@/lib/keys';
 
 const getMetaLink = async ({ func, findexarxid, long = 0 }: MetaLinkKey) => {
     try {

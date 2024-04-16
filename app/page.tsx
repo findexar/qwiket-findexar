@@ -81,24 +81,24 @@ export default async function Page({
    * 
    */
   if (findexarxid) {  // if a mention story is opened
-    calls.push(fetchMention({ type: "AMention", findexarxid, noLoad: false }));
+    calls.push(fetchMention({ type: "AMention", findexarxid }));
     calls.push(fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
   }
   if (story) { // if a digest story is opened
-    calls.push(fetchSlugStory({ type: "ASlugStory", slug: story, noLoad: story == "" ? true : false }));
+    calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
   if (!isMobile || view == 'my team') { // if my team roster is opened
     console.log("my team=>",)
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
   if (tab == 'fav' && view == 'mentions') { //favorites
-    calls.push(fetchFavorites({ userId, sessionid, league }));
+    calls.push(fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
   if (tab == 'myteam' && view == 'mentions') { //my feed
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
   if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
-    calls.push(fetchStories({ userId, sessionid, league,noLoad: false }));
+    calls.push(fetchStories({ userId, sessionid, league, page: 0}));
   }
   await fetchData(t1, fallback, calls);
   console.log("final fallback:",fallback)

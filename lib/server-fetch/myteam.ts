@@ -1,5 +1,5 @@
 import { unstable_serialize } from 'swr'
-import {TrackerListMembersKey} from '@/lib/api';
+import {MyTeamRosterKey} from '@/lib/keys';
 const lake_api=process.env.NEXT_PUBLIC_LAKEAPI
 const api_key=process.env.LAKE_API_KEY;;
 interface FetchMyTeamProps{
@@ -15,8 +15,7 @@ const fetchMyTeam=async ({userId,sessionid,league}:FetchMyTeamProps)=>{
     return dataTrackListMembers.members;
 }
 const promiseMyTeam =({userId,sessionid,league}:FetchMyTeamProps)=>{
-    let trackerListMembersKey: TrackerListMembersKey = { type: "tracker_list_members", league, noUser: userId ? false : true, noLoad: false };
+    let trackerListMembersKey: MyTeamRosterKey = { type: "my_team_roster", league};
     return { key: unstable_serialize(trackerListMembersKey), call: fetchMyTeam({userId,sessionid,league}) };
-
 }
 export default promiseMyTeam;
