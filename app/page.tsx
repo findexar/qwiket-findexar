@@ -25,7 +25,7 @@ import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
 import { ASlugStoryKey } from '@/lib/api';
-
+import LeagueLayout from '@/components/layouts/league';
 
 import fetchData from '@/lib/server-fetch/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
@@ -106,7 +106,7 @@ export default async function Page({
   return (
     <SWRProvider value={fallback}>
       <main className="flex min-h-screen flex-col items-center justify-between p-24" >
-        <h1>{JSON.stringify(searchParams)}</h1>
+      <LeagueLayout fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid ={findexarxid} />
       </main>
     </SWRProvider>
   );

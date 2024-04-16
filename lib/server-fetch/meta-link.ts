@@ -17,4 +17,8 @@ const getMetaLink = async ({ func, findexarxid, long = 0 }: MetaLinkKey) => {
 const promiseAMetaLink=(key:MetaLinkKey)=>{
   return { key: unstable_serialize(key), call: getMetaLink(key) };
 }
+export const actionMetaLink=async (key:MetaLinkKey)=>{
+  'use server';
+  return getMetaLink(key);
+}
 export default promiseAMetaLink;

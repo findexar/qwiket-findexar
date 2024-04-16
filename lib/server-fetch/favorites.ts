@@ -23,6 +23,7 @@ const promiseFavoites = ({ userId, sessionid, league = "", page }: FetchFavorite
     return { key: unstable_serialize(key), call: fetchFavorites(key, userId, sessionid) };
 }
 export const actionFavorites = async (key: FavoritesKey) => {
+    'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const userId = session.username ? session.username : "";
     const sessionid = session.sessionid;

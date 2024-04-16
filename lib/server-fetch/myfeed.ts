@@ -1,4 +1,3 @@
-'use server';
 import { unstable_serialize as us } from 'swr/infinite';
 import { FetchMyFeedKey } from '@/lib/keys';
 import { cookies } from "next/headers";
@@ -29,6 +28,7 @@ const promiseMyFeed =({userId,sessionid,league}:FetchMyFeedProps)=>{
     return { key: us(keyMyFeed), call: fetchMyFeed(keyMyFeed(0),userId,sessionid)};
 }
 export const actionMyFeed=async (key:FetchMyFeedKey)=>{
+    'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const userId=session.username?session.username:"";
     const sessionid=session.sessionid;
