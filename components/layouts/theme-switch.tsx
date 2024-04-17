@@ -13,7 +13,7 @@ const ThemeSwitch = () => {
   if (!mounted) {
     return null
   }
-
+  console.log("THEME:",theme)
   return (
     <button
       aria-label="Toggle Dark Mode"
