@@ -2,15 +2,15 @@ import { cookies, headers } from "next/headers";
 
 import { revalidatePath } from "next/cache";
 import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
-import { SWRConfig, unstable_serialize } from 'swr'
+import { sessionOptions,SessionData } from "@/lib/session";
+import {SWRConfig,unstable_serialize } from 'swr'
 import { unstable_serialize as us } from 'swr/infinite';
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
 
 import { clerkClient } from "@clerk/nextjs";
 import { SWRProvider } from '@/app/swr-provider'
 
-import { initSessionClient } from '@/app/client';
+import {initSessionClient} from '@/app/client';
 
 import fetchMyTeam from '@/lib/fetchers/myteam';
 import fetchLeagues from '@/lib/fetchers/leagues';
@@ -34,17 +34,17 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { slug: string }
+  params: { leagueid: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-
+ 
   const t1 = new Date().getTime();
   //console.log("entered root page", t1)
-  let sessionid = "";
+  let sessionid="";
   try {
-    const session = await fetchSession();
-    console.log("=>", session)
-    sessionid = session.sessionid;
+      const session = await fetchSession();
+      console.log("=>",session)
+      sessionid=session.sessionid;
   }
   catch (x) {
     console.log("error fetching sessionid", x);
@@ -53,7 +53,7 @@ export default async function Page({
 
   const userId = '';
   let fallback: { [key: string]: any } = {}; // Add index signature
-  const leaguesKey = { type: "leagues" };
+  const leaguesKey={type:"leagues"};
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
   let headerslist = headers();
   let { tab, fbclid, utm_content, view = "mentions", id, story }:
@@ -61,7 +61,7 @@ export default async function Page({
   //let { userId }: { userId: string | null } = getAuth(context.req);
   let findexarxid = id || "";
   let pagetype = "league";
-  let league = "";
+  let league = params.leagueid.toUpperCase();
   utm_content = utm_content || '';
   fbclid = fbclid || '';
   const ua = headerslist.get('user-agent') || "";
@@ -72,7 +72,7 @@ export default async function Page({
   view = view.toLowerCase();
   if (view == 'feed')
     view = 'mentions';
-  console.log("VIEW:", view, isMobile)
+  console.log("VIEW:", view,isMobile)
   if (view == 'home')
     view = 'mentions';
   let calls: { key: any, call: Promise<any> }[] = [];
@@ -99,16 +99,16 @@ export default async function Page({
   if (tab == 'myteam' && view == 'mentions') { //my feed
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
-  if (view == 'mentions' && tab != 'myteam' && tab != 'fav') { //stories
-    calls.push(fetchStories({ userId, sessionid, league }));
+  if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
+    calls.push(fetchStories({ userId, sessionid, league}));
   }
   await fetchData(t1, fallback, calls);
-  console.log("final fallback:", fallback)
+  console.log("final fallback:",fallback)
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-        <LeagueLayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} />
+      <LeagueLayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid ={findexarxid} />
       </main>
-    </SWRProvider>
-  );
+      </SWRProvider>
+      );
 }
