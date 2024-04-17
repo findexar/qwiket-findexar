@@ -105,7 +105,7 @@ export default async function Page({
   console.log("final fallback:",fallback)
   return (
     <SWRProvider value={fallback}>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24" >
+      <main className="w-full h-full" >
       <LeagueLayout fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid ={findexarxid} />
       </main>
     </SWRProvider>

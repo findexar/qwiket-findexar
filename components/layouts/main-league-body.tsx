@@ -1,6 +1,6 @@
 import React from 'react';
 
 const MainBody:React.FC=()=>{
-    return <div>MainBody</div>
+    return <div className="w-full h-full">MainBody</div>
 }
 export default MainBody;
