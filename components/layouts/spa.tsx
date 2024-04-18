@@ -21,8 +21,8 @@ interface LeagueLayoutProps {
     
 }
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague,team:startTeam="",player:startPlayer="",pagetype:startPagetype="league" }) => {
-    const [tab, setTab] = React.useState(startView);
-    const [view, setView] = React.useState(startTab);
+    const [tab, setTab] = React.useState(startTab||"");
+    const [view, setView] = React.useState(startView||"");
     const [league, setLeague] = React.useState(startLeague);
     const [team, setTeam] = React.useState(startTeam);
     const [player, setPlayer] = React.useState(startPlayer);
@@ -32,8 +32,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     return (
         <AppWrapper setLeague={setLeague} setTab={setTab} setView={setView} params="" params2="" tp="" tp2="" fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} team={team} player={player} setTeam={setTeam} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} >
             <Header context={context} />
-            <Desktop />
-            <Mobile />
+            <div className="dark:bg-orange-950"><Desktop />
+            <Mobile /></div>
         </AppWrapper>)
 }
 export default LeagueLayout;

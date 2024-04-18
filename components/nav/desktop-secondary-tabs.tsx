@@ -6,38 +6,30 @@ import {LeaguesKey} from '@/lib/keys';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import {HomeIcon as Home} from '@heroicons/react/24/outline';
 import{useAppContext} from '@/lib/context';
+import { usePathname } from 'next/navigation'
 
-interface LeagueTabsProps{
-    fallback:any,
-}
-const LeagueTabs:React.FC<LeagueTabsProps>=({fallback})=>{
+const LeagueTabs:React.FC=()=>{
    const context=useAppContext();
-   const {league,setLeague}=context;
+   const pathname=usePathname();
+   console.log("pathname",pathname);
+   const {league,setTab,fallback,tab:selectedTab,utm_content,view}=context;
     console.log("context",context)
     const router = useRouter();
-    const key:LeaguesKey={type:"leagues"};
-    const { data, error } = useSWR(key,fetchLeagues,{fallback});
-    if (error) return <div>failed to load</div>
-    if (!data) return <div>loading...</div>
+    const data=[{name:`${league}${league?' ':''} Stories`,id:''},{name:'My Feed',id:'myteam'},{id:'fav',name:'My Favorites'}]
+    
     const tabs= data.map((tab:any) => {
-        console.log("tab",tab,league.toUpperCase())
-        const selected=tab===league.toUpperCase();
-        return <div key={`${tab}.tab`} className={`hover:cursor-pointer p-2 md:pt-3 md:text-lg ${selected?'text-yellow-300':'text:white'}`}
+        console.log("tab=>",tab.id,selectedTab)
+        const selected=tab.id===selectedTab;
+        return <div key={`${tab.id}.tab`} className={`w-40 ${selected?'border-b-2 dark:border-blue-400 border-blue-800':''} hover:cursor-pointer transition-all duration-300 md:pt-3 md:text-lg ${selected?'text-green-800 dark:text-yellow-400':''}`}
         onClick={
             ()=>{
-                setLeague(tab);
-                router.replace(`/${tab.toLowerCase()}`);
+                setTab(tab.id);
+                router.replace(`${pathname}${tab.id?`?tab=${tab.id.toLowerCase()}${utm_content||view!='mentions'?`&`:``}`:utm_content||view?`?`:``}${view!='mentions'?`view=${view}${utm_content?`&`:``}`:``} ${utm_content?`utm_content=${utm_content}`:``}`);
         } }
-        >{tab}</div>
+        >{tab.name}</div>
     })
-    tabs.unshift(<div onClick={
-        ()=>{
-            setLeague("");
-            router.replace('/');
-    } }
-        key="home.tab" className={`hover:cursor-pointer p-2 md:py-3 ${league==""?'text-yellow-300':'white'}`}><Home className="h-6 w-6"/></div>)
-  //  tabs.push(<div key="blah.tab" className="p-4">BLAH</div>)
-    return <div className="w-full px-2 md:px-8 flex flex-row justify-between dark:bg-emerald-950 bg-slate-900 text-white">
+    
+    return <div className="w-full px-2 md:px-8 flex flex-row justify-between">
        {tabs}
     </div>
 }

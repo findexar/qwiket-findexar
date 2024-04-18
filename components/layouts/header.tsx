@@ -7,7 +7,7 @@ interface HeaderProps{
 const Header: React.FC<HeaderProps> = ({context}) => {
     const {fallback} = context;
     return <div>
-        <div className="flex items-center md:px-8 justify-between dark:bg-teal-800 bg-slate-100 w-full m-0 p-4">
+        <div className="flex items-center md:px-8 justify-between dark:bg-cyan-950 bg-slate-100 w-full m-0 p-4">
 
 
             <div className="flex">

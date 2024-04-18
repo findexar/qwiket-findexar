@@ -22,7 +22,7 @@ const LeagueTabs:React.FC<LeagueTabsProps>=({fallback})=>{
     const tabs= data.map((tab:any) => {
         console.log("tab",tab,league.toUpperCase())
         const selected=tab===league.toUpperCase();
-        return <div key={`${tab}.tab`} className={`hover:cursor-pointer p-2 md:pt-3 md:text-lg ${selected?'text-yellow-300':'text:white'}`}
+        return <div key={`${tab}.tab`} className={`hover:cursor-pointer md:pt-0 md:text-lg ${selected?'text-yellow-300':'text:white'}`}
         onClick={
             ()=>{
                 setLeague(tab);
@@ -35,9 +35,9 @@ const LeagueTabs:React.FC<LeagueTabsProps>=({fallback})=>{
             setLeague("");
             router.replace('/');
     } }
-        key="home.tab" className={`hover:cursor-pointer p-2 md:py-3 ${league==""?'text-yellow-300':'white'}`}><Home className="h-6 w-6"/></div>)
+        key="home.tab" className={`hover:cursor-pointer pt-1 md:pt-1 ${league==""?'text-yellow-300':'white'}`}><Home className="h-4 w-4 md:h-5 md:w-5"/></div>)
   //  tabs.push(<div key="blah.tab" className="p-4">BLAH</div>)
-    return <div className="w-full px-2 md:px-8 flex flex-row justify-between dark:bg-emerald-950 bg-slate-900 text-white">
+    return <div className="w-full pl-2 pr-8 md:pl-8 flex flex-row justify-between dark:bg-slate-950 bg-slate-900 text-white">
        {tabs}
     </div>
 }
