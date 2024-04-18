@@ -15,8 +15,8 @@ const Header: React.FC<HeaderProps> = ({context}) => {
                     Q
                 </div>
                 <div className="p-2 md:p-4">
-                    <div className="text-xl md:text-3xl">QWIKET</div>
-                    <div className="text-sm">Sports Media Index</div>
+                    <div className="text-xl md:text-4xl">QWIKET</div>
+                    <div className="text-xs pl-1">Annotated Sports Media Index</div>
                 </div>
             </div>
 

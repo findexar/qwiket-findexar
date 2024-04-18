@@ -19,6 +19,8 @@
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-intersection-observer": "^9.8.2",
+    "react-web-share": "^2.0.2",
     "swr": "^2.2.5",
     "use-stripe-subscription": "^1.0.6"
   },

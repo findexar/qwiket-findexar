@@ -20,7 +20,7 @@ const LeagueTabs:React.FC=()=>{
     const tabs= data.map((tab:any) => {
         console.log("tab=>",tab.id,selectedTab)
         const selected=tab.id===selectedTab;
-        return <div key={`${tab.id}.tab`} className={`w-40 ${selected?'border-b-2 dark:border-blue-400 border-blue-800':''} hover:cursor-pointer transition-all duration-300 md:pt-3 md:text-lg ${selected?'text-green-800 dark:text-yellow-400':''}`}
+        return <div key={`${tab.id}.tab`} className={`box-border w-40 ${selected?'border-b-2 dark:border-blue-400 border-blue-800':''} hover:cursor-pointer transition-all duration-300 md:pt-3 md:text-lg ${selected?'text-green-800 dark:text-yellow-400':''}`}
         onClick={
             ()=>{
                 setTab(tab.id);
@@ -29,7 +29,7 @@ const LeagueTabs:React.FC=()=>{
         >{tab.name}</div>
     })
     
-    return <div className="w-full px-2 md:px-8 flex flex-row justify-between">
+    return <div className="box-border w-full px-2 md:px-8 flex flex-row justify-between">
        {tabs}
     </div>
 }

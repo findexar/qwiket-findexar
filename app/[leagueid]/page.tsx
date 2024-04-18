@@ -102,7 +102,7 @@ export default async function Page({
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }
   if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
-    calls.push(fetchStories({ userId, sessionid, league}));
+    calls.push(await fetchStories({ userId, sessionid, league}));
   }
   await fetchData(t1, fallback, calls);
   console.log("final fallback:",fallback)

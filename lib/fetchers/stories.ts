@@ -1,6 +1,6 @@
-
+'use server';
 import { unstable_serialize as us } from 'swr/infinite';
-import { FetchStoriesKey } from '@/lib/keys';
+import { StoriesKey } from '@/lib/keys';
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions,SessionData } from "@/lib/session";
@@ -13,7 +13,7 @@ interface FetchStoriesProps{
     league:string;    
 }
 
-const fetchStories=async (key:FetchStoriesKey,userId:string,sessionid:string)=>{
+const fetchStories=async (key:StoriesKey,userId:string,sessionid:string)=>{
     const {league, page}=key;
     const url=`${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
     console.log("fetchStories",url);
@@ -22,16 +22,16 @@ const fetchStories=async (key:FetchStoriesKey,userId:string,sessionid:string)=>{
     return res.stories;
 }
 
-const promiseStories =({userId,sessionid,league}:FetchStoriesProps)=>{
+const promiseStories =async ({userId,sessionid,league}:FetchStoriesProps)=>{
     console.log("promiseStories",userId,sessionid,league);
     let keyStories = (page:any) => {
-        const keyFetchedStories: FetchStoriesKey = { type: "FetchedStories", page: page, league}
+        const keyFetchedStories: StoriesKey = { type: "fetch-stories", page: page, league}
         return keyFetchedStories;
     };
     return { key: us(keyStories), call: fetchStories(keyStories(0),userId,sessionid) };
 }
-export const actionStories=async (key:FetchStoriesKey)=>{
-    'use server';
+export const actionStories=async (key:StoriesKey)=>{
+
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const userId=session.username?session.username:"";
     const sessionid=session.sessionid;
