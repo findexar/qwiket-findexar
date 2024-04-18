@@ -26,7 +26,7 @@ import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
 import { ASlugStoryKey } from '@/lib/api';
-import LeagueLayout from '@/components/layouts/league';
+import SPALayout from '@/components/layouts/spa';
 
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
@@ -50,7 +50,7 @@ export default async function Page({
     console.log("error fetching sessionid", x);
   }
   console.log("sessionid", sessionid);
-
+  console.log("==============================================*****===>")
   const userId = '';
   let fallback: { [key: string]: any } = {}; // Add index signature
   const leaguesKey={type:"leagues"};
@@ -62,6 +62,7 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
+  console.log("league->",league)
   utm_content = utm_content || '';
   fbclid = fbclid || '';
   const ua = headerslist.get('user-agent') || "";
@@ -107,7 +108,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-      <LeagueLayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid ={findexarxid} />
+      <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile}  story={story} findexarxid ={findexarxid} league={league} />
       </main>
       </SWRProvider>
       );
