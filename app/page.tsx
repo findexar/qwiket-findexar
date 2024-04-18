@@ -26,7 +26,7 @@ import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
 import { ASlugStoryKey } from '@/lib/api';
-import LeagueLayout from '@/components/layouts/league';
+import SPALayout from '@/components/layouts/spa';
 
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
@@ -107,7 +107,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-        <LeagueLayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} />
+        <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
       </main>
     </SWRProvider>
   );

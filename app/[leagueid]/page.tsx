@@ -108,7 +108,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-      <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile}  story={story} findexarxid ={findexarxid} league={league} />
+      <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile}  story={story} findexarxid ={findexarxid} league={league} pagetype={pagetype}/>
       </main>
       </SWRProvider>
       );
