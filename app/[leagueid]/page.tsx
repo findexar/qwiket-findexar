@@ -20,7 +20,7 @@ import fetchSlugStory from '@/lib/fetchers/slug-story';
 import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
-
+import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
@@ -83,6 +83,7 @@ export default async function Page({
    * note: view - only on mobile, tab - on both
    * 
    */
+  calls.push(await fetchLeagueTeams({ league }));
   if (findexarxid) {  // if a mention story is opened
     calls.push(fetchMention({ type: "AMention", findexarxid }));
     calls.push(fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
