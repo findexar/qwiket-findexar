@@ -28,6 +28,7 @@ const promiseStories =async ({userId,sessionid,league}:FetchStoriesProps)=>{
         const keyFetchedStories: StoriesKey = { type: "fetch-stories", page: page, league}
         return keyFetchedStories;
     };
+    console.log("StoriesKey:",keyStories);
     return { key: us(keyStories), call: fetchStories(keyStories(0),userId,sessionid) };
 }
 export const actionStories=async (key:StoriesKey)=>{

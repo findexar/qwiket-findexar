@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import { styled } from "styled-components";
 import { recordEvent } from '@/lib/api';
-import Mention from "@/components/func/mention-b";
+import Mention from "@/components/func/mention";
 
 declare global {
     interface Window {

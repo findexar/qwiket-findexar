@@ -32,7 +32,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     return (
         <AppWrapper setLeague={setLeague} setTab={setTab} setView={setView} params="" params2="" tp="" tp2="" fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} team={team} player={player} setTeam={setTeam} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} >
             <Header context={context} />
-            <div className="dark:bg-orange-950"><Desktop />
+            <div ><Desktop />
             <Mobile /></div>
         </AppWrapper>)
 }

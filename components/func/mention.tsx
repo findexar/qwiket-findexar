@@ -333,7 +333,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [copied, setCopied] = React.useState(false);
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
-    const theme = useTheme();
+    //const theme = useTheme();
 
     useEffect(() => {
         setExpanded(startExtended);
