@@ -7,7 +7,7 @@ const Welcome: React.FC = () => {
           <hr /><hr />
 
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
-        <br />The indispensable Fantasy Sports<br />
+        <br />The indispensable Fantasy Sports<br/>
         real-time, annotated <br />
         media index.<br /><br />
         As new stories are published <br />in the media, they are sliced and diced <br />
