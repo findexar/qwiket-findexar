@@ -11,7 +11,7 @@ const Welcome: React.FC = () => {
         real-time, annotated <br/>
         media index.<br/><br/>
         As new stories are published <br />in the media, they are sliced and diced <br />
-        into annotated indexed mentions of <br />
+        into annotated indexed mentions of <br/>
         individual athletes and teams.<br /><br />
         <br /><br /><br /><br /><br /><br />
 
