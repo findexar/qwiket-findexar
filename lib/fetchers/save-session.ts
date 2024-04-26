@@ -1,20 +1,24 @@
+'use server';
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions,SessionData } from "@/lib/session";
 
-const fetchSession=async ()=>{
-    "use server";
+const saveSession=async (sessionData:any)=>{
     let session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    if(!session.sessionid){
+    console.log("action: old session",session)
+    session= Object.assign(session, sessionData);
+    console.log("action: inSession",session)
+    await session.save();
+    /* if(!session.sessionid){
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
         session.username="";
         session.isLoggedIn=false;
         session.dark=-1;
-        console.log("********** action: NEW SESSION",session)
+        console.log("********** NEW SESSION",session)
         await session.save();
-        console.log("after save")
-    }
+    }*/
+
     /* if(!session||!session.sessionid){
         const resp=await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/init-session`,{
             method:"POST",
@@ -28,4 +32,4 @@ const fetchSession=async ()=>{
      }*/
    return session;
 }
-export default fetchSession;
+export default saveSession;

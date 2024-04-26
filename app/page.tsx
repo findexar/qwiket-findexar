@@ -1,3 +1,4 @@
+
 import { cookies, headers } from "next/headers";
 
 import { revalidatePath } from "next/cache";
@@ -15,7 +16,7 @@ import { initSessionClient } from '@/app/client';
 import fetchMyTeam from '@/lib/fetchers/myteam';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import fetchFavorites from '@/lib/fetchers/favorites';
-import fetchSession from '@/lib/fetchers/session';
+//import fetchSession from '@/lib/fetchers/session';
 import fetchSlugStory from '@/lib/fetchers/slug-story';
 import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
@@ -26,7 +27,7 @@ import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
 import { ASlugStoryKey } from '@/lib/api';
-import SPALayout from '@/components/layouts/spa';
+import SPALayout from '@/components/spa';
 
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
@@ -37,14 +38,43 @@ export default async function Page({
   params: { slug: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-
+  const fetchSession=async ()=>{
+    "use server";
+    let session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    if(!session.sessionid){
+        var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        session.sessionid = randomstring();
+        session.username="";
+        session.isLoggedIn=false;
+        session.dark=-1;
+        console.log("********** action: NEW SESSION",session)
+        await session.save();
+        console.log("after save")
+    }
+    /* if(!session||!session.sessionid){
+        const resp=await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/init-session`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({})
+        });
+        const respJson=await resp.json();
+        session=respJson.session;
+     }*/
+   return session;
+}
   const t1 = new Date().getTime();
   //console.log("entered root page", t1)
   let sessionid = "";
+  let dark=0;
   try {
+    
     const session = await fetchSession();
     console.log("=>", session)
     sessionid = session.sessionid;
+    dark = session.dark;
+
   }
   catch (x) {
     console.log("error fetching sessionid", x);
@@ -103,11 +133,12 @@ export default async function Page({
     calls.push(await fetchStories({ userId, sessionid, league }));
   }
   await fetchData(t1, fallback, calls);
-  console.log("final fallback:", fallback)
+  //console.log("final fallback:", fallback);
+
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-        <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
+        <SPALayout dark={dark||0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
       </main>
     </SWRProvider>
   );

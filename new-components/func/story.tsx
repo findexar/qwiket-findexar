@@ -252,18 +252,18 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     useEffect(() => {
         if (inView && !visible) {
             setVisible(true);
-            recordEvent(`story-inview`, `{"slug":"${slug}","url":"${url}","params":"${params}"}`)
+           /* recordEvent(`story-inview`, `{"slug":"${slug}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("recordEvent", r);
-                });
+                });*/
         }
     }, [inView]);
 
     useEffect(() => {
         if (!site_name) {
-            recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${shareUrl}"}`).then((r: any) => {
+           /* recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${shareUrl}"}`).then((r: any) => {
                 console.log("recordEvent", r);
-            });;
+            });;*/
         }
     }, [site_name]);
 
@@ -284,10 +284,10 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const onShare = useCallback((url: string) => {
         try {
-            recordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
+           /* recordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("recordEvent", r);
-                });
+                });*/
         } catch (x) {
             console.log('recordEvent', x);
         }
@@ -300,10 +300,10 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const onMentionClick = useCallback((mention: any) => {
         try {
-            recordEvent(`min-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
+           /* recordEvent(`min-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("recordEvent", r);
-                });
+                });*/
         } catch (x) {
             console.log('recordEvent', x);
         }
@@ -311,10 +311,10 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const onStoryClick = useCallback(() => {
         try {
-            recordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`)
+           /* recordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("recordEvent", r);
-                });
+                });*/
         } catch (x) {
             console.log('recordEvent', x);
         }

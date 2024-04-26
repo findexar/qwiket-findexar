@@ -26,7 +26,7 @@ import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
 import { ASlugStoryKey } from '@/lib/api';
-import SPALayout from '@/components/layouts/spa';
+import SPALayout from '@/components/spa';
 
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
@@ -41,10 +41,12 @@ export default async function Page({
   const t1 = new Date().getTime();
   //console.log("entered root page", t1)
   let sessionid="";
+  let dark=0;
   try {
       const session = await fetchSession();
-      console.log("=>",session)
+      //console.log("=>",session)
       sessionid=session.sessionid;
+      dark = session.dark;
   }
   catch (x) {
     console.log("error fetching sessionid", x);
@@ -105,11 +107,11 @@ export default async function Page({
     calls.push(await fetchStories({ userId, sessionid, league}));
   }
   await fetchData(t1, fallback, calls);
-  console.log("final fallback:",fallback)
+ // console.log("final fallback:",fallback)
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-      <SPALayout view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile}  story={story} findexarxid ={findexarxid} league={league} pagetype={pagetype}/>
+      <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile}  story={story} findexarxid ={findexarxid} league={league} pagetype={pagetype}/>
       </main>
       </SWRProvider>
       );

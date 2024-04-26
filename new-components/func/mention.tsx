@@ -2,20 +2,20 @@ import React, { useEffect, useCallback } from "react";
 import useSWRImmutable from 'swr/immutable'
 import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
-//import { styled, useTheme } from "styled-components";
+import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
-import FacebookIcon from '@/components/icons/facebook';
-import XIcon from '@/components/icons/twitter';
-import StarOutlineIcon from '@/components/icons/star-outline';
-import StarIcon from '@/components/icons/star';
-import IosShareIcon from '@/components/icons/share';
-import ContentCopyIcon from '@/components/icons/content-copy';
 /*import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';*/
+import FacebookIcon from '@/new-components/icons/facebook';
+import XIcon from '@/new-components/icons/twitter';
+import StarOutlineIcon from '@/new-components/icons/star-outline';
+import StarIcon from '@/new-components/icons/star';
+import IosShareIcon from '@/new-components/icons/share';
+import ContentCopyIcon from '@/new-components/icons/content-copy';
 
 import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite, recordEvent } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
@@ -27,6 +27,288 @@ declare global {
         Clerk: any;
     }
 }
+interface MentionsProps {
+    hideit?: boolean;
+    noborder?: boolean;
+}
+
+const MentionWrap = styled.div<MentionsProps>`
+    width:100%;
+    min-height:100px;
+    background-color: var(--mention-bg);//var(--mention-border);
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items:flex-start;
+    border: 1px solid #ccc;
+    padding:4px;
+    z-index:200;
+    font-size: 16px;
+
+    a{
+        color:var(--mention-text);
+        text-decoration: none;
+        &:hover{
+           color: var(--mention-text);
+        }   
+    }
+    //display:${props => props.hideit ? 'none' : 'flex'};
+    @media screen and (max-width: 1199px) {
+        display: none;
+    }
+`;
+
+const MobileMentionWrap = styled.div<MentionsProps>` 
+    min-height:100px;
+    width:100%;
+    display:${props => props.hideit ? 'none' : 'flex'};
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items:flex-start;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top:2px;
+    margin-bottom:2px;
+    color:var(--text);
+    &:hover{
+        color: var(--mention-text);
+    } 
+    a{
+        color:var(--mention-text);
+        text-decoration: none;
+        &:hover{
+           color: var(--mention-text);
+        }   
+    }
+    @media screen and (min-width: 1200px) {
+        display: none;
+  }
+`;
+
+const MentionSummary = styled.div`
+    width:100%;
+    border-radius: 30px;
+    font-size: 15px;
+    padding-left:10px;
+    padding-right:10px;
+    color:var(--text);
+    background-color: var(--mention-bg); 
+    &:hover{
+        background-color:var(--mention-high-bg);
+    } 
+    border-radius: 5px 5px 5px 5px;
+    @media screen and (max-width: 1199px) {
+       margin:0px;
+  }
+`;
+
+const Icon = styled.span`
+    color:var(--mention-text);
+    font-size: 38px !important;
+    opacity:0.6;
+    height:48px;
+    margin-top:10px;
+    cursor:pointer;
+    &:hover{
+        opacity:0.9;
+        color: var(--highlight);
+    }
+`;
+
+const ExtendedMention = styled.div`
+    margin:20px;
+    border-radius: 10px;
+    font-size: 15px;
+    padding:20px;
+    background-color:var(--background);
+    &:hover{
+            background-color: var(--background)
+    } 
+    display:flex;
+    flex-direction:column;
+    a{
+        font-size:15px !important;    
+    }
+`;
+
+const MobileExtendedMention = styled.div`
+    margin-top:10px;
+    margin-bottom:10px;
+    border-radius: 10px;
+    font-size: 15px;
+    padding:12px;
+    background-color:var(--background);
+    &:hover{
+            background-color: var(--background)
+    }
+    display:flex;
+    flex-direction:column;
+    a{
+        font-size:15px !important;
+      
+    }
+`;
+
+const Body = styled.div`
+    font-size: 15px;
+    margin-bottom: 14px;
+    flex: 2 1 auto;
+    line-height:1.4;
+    a{
+        font-size:15px !important;
+      
+    }
+`;
+
+const Title = styled.div`
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+`;
+
+const Digest = styled.div`
+    font-size: 15px;
+    display:flex;
+`;
+
+const ArticleDigest = styled.div`
+    font-size: 18px;
+    padding-top:10px;
+`;
+
+const ImageWrapper = styled.div`
+    margin-top:20px;
+    flex: 1 1 auto;
+    max-width: 100%;
+`;
+
+const Topline = styled.div`
+    display:flex;
+    min-height:24px;
+    flex-direction:row;
+    justify-content :space-between ;
+    align-items:center;
+    margin-bottom:4px; 
+`;
+
+const Image = styled.img`
+    width:100%;
+    height: auto;
+    object-fit: cover;
+    margin-bottom: 20px;
+`;
+
+const Authors = styled.div`
+    margin-right:20px;
+    margin-bottom: 10px;
+`;
+
+const SiteName = styled.div`
+    margin-right:20px;  
+    margin-bottom: 10px;
+`;
+
+const Byline = styled.div`
+    font-size: 15px;  
+    width:100%;
+    display: flex;
+    justify-content: flex-start;
+`;
+
+const HorizontalContainer = styled.div`
+    display: flex;
+    align-items:flex-start;
+    flex-wrap: wrap;   
+    a{
+        font-size:15px !important;     
+    }
+`;
+
+const Atmention = styled.div`
+    font-size: 13px;   
+`;
+
+const Atmention2 = styled.div`
+    font-size: 13px;  
+    text-align:right; 
+    height:30px;
+`;
+
+const MobileAtmention2 = styled.div`
+    font-size: 13px;  
+    height:30px;
+    margin-bottom:-20px;
+`;
+
+const ShareContainer = styled.div`
+    font-size: 28x;  
+    height:38px;
+    opacity:0.6;
+    cursor:pointer;
+    color:var(--mention-text);
+    :hover{
+        opacity:1;
+        color: var(--highlight);
+    }
+    :hover:active{
+        opacity:1;
+        color:var(--highlight);
+    }
+`;
+
+const ShareContainerInline = styled.span`
+    font-size: 28x;  
+    height:38px;
+    opacity:0.6;
+    cursor:pointer;
+    margin-left:10px;
+    color:var(--mention-text);
+    :hover{
+        opacity:1;
+        color: var(--highlight);
+    }
+    :hover:active{
+        opacity:1;
+        color:var(--highlight);
+    }
+`;
+
+const ShareGroup = styled.div`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-start;
+    width:78px;
+    height:40px;
+    margin-top:10px;
+`;
+
+const BottomLine = styled.div`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:-20px;
+    width:100%;
+`;
+
+const LocalDate = styled.div`
+    font-size: 12px;
+`;
+
+const SummaryWrap = styled.div`
+    display:inline;
+    line-height: 1.2;
+    font-size:15px !important;
+    a{
+        font-size:15px !important;
+      
+    }
+`;
+
+const ShareIcon = styled.div`
+    margin-top:-1px;
+    padding-bottom:4px;
+`;
 
 interface Props {
     mention: any,
@@ -36,6 +318,7 @@ interface Props {
     mini?: boolean;
     handleClose: () => void;
 }
+
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
@@ -50,7 +333,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [copied, setCopied] = React.useState(false);
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
-
+    //const theme = useTheme();
 
     useEffect(() => {
         setExpanded(startExtended);
@@ -148,18 +431,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onExtended = useCallback(async (on: boolean) => {
 
-        await recordEvent(
+      /* await recordEvent(
             'mention-extended',
             `{"on":"${on}","summary","${summary}","url":"${url}","params":"${params}"}`
-        );
+        );*/
     }, [params]);
 
     const onHover = useCallback((label: string) => {
         try {
-            recordEvent(`mention-hover`, `{"label":"${label}","url":"${url}","params":"${params}"}`)
+           /* recordEvent(`mention-hover`, `{"label":"${label}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("recordEvent", r);
-                });
+                });*/
         } catch (x) {
             console.log('recordEvent', x);
         }
@@ -199,21 +482,21 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     return (
         <>
-            <div data-name="MentionWrap" onMouseEnter={() => onHover('desktop')}>
-                <div data-name="MentionSummary">
-                    <div><div><i>{localDate}</i></div>
-                        {!localFav ? noUser ? <SignInButton><div onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
-                    <div>
+            <MentionWrap onMouseEnter={() => onHover('desktop')}>
+                <MentionSummary>
+                    <Topline><LocalDate><i>{localDate}</i></LocalDate>
+                        {!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                    <SummaryWrap>
                         <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                             {summary}
                         </Link>
-                        <div><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2 }} fontSize="small" sx={{ color: copied ? 'green' : '' }} onClick={() => onCopyClick()} /></div>
-                    </div>
+                        <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2,color: copied ? 'green' : ''  }} fontSize="small" onClick={() => onCopyClick()} /></ShareContainerInline>
+                    </SummaryWrap>
                     <hr />
-                    <div><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link></div>
-                    <div>{meta?.site_name}</div>
-                    <div data-name="BottomLine">
-                        <div data-name="ShareGroup"><RWebShare
+                    <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link></Atmention>
+                    <Atmention2>{meta?.site_name}</Atmention2>
+                    <BottomLine>
+                        <ShareGroup><RWebShare
                             data={{
                                 text: summary,
                                 url: shareUrl,
@@ -221,70 +504,70 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             }}
                             onClick={async () => await onShare(url)}
                         >
-                            <div data-name="ShareContainer"><div data-name="ShareIcon"><IosShareIcon /></div></div>
+                            <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
                         </RWebShare>
-                            <Link href={twitterLink} target="_blank"><div data-name="ShareContainer"><XIcon /></div></Link>
-                            <Link href={fbLink} target="_blank"><div><FacebookIcon/></div></Link>
-                        </div>
-                        {!mini && <div onClick={
+                            <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
+                            <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                        </ShareGroup>
+                        {!mini && <Icon onClick={
                             async (e) => {
                                 const ne = !expanded
                                 setExpanded(ne);
                                 await onExtended(ne);
                             }}
-                            className="material-icons-outlined">{!expanded ? "expand_more" : "expand_less"}</div>}
-                    </div>
-                    {expanded && meta && <div data-name="ExtendedMention">
+                            className="material-icons-outlined">{!expanded ? "expand_more" : "expand_less"}</Icon>}
+                    </BottomLine>
+                    {expanded && meta && <ExtendedMention>
                         <Link href={url} onClick={()=>onClick(url)}>
-                            <div data-name="Title">{meta.title}</div>
+                            <Title>{meta.title}</Title>
                         </Link>
                         <Link href={url} onClick={()=>onClick(url)}>
-                            <div data-name="Byline">
-                                {meta.authors && <div data-name="Authors">{meta.authors}</div>}
-                                <div data-name="SiteName">{meta.site_name}</div>
-                            </div>
+                            <Byline>
+                                {meta.authors && <Authors>{meta.authors}</Authors>}
+                                <SiteName>{meta.site_name}</SiteName>
+                            </Byline>
                         </Link>
-                        <div data-name="HorizontalContainer">
+                        <HorizontalContainer>
                             <Link href={url} onClick={()=>onClick(url)}>
-                                <div data-name="ImageWrapper">
-                                    <img data-name="Image" src={meta.image} alt={meta.title} />
-                                </div>
+                                <ImageWrapper>
+                                    <Image src={meta.image} alt={meta.title} />
+                                </ImageWrapper>
                             </Link>
-                            <div data-name="Body">
-                                {false && <Link href={url} onClick={()=>onClick(url)}><div data-name="ArticleDigest">
+                            <Body>
+                                {false && <Link href={url} onClick={()=>onClick(url)}><ArticleDigest>
                                     {true ? 'Article Digest:' : 'Short Digest:'}
-                                </div></Link>}
-                                <div data-name="Digest">
+                                </ArticleDigest></Link>}
+                                <Digest>
                                     <Link href={url} onClick={()=>onClick(url)}>
                                         <div dangerouslySetInnerHTML={{ __html: digest }} />
                                     </Link>
-                                    <div data-name="ShareContainerInline">
-                                        <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10 }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
-                                    </div>
+                                    <ShareContainerInline>
+                                        <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, color: digestCopied ? 'green' : ''   }} fontSize="small" onClick={() => onDigestCopyClick()} />
+                                    </ShareContainerInline>
 
-                                </div>
-                            </div>
-                        </div>
+                                </Digest>
+                            </Body>
+                        </HorizontalContainer>
                         <Link href={url}>{meta.url.substring(0, 50)}..</Link>
-                    </div>}
-                </div>
-            </div>
-            <div data-name="MobileMentionWrap">
-                <div data-name="MentionSummary">
+                    </ExtendedMention>}
+                </MentionSummary>
+            </MentionWrap>
+            <MobileMentionWrap hideit={hide} onMouseEnter={() => onHover('mobile')}>
+                <MentionSummary>
                     <div>
-                        <div data-name="Topline"><div data-name="LocalDate"><b><i>{localDate}</i></b></div>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</div>
-                        <div data-name="SummaryWrap">
+                        <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                        <SummaryWrap>
                             <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                                 {summary}
                             </Link>
-                            <div data-name="ShareContainerInline"><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2,color: copied ? 'green' : '' }} fontSize="small"  onClick={() => onCopyClick()} /></div>
-                        </div>
+                            <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2,color: copied ? 'green' : '' }} fontSize="small" onClick={() => onCopyClick()} /></ShareContainerInline>
+                        </SummaryWrap>
                         <hr />
-                        <div data-name="Atmention"><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</div>
-                        <div data-name="MobileAtmention2">{meta?.site_name}</div>
+                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
+                        <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
-                    <div data-name="BottomLine">
-                        <div data-name="ShareGroup"><RWebShare
+                    <BottomLine>
+                        <ShareGroup><RWebShare
                             data={{
                                 text: summary,
                                 url: shareUrl,
@@ -292,7 +575,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             }}
                             onClick={async () => onShare(url)}
                         >
-                            <div data-name="ShareContainer"><div data-name="ShareIcon"><IosShareIcon /></div></div>
+                            <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
                         </RWebShare>
                             <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
                             <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
@@ -326,7 +609,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 <Digest>
                                     <Link href={url} onClick={()=>onClick(url)}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                                     <ShareContainerInline>
-                                        <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10 }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                                        <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10,color: copied ? 'green' : '' }} fontSize="small"  onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
                                 </Digest>
                             </Body>

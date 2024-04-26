@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 
 const Welcome: React.FC = () => {
-    return <div className="w-full h-full pl-4 md:pl-8 lg:pl-12 pr-6 pt-8">
+    return <div className="w-full h-full pl-4 md:pl-8 lg:pl-12 pr-40 pt-18">
          <div className="text-2xl"> Welcome to {process.env.NEXT_PUBLIC_APP_NAME}!</div><br />
           <hr /><hr />
 

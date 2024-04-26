@@ -16,6 +16,11 @@ const nextConfig = {
             destination: '/:path*', // Matched parameters can be used in the destination
             permanent: true,
           },
+          {
+            source: '/pub',
+            destination: '/', // Matched parameters can be used in the destination
+            permanent: true,
+          },
         ]
       },
 };
