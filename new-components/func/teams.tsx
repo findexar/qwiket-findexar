@@ -5,7 +5,7 @@ import {LeagueTeamsKey} from '@/lib/keys'
 import {actionFetchLeagueTeams} from '@/lib/fetchers/league-teams';
 const Teams: React.FC = () => {
     const {league,fallback}=useAppContext();
-    const key:LeagueTeamsKey={type:"league-teams",league};
+    const key:LeagueTeamsKey={ type: "league-teams", league };
     const { data, error } = useSWR(key,actionFetchLeagueTeams,{fallback});
     if (error) return <div>failed to load</div>
     if (!data) return <div className="p-12">loading...</div>

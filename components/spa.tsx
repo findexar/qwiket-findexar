@@ -15,6 +15,8 @@ import Desktop from "@/components/nav-components/desktop";
 import Mobile from "@/components/nav-components/mobile";
 import { palette } from '@/lib/palette';
 import { AppWrapper } from '@/lib/context';
+import saveSession from '@/lib/fetchers/save-session';
+import { Roboto } from 'next/font/google';
 
 interface LeagueLayoutProps {
     fallback: any,
@@ -32,6 +34,8 @@ interface LeagueLayoutProps {
     dark: number,
 
 }
+const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
+
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, team: startTeam = "", player: startPlayer = "", pagetype: startPagetype = "league", dark }) => {
     const [tab, setTab] = React.useState(startTab || "");
     const [view, setView] = React.useState(startView || "");
@@ -53,6 +57,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
             const matches = matchMedia.matches;
             document.body.setAttribute("data-theme", matchMedia.matches ? 'dark' : 'light');
             setLocalMode(matchMedia.matches ? 'dark' : 'light');
+            saveSession({dark:matchMedia.matches ? 1:0})
+
         }
 
     }, []);

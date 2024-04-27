@@ -1,10 +1,13 @@
+'use client';
 import React, { useState } from "react";
 import useSWRInfinite from 'swr/infinite'
 import { styled } from "styled-components";
-import { FetchedStoriesKey, fetchStories } from '@/lib/api';
+//import { FetchedStoriesKey, fetchStories } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
 import Story from "@/components/func-components/items/story";
 import LoadMore from "@/components/func-components/load-more";
+import {actionStories} from '@/lib/fetchers/stories';
+import {StoriesKey} from '@/lib/keys';
 
 const MentionsBody = styled.div`
     height:100%;
@@ -62,15 +65,15 @@ interface Props {
 }
 
 const Stories: React.FC<Props> = () => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     const [firstXid, setFirstXid] = useState("");
      
-    const fetchStoriesKey = (pageIndex: number, previousPageData: any): FetchedStoriesKey | null => {
-        let key: FetchedStoriesKey = { type: "FetchedStories", noUser, page: pageIndex, league, noLoad: view != "mentions" && tab != "all" };
+    const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
+        let key: StoriesKey = { type: "fetch-stories",  page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null // reached the end
         return key;
     }
-    const { data, error: storiesError, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchStoriesKey, fetchStories, { initialSize: 1, revalidateAll: true,parallel:true })
+    const { data, error: storiesError, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
    
     let stories = data ? [].concat(...data):[];
    

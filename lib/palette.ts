@@ -59,7 +59,7 @@ export const palette = {
             selected:amber[300],
             myteam:grey[400],
             lowlight:"#444",
-            background: brown[900],//"#607D8B", //bg[500]
+            background:"#000",//brown[900],//"#607D8B", //bg[500]
             highBackground: "#383838",
             myteamBackgound:green[900],
             mentionSummaryBackground:brown[800],

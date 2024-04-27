@@ -1,5 +1,5 @@
 // Records event
-export const recordEvent = async (name: string, params: string) => {
+export const recordEvent = async (name: string, params: string):Promise<boolean> => {
     try {
       const url = `${process.env.NEXT_PUBLIC_SERVER}/api/record-event?name=${encodeURIComponent(name)}&params=${encodeURIComponent(params)}`;
       const fetchResponse = await fetch(url);

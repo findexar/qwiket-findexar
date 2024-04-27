@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { ThemeProvider } from 'next-themes'
+import { Inter, Roboto } from "next/font/google";
+//import { ThemeProvider } from 'next-themes'
 import { ClerkProvider } from '@clerk/nextjs'
-
+import StyledComponentsRegistry from '@/lib/registry'
 import "./globals.css";
 
 
 const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,9 +22,11 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <ClerkProvider>
-          <ThemeProvider attribute="class" enableSystem={true}>{children}</ThemeProvider>
+          <StyledComponentsRegistry>
+            {children}
+          </StyledComponentsRegistry>
         </ClerkProvider>
       </body>
     </html>

@@ -414,16 +414,16 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/pub/league/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></SelectedLeague> : <League scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/pub/league/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></SelectedLeague> : <League scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     //@ts-ignore
-    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l).then(() => { }); router.replace(`/pub/league/${l}${params}${tp}`); }} />
+    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l).then(() => { }); router.replace(`/${l}${params}${tp}`); }} />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('').then(() => { }); router.replace(`/pub${params}${tp}`); }} />)
-  LeaguesNav.unshift(league ? <League scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/pub${params}${tp}`} shallow onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></League> : <SelectedLeague scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/pub${params}${tp}`} shallow onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></SelectedLeague>)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('').then(() => { }); router.replace(`/${params}${tp}`); }} />)
+  LeaguesNav.unshift(league ? <League scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`} shallow onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></League> : <SelectedLeague scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`} shallow onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></SelectedLeague>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
 
   return (
@@ -432,13 +432,13 @@ const HeaderNav: React.FC<Props> = ({  }) => {
         <HeaderTopline>
           <LeftContainer>
             <HeaderLeft>
-              <FLogo><Link href={`/pub${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogo>
-              <FLogoMobile ><Link href={`/pub${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogoMobile>
+              <FLogo><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogo>
+              <FLogoMobile ><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogoMobile>
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/pub${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/pub/league/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/pub${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/pub/league/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing") && <div><Subhead scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
                
