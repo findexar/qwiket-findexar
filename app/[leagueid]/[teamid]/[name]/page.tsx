@@ -22,6 +22,7 @@ import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchTeamMentions from '@/lib/fetchers/team-mentions';
+import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
 
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
@@ -35,7 +36,7 @@ export default async function Page({
     params,
     searchParams,
 }: {
-    params: { leagueid: string, teamid: string }
+    params: { leagueid: string, teamid: string,name:string }
     searchParams: { [key: string]: string | string[] | undefined }
 }) {
 
@@ -66,6 +67,7 @@ export default async function Page({
     let pagetype = "league";
     let league = params.leagueid.toUpperCase();
     let teamid = params.teamid;
+    let name = params.name;
     console.log("league->", league)
     utm_content = utm_content || '';
     fbclid = fbclid || '';
@@ -106,7 +108,7 @@ export default async function Page({
         calls.push(fetchMyTeam({ userId, sessionid, league }));
     }
     //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
-    calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
+    calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid,name }));
     //}
     await fetchData(t1, fallback, calls);
     // console.log("final fallback:",fallback)

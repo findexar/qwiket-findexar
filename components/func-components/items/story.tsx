@@ -173,6 +173,7 @@ const ShareIcon = styled.div`
 `;
 
 const DesktopWrap = styled.div`
+    border-radius:5px;
     display:flex;
     flex-direction:column;
     max-width:100%;

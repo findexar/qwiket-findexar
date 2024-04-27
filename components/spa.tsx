@@ -40,9 +40,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     const [tab, setTab] = React.useState(startTab || "");
     const [view, setView] = React.useState(startView || "");
     const [league, setLeague] = React.useState(startLeague);
-    const [team, setTeam] = React.useState(startTeam);
+    const [teamid, setTeamid] = React.useState(startTeam);
     const [player, setPlayer] = React.useState(startPlayer);
     const [pagetype, setPagetype] = React.useState(startPagetype);
+    const [teamName,setTeamName]=React.useState("");    
     const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
 
     console.log("()()()() league", league)
@@ -68,7 +69,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
                 //@ts-ignore
                 theme={palette}>
                 <GlobalStyle $light={localMode == "light"} />
-                <AppWrapper setLeague={setLeague} setTab={setTab} setView={setView} params="" params2="" tp="" tp2="" fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} team={team} player={player} setTeam={setTeam} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} >
+                <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params="" params2="" tp="" tp2="" fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} >
                     <Head>
                         <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
                         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

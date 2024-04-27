@@ -51,33 +51,20 @@ const MobileMentionsOuterContainer = styled.div`
 `;
 
 interface Props {
+    mentions:any;
+    setSize: any;
+    size: number;
+    error: any;
+    isValidating: boolean;
+    isEmpty: boolean;
+    isReachingEnd: boolean;
+    isLoadingMore: boolean;
+    mutate: any;
+
 }
-const Stories: React.FC<Props> = () => {
+const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isEmpty,isReachingEnd,isLoadingMore,mutate}) => {
     let { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-
-    const fetchMentionsKey = (pageIndex: number, previousPageData: any): FetchedMentionsKey | null => {
-        let key: FetchedMentionsKey = { type: "FetchedMentions", teamid: team || "", name: player || "", noUser, page: pageIndex, league, myteam: tab == 'myteam' ? 1 : 0, noLoad: tab == "fav" || view != "mentions" };
-        if (previousPageData && !previousPageData.length) return null; // reached the end
-        return key;
-    }
-    // now swrInfinite code:
-    const { data, error: mentionsError, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, fetchMentions, { initialSize: 1, revalidateAll: true, parallel: true })
-    let mentions = data ? [].concat(...data) : [];
-    const isLoadingMore =
-        isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
-    let isEmpty = data?.[0]?.length === 0;
-    let isReachingEnd =
-        isEmpty || (data && data[data.length - 1]?.length < 25);
-    const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
-    const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
-
-    if (tab == "fav") {
-        mentions = favoritesMentions;
-        if (!favoritesMentions || favoritesMentions.length == 0) {
-            isReachingEnd = true;
-            isEmpty = true;
-        }
-    }
+ 
     if (!view)
         view = "mentions";
 
@@ -110,4 +97,4 @@ const Stories: React.FC<Props> = () => {
         </>
     )
 }
-export default Stories;
+export default Mentions;

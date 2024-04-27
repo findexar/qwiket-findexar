@@ -1,0 +1,46 @@
+import React from "react";
+import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite'
+import { styled } from "styled-components";
+//import { getFavorites, FavoritesKey, FetchedMentionsKey, fetchMentions } from '@/lib/api';
+import { useAppContext } from '@/lib/context';
+import Mentions from '@/components/func-components/mentions';
+import { TeamMentionsKey } from '@/lib/keys';
+import { actionTeamMentions } from '@/lib/fetchers/team-mentions';
+interface Props {
+}
+const Stories: React.FC<Props> = () => {
+    let {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+
+    const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
+        let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid,page: pageIndex, league};
+        if (previousPageData && !previousPageData.length) return null; // reached the end
+        return key;
+    }
+    // now swrInfinite code:
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { fallback,initialSize: 1, revalidateAll: true, parallel: true })
+    let mentions = data ? [].concat(...data) : [];
+    const isLoadingMore =
+        isLoading || (size > 0 && data && typeof data[size - 1] === "undefined")||false;
+    let isEmpty = data?.[0]?.length === 0;
+    let isReachingEnd =
+        isEmpty || (data && data[data.length - 1]?.length < 25)||false;
+    //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
+    //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
+
+   /* if (tab == "fav") {
+        mentions = favoritesMentions;
+        if (!favoritesMentions || favoritesMentions.length == 0) {
+            isReachingEnd = true;
+            isEmpty = true;
+        }
+    }
+    if (!view)
+        view = "mentions";
+
+   */
+    return (
+        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate}/>
+    )
+}
+export default Stories;

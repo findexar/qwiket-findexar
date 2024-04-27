@@ -340,7 +340,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({  }) => {
-  const { fallback,mode, userId, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName } = useAppContext();
+  const { fallback,mode, userId, isMobile, setLeague, setView, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
   const leaguesKey={type:"leagues"};
   const key:LeaguesKey={type:"leagues"};
   const { data:leagues, error } = useSWR(key,fetchLeagues,{fallback});
@@ -354,7 +354,7 @@ const HeaderNav: React.FC<Props> = ({  }) => {
     setLeague(l);
     setView('mentions');
     setPagetype('league');
-    setTeam("")
+    setTeamid("");
     await recordEvent(
       'league-nav',
       `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
@@ -370,7 +370,7 @@ const HeaderNav: React.FC<Props> = ({  }) => {
           try {
             s = true;
             setScrolled(true);
-            recordEvent(`header-scrolled`, `{"league":"${league}","team":"${team}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
+            recordEvent(`header-scrolled`, `{"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
               .then((r: any) => {
                 console.log("recordEvent", r);
               });
@@ -437,13 +437,13 @@ const HeaderNav: React.FC<Props> = ({  }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !team ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/team/${team}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing") && <div><Subhead scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
                
               </HeaderCenter>
-              {pagetype == "player" && player && <Photo><PlayerPhoto teamid={team || ""} name={player || ""} /></Photo>}
+              {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
           </LeftContainer>
           <HeaderRight>  <IconButton color={"inherit"} size="small" onClick={async () => {

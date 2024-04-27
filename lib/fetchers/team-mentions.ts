@@ -26,7 +26,7 @@ const fetchMentions=async (key:TeamMentionsKey,userId:string,sessionid:string)=>
 const promiseTeamMentions =async ({userId,sessionid,teamid,league}:FetchMentionsProps)=>{
     console.log("promiseTeamMentions",userId,sessionid,teamid);
     let keyMentions= (page:any) => {
-        const keyFetchedTeamMentions: TeamMentionsKey = { type: "fetch-team-meantions", page: page, league,teamid}
+        const keyFetchedTeamMentions: TeamMentionsKey = { type: "fetch-team-mentions", page: page, league,teamid}
         return keyFetchedTeamMentions;
     };
     console.log("StoriesKey:",keyMentions);
