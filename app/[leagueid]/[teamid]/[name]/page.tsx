@@ -67,7 +67,8 @@ export default async function Page({
     let pagetype = "player";
     let league = params.leagueid.toUpperCase();
     let teamid = params.teamid;
-    let name = params.name;
+    let name = params.name.replaceAll('_', ' ').replaceAll('%20',' ');;
+   
     console.log("league->", league)
     utm_content = utm_content || '';
     fbclid = fbclid || '';
@@ -112,10 +113,15 @@ export default async function Page({
     //}
     await fetchData(t1, fallback, calls);
     // console.log("final fallback:",fallback)
+    const key= { type: "league-teams", league };
+   
+    let teams=fallback[unstable_serialize(key)];
+    let teamName=teams?.find((x:any)=>x.id==teamid).name;
+  
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
-                <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} teamid={teamid} name={name} />
+                <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} teamid={teamid} name={name} teamName={teamName}  />
             </main>
         </SWRProvider>
     );

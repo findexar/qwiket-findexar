@@ -116,7 +116,7 @@ export default async function Page({
     await fetchData(t1, fallback, calls);
     // console.log("final fallback:",fallback)
     const key= { type: "league-teams", league };
-    console.log("fallback:",fallback)
+    //console.log("fallback:",fallback)
     let teams=fallback[unstable_serialize(key)];
     let teamName=teams?.find((x:any)=>x.id==teamid).name;
     return (

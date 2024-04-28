@@ -25,6 +25,7 @@ const MentionsOuterContainer = styled.div`
     font-family: 'Roboto', sans-serif;
     padding-right:20px;
     padding-bottom:100px;
+    padding-top:20px;
     @media screen and (max-width: 1199px) {
         display: none;
     }

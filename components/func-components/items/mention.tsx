@@ -33,6 +33,7 @@ const MentionWrap = styled.div<MentionsProps>`
     justify-content: flex-start;
     align-items:flex-start;
     border: 1px solid #ccc;
+    border-radius: 2px;
     padding:4px;
     z-index:200;
     font-size: 16px;
@@ -289,8 +290,9 @@ const LocalDate = styled.div`
 `;
 
 const SummaryWrap = styled.div`
-    display:inline;
+    display:flex;
     line-height: 1.2;
+   
     font-size:15px !important;
     a{
         font-size:15px !important;
@@ -299,7 +301,7 @@ const SummaryWrap = styled.div`
 `;
 
 const ShareIcon = styled.div`
-    margin-top:-1px;
+    margin-top:5px;
     padding-bottom:4px;
 `;
 
@@ -369,8 +371,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const prepName = name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
 
-    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=xlink` : `/${league}/team/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
-    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=fblink` : `/${league}/team/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
+    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
+    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
     let localUrl = "";
     localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
     if (mini)
@@ -484,7 +486,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2 }} fontSize="small" sx={{ color: copied ? 'green' : '' }} onClick={() => onCopyClick()} /></ShareContainerInline>
+                   
                     </SummaryWrap>
+                    <br/>
                     <hr />
                     <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link></Atmention>
                     <Atmention2>{meta?.site_name}</Atmention2>
@@ -555,6 +559,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2 }} fontSize="small" sx={{ color: copied ? 'green' : '' }} onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
+                        
                         <hr />
                         <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
