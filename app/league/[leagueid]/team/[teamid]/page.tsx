@@ -94,9 +94,10 @@ export default async function Page({
         calls.push(fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
     }
     if (story) { // if a digest story is opened
+        console.log("FETCHING SLUG STORY:",story)
         calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
-    if (!isMobile || view == 'my team') { // if my team roster is opened
+   /* if (!isMobile || view == 'my team') { // if my team roster is opened
         console.log("my team=>",)
         calls.push(fetchMyTeam({ userId, sessionid, league }));
     }
@@ -105,16 +106,20 @@ export default async function Page({
     }
     if (tab == 'myteam' && view == 'mentions') { //my feed
         calls.push(fetchMyTeam({ userId, sessionid, league }));
-    }
+    }*/
     //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
     calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
     //}
     await fetchData(t1, fallback, calls);
     // console.log("final fallback:",fallback)
+    const key= { type: "league-teams", league };
+    console.log("fallback:",fallback)
+    let teams=fallback[unstable_serialize(key)];
+    let teamName=teams.find((x:any)=>x.id==teamid).name;
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
-                <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} teamid={teamid} pagetype={pagetype} />
+                <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} />
             </main>
         </SWRProvider>
     );

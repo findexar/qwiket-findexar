@@ -13,7 +13,7 @@ const fetchLeagueTeams = async (key: LeagueTeamsKey) => {
     console.log("fetching league teams:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET:",res.teams)
+    //console.log("RET:",res.teams)
     return res.teams;
 }
 const promiseFetchLeagueTeams = async ({ league = "" }: FetchLeagueTeamsProps) => {

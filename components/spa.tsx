@@ -32,18 +32,19 @@ interface LeagueLayoutProps {
     tab: string,
     pagetype?: string,
     dark: number,
+    teamName?:string,
 
 }
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
 
-const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark }) => {
+const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark ,teamName:startTeamName=""}) => {
     const [tab, setTab] = React.useState(startTab || "");
     const [view, setView] = React.useState(startView || "");
     const [league, setLeague] = React.useState(startLeague);
     const [teamid, setTeamid] = React.useState(startTeamid);
     const [player, setPlayer] = React.useState(startName);
     const [pagetype, setPagetype] = React.useState(startPagetype);
-    const [teamName,setTeamName]=React.useState("");    
+    const [teamName,setTeamName]=React.useState(startTeamName);    
     const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
 
     console.log("()()()() league", league)

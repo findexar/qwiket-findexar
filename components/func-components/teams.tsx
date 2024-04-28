@@ -42,23 +42,19 @@ const Teams: React.FC<Props> = () => {
     const leagueTeamsKey: LeagueTeamsKey = { type: "league-teams", league };
     const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
     console.log("RENDER teams:", teamid, teamName)
-    const onTeamNav = useCallback(async (name: string) => {
+    const onTeamNav = useCallback(async (id: string,name:string) => {
         setPagetype("team");
         setPlayer("");
-        setTeamid(name);
+        setTeamid(id);
+        setTeamName(name);
         setView("mentions");
         setTab("all");
-        teams && teams.find((t: { id: string, name: string }) => {
-            if (t.id == name) {
-                setTeamName(t.name);
-                return true;
-            }
-        })
+  
         /*await recordEvent(
           'team-nav',
           `{"params":"${params}","teamid":"${name}"}`
         );*/
-    }, [params]);
+    }, []);
     useEffect(() => {
         if (teams && teams.length > 0) {
             teams.find((t: { id: string, name: string }) => {
@@ -76,7 +72,7 @@ const Teams: React.FC<Props> = () => {
           /*  if (t.id == teamid)
                 setTeamName(t.name);*/
             return t.id == teamid ? <SelectedSideTeam key={`sideteam-${i}`}>
-                <Link onClick={async () => { await onTeamNav(t.id); }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id) }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SideTeam>
+                <Link onClick={async () => { await onTeamNav(t.id,t.name); }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id,t.name) }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SideTeam>
         });
     return (
         <><SideLeagueName>{league}:</SideLeagueName> {TeamsNav}</>

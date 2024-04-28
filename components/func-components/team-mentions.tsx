@@ -11,17 +11,18 @@ interface Props {
 }
 const Stories: React.FC<Props> = () => {
     let {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
-    const [mentions, setMentions] = React.useState([]);
+   // const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
         let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid,page: pageIndex, league};
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { fallback })
-    useEffect(()=>{
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
+   /* useEffect(()=>{
         setMentions(data ? [].concat(...data) : []);
-    },[data])
+    },[data])*/
+    let mentions = data ? [].concat(...data):[];
    
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined")||false;
