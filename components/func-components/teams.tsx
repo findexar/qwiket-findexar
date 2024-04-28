@@ -72,7 +72,7 @@ const Teams: React.FC<Props> = () => {
           /*  if (t.id == teamid)
                 setTeamName(t.name);*/
             return t.id == teamid ? <SelectedSideTeam key={`sideteam-${i}`}>
-                <Link onClick={async () => { await onTeamNav(t.id,t.name); }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id,t.name) }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SideTeam>
+                <Link onClick={async () => { await onTeamNav(t.id,t.name); }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id,t.name) }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SideTeam>
         });
     return (
         <><SideLeagueName>{league}:</SideLeagueName> {TeamsNav}</>
