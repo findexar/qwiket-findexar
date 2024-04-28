@@ -1,3 +1,4 @@
+'use client';
 import React, { use, useCallback, useEffect, useState } from "react";
 import Link from 'next/link'
 import useSWR from 'swr';
@@ -7,8 +8,9 @@ import IconButton from '@mui/material/IconButton';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import {useAppContext} from '@/lib/context';
-import { TeamPlayersKey, getTeamPlayers, recordEvent, RemoveTrackerListMemberParams, removeTrackerListMember, AddTrackerListMemberParams, addTrackerListMember } from '@/lib/api';
-
+import {  recordEvent, RemoveTrackerListMemberParams, removeTrackerListMember, AddTrackerListMemberParams, addTrackerListMember } from '@/lib/api';
+import {TeamPlayersKey} from '@/lib/keys';
+import {actionFetchLeagueTeams} from '@/lib/fetchers/team-players';
 
 declare global {
     interface Window {
@@ -119,15 +121,15 @@ interface Props {
 }
 const Players: React.FC<Props> = () => {
     const [signin, setSignin] = React.useState(false);
-    const { mode,userId, isMobile, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-    const teamPlayersKey: TeamPlayersKey = { type: 'teamPlayers', league: league || "", teamid: team || "" };
-    const { data: players, error, isLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, getTeamPlayers);
+    const { fallback,mode,userId, isMobile, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
+    const { data: players, error, isLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
     const theme = useTheme();
-
+    
     //@ts-ignore
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
-
+    console.log("PLAYERS:",players,"key:",teamPlayersKey)
     const onPlayerNav = async (name: string) => {
         console.log("onPlayerNav", name)
         setPagetype("player");
@@ -143,13 +145,13 @@ const Players: React.FC<Props> = () => {
     const PlayersNav = players && players?.map((p: { name: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
         return <SideGroup key={`ewfggvfn-${i}`}>{p.name == player ?
             <SelectedSidePlayer highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/pub/league/${league}/team/${team}/player/${encodeURIComponent(p.name)}${params}`} shallow>
+                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
                     {p.name} ({`${p.mentions?p.mentions:0}`})
                 </Link>
             </SelectedSidePlayer>
             :
             <SidePlayer highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/pub/league/${league}/team/${team}/player/${encodeURIComponent(p.name)}${params}${tp}`} shallow>
+                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}${tp}`} >
                     {p.name} ({`${p.mentions || 0}`})
                 </Link>
             </SidePlayer>}
@@ -168,7 +170,7 @@ const Players: React.FC<Props> = () => {
                         }
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
-                            const removeTrackerListMemberParams: RemoveTrackerListMemberParams = { member: p.name, teamid: team || "" };
+                            const removeTrackerListMemberParams: RemoveTrackerListMemberParams = { member: p.name, teamid };
                             mutatePlayers((players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
@@ -180,11 +182,11 @@ const Players: React.FC<Props> = () => {
                             await removeTrackerListMember(removeTrackerListMemberParams);
                             await recordEvent(
                                 'player-remove-myteam',
-                                `{"params":"${params}","team":"${team||""}","player":"${p.name}"}`
+                                `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
                         }
                         else {
-                            const addTrackerListMemberParams: AddTrackerListMemberParams = { member: p.name, teamid: team || "" };
+                            const addTrackerListMemberParams: AddTrackerListMemberParams = { member: p.name, teamid };
                             mutatePlayers((players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
@@ -197,7 +199,7 @@ const Players: React.FC<Props> = () => {
                             await addTrackerListMember(addTrackerListMemberParams);
                             await recordEvent(
                                 'player-add-myteam',
-                                `{"params":"${params}","team":"${team||""}","player":"${p.name}"}`
+                                `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
                         }
                     }} size="large" aria-label="Add new list">

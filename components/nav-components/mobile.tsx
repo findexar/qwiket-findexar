@@ -89,7 +89,7 @@ const Mobile: React.FC<Props> = () => {
         setTab(tab);
         setView("mentions");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-        router.push(league ? `/pub/league/${league}${params}${tp}` : params ? `/pub${params}${tp}` : `/pub?tab=${tab}`)
+        router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
@@ -103,9 +103,9 @@ const Mobile: React.FC<Props> = () => {
 
         setView(name);
         if (!team)
-            router.replace(league ? `/pub/league/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/pub?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
+            router.replace(league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
         else
-            router.replace(`/pub/league/${league}/team/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+            router.replace(`/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
 
         await recordEvent(
             'view-nav',

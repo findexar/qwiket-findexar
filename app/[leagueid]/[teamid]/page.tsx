@@ -22,6 +22,7 @@ import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchTeamMentions from '@/lib/fetchers/team-mentions';
+import fetchTeamPlayers from '@/lib/fetchers/team-players';
 
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
@@ -107,15 +108,17 @@ export default async function Page({
     if (tab == 'myteam' && view == 'mentions') { //my feed
         calls.push(fetchMyTeam({ userId, sessionid, league }));
     }*/
-    //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
-    calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
-    //}
+    if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //entions
+        calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
+    }
+    calls.push(await fetchTeamPlayers({ userId, sessionid,  teamid }));
+    
     await fetchData(t1, fallback, calls);
     // console.log("final fallback:",fallback)
     const key= { type: "league-teams", league };
     console.log("fallback:",fallback)
     let teams=fallback[unstable_serialize(key)];
-    let teamName=teams.find((x:any)=>x.id==teamid).name;
+    let teamName=teams?.find((x:any)=>x.id==teamid).name;
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
