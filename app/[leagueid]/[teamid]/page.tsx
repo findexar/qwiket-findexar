@@ -118,7 +118,7 @@ export default async function Page({
     const key= { type: "league-teams", league };
     //console.log("fallback:",fallback)
     let teams=fallback[unstable_serialize(key)];
-    let teamName=teams?.find((x:any)=>x.id==teamid).name;
+    let teamName=teams?.find((x:any)=>x.id==teamid)?.name;
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
