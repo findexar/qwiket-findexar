@@ -7,7 +7,7 @@ import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
 import Welcome from "@/components/func-components/welcome";
 import Readme from "@/components/func-components/readme";
-import Mentions from "@/components/func-components/mentions";
+import TeamMentions from "@/components/func-components/team-mentions";
 import Stories from "@/components/func-components/stories";
 import MyTeam from "@/components/func-components/myteam";
 import Players from "@/components/func-components/players";
@@ -147,7 +147,9 @@ const Desktop: React.FC<Props> = () => {
                         </LeftPanel>
                         <CenterPanel>
                             {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myteam",disabled:!userId }, { name: "Favorites", tab: "fav",disabled:!userId }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
-                            {(pagetype == "team" || pagetype == "player"||(pagetype=="league"&&(tab=="myteam"||tab=="fav"))) && <Mentions />}
+                            {(pagetype == "team" || pagetype == "player"||(pagetype=="league"&&(tab=="myteam"||tab=="fav"))) && <TeamMentions />}
+                            {(pagetype == "player"||(pagetype=="league"&&(tab=="myteam"||tab=="fav"))) && <TeamMentions />}
+                          
                             { (pagetype == "league"&&view!='readme'&& (tab=='all'||tab==''))&&<Stories />}
                             {view == 'readme' && <Readme />}
                         </CenterPanel>

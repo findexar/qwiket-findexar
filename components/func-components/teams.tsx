@@ -54,10 +54,10 @@ const Teams: React.FC<Props> = () => {
               return true;
           }
       })
-      await recordEvent(
+      /*await recordEvent(
         'team-nav',
         `{"params":"${params}","teamid":"${name}"}`
-      );
+      );*/
   }, [ params]);
 
 
@@ -67,7 +67,7 @@ const Teams: React.FC<Props> = () => {
           if (t.id == teamid)
               setTeamName(t.name);
           return t.id == teamid ? <SelectedSideTeam key={`sideteam-${i}`}>
-              <Link onClick={async () => { await onTeamNav(t.id); }} href={`/${league}/${t.id}${params}`}>{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id) }} href={`/${league}/${t.id}${params}`}>{t.name}</Link></SideTeam>
+              <Link prefetch={true} onClick={async () => { await onTeamNav(t.id); }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link prefetch={true} onClick={async () => { onTeamNav(t.id) }} href={`/league/${league}/team/${t.id}${params}`} >{t.name}</Link></SideTeam>
       });
   return (
     <><SideLeagueName>{league}:</SideLeagueName> {TeamsNav}</>

@@ -138,6 +138,7 @@ const Leagues = styled.div<HeaderProps>`
     justify-content: space-evenly;
     align-items: center;
     height:${({ scrolled }) => scrolled ? 21 : 28}px;
+    padding-bottom:4px;
     width: 100%;
     background-color:var(--leagues-bg);
     color: #aaa;
@@ -158,7 +159,7 @@ const Leagues = styled.div<HeaderProps>`
 
 const LeagueIcon = styled.div<HeaderProps>`
     min-height: ${({ scrolled }) => scrolled ? 10 : 26}px;
-    margin-top:${({ scrolled }) => scrolled ? -5 : -6}px;
+    margin-top:${({ scrolled }) => scrolled ? -3 : -3}px;
 `;
 
 const MuiTabs = styled(Tabs)`
@@ -192,8 +193,8 @@ const SuperheadMobile = styled.div`
 `;
 
 const Subhead = styled.div<HeaderProps>`
-    font-size: ${({ scrolled }) => scrolled ? 14 : 18}px;
-    margin-top:4px;
+    font-size: ${({ scrolled }) => scrolled ? 12 : 16}px;
+    margin-bottom:8px;
     text-align:left;
     color:var(--subheader-color);
     transition: font-size 0.2s ease;
@@ -322,6 +323,20 @@ const PlayerNameGroup = styled.div`
 const PlayerName = styled.div`
     text-align:left;
 `;
+const Wiggly=styled.div`
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  svg{
+    width:100%;
+    height:100%;
+  }
+`;
+
+
 /*==========================================*/
 interface LeaguesNavProps {
   selected: boolean;
@@ -414,12 +429,12 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></SelectedLeague> : <League scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/league/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></SelectedLeague> : <League scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/league/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     //@ts-ignore
-    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l).then(() => { }); router.replace(`/${l}${params}${tp}`); }} />
+    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l).then(() => { }); router.replace(`/link/${l}${params}${tp}`); }} />
   })
   //@ts-ignore
   MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('').then(() => { }); router.replace(`/${params}${tp}`); }} />)
@@ -437,18 +452,24 @@ const HeaderNav: React.FC<Props> = ({  }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <Superhead scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/league/${league}/team/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/league/${league}/team/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing") && <div><Subhead scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
-               
+                
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
-          </LeftContainer>
+           
+           
+            </LeftContainer>    
+            {(pagetype == "league" || pagetype == "landing"|| pagetype == "team") &&<Wiggly>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"  viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" stroke-width="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" stroke-linecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stop-color="hsl(37, 99%, 67%)" offset="0"></stop><stop stop-color="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
+            </Wiggly>}
           <HeaderRight>  <IconButton color={"inherit"} size="small" onClick={async () => {
             await updateMode(mode == "light" ? "dark" : "light");
           }}>
+            
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
             <SUserButton afterSignOutUrl="/" />
