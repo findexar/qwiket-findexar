@@ -1,4 +1,5 @@
 import React from 'react';
+//@ts-ignore
 import { Gate, useSubscription } from "use-stripe-subscription";
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';

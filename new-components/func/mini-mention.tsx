@@ -9,8 +9,8 @@ declare global {
     }
 }
 interface MentionsProps {
-    hideit?: boolean;
-    noborder?: boolean;
+    $hideit?: boolean;
+    $noborder?: boolean;
 }
 
 const MentionWrap = styled.div<MentionsProps>`
@@ -38,7 +38,7 @@ const MentionWrap = styled.div<MentionsProps>`
            color: var(--mention-text);
         }   
     }
-    //display:${props => props.hideit ? 'none' : 'flex'};
+
     @media screen and (max-width: 1199px) {
         display: none;
     }
@@ -52,7 +52,6 @@ const InnerMention = styled.div`
 
 const MobileMentionWrap = styled.div<MentionsProps>` 
     width:100%;
-   // display:${props => props.hideit ? 'none' : 'flex'};
     flex-direction: row;
     justify-content: flex-start;
     align-items:flex-start;
@@ -185,7 +184,7 @@ const MiniMention: React.FC<Props> = ({ handleClose,selectedXid, setSelectedXid,
                     <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league}</Atmention>
                 </MentionSummary>
             </MentionWrap>}
-            <MobileMentionWrap hideit={hide} onMouseEnter={() => onHover('mobile')} onClick={openMention}>
+            <MobileMentionWrap $hideit={hide} onMouseEnter={() => onHover('mobile')} onClick={openMention}>
                 <MentionSummary>
                     <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                 </MentionSummary>

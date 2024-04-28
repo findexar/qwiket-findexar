@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
 import{useAppContext} from '@/lib/context';
-import Welcome from '@/components/func/welcome';
-import Teams from '@/components/func/teams';   
-import Stories from '@/components/func/stories'; 
-import SecondaryTabs from '@/components/nav/desktop-secondary-tabs';
-import StickyColumn from '@/components/nav/sticky-column';
+import Welcome from '@/new-components/func/welcome';
+import Teams from '@/new-components/func/teams';   
+import Stories from '@/new-components/func/stories'; 
+import SecondaryTabs from '@/new-components/nav/desktop-secondary-tabs';
+import StickyColumn from '@/new-components/nav/sticky-column';
 
 const Desktop: React.FC = () => {
     const {pagetype,league,tab}=useAppContext();

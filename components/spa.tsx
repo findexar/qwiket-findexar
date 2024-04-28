@@ -26,22 +26,22 @@ interface LeagueLayoutProps {
     story: string,
     findexarxid: string,
     league?: string,
+    teamid?:string,
+    name?:string,
     view: string,
     tab: string,
-    team?: string,
-    player?: string,
     pagetype?: string,
     dark: number,
 
 }
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
 
-const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, team: startTeam = "", player: startPlayer = "", pagetype: startPagetype = "league", dark }) => {
+const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark }) => {
     const [tab, setTab] = React.useState(startTab || "");
     const [view, setView] = React.useState(startView || "");
     const [league, setLeague] = React.useState(startLeague);
-    const [teamid, setTeamid] = React.useState(startTeam);
-    const [player, setPlayer] = React.useState(startPlayer);
+    const [teamid, setTeamid] = React.useState(startTeamid);
+    const [player, setPlayer] = React.useState(startName);
     const [pagetype, setPagetype] = React.useState(startPagetype);
     const [teamName,setTeamName]=React.useState("");    
     const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');

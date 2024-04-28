@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { withSessionRoute, Options } from "@/lib/with-session";
 import { getIronSession } from "iron-session";
 import { defaultSession, sessionOptions, SessionData } from "@/lib/session";
 //import {updateUserSession} from "../../../lib/lake-api"

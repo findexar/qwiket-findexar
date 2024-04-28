@@ -3,8 +3,8 @@ import React from 'react';
 import useSWRInfinite from 'swr/infinite';
 
 import { useAppContext } from '@/lib/context';
-import Story from "@/components/func/story";
-import LoadMore from "@/components/nav/load-more";
+import Story from "@/new-components/func/story";
+import LoadMore from "@/new-components/nav/load-more";
 import {StoriesKey} from '@/lib/keys';
 import {actionStories} from '@/lib/fetchers/stories';
 const Stories: React.FC = () => {

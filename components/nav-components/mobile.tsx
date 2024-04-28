@@ -13,7 +13,7 @@ import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
 
 import Readme from "@/components/func-components/readme";
-import Mentions from "@/components/func-components/mentions";
+import Mentions from "@/components/func-components/team-mentions";
 import Stories from "@/components/func-components/stories";
 import MyTeam from "@/components/func-components/myteam";
 import Players from "@/components/func-components/players";

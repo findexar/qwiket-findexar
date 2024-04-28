@@ -1,3 +1,4 @@
+//@ts-ignore
 import {Gate} from "use-stripe-subscription";
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';

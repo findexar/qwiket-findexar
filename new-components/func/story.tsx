@@ -2,12 +2,12 @@ import React, { useEffect, useCallback, useRef } from "react";
 import Link from 'next/link';
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
-import FacebookIcon from '@/components/icons/facebook';
-import XIcon from '@/components/icons/twitter';
-import StarOutlineIcon from '@/components/icons/star-outline';
-import StarIcon from '@/components/icons/star';
-import IosShareIcon from '@/components/icons/share';
-import ContentCopyIcon from '@/components/icons/content-copy';
+import FacebookIcon from '@/new-components/icons/facebook';
+import XIcon from '@/new-components/icons/twitter';
+import StarOutlineIcon from '@/new-components/icons/star-outline';
+import StarIcon from '@/new-components/icons/star';
+import IosShareIcon from '@/new-components/icons/share';
+import ContentCopyIcon from '@/new-components/icons/content-copy';
 /*import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import IosShareIcon from '@mui/icons-material/IosShare';
@@ -15,7 +15,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';*/
 import { recordEvent } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
-import MiniMention from '@/components/func/mini-mention';
+import MiniMention from '@/new-components/func/mini-mention';
 import { useAppContext } from '@/lib/context';
 import { useInView } from 'react-intersection-observer';
 declare global {
