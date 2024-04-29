@@ -7,7 +7,7 @@ import { sessionOptions,SessionData } from "@/lib/session";
 
 
 const api_key = process.env.LAKE_API_KEY;;
-interface FetchTeamPlayersProps {
+interface FetchTeamPlayerssProps {
     teamid: string;
     userId:string;
     sessionid:string;
@@ -24,7 +24,7 @@ const fetchTeamPlayers = async (key: TeamPlayersKey,userId:string,sessionid:stri
     console.log("RET:",res.players)
     return res.players;
 }
-const promiseFetchLeagueTeams = async ({ teamid = "",userId="",sessionid="" }: FetchTeamPlayersProps) => {
+const promiseFetchLeagueTeams = async ({ teamid = "",userId="",sessionid="" }: FetchTeamPlayerssProps) => {
     const key: TeamPlayersKey = { type: "team-players", teamid };
     return { key: unstable_serialize(key), 
         call: fetchTeamPlayers(key,userId,sessionid) };
@@ -34,6 +34,6 @@ export const actionFetchLeagueTeams = async (key: TeamPlayersKey) => {
     const userId=session.username?session.username:"";
     const sessionid=session.sessionid;
  
-    return fetchTeamPlayers(key,userId,sessionid);
+     return fetchTeamPlayers(key,userId,sessionid);
 }
 export default promiseFetchLeagueTeams;
