@@ -108,12 +108,12 @@ const MobilePlayersPanel = styled.div`
     }
 `;
 interface ScrollProps {
-    numPlayers: number;
+    $numPlayers: number;
 }
 const RightScroll = styled.div<ScrollProps>`
     position:sticky;
     height:auto !important;
-    top:-${({ numPlayers }) => numPlayers > 60 ? numPlayers * numPlayers * 0.30 : numPlayers * numPlayers *0.30}px;
+    top:-${({ $numPlayers }) => $numPlayers > 60 ? $numPlayers * $numPlayers * 0.30 : $numPlayers * $numPlayers *0.30}px;
     overflow-y: hidden;
     padding-bottom:20px;
     width:100%;
@@ -160,7 +160,7 @@ const Players: React.FC<Props> = () => {
                 <IconButton
                     onClick={async () => {
                         setPlayer(p.name);
-                        if (window && window.Clerk) {
+                       /* if (window && window.Clerk) {
                             const Clerk = window.Clerk;
                             const user = Clerk.user;
                             const id = Clerk.user?.id;
@@ -168,7 +168,7 @@ const Players: React.FC<Props> = () => {
                                 setSignin(true);
                                 return;
                             }
-                        }
+                        }*/
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
                             mutatePlayers((players: any) => {
@@ -212,7 +212,7 @@ const Players: React.FC<Props> = () => {
     });
     return (<>
         {!isMobile ?
-            <RightScroll numPlayers={players?.length}>
+            <RightScroll $numPlayers={players?.length}>
                 <TeamName>{teamName}:</TeamName>
                 {PlayersNav}
             </RightScroll>

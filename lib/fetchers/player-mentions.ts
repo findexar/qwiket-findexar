@@ -16,21 +16,21 @@ interface FetchMentionsProps{
 }
 
 const fetchMentions=async (key:PlayerMentionsKey,userId:string,sessionid:string)=>{
-    const {teamid, league,page}=key;
-    const url=`${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&sessionid=${sessionid}&page=${page}`;
-    console.log("fetchMentions",url);
+    const {teamid, league,page,name}=key;
+    const url=`${lake_api}/api/v50/findexar/get-mentions?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&name=${name}&sessionid=${sessionid}&page=${page}`;
+    console.log("fetchPlayerMentions",url);
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    return res.stories;
+    return res.mentions;
 }
 
 const promisePlayerMentions =async ({userId,sessionid,teamid,league,name}:FetchMentionsProps)=>{
     console.log("promisePlayerMentions",userId,sessionid,teamid,name);
     let keyMentions= (page:any) => {
-        const keyFetchedPlayerMentions: PlayerMentionsKey = { type: "fetch-player-meantions", page: page, league,teamid,name}
+        const keyFetchedPlayerMentions: PlayerMentionsKey = { type: "fetch-player-mentions", page: page, league,teamid,name}
         return keyFetchedPlayerMentions;
     };
-    console.log("StoriesKey:",keyMentions);
+    console.log("MentionsKey:",keyMentions);
     return { key: us(keyMentions), call: fetchMentions(keyMentions(0),userId,sessionid) };
 }
 
