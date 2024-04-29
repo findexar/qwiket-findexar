@@ -9,6 +9,7 @@ import Welcome from "@/components/func-components/welcome";
 import Readme from "@/components/func-components/readme";
 import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
+import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import Stories from "@/components/func-components/stories";
 import MyTeam from "@/components/func-components/myteam";
 import Players from "@/components/func-components/players";
@@ -128,7 +129,7 @@ const Desktop: React.FC<Props> = () => {
         setTab(tab);
         setView("mentions");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-        router.push(league ? `/league/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
+        router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
@@ -147,8 +148,9 @@ const Desktop: React.FC<Props> = () => {
                             {league ? <Teams /> : <Welcome />}
                         </LeftPanel>
                         <CenterPanel>
-                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myteam",disabled:!userId }, { name: "Favorites", tab: "fav",disabled:!userId }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
                             {(pagetype == "team" ||(pagetype=="league"&&(tab=="myteam"||tab=="fav"))) && <TeamMentions />}
+                            { pagetype=="league"&&tab=="myfeed" && <MyfeedMentions />}
                             {(pagetype == "player") && <PlayerMentions />}
                           
                             { (pagetype == "league"&&view!='readme'&& (tab=='all'||tab==''))&&<Stories />}

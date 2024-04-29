@@ -12,6 +12,8 @@ import {TeamPlayersKey,MyTeamKey} from '@/lib/keys';
 import {actionFetchLeagueTeams} from '@/lib/fetchers/team-players';
 import { actionAddMyTeamMember,actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionRecordEvent } from "@/lib/actions";
+import TeamAddIcon from "@/components/icons/usergroup-add";
+import TeamRemoveIcon from "@/components/icons/usergroup-delete";
 
 declare global {
     interface Window {
@@ -57,7 +59,7 @@ const MobileTeamName = styled.div`
 const SideGroup = styled.div`
     display:flex;
     width: 300px;
-    height:30px;
+    height:34px;
     flex-direction:row;
     justify-content:space-between;
     padding-right:20px;
@@ -144,7 +146,7 @@ const Players: React.FC<Props> = () => {
     }
 
     const PlayersNav = players && players?.map((p: { name: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
-        return <SideGroup key={`ewfggvfn-${i}`}>{p.name == player ?
+        return <SideGroup className="h-6" key={`ewfggvfn-${i}`}>{p.name == player ?
             <SelectedSidePlayer highlight={p.tracked}>
                 <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
                     {p.name} ({`${p.mentions?p.mentions:0}`})
@@ -157,7 +159,7 @@ const Players: React.FC<Props> = () => {
                 </Link>
             </SidePlayer>}
             <SideButton>
-                <IconButton
+                <div className="mt-2"
                     onClick={async () => {
                         setPlayer(p.name);
                        /* if (window && window.Clerk) {
@@ -201,12 +203,12 @@ const Players: React.FC<Props> = () => {
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
                         }
-                    }} size="large" aria-label="Add new list">
+                    }} aria-label="Add new list">
                     <SideIcon highlight={p.tracked}>
-                        {p.tracked ? <PlaylistRemoveIcon sx={{ color: palette.selected }} /> : <PlaylistAddIcon />}
+                        {p.tracked ? <TeamRemoveIcon  className="h-6 w-6 hover:text-green-400 text-yellow-400"  /> : <TeamAddIcon  className="h-6 w-6  hover:text-green-400"/>}
                         {signin && <RedirectToSignIn />}
                     </SideIcon>
-                </IconButton>
+                </div>
             </SideButton>
         </SideGroup>
     });

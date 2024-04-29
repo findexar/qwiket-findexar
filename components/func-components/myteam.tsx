@@ -1,3 +1,4 @@
+'use client';
 import React, { use, useCallback, useEffect, useState } from "react";
 import Link from 'next/link'
 import useSWR from 'swr';
@@ -7,14 +8,18 @@ import { styled, useTheme } from "styled-components";
 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
+//import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+//import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import HomeIcon from '@mui/icons-material/HomeOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 
-import { TrackerListMembersKey, getTrackerListMembers, recordEvent, RemoveTrackerListMemberParams, removeTrackerListMember, AddTrackerListMemberParams, addTrackerListMember } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
-
+import { actionMyTeam } from "@/lib/fetchers/myteam";
+import {MyTeamRosterKey} from '@/lib/keys';
+import TeamAddIcon from "@/components/icons/usergroup-add";
+import TeamRemoveIcon from "@/components/icons/usergroup-delete";
+import { actionAddMyTeamMember,actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionRecordEvent } from "@/lib/actions";
 declare global {
     interface Window {
         Clerk: any;
@@ -145,10 +150,10 @@ const RightScroll = styled.div`
 interface Props {
 }
 const MyTeam: React.FC<Props> = () => {
-    const {mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const {fallback,mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
 
-    const trackerListMembersKey: TrackerListMembersKey = { type: "tracker_list_members", league, noUser, noLoad: false };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, getTrackerListMembers);
+    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
 
    // const theme = useTheme();
     //@ts-ignore
@@ -166,26 +171,25 @@ const MyTeam: React.FC<Props> = () => {
                 <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                 <hr />
             </RightExplanation>
-                <RightExplanation>Use  &nbsp;<PlaylistAddIcon sx={{/* color: "#aea" */ }} />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
+                <RightExplanation>Use  &nbsp;<TeamAddIcon  />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
                     <br /><br />To view the My Team&apos;s mentions feed<br /> go to Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                 </RightExplanation></>}
             {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                 return <SideGroup key={`3fdsdvb-${i}`}>
                     <SidePlayer>
-                        <Link onClick={() => { setLeague(league); setTeam(teamid);setPlayer(member); setView("mentions"); }} href={`/pub/league/${league}/team/${teamid}/player/${encodeURIComponent(member)}${params}`}>
+                        <Link onClick={() => { setLeague(league); setTeam(teamid);setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                             {member}
                         </Link>
                     </SidePlayer>
                     <SideButton>
                         <IconButton
                             onClick={async () => {
-                                const removeTrackerListMemberParams: RemoveTrackerListMemberParams = { member, teamid: teamid || "" };
                                 const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                 trackerListMutate(newTrackerListMembers, false);
-                                await removeTrackerListMember(removeTrackerListMemberParams);
+                                await actionRemoveMyTeamMember({member,teamid});
                             }} size="large" aria-label="Add new list">
                             <SideIcon>
-                                <PlaylistRemoveIcon  />
+                                <TeamRemoveIcon className="text-yellow-400 hover:text-green-400" />
                             </SideIcon>
                         </IconButton>
                     </SideButton>
@@ -203,13 +207,13 @@ const MyTeam: React.FC<Props> = () => {
                         <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                         <hr />
                     </MobileRightExplanation>
-                        <MobileRightExplanation>Use  &nbsp;<PlaylistAddIcon />&nbsp;  icon to the right of the player&apos;s name in the team roster (&ldquo;players&ldquo; tab) to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their Findexar account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
+                        <MobileRightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the player&apos;s name in the team roster (&ldquo;players&ldquo; tab) to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their Findexar account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
                             <br /><br />To view My Team&apos;s mentions feed go to <br />Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                         </MobileRightExplanation></>}
                 {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                     return <MobileSideGroup key={`3fdsdvb-${i}`}>
                         <MobileSidePlayer>
-                            <Link onClick={() => { setPlayer(member); setView("mentions"); }} href={`/pub/league/${league}/team/${teamid}/player/${encodeURIComponent(member)}${params}`}>
+                            <Link onClick={() => { setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                                 {member}
                             </Link>
                         </MobileSidePlayer>
@@ -217,13 +221,12 @@ const MyTeam: React.FC<Props> = () => {
                             <IconButton
                                 onClick={async () => {
                                     console.log("TRACKED", member)
-                                    const removeTrackerListMemberParams: RemoveTrackerListMemberParams = { member, teamid: teamid || "" };
-                                    const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                     const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                     trackerListMutate(newTrackerListMembers, false);
-                                    await removeTrackerListMember(removeTrackerListMemberParams);
+                                    await actionRemoveMyTeamMember({member,teamid});
                                 }} size="large" aria-label="Add new list">
                                 <SideIcon>
-                                    <PlaylistRemoveIcon sx={{ color: "var(--selected)" }} />
+                                    <TeamRemoveIcon className="text-yellow-400" />
                                 </SideIcon>
                             </IconButton>
                         </SideButton>

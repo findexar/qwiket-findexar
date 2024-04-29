@@ -13,6 +13,7 @@ import { SWRProvider } from '@/app/swr-provider'
 import {initSessionClient} from '@/app/client';
 
 import fetchMyTeam from '@/lib/fetchers/myteam';
+import fetchMyFeed from '@/lib/fetchers/myfeed';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import fetchFavorites from '@/lib/fetchers/favorites';
 import fetchSession from '@/lib/fetchers/session';
@@ -85,6 +86,7 @@ export default async function Page({
    * note: view - only on mobile, tab - on both
    * 
    */
+  console.log("***> view,tab",view,tab)
   calls.push(await fetchLeagueTeams({ league }));
   if (findexarxid) {  // if a mention story is opened
     calls.push(fetchMention({ type: "AMention", findexarxid }));
@@ -93,15 +95,20 @@ export default async function Page({
   if (story) { // if a digest story is opened
     calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
-  if (!isMobile || view == 'my team') { // if my team roster is opened
+  /*if (!isMobile || view == 'my team') { // if my team roster is opened
     console.log("my team=>",)
-    calls.push(fetchMyTeam({ userId, sessionid, league }));
-  }
+    calls.push(await fetchMyTeam({ userId, sessionid, league }));
+  }*/
   if (tab == 'fav' && view == 'mentions') { //favorites
     calls.push(fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
-  if (tab == 'myteam' && view == 'mentions') { //my feed
-    calls.push(fetchMyTeam({ userId, sessionid, league }));
+  if (view == 'my team' || view == 'mentions') { //my feed
+    console.log("GET MY TEAM")
+    calls.push(await fetchMyTeam({ userId, sessionid, league }));
+  }
+  if (tab == 'myfeed' || view == 'mentions') { //my feed
+    console.log("TAB=myfeed")
+    calls.push(await fetchMyFeed({ userId, sessionid, league }));
   }
   if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
     calls.push(await fetchStories({ userId, sessionid, league}));

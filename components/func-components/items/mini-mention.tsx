@@ -161,7 +161,7 @@ const MiniMention: React.FC<Props> = ({ handleClose,selectedXid, setSelectedXid,
     //prepare url:
     const prepName = name.replaceAll(' ', '_');
     let localUrl = "";
-    localUrl = type == 'person' ? `/pub/league/${league}/team/${team}/player/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/pub/league/${league}/team/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
+    localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
 
     const onHover = useCallback((label: string) => {
         try {

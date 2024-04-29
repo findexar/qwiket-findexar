@@ -41,7 +41,7 @@ interface MyTeamMemberProps {
 const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
   
     userId=userId || sessionid;
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/user/tracker-list/add?member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/tracker-list/add?api_key=${api_key}&member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
     console.log("add my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
@@ -51,7 +51,7 @@ const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:strin
 const removeMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
 
     userId=userId || sessionid;
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/user/tracker-list/remove?member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/tracker-list/remove?api_key=${api_key}&member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
     console.log("remove my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();

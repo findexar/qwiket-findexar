@@ -365,7 +365,7 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   const router = useRouter();
   const onLeagueNavClick = useCallback(async (l: string) => {
     setLeague(l);
-    setView('mentions');
+   // setView('mentions');
     setPagetype('league');
     setTeamid("");
     await recordEvent(
@@ -452,8 +452,8 @@ const HeaderNav: React.FC<Props> = ({  }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/league/${league}/team/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/league/${league}/team/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
                 
