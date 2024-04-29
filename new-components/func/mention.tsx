@@ -17,10 +17,11 @@ import StarIcon from '@/new-components/icons/star';
 import IosShareIcon from '@/new-components/icons/share';
 import ContentCopyIcon from '@/new-components/icons/content-copy';
 
-import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite, recordEvent } from '@/lib/api';
+import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 
 declare global {
     interface Window {

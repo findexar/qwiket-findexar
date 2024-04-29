@@ -6,7 +6,7 @@ import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { recordEvent } from '@/lib/api';
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import MiniMention from '@/components/func-components/items/mini-mention';

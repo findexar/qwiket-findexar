@@ -12,4 +12,4 @@ export type LeaguesKey={type:string};
 export type StoriesKey = { type: string, league?: string,  page: number, firstXid?: string };
 export type TeamMentionsKey = { type: string, league?:string,teamid: string,page:number};
 export type PlayerMentionsKey = { type: string, league?:string,teamid: string,name:string,page:number};
-export type TrackerListMembersKey = { type: string, league: string };
+export type MyTeamKey = { type: string, league: string };

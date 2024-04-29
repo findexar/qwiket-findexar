@@ -8,9 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import {useAppContext} from '@/lib/context';
-import {  recordEvent, RemoveTrackerListMemberParams, removeTrackerListMember, AddTrackerListMemberParams, addTrackerListMember } from '@/lib/api';
-import {TeamPlayersKey,TrackerListMembersKey} from '@/lib/keys';
+import {TeamPlayersKey,MyTeamKey} from '@/lib/keys';
 import {actionFetchLeagueTeams} from '@/lib/fetchers/team-players';
+import { actionAddMyTeamMember,actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionRecordEvent } from "@/lib/actions";
 
 declare global {
     interface Window {
@@ -136,7 +137,7 @@ const Players: React.FC<Props> = () => {
         setPlayer(name);
         setView("mentions");
         setTab("all");
-        await recordEvent(
+        await actionRecordEvent(
             'player-nav',
             `{"params":"${params}","player":"${name}"}`
         );
@@ -170,7 +171,6 @@ const Players: React.FC<Props> = () => {
                         }
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
-                            const removeTrackerListMemberParams: RemoveTrackerListMemberParams = { member: p.name, teamid };
                             mutatePlayers((players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
@@ -179,14 +179,13 @@ const Players: React.FC<Props> = () => {
                                     return player;
                                 })
                             }, false);
-                            await removeTrackerListMember(removeTrackerListMemberParams);
-                            await recordEvent(
+                            await actionRemoveMyTeamMember({member:p.name,teamid});
+                            await actionRecordEvent(
                                 'player-remove-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
                         }
                         else {
-                            const addTrackerListMemberParams: AddTrackerListMemberParams = { member: p.name, teamid };
                             mutatePlayers((players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
@@ -196,8 +195,8 @@ const Players: React.FC<Props> = () => {
                                 })
                             }, false);
                             console.log("after mutatePlayers");
-                            await addTrackerListMember(addTrackerListMemberParams);
-                            await recordEvent(
+                            await actionAddMyTeamMember({member:p.name,teamid});
+                            await actionRecordEvent(
                                 'player-add-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );

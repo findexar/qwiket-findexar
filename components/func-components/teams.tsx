@@ -2,10 +2,10 @@ import React, { useCallback, useEffect } from "react";
 import Link from 'next/link'
 import useSWR from 'swr';
 import { styled } from "styled-components";
-import { recordEvent } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
 import { LeagueTeamsKey } from '@/lib/keys';
 import { actionFetchLeagueTeams } from '@/lib/fetchers/league-teams';
+import { actionRecordEvent } from "@/lib/actions";
 const SideLeagueName = styled.div`
     height: 40px;
     width: 200px; 
@@ -50,10 +50,10 @@ const Teams: React.FC<Props> = () => {
         setView("mentions");
         setTab("all");
   
-        /*await recordEvent(
+        await actionRecordEvent(
           'team-nav',
           `{"params":"${params}","teamid":"${name}"}`
-        );*/
+        );
     }, []);
     useEffect(() => {
         if (teams && teams.length > 0) {

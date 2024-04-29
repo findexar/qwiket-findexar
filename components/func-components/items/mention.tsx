@@ -10,10 +10,11 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite, recordEvent } from '@/lib/api';
+import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
+import { actionRecordEvent } from "@/lib/actions";
 
 declare global {
     interface Window {
@@ -406,7 +407,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         else
             pgt = 'team';
         setPagetype(pgt);
-        await recordEvent(
+        await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
         );
@@ -426,7 +427,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onExtended = useCallback(async (on: boolean) => {
 
-        await recordEvent(
+        await actionRecordEvent(
             'mention-extended',
             `{"on":"${on}","summary","${summary}","url":"${url}","params":"${params}"}`
         );
@@ -434,34 +435,34 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onHover = useCallback((label: string) => {
         try {
-            recordEvent(`mention-hover`, `{"label":"${label}","url":"${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    console.log("actionRecordEvent", r);
                 });
         } catch (x) {
-            console.log('recordEvent', x);
+            console.log('actionRecordEvent', x);
         }
     }, [params]);
 
     const onShare = useCallback((url: string) => {
         try {
-            recordEvent(`mention-share`, `{"url","${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-share`, `{"url","${url}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    console.log("actionRecordEvent", r);
                 });
         } catch (x) {
-            console.log('recordEvent', x);
+            console.log('actionRecordEvent', x);
         }
     }, [params]);
 
     const onClick = useCallback((url: string) => {
         try {
-            recordEvent(`mention-story-click`, `{"url","${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-story-click`, `{"url","${url}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    console.log("actionRecordEvent", r);
                 });
         } catch (x) {
-            console.log('recordEvent', x);
+            console.log('actionRecordEvent', x);
         }
     }, [params]);
 

@@ -15,7 +15,7 @@ import { useAppContext } from '@/lib/context';
 import TertiaryTabs  from "@/components/nav-components/tertiary-tabs";
 import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
-import { recordEvent } from '@/lib/api';
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 
 const PageWrap = styled.div`
   width:100%;

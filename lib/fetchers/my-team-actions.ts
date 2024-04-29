@@ -1,5 +1,5 @@
 'use server';
-import { TeamPlayersKey } from "@/lib/keys";
+import { MyTeamKey } from "@/lib/keys";
 import { unstable_serialize } from 'swr'
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
@@ -7,33 +7,67 @@ import { sessionOptions,SessionData } from "@/lib/session";
 
 
 const api_key = process.env.LAKE_API_KEY;;
-interface FetchTeamPlayerssProps {
-    teamid: string;
+interface FetchMyTeamProps {
+    league: string;
     userId:string;
     sessionid:string;
 }
-const fetchTeamPlayers = async (key: TeamPlayersKey,userId:string,sessionid:string) => {
-    const { teamid } = key;
-    userId=userId || sessionid;
-   // const url = `${process.env.NEXT_PUBLIC_SERVER}/api/user/get-team-players?league=${encodeURIComponent(league)}&teamid=${encodeURIComponent(teamid)}`;
-   
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-team-players?api_key=${api_key}&teamid=${teamid}&userid=${userId}`;
-    console.log("fetching team players:",url)
+const fetchMyTeam = async (key: MyTeamKey,userId:string,sessionid:string) => {
+    const { league } = key;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-my-team?api_key=${api_key}&league=${league || ""}&userid=${userId}&sessionid=${sessionid}`;
+    console.log("fetching my team players:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET:",res.players)
-    return res.players;
+    console.log("RET fetch my team:",res.members)
+    return res.members;
 }
-const promiseFetchLeagueTeams = async ({ teamid = "",userId="",sessionid="" }: FetchTeamPlayerssProps) => {
-    const key: TeamPlayersKey = { type: "team-players", teamid };
+const promiseFetchMyTeam = async ({ league = "",userId="",sessionid="" }: FetchMyTeamProps) => {
+    const key: MyTeamKey = { type: "my-team", league };
     return { key: unstable_serialize(key), 
-        call: fetchTeamPlayers(key,userId,sessionid) };
+        call: fetchMyTeam(key,userId,sessionid) };
 }
-export const actionFetchLeagueTeams = async (key: TeamPlayersKey) => {
+export const actionFetchMyTeam = async (key: MyTeamKey) => {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const userId=session.username?session.username:"";
     const sessionid=session.sessionid;
  
-     return fetchTeamPlayers(key,userId,sessionid);
+     return fetchMyTeam(key,userId,sessionid);
 }
-export default promiseFetchLeagueTeams;
+export default promiseFetchMyTeam;
+interface MyTeamMemberProps {
+    teamid: string;
+    member: string;
+}
+const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
+  
+    userId=userId || sessionid;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/user/tracker-list/add?member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
+    console.log("add my team member:",url)
+    const fetchResponse = await fetch(url);
+    const res = await fetchResponse.json();
+    console.log("RET add my team:",res.success)
+    return res.success;
+}
+const removeMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
+
+    userId=userId || sessionid;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/user/tracker-list/remove?member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
+    console.log("remove my team member:",url)
+    const fetchResponse = await fetch(url);
+    const res = await fetchResponse.json();
+    console.log("RET remove my team:",res.success)
+    return res.success;
+}
+export const actionAddMyTeamMember = async (props: MyTeamMemberProps) => {
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const userId=session.username?session.username:"";
+    const sessionid=session.sessionid;
+    return addMyTeamMember(props, userId,sessionid);
+}
+
+export const actionRemoveMyTeamMember = async (props: MyTeamMemberProps) => {
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const userId=session.username?session.username:"";
+    const sessionid=session.sessionid;
+    return removeMyTeamMember(props, userId,sessionid);
+}

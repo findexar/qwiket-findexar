@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { styled } from "styled-components";
-import { recordEvent } from '@/lib/api';
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import Mention from "@/components/func-components/items/mention";
 
 declare global {

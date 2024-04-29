@@ -25,7 +25,7 @@ import LightModeTwoToneIcon from '@mui/icons-material/LightModeOutlined';
 import { UserButton, SignInButton, SignedOut, SignedIn } from "@clerk/nextjs";
 //other
 import { useAppContext } from '@/lib/context';
-import { recordEvent } from '@/lib/api';
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import PlayerPhoto from "@/components/util-components/player-photo";
 import saveSession from '@/lib/fetchers/save-session';
 //styles
