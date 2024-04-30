@@ -26,8 +26,10 @@ const LeagueTabs:React.FC<LeagueTabsProps>=({fallback})=>{
         onClick={
             ()=>{
                 setLeague(tab);
-                router.replace(`/${tab.toLowerCase()}`);
-        } }
+               // router.replace(`/${tab.toLowerCase()}`);
+                window.history.replaceState({}, "", `/${tab.toLowerCase()}`);
+            }}
+   
         >{tab}</div>
     })
     tabs.unshift(<div onClick={

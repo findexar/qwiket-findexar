@@ -24,8 +24,10 @@ const LeagueTabs:React.FC=()=>{
         onClick={
             ()=>{
                 setTab(tab.id);
-                router.replace(`${pathname}${tab.id?`?tab=${tab.id.toLowerCase()}${utm_content||view!='mentions'?`&`:``}`:utm_content||view?`?`:``}${view!='mentions'?`view=${view}${utm_content?`&`:``}`:``} ${utm_content?`utm_content=${utm_content}`:``}`);
-        } }
+                //router.replace(`${pathname}${tab.id?`?tab=${tab.id.toLowerCase()}${utm_content||view!='mentions'?`&`:``}`:utm_content||view?`?`:``}${view!='mentions'?`view=${view}${utm_content?`&`:``}`:``} ${utm_content?`utm_content=${utm_content}`:``}`);
+                window.history.replaceState({}, "", `${pathname}${tab.id?`?tab=${tab.id.toLowerCase()}${utm_content||view!='mentions'?`&`:``}`:utm_content||view?`?`:``}${view!='mentions'?`view=${view}${utm_content?`&`:``}`:``} ${utm_content?`utm_content=${utm_content}`:``}`);
+   
+      } }
         >{tab.name.toUpperCase()}</div>
     })
     

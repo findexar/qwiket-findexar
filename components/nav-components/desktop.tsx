@@ -127,8 +127,8 @@ const Desktop: React.FC<Props> = () => {
     const onTabNav = async (option: any) => {
         const tab = option.tab;
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-        router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
-       
+       // router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
+        window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
         setTab(tab);
         setView("mentions");
         await recordEvent(
@@ -136,7 +136,7 @@ const Desktop: React.FC<Props> = () => {
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
         );
     }
-
+    console.log("TAB render:",tab)
     return (
         <ContainerWrap>
              <MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />

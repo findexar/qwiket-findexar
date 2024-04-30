@@ -90,6 +90,8 @@ const Mobile: React.FC<Props> = () => {
         setView("mentions");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
+        window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+      
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
@@ -102,11 +104,15 @@ const Mobile: React.FC<Props> = () => {
             name = 'mentions';
 
         setView(name);
-        if (!team)
-            router.replace(league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
-        else
-            router.replace(`/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-
+        if (!team){
+            //router.replace(league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
+            window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+        } 
+        else{
+            //router.replace(`/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+            window.history.replaceState({}, "", `/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+   
+        }
         await recordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
