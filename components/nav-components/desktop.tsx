@@ -124,17 +124,21 @@ const Desktop: React.FC<Props> = () => {
     let { tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
     tab=tab||"all";
     view=view||"mentions";
-    const onTabNav = async (option: any) => {
+    const onTabNav =  (option: any) => {
         const tab = option.tab;
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
        // router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
-        window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
-        setTab(tab);
+       console.log("pushing tab",tab);
+       window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+        setTimeout(()=>
+        setTab(tab),0);
+        
         setView("mentions");
+        setTimeout(async ()=>
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
-        );
+        ),1);
     }
     console.log("TAB render:",tab)
     return (
@@ -149,7 +153,7 @@ const Desktop: React.FC<Props> = () => {
                             {league ? <Teams /> : <Welcome />}
                         </LeftPanel>
                         <CenterPanel>
-                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={ (option: any) => {  onTabNav(option); }} selectedOptionName={tab} />}
                             {(pagetype == "team" ||(pagetype=="league"&&(tab=="myteam"||tab=="fav"))) && <TeamMentions />}
                             { pagetype=="league"&&tab=="myfeed" && <MyfeedMentions />}
                             {(pagetype == "player") && <PlayerMentions />}

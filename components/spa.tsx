@@ -46,13 +46,44 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     const [pagetype, setPagetype] = React.useState(startPagetype);
     const [teamName,setTeamName]=React.useState(startTeamName);    
     const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
-
-    console.log("()()()() league", league)
+    const [params, setParams] = useState("");
+    const [params2, setParams2] = useState("");
+    const [tp, setTp] = useState("");
+    const [tp2, setTp2] = useState("");
+   // console.log("()()()() league", league)
 
     const muiTheme = useTheme();
     useEffect(() => {
         document.body.setAttribute("data-theme", localMode);
     }, [localMode]);
+    useEffect(() => {
+        let params = '';
+        let params2 = ''
+        let p: string[] = [];
+        let p2: string[] = [];
+        if (fbclid)
+          p.push(`fbclid=${fbclid}`);
+        if (utm_content)
+          p.push(`utm_content=${utm_content}`);
+        p2 = [...p];
+        if (p.length > 0) {
+          params = `?${p.join('&')}`;
+        }
+        if (p2.length > 0) {
+          params2 = `&${p2.join('&')}`;
+        }
+        let tp = tab && tab != 'all' ? `&tab=${tab}` : '';
+        let tp2 = tp;
+        if (!params2)
+          tp2 = tp.replace(/&/g, '?');
+        if (!params)
+          tp = tp.replace(/&/g, '?');
+    
+        setParams(params);
+        setParams2(params2)
+        setTp(tp);
+        setTp2(tp2);
+      }, [fbclid, utm_content, tab]);
     useEffect(() => {
         if (localMode == 'unknown') {
             const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -60,7 +91,6 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
             document.body.setAttribute("data-theme", matchMedia.matches ? 'dark' : 'light');
             setLocalMode(matchMedia.matches ? 'dark' : 'light');
             saveSession({dark:matchMedia.matches ? 1:0})
-
         }
 
     }, []);
@@ -70,7 +100,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
                 //@ts-ignore
                 theme={palette}>
                 <GlobalStyle $light={localMode == "light"} />
-                <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params="" params2="" tp="" tp2="" fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} >
+                <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} >
                     <Head>
                         <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
                         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

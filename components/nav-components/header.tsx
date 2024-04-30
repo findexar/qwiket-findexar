@@ -363,15 +363,19 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   const [scrollY, setScrollY] = useState(0);
   
   const router = useRouter();
-  const onLeagueNavClick = useCallback(async (l: string) => {
+  const onLeagueNavClick = useCallback((l: string,url:string) => {
+    console.log("onLeagueNavClick",l,url,'params:',params,'tp:',tp)
     setLeague(l);
    // setView('mentions');
     setPagetype('league');
     setTeamid("");
+    console.log("replaceState",url)
+    window.history.replaceState({}, "", url);
+    setTimeout(async()=>
     await recordEvent(
       'league-nav',
       `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
-    );
+    ),0);
   }, [fbclid, utm_content]);
 
   useEffect(() => {
@@ -427,16 +431,16 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/${l}${params}${tp}`} onClick={ () => { onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     //@ts-ignore
-    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l).then(() => { }); router.replace(`/link/${l}${params}${tp}`); }} />
+    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l,`/link/${l}${params}${tp}`)}}  />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('').then(() => { }); router.replace(`/${params}${tp}`); }} />)
-  LeaguesNav?.unshift(league ? <League $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></League> : <SelectedLeague $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('').then(() => { }) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></SelectedLeague>)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
+  LeaguesNav?.unshift(league ? <League $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></League> : <SelectedLeague $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></SelectedLeague>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
