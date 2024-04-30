@@ -126,10 +126,11 @@ const Desktop: React.FC<Props> = () => {
     view=view||"mentions";
     const onTabNav = async (option: any) => {
         const tab = option.tab;
-        setTab(tab);
-        setView("mentions");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
+       
+        setTab(tab);
+        setView("mentions");
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
