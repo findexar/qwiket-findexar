@@ -98,16 +98,7 @@ export default async function Page({
     if (story) { // if a digest story is opened
         calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
-    if (!isMobile || view == 'my team') { // if my team roster is opened
-        console.log("my team=>",)
-        calls.push(fetchMyTeam({ userId, sessionid, league }));
-    }
-    if (tab == 'fav' && view == 'mentions') { //favorites
-        calls.push(fetchFavorites({ userId, sessionid, league, page: 0 }));
-    }
-    if (tab == 'myteam' && view == 'mentions') { //my feed
-        calls.push(fetchMyTeam({ userId, sessionid, league }));
-    }
+   
     //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid,name }));
     //}
