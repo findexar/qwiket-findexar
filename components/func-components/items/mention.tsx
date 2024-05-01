@@ -4,17 +4,30 @@ import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
-import XIcon from '@mui/icons-material/X';
+/*import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+*/
+import FacebookIcon from '@/components/icons/facebook';
+import XIcon from '@/components/icons/twitter';
+import StarOutlineIcon from '@/components/icons/star-outline';
+import StarIcon from '@/components/icons/star';
+import IosShareIcon from '@/components/icons/share';
+import ContentCopyIcon from '@/components/icons/content-copy';
+import IconChevronUp from '@/components/icons/chevron-up';
+import IconChevronDown from '@/components/icons/chevron-down';
+
+
+
 import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
 import { actionRecordEvent } from "@/lib/actions";
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
 
 declare global {
     interface Window {
@@ -27,26 +40,26 @@ interface MentionsProps {
 }
 
 const MentionWrap = styled.div<MentionsProps>`
-    width:100%;
-    min-height:100px;
-    background-color: var(--mention-bg);//var(--mention-border);
+    width: 100%;
+    min-height: 100px;
+    background-color: var(--mention-bg); /* Previously: var(--mention-border); */
     flex-direction: row;
     justify-content: flex-start;
-    align-items:flex-start;
+    align-items: flex-start;
     border: 1px solid #ccc;
     border-radius: 2px;
-    padding:4px;
-    z-index:200;
+    padding: 4px;
+    z-index: 200;
     font-size: 16px;
 
-    a{
-        color:var(--mention-text);
+    a {
+        color: var(--mention-text);
         text-decoration: none;
-        &:hover{
+        &:hover {
            color: var(--mention-text);
         }   
     }
-    display:${props => props.$hideit ? 'none' : 'flex'};
+    display: ${props => props.$hideit ? 'none' : 'flex'};
     @media screen and (max-width: 1199px) {
         display: none;
     }
@@ -98,10 +111,10 @@ const MentionSummary = styled.div`
 
 const Icon = styled.span`
     color:var(--mention-text);
-    font-size: 38px !important;
+    //font-size: 38px !important;
     opacity:0.6;
-    height:48px;
-    margin-top:10px;
+    //height:48px;
+    //margin-top:10px;
     cursor:pointer;
     &:hover{
         opacity:0.9;
@@ -219,7 +232,8 @@ const HorizontalContainer = styled.div`
 `;
 
 const Atmention = styled.div`
-    font-size: 13px;   
+    font-size: 13px;  
+    margin-top:2px; 
 `;
 
 const Atmention2 = styled.div`
@@ -235,6 +249,13 @@ const MobileAtmention2 = styled.div`
 `;
 
 const ShareContainer = styled.div`
+    margin-top:14px;
+    margin-bottom:14px;
+    height:24px;
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+
     font-size: 28x;  
     height:38px;
     opacity:0.6;
@@ -282,7 +303,8 @@ const BottomLine = styled.div`
     flex-direction:row;
     justify-content:space-between;
     align-items:flex-end;
-    margin-top:-20px;
+    margin-top:-14px;
+    margin-bottom:8px;
     width:100%;
 `;
 
@@ -292,6 +314,8 @@ const LocalDate = styled.div`
 
 const SummaryWrap = styled.div`
     display:flex;
+    justify-content: space-between;
+    width:'100%';
     line-height: 1.2;
    
     font-size:15px !important;
@@ -301,10 +325,6 @@ const SummaryWrap = styled.div`
     }
 `;
 
-const ShareIcon = styled.div`
-    margin-top:5px;
-    padding-bottom:4px;
-`;
 
 interface Props {
     mention: any,
@@ -481,18 +501,19 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
-                        {!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                        {!localFav ? <StarOutlineIcon className="h-6 w-6" onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /> : <StarIcon className="h-6 w-6" onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
                         <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                             {summary}
                         </Link>
-                        <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2 }} fontSize="small" sx={{ color: copied ? 'green' : '' }} onClick={() => onCopyClick()} /></ShareContainerInline>
-                   
+                        <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
+
                     </SummaryWrap>
-                    <br/>
+                    <br />
+                    
                     <hr />
                     <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link></Atmention>
-                    <Atmention2>{meta?.site_name}</Atmention2>
+
                     <BottomLine>
                         <ShareGroup><RWebShare
                             data={{
@@ -502,45 +523,50 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             }}
                             onClick={async () => await onShare(url)}
                         >
-                            <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
+                            <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
                         </RWebShare>
-                            <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                            <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                            <Link href={twitterLink} target="_blank"><ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer></Link>
+                            <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer></Link>
                         </ShareGroup>
-                        {!mini && <Icon onClick={
-                            async (e) => {
-                                const ne = !expanded
-                                setExpanded(ne);
-                                await onExtended(ne);
-                            }}
-                            className="material-icons-outlined">{!expanded ? "expand_more" : "expand_less"}</Icon>}
+                        <div className=" flex flex-row justify-between">
+                            <Atmention2 className="mr-2">{meta?.site_name}</Atmention2>
+                            {!mini && <Icon  onClick={
+                                async (e) => {
+                                    const ne = !expanded
+                                    setExpanded(ne);
+                                    await onExtended(ne);
+                                }}
+                                >{!expanded ? <IconChevronDown  className="h-6 w-6 " />:<IconChevronUp className="h-6 w-6" />}</Icon>}
+                        </div>
                     </BottomLine>
+                   
                     {expanded && meta && <ExtendedMention>
-                        <Link href={url} onClick={()=>onClick(url)}>
+                        <Link href={url} onClick={() => onClick(url)}>
                             <Title>{meta.title}</Title>
                         </Link>
-                        <Link href={url} onClick={()=>onClick(url)}>
+                        <Link href={url} onClick={() => onClick(url)}>
                             <Byline>
                                 {meta.authors && <Authors>{meta.authors}</Authors>}
                                 <SiteName>{meta.site_name}</SiteName>
                             </Byline>
                         </Link>
                         <HorizontalContainer>
-                            <Link href={url} onClick={()=>onClick(url)}>
+                            <Link href={url} onClick={() => onClick(url)}>
                                 <ImageWrapper>
                                     <Image src={meta.image} alt={meta.title} />
                                 </ImageWrapper>
                             </Link>
                             <Body>
-                                {false && <Link href={url} onClick={()=>onClick(url)}><ArticleDigest>
+                                {false && <Link href={url} onClick={() => onClick(url)}><ArticleDigest>
                                     {true ? 'Article Digest:' : 'Short Digest:'}
                                 </ArticleDigest></Link>}
                                 <Digest>
-                                    <Link href={url} onClick={()=>onClick(url)}>
+                                    <Link href={url} onClick={() => onClick(url)}>
                                         <div dangerouslySetInnerHTML={{ __html: digest }} />
                                     </Link>
                                     <ShareContainerInline>
-                                        <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10 }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                                        <ContentCopyIcon style={{ color: digestCopied ? 'green' : '' }} fontSize="large"
+                                            onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
 
                                 </Digest>
@@ -558,9 +584,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                                 {summary}
                             </Link>
-                            <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2 }} fontSize="small" sx={{ color: copied ? 'green' : '' }} onClick={() => onCopyClick()} /></ShareContainerInline>
+                            <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
-                        
+
                         <hr />
                         <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
@@ -574,7 +600,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             }}
                             onClick={async () => onShare(url)}
                         >
-                            <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
+                            <ShareContainer><IosShareIcon /></ShareContainer>
                         </RWebShare>
                             <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
                             <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
@@ -588,32 +614,32 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             className="material-icons-outlined">{!expanded ? "expand_more" : "expand_less"}</Icon>
                     </BottomLine>
                     {expanded && meta && <MobileExtendedMention>
-                        <Link href={url} onClick={()=>onClick(url)}><Title>{meta.title}</Title></Link>
-                        <Link href={url} onClick={()=>onClick(url)}><Byline>
+                        <Link href={url} onClick={() => onClick(url)}><Title>{meta.title}</Title></Link>
+                        <Link href={url} onClick={() => onClick(url)}><Byline>
                             {meta.authors && <Authors>{meta.authors}</Authors>}
                             <SiteName>{meta.site_name}</SiteName>
                         </Byline>
                         </Link>
                         <HorizontalContainer>
-                            <Link href={url} onClick={()=>onClick(url)}>
+                            <Link href={url} onClick={() => onClick(url)}>
                                 <ImageWrapper>
                                     <Image src={meta.image} width={100} height={100} alt={meta.title} />
                                 </ImageWrapper>
                             </Link>
                             <Body>
-                                {false && <Link href={url} onClick={()=>onClick(url)}><ArticleDigest>
+                                {false && <Link href={url} onClick={() => onClick(url)}><ArticleDigest>
                                     {true ? 'Article Digest:' : 'Short Digest:'}
                                 </ArticleDigest>
                                 </Link>}
                                 <Digest>
-                                    <Link href={url} onClick={()=>onClick(url)}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
+                                    <Link href={url} onClick={() => onClick(url)}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                                     <ShareContainerInline>
-                                        <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10 }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                                        <ContentCopyIcon style={{ color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
                                 </Digest>
                             </Body>
                         </HorizontalContainer>
-                        <Link href={url} onClick={()=>onClick(url)}> {meta.url.substring(0, 30)}...</Link>
+                        <Link href={url} onClick={() => onClick(url)}> {meta.url.substring(0, 30)}...</Link>
                     </MobileExtendedMention>}
                 </MentionSummary>
             </MobileMentionWrap>
