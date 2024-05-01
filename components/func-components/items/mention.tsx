@@ -4,13 +4,7 @@ import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
-/*import XIcon from '@mui/icons-material/X';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import StarIcon from '@mui/icons-material/Star';
-import IosShareIcon from '@mui/icons-material/IosShare';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-*/
+
 import FacebookIcon from '@/components/icons/facebook';
 import XIcon from '@/components/icons/twitter';
 import StarOutlineIcon from '@/components/icons/star-outline';
@@ -20,14 +14,11 @@ import ContentCopyIcon from '@/components/icons/content-copy';
 import IconChevronUp from '@/components/icons/chevron-up';
 import IconChevronDown from '@/components/icons/chevron-down';
 
-
-
 import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
 import { actionRecordEvent } from "@/lib/actions";
-import { ChevronUpIcon } from "@heroicons/react/24/outline";
 
 declare global {
     interface Window {
@@ -111,10 +102,7 @@ const MentionSummary = styled.div`
 
 const Icon = styled.span`
     color:var(--mention-text);
-    //font-size: 38px !important;
     opacity:0.6;
-    //height:48px;
-    //margin-top:10px;
     cursor:pointer;
     &:hover{
         opacity:0.9;
@@ -325,7 +313,6 @@ const SummaryWrap = styled.div`
     }
 `;
 
-
 interface Props {
     mention: any,
     linkType?: string;
@@ -507,7 +494,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
-
                     </SummaryWrap>
                     <br />
                     
