@@ -325,7 +325,7 @@ interface Props {
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
-    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav } = mention;
+    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav,tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -442,7 +442,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onHover = useCallback((label: string) => {
         try {
-            actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("actionRecordEvent", r);
                 });
@@ -498,7 +498,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <br />
                     
                     <hr />
-                    <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link></Atmention>
+                    <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>{tracked?<>Tracked</>:<>Not Tracked</>}</Atmention>
 
                     <BottomLine>
                         <ShareGroup><RWebShare
@@ -574,7 +574,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
+                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{}</Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
                     <BottomLine>
