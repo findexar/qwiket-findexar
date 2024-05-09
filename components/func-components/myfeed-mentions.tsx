@@ -7,6 +7,8 @@ import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';
+import { TeamPlayersKey, MyTeamKey } from '@/lib/keys';
+import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
 interface Props {
 }
 const MyFeed: React.FC<Props> = () => {
@@ -23,7 +25,12 @@ const MyFeed: React.FC<Props> = () => {
         setMentions(data ? [].concat(...data) : []);
     },[data])*/
     let mentions = data ? [].concat(...data):[];
-   
+    
+    //for mutate function
+    const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
+    console.log("team-mentions teamPlayersKey",teamPlayersKey)
+    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
+
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined")||false;
     let isEmpty = data?.[0]?.length === 0;
@@ -44,7 +51,7 @@ const MyFeed: React.FC<Props> = () => {
 
    */
     return (
-        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate}/>
+        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers}/>
     )
 }
 export default MyFeed;

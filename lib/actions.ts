@@ -12,10 +12,10 @@ const recordEvent = async ({ name,params }: RecordEventProps,userId:string,sessi
 
     userId=userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/record-event?name=${encodeURIComponent(name)}&sessionid=${encodeURIComponent(sessionid)}&params=${encodeURIComponent(params)}`;
-    console.log("record-event:",url)
+   // console.log("record-event:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET record-event:",res.success)
+    //console.log("RET record-event:",res.success)
     return res.success;
 }
 export const actionRecordEvent = async (name: string, params: string) => {

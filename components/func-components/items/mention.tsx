@@ -19,6 +19,9 @@ import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-c
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
 import { actionRecordEvent } from "@/lib/actions";
+import TeamAddIcon from "@/components/icons/usergroup-add";
+import TeamRemoveIcon from "@/components/icons/usergroup-delete";
+import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 
 declare global {
     interface Window {
@@ -29,6 +32,16 @@ interface MentionsProps {
     $hideit?: boolean;
     $noborder?: boolean;
 }
+
+interface SideProps {
+    $highlight?: boolean;
+}
+const SideIcon = styled.div<SideProps>`
+    width:20px;
+    height:30px;
+    margin-left:20px;
+    color:${props => props.$highlight ? 'var(--selected))' : 'var(--link)'};  
+`;
 
 const MentionWrap = styled.div<MentionsProps>`
     width: 100%;
@@ -222,6 +235,8 @@ const HorizontalContainer = styled.div`
 const Atmention = styled.div`
     font-size: 13px;  
     margin-top:2px; 
+    display:flex;
+    align-items:center;
 `;
 
 const Atmention2 = styled.div`
@@ -320,23 +335,29 @@ interface Props {
     mutate: any;
     mini?: boolean;
     handleClose: () => void;
+    mutatePlayers?: any;
 }
 
-const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose }) => {
+const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
-    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav,tracked } = mention;
+    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(date));
     const [localFav, setLocalFav] = React.useState(fav);
+    const [localTracked, setLocalTracked] = React.useState(tracked);
     const [hide, setHide] = React.useState(false);
     const [signin, setSignin] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
+
+    useEffect(() => {
+        setLocalTracked(tracked);
+    }, [tracked]);
 
     useEffect(() => {
         setExpanded(startExtended);
@@ -496,10 +517,78 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                     </SummaryWrap>
                     <br />
-                    
-                    <hr />
-                    <Atmention><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>{tracked?<>Tracked</>:<>Not Tracked</>}</Atmention>
 
+                    <hr />
+                    <Atmention className={localTracked?"bg-teal-50 dark:bg-teal-900":""}><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+
+                        {type == "person" && <div>
+                            <div className="mt-2"
+                                onClick={async () => {
+                                    console.log("ICON CLICK")
+                                    // console.log("TRACKED", name)
+                                    // setPlayer(name);
+                                    /* if (window && window.Clerk) {
+                                         const Clerk = window.Clerk;
+                                         const user = Clerk.user;
+                                         const id = Clerk.user?.id;
+                                         if (!id) {
+                                             setSignin(true);
+                                             return;
+                                         }
+                                     }*/
+                                    if (localTracked == true) {
+                                        console.log("TRACKED", name);
+
+                                        console.log("tracked after mutatePlayers", name, team);
+                                        setLocalTracked(false);
+                                        await actionRemoveMyTeamMember({ member: name, teamid: team });
+                                        await actionRecordEvent(
+                                            'mention-remove-myteam',
+                                            `{"params":"${params}","team":"${team}","player":"${name}"}`
+                                        );
+                                        if (mutate)
+                                            mutate();
+                                        if (mutatePlayers) {
+                                            mutatePlayers(async (players: any) => {
+                                                return players.map((player: any) => {
+                                                    if (player.name == name) {
+                                                        player.tracked = false;
+                                                    }
+                                                    return player;
+                                                })
+                                            }, {revalidate:true});
+                                        }
+                                    }
+                                    else {
+                                        console.log("UNTRACKED", name)
+
+                                        setLocalTracked(true);
+                                        console.log("untracked after mutatePlayers", name, team);
+                                        await actionAddMyTeamMember({ member: name, teamid: team });
+                                        await actionRecordEvent(
+                                            'mention-add-myteam',
+                                            `{"params":"${params}","team":"${team}","player":"${name}"}`
+                                        );
+                                        if (mutate)
+                                            mutate();
+                                        if (mutatePlayers) {
+                                            mutatePlayers(async (players: any) => {
+                                                return players.map((player: any) => {
+                                                    if (player.name == name) {
+                                                        player.tracked = true;
+                                                    }
+                                                    return player;
+                                                })
+                                            }, {revalidate:true});
+                                        }
+                                    }
+                                }} aria-label="Add new list">
+                                <SideIcon $highlight={localTracked}>
+                                    {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
+                                </SideIcon>
+                            </div>
+                        </div>}
+                    </Atmention>
                     <BottomLine>
                         <ShareGroup><RWebShare
                             data={{
@@ -516,16 +605,16 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </ShareGroup>
                         <div className=" flex flex-row justify-between">
                             <Atmention2 className="mr-2">{meta?.site_name}</Atmention2>
-                            {!mini && <Icon  onClick={
+                            {!mini && <Icon onClick={
                                 async (e) => {
                                     const ne = !expanded
                                     setExpanded(ne);
                                     await onExtended(ne);
                                 }}
-                                >{!expanded ? <IconChevronDown  className="h-6 w-6 " />:<IconChevronUp className="h-6 w-6" />}</Icon>}
+                            >{!expanded ? <IconChevronDown className="h-6 w-6 " /> : <IconChevronUp className="h-6 w-6" />}</Icon>}
                         </div>
                     </BottomLine>
-                   
+
                     {expanded && meta && <ExtendedMention>
                         <Link href={url} onClick={() => onClick(url)}>
                             <Title>{meta.title}</Title>
@@ -574,7 +663,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{}</Atmention>
+                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{ }</Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
                     <BottomLine>

@@ -61,9 +61,9 @@ interface Props {
     isReachingEnd: boolean;
     isLoadingMore: boolean;
     mutate: any;
-
+    mutatePlayers?: any;
 }
-const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isEmpty,isReachingEnd,isLoadingMore,mutate}) => {
+const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isEmpty,isReachingEnd,isLoadingMore,mutate,mutatePlayers}) => {
     let { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
  
     if (!view)
@@ -76,6 +76,7 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
                 key={`mention${i}`}
                 mutate={() => { mutate() }}
                 handleClose={() => { }}
+                mutatePlayers={mutatePlayers}
             />)
     });
     return (

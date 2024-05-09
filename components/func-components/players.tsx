@@ -2,6 +2,8 @@
 import React, { use, useCallback, useEffect, useState } from "react";
 import Link from 'next/link'
 import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite';
+
 import { UserButton, SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import IconButton from '@mui/material/IconButton';
@@ -14,7 +16,8 @@ import { actionAddMyTeamMember,actionRemoveMyTeamMember } from "@/lib/fetchers/m
 import { actionRecordEvent } from "@/lib/actions";
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-
+import { TeamMentionsKey } from '@/lib/keys';
+import { actionTeamMentions } from '@/lib/fetchers/team-mentions';
 declare global {
     interface Window {
         Clerk: any;
@@ -22,7 +25,7 @@ declare global {
 }
 
 const SidePlayer = styled.div<SideProps>`
-    color:${props => props.highlight ? 'var(--myteam)' : 'var(--text)'};
+    color:${props => props.$highlight ? 'var(--myteam)' : 'var(--text)'};
     padding-left:20px;
     width: 100%;
     &:hover{
@@ -30,9 +33,9 @@ const SidePlayer = styled.div<SideProps>`
     }  
     margin: 4px;
     a{
-        color:${props => props.highlight ? 'var(--myteam)' : 'var(--text)'} !important;
+        color:${props => props.$highlight ? 'var(--myteam)' : 'var(--text)'} !important;
         text-decoration: none;
-        background-color:${props => props.highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
+        background-color:${props => props.$highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
         &:hover{
             color:var(--highlight) !important;
         }
@@ -67,12 +70,12 @@ const SideGroup = styled.div`
     border-left: 1px solid #aaa;
 `;
 interface SideProps {
-    highlight?: boolean;
+    $highlight?: boolean;
 }
 const SideIcon = styled.div<SideProps>`
     width:20px;
     height:30px;
-    color:${props => props.highlight ? 'var(--selected))' : 'var(--link)'};  
+    color:${props => props.$highlight ? 'var(--selected))' : 'var(--link)'};  
 `;
 
 const SideButton = styled.div`
@@ -80,14 +83,14 @@ const SideButton = styled.div`
 `;
 
 const SelectedSidePlayer = styled.div<SideProps>`
-    color:${props => props.highlight ? 'var(--selected)' : 'var(--selected)'};
+    color:${props => props.$highlight ? 'var(--selected)' : 'var(--selected)'};
     padding-left:20px;
     width: 100%;
     margin: 4px;
     a{
-        color:${props => props.highlight ? 'var(--selected)' : 'var(--selected)'} !important;//#ff8 !important;
+        color:${props => props.$highlight ? 'var(--selected)' : 'var(--selected)'} !important;//#ff8 !important;
         text-decoration: none;
-        background-color:${props => props.highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
+        background-color:${props => props.$highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
         &:hover{
             color:var(--highlight);
         }
@@ -126,9 +129,20 @@ const Players: React.FC<Props> = () => {
     const [signin, setSignin] = React.useState(false);
     const { fallback,mode,userId, isMobile, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
+    console.log("players teamPlayersKey",teamPlayersKey)
     const { data: players, error, isLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
     const theme = useTheme();
-    
+   
+   
+   //this is to be able to mutate team mentions
+    const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
+        let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid, page: pageIndex, league };
+        if (previousPageData && !previousPageData.length) return null; // reached the end
+        return key;
+    }
+    const { data:mentions, error:mentionsError, mutate:mutateMentions, size:mentionsSize, setSize:setMentionsSize, isValidating:mentionsIsValidating, isLoading:mentionsIsLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+   
+
     //@ts-ignore
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
@@ -147,13 +161,13 @@ const Players: React.FC<Props> = () => {
 
     const PlayersNav = players && players?.map((p: { name: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
         return <SideGroup className="h-6" key={`ewfggvfn-${i}`}>{p.name == player ?
-            <SelectedSidePlayer highlight={p.tracked}>
+            <SelectedSidePlayer $highlight={p.tracked}>
                 <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
                     {p.name} ({`${p.mentions?p.mentions:0}`})
                 </Link>
             </SelectedSidePlayer>
             :
-            <SidePlayer highlight={p.tracked}>
+            <SidePlayer $highlight={p.tracked}>
                 <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}${tp}`} >
                     {p.name} ({`${p.mentions || 0}`})
                 </Link>
@@ -173,39 +187,44 @@ const Players: React.FC<Props> = () => {
                         }*/
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
-                            mutatePlayers((players: any) => {
+                            mutatePlayers(async (players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
                                         player.tracked = false;
                                     }
                                     return player;
                                 })
-                            }, false);
+                            }, {revalidate:true});
                             await actionRemoveMyTeamMember({member:p.name,teamid});
                             await actionRecordEvent(
                                 'player-remove-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
+                            mutateMentions();
+                            
                         }
                         else {
-                            mutatePlayers((players: any) => {
+                           
+                            console.log("after mutatePlayers");
+                            mutatePlayers(async (players: any) => {
                                 return players.map((player: any) => {
                                     if (player.name == p.name) {
                                         player.tracked = true;
                                     }
                                     return player;
                                 })
-                            }, false);
-                            console.log("after mutatePlayers");
+                            }, {revalidate:true});
                             await actionAddMyTeamMember({member:p.name,teamid});
                             await actionRecordEvent(
                                 'player-add-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                             );
+                            mutateMentions();
+                           
                         }
                     }} aria-label="Add new list">
-                    <SideIcon highlight={p.tracked}>
-                        {p.tracked ? <TeamRemoveIcon  className="h-6 w-6 hover:text-green-400 text-yellow-400"  /> : <TeamAddIcon  className="h-6 w-6  hover:text-green-400"/>}
+                    <SideIcon $highlight={p.tracked}>
+                        {p.tracked ? <TeamRemoveIcon  className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400"  /> : <TeamAddIcon  className="h-6 w-6 opacity-60 hover:opacity-100  text-teal-400"/>}
                         {signin && <RedirectToSignIn />}
                     </SideIcon>
                 </div>

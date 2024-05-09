@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
+import useSWR from 'swr';
 import { ThemeProvider as MuiTP } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import GlobalStyle from '@/components/globalstyles';
@@ -17,6 +18,7 @@ import { palette } from '@/lib/palette';
 import { AppWrapper } from '@/lib/context';
 import saveSession from '@/lib/fetchers/save-session';
 import { Roboto } from 'next/font/google';
+
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -45,16 +47,25 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   const [player, setPlayer] = React.useState(startName);
   const [pagetype, setPagetype] = React.useState(startPagetype);
   const [teamName, setTeamName] = React.useState(startTeamName);
+  //const [mutatePlayers, setMutatePlayers] = React.useState<any>(undefined);
   const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
   const [params, setParams] = useState("");
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
   // console.log("()()()() league", league)
-
   const muiTheme = useTheme();
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
+  }, [localMode]);
+  useEffect(() => {
+    const className = 'dark';
+    const bodyClassList = document.body.classList;
+    if (localMode === 'dark') {
+      bodyClassList.add(className);
+    } else {
+      bodyClassList.remove(className);
+    }
   }, [localMode]);
   useEffect(() => {
     let params = '';
@@ -100,7 +111,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
         //@ts-ignore //
         theme={palette}>
         <GlobalStyle $light={localMode == "light"} />
-        <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} >
+        <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode}  >
           <main className={roboto.className} >
             <Head>
               <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />

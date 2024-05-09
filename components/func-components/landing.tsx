@@ -192,7 +192,7 @@ const Landing = () => {
                         setScrolled(true);
                         recordEvent( `landing-scrolled`, `{"fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
                             .then((r: any) => {
-                                console.log("recordEvent", r);
+                               // console.log("recordEvent", r);
                             });
                     } catch (x) {
                         console.log('recordEvent', x);
