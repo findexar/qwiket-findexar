@@ -2,6 +2,8 @@
 import React, { use, useCallback, useEffect, useState } from "react";
 import Link from 'next/link'
 import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite';
+
 import { SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
 
 import { styled, useTheme } from "styled-components";
@@ -15,11 +17,14 @@ import LoginIcon from '@mui/icons-material/Login';
 
 import { useAppContext } from '@/lib/context';
 import { actionMyTeam } from "@/lib/fetchers/myteam";
-import {MyTeamRosterKey} from '@/lib/keys';
+import { MyTeamRosterKey } from '@/lib/keys';
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionAddMyTeamMember,actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionRecordEvent } from "@/lib/actions";
+import { FetchMyFeedKey } from '@/lib/keys';
+import { actionMyFeed } from '@/lib/fetchers/myfeed';
+
 declare global {
     interface Window {
         Clerk: any;
@@ -27,7 +32,7 @@ declare global {
 }
 
 const SidePlayer = styled.div<SideProps>`
-    color:${props => props.highlight ? 'var(--myteam)' : 'var(--text)'};
+    color:${props => props.$highlight ? 'var(--myteam)' : 'var(--text)'};
     font-size: 14px;
     padding-left:20px;
     &:hover{
@@ -35,9 +40,9 @@ const SidePlayer = styled.div<SideProps>`
     }
     margin: 4px;
     a{
-      color:${props => props.highlight ? 'var(--myteam)' : 'var(--text)'} !important;//#ff8 !important;
+      color:${props => props.$highlight ? 'var(--myteam)' : 'var(--text)'} !important;//#ff8 !important;
       text-decoration: none;
-      background-color:${props => props.highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
+      background-color:${props => props.$highlight ? 'var(--myteam-bg)' : 'var(--background)'} !important;
       &:hover{
         color:var(--highlight) !important;
       }
@@ -73,12 +78,12 @@ const SideGroup = styled.div`
 `;
 
 interface SideProps {
-    highlight?: boolean;
+    $highlight?: boolean;
 }
 const SideIcon = styled.div<SideProps>`
     width:20px;
     height:20px;
-    color:${props => props.highlight ? 'var(--selected))' : 'var(--link)'};  
+    color:${props => props.$highlight ? 'var(--selected))' : 'var(--link)'};  
 `;
 
 const SideButton = styled.div`
@@ -150,12 +155,22 @@ const RightScroll = styled.div`
 interface Props {
 }
 const MyTeam: React.FC<Props> = () => {
-    const {fallback,mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
 
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
+    //to get mutateMyFeed
+    // Function to fetch my feed with pagination:
+    const fetchMyFeedKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {
+        if (previousPageData && !previousPageData.length) return null; // reached the end
+        let key: FetchMyFeedKey = { type: "fetch-my-feed", page: pageIndex, league };
+        return key;
+    }
+    // now swrInfinite code:
+    const { data, error, mutate: mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
 
-   // const theme = useTheme();
+
+    // const theme = useTheme();
     //@ts-ignore
     //const mode = theme.palette.mode;
 
@@ -171,27 +186,56 @@ const MyTeam: React.FC<Props> = () => {
                 <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                 <hr />
             </RightExplanation>
-                <RightExplanation>Use  &nbsp;<TeamAddIcon  />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
+                <RightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
                     <br /><br />To view the My Team&apos;s mentions feed<br /> go to Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                 </RightExplanation></>}
             {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                 return <SideGroup key={`3fdsdvb-${i}`}>
                     <SidePlayer>
-                        <Link onClick={() => { setLeague(league); setTeam(teamid);setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
+                        <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                             {member}
                         </Link>
                     </SidePlayer>
-                    <SideButton>
-                        <IconButton
+                    {false && <SideButton>
+                        <div
                             onClick={async () => {
                                 const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                 trackerListMutate(newTrackerListMembers, false);
-                                await actionRemoveMyTeamMember({member,teamid});
-                            }} size="large" aria-label="Add new list">
+                                await actionRemoveMyTeamMember({ member, teamid });
+                            }} aria-label="Add new list">
                             <SideIcon>
                                 <TeamRemoveIcon className="text-yellow-400 hover:text-green-400" />
                             </SideIcon>
-                        </IconButton>
+                        </div>
+                    </SideButton>}
+                    <SideButton>
+                        <div className="mt-2"
+                            onClick={async () => {
+                                    console.log("TRACKED", member)
+                                    /*mutatePlayers(async (players: any) => {
+                                        return players.map((player: any) => {
+                                            if (player.name == p.name) {
+                                                player.tracked = false;
+                                            }
+                                            return player;
+                                        })
+                                    }, {revalidate:true});*/
+                                    await actionRemoveMyTeamMember({ member, teamid });
+                                   
+                                    // mutateMentions();
+                                    mutateMyFeed();
+                                    //mutatePlayerMentions();
+                                    await actionRecordEvent(
+                                        'player-remove-myteam',
+                                        `{"params":"${params}","team":"${teamid}","player":"$member}"}`
+                                    );
+                              
+                            }} aria-label="Add new list">
+                            <SideIcon $highlight={false}>
+                                { <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400" /> }
+                              
+                            </SideIcon>
+                        </div>
                     </SideButton>
                 </SideGroup>
             })}
@@ -218,17 +262,17 @@ const MyTeam: React.FC<Props> = () => {
                             </Link>
                         </MobileSidePlayer>
                         <SideButton>
-                            <IconButton
+                            <div
                                 onClick={async () => {
                                     console.log("TRACKED", member)
-                                     const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                    const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                     trackerListMutate(newTrackerListMembers, false);
-                                    await actionRemoveMyTeamMember({member,teamid});
-                                }} size="large" aria-label="Add new list">
+                                    await actionRemoveMyTeamMember({ member, teamid });
+                                }} >
                                 <SideIcon>
                                     <TeamRemoveIcon className="text-yellow-400" />
                                 </SideIcon>
-                            </IconButton>
+                            </div>
                         </SideButton>
                     </MobileSideGroup>
                 })}

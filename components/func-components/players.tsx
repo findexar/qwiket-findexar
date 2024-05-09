@@ -22,6 +22,8 @@ import { PlayerMentionsKey } from '@/lib/keys';
 import { actionPlayerMentions } from '@/lib/fetchers/player-mentions';
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';
+import { actionMyTeam } from "@/lib/fetchers/myteam";
+import { MyTeamRosterKey } from '@/lib/keys';
 
 declare global {
     interface Window {
@@ -162,7 +164,9 @@ const Players: React.FC<Props> = () => {
     // now swrInfinite code:
     const { data, error, mutate:mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
   
-
+    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
+   
     //@ts-ignore
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
@@ -196,15 +200,7 @@ const Players: React.FC<Props> = () => {
                 <div className="mt-2"
                     onClick={async () => {
                         setPlayer(p.name);
-                       /* if (window && window.Clerk) {
-                            const Clerk = window.Clerk;
-                            const user = Clerk.user;
-                            const id = Clerk.user?.id;
-                            if (!id) {
-                                setSignin(true);
-                                return;
-                            }
-                        }*/
+      
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
                             mutatePlayers(async (players: any) => {
@@ -223,6 +219,7 @@ const Players: React.FC<Props> = () => {
                             mutateMentions();
                             mutateMyFeed();
                             mutatePlayerMentions();
+                            trackerListMutate();
                         }
                         else {
                            
@@ -243,6 +240,7 @@ const Players: React.FC<Props> = () => {
                             mutateMentions();
                             mutateMyFeed();
                             mutatePlayerMentions();
+                            trackerListMutate();
                            
                         }
                     }} aria-label="Add new list">

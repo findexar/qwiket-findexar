@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
-import useSWRImmutable from 'swr/immutable'
+import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
@@ -22,6 +23,8 @@ import { actionRecordEvent } from "@/lib/actions";
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
 import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionMyTeam } from "@/lib/fetchers/myteam";
+import { MyTeamRosterKey } from '@/lib/keys';
 
 declare global {
     interface Window {
@@ -341,7 +344,7 @@ interface Props {
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
-    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let { fallback,league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -354,7 +357,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
-
+    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam);
+   
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);
@@ -571,6 +576,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         );
                                         if (mutate)
                                             mutate();
+                                            myTeamMutate();
                                         if (mutatePlayers) {
                                             mutatePlayers(async (players: any) => {
                                                 return players.map((player: any) => {
