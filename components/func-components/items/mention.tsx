@@ -519,7 +519,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <br />
 
                     <hr />
-                    <Atmention className={localTracked?"bg-teal-50 dark:bg-teal-900":""}><Link href={bottomLink}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link href={bottomLink}><b className={localTracked?"bg-teal-50 dark:bg-teal-950 ":""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
