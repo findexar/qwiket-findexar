@@ -76,6 +76,7 @@ const MobileMentionWrap = styled.div<MentionsProps>`
 const MentionSummary = styled.div`
     width:100%;
     margin-right:20px;
+    padding-left:4px;
     background-color: var(--mention-bg); 
     &:hover{
         background-color:var(--mention-high-bg);
