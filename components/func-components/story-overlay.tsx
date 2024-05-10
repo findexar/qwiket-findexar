@@ -1,11 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation'
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router'; // Corrected import for useRouter
 import { recordEvent, ASlugStoryKey, getASlugStory, removeASlugStory } from '@/lib/api';
 import Story from '@/components/func-components/items/story';
 import { useAppContext } from '@/lib/context';
@@ -31,6 +27,7 @@ const MentionWrap = styled.div`
 const XContainer = styled.div`
     width: 100%;
     height:32px;
+    margin-top:-32px;
     display: flex;
     flex-direction: row;
     justify-content:flex-end;
@@ -92,9 +89,9 @@ const DialogTitleMobileWrap = styled.div`
 
 const GotoFeed = styled.div`
     position:absolute;
-    z-index:1000;
+    z-index:50;
     top:82px;
-    right:20px;
+    right:40px;
     font-size:14px;
     color:var(--qwiket-border-new);
     border-color:var(--qwiket-border-new);
@@ -114,23 +111,21 @@ const GotoFeed = styled.div`
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
-    idx:string
+    idx: string
 }
 
-const StoryOverlay = ({ setDismiss, mutate,idx, ...props }: Props) => {
-    let { fallback,tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
+const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
+    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug, noLoad: slug == "" ? true : false };
-    let { data: aSlugStory } = useSWR(aSlugStoryKey, getASlugStory,{fallback});
+    let { data: aSlugStory } = useSWR(aSlugStoryKey, getASlugStory, { fallback });
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);
     console.log("DIALOG open:", open)
     const { title, url, digest, site_name, image, authors, createdTime, mentions } = astory || {};
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const router = useRouter();
+   // const router = useRouter(); // Correctly initialized useRouter
     const admin = params && params.includes('x17nz') ? true : false;
-    console.log("StoryOverlay:slug",idx,    slug)
+    console.log("StoryOverlay:slug", idx, slug)
     useEffect(() => {
         if (astory) {
             console.log("openDialog")
@@ -142,14 +137,13 @@ const StoryOverlay = ({ setDismiss, mutate,idx, ...props }: Props) => {
         console.log("handleClose")
         setOpen(false);
         console.log("closeDialog slug=", slug)
-        //let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
-        //router.push(localUrl);
+       // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
+        //router.push(localUrl); // Correctly using router to navigate
         recordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
                 console.log("recordEvent", r);
             });
     }, [slug]);
-
     let target = `${teamName}`;
     target = !target || target == 'undefined' ? '' : target;
 
@@ -166,7 +160,7 @@ const StoryOverlay = ({ setDismiss, mutate,idx, ...props }: Props) => {
         return () => {
             window.removeEventListener('keydown', keyDownHandler);
         };
-    }, []);
+    }, [handleClose]);
 
     const remove = useCallback(async () => {
         if (admin) {
@@ -174,35 +168,50 @@ const StoryOverlay = ({ setDismiss, mutate,idx, ...props }: Props) => {
             setOpen(false);
             setDismiss(true);
         }
-    }, [admin]);
+    }, [admin, aSlugStoryKey, setDismiss]);
 
     if (!astory)
         return null;
 
-    return  <>{open&&<Dialog disableEscapeKeyDown={true} open={open} fullScreen={fullScreen} PaperProps={{
-        style: {
-            backgroundColor: isMobile ? 'transparent' : '#555',
-            // boxShadow: 'none',
-        },
-    }} >
-        <DialogTitleMobileWrap> <DialogTitle /></DialogTitleMobileWrap>
-        <DialogTitleWrap><DialogTitle><TitleWrap>Qwiket Sports Media Index</TitleWrap></DialogTitle></DialogTitleWrap>
-        <ContentWrap>
-            <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
+    return <>{open &&
+        <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700'>
+            <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full">
+                        <div className="bg-transparent px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div className="sm:flex sm:items-start">
+                                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                    <div className="mt-2">
+                                        <DialogTitleWrap>
+                                            <TitleWrap>
+                                                <div className='text-white text-2xl'> Qwiket Sports Media Index</div>
+                                            </TitleWrap>
+                                        </DialogTitleWrap>
+                                        <ContentWrap>
+                                            <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
-            <div autoFocus onClick={() => { handleClose(); }}>
-                <XContainer><XElement>x</XElement></XContainer>
+                                            <div autoFocus onClick={() => { handleClose(); }}>
+                                                <XContainer><XElement>x</XElement></XContainer>
+                                            </div>
+                                            {admin && <div autoFocus onClick={() => { remove(); }}>
+                                                <XContainer><RElement>R</RElement></XContainer>
+                                            </div>}
+                                        </ContentWrap>
+                                        <ContentWrap>
+                                            <MentionWrap>
+                                                <Story story={astory} handleClose={handleClose} />
+                                            </MentionWrap>
+                                        </ContentWrap>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {admin && <div autoFocus onClick={() => { remove(); }}>
-                <XContainer><RElement>R</RElement></XContainer>
-            </div>}
-        </ContentWrap>
-        <ContentWrap>
-            <MentionWrap>
-                <Story story={astory} handleClose={handleClose} />
-            </MentionWrap>
-        </ContentWrap>
-    </Dialog>}</>
-}
+        </div>
+    }
+    </>
+};
 
 export default StoryOverlay;
