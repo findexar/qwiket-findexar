@@ -121,7 +121,7 @@ interface Props {
 
 const Desktop: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
+    let { slug,tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
     tab=tab||"all";
     view=view||"mentions";
     const onTabNav =  (option: any) => {
@@ -141,10 +141,13 @@ const Desktop: React.FC<Props> = () => {
         ),1);
     }
     console.log("TAB render:",tab)
+    console.log("overlays:",{findexarxid,slug})
     return (
-        <ContainerWrap>
-             <MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />
-             <StoryOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />
+        //complete in tailwind to make visible only on md and up
+        <div className="md:block hidden">
+        <ContainerWrap >
+            {findexarxid&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
+            {slug&& <StoryOverlay idx="desktop" setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             <PageWrap>
                 <Page>
                     {pagetype == "landing" && <Landing />}
@@ -169,6 +172,7 @@ const Desktop: React.FC<Props> = () => {
                 </Page>
             </PageWrap>
         </ContainerWrap>
+        </div>
     )
 }
 export default Desktop;

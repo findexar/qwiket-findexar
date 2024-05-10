@@ -23,7 +23,7 @@ import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchTeamMentions from '@/lib/fetchers/team-mentions';
 import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
-
+import fetchTeamPlayers from '@/lib/fetchers/team-players';
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
 
@@ -98,6 +98,7 @@ export default async function Page({
     if (story) { // if a digest story is opened
         calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
+    calls.push(await fetchTeamPlayers({ userId, sessionid,  teamid }));
    
     //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid,name }));

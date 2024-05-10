@@ -24,7 +24,7 @@ const MentionWrap = styled.div<MentionsProps>`
     margin:4px;
     padding-left:16px;
     color:var(--text);
-    z-index:200;
+  // z-index:200;
     font-size: 16px;
     &:hover{
         background-color:var(--mention-high-bg);

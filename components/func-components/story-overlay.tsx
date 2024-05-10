@@ -114,13 +114,14 @@ const GotoFeed = styled.div`
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
+    idx:string
 }
 
-const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
-    let { tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
+const StoryOverlay = ({ setDismiss, mutate,idx, ...props }: Props) => {
+    let { fallback,tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug, noLoad: slug == "" ? true : false };
-    let { data: aSlugStory } = useSWR(aSlugStoryKey, getASlugStory);
+    let { data: aSlugStory } = useSWR(aSlugStoryKey, getASlugStory,{fallback});
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);
     console.log("DIALOG open:", open)
@@ -129,7 +130,7 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const router = useRouter();
     const admin = params && params.includes('x17nz') ? true : false;
-
+    console.log("StoryOverlay:slug",idx,    slug)
     useEffect(() => {
         if (astory) {
             console.log("openDialog")
@@ -138,6 +139,7 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
     }, [astory]);
 
     const handleClose = useCallback(() => {
+        console.log("handleClose")
         setOpen(false);
         console.log("closeDialog slug=", slug)
         //let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
@@ -177,14 +179,14 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
     if (!astory)
         return null;
 
-    return <Dialog disableEscapeKeyDown={true} open={open} fullScreen={fullScreen} PaperProps={{
+    return  <>{open&&<Dialog disableEscapeKeyDown={true} open={open} fullScreen={fullScreen} PaperProps={{
         style: {
             backgroundColor: isMobile ? 'transparent' : '#555',
             // boxShadow: 'none',
         },
     }} >
         <DialogTitleMobileWrap> <DialogTitle /></DialogTitleMobileWrap>
-        <DialogTitleWrap><DialogTitle onClick={() => { setDismiss(true); }}><TitleWrap>Qwiket Sports Media Index</TitleWrap></DialogTitle></DialogTitleWrap>
+        <DialogTitleWrap><DialogTitle><TitleWrap>Qwiket Sports Media Index</TitleWrap></DialogTitle></DialogTitleWrap>
         <ContentWrap>
             <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
@@ -200,7 +202,7 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
                 <Story story={astory} handleClose={handleClose} />
             </MentionWrap>
         </ContentWrap>
-    </Dialog>
+    </Dialog>}</>
 }
 
-export default MentionOverlay;
+export default StoryOverlay;

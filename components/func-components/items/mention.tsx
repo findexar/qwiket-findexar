@@ -56,7 +56,7 @@ const MentionWrap = styled.div<MentionsProps>`
     border: 1px solid #ccc;
     border-radius: 2px;
     padding: 4px;
-    z-index: 200;
+  
     font-size: 16px;
 
     a {
@@ -342,9 +342,9 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const {league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
+    const {fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
-    let { fallback, league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -358,7 +358,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league:ll };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam);
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam,fallback);
     console.log("Mention:trackerListMemebrsKey",trackerListMembersKey)
     useEffect(() => {
         setLocalTracked(tracked);
@@ -417,7 +417,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary?.substring(0, 140) || "" + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
-    const meta = useSWRImmutable(mentionsKey, getMetaLink).data;
+    const meta = useSWR(mentionsKey, getMetaLink,{fallback}).data;
     let digest = meta?.digest || "";
 
     useEffect(() => {

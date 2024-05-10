@@ -81,7 +81,7 @@ interface Props {
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab, view, mode, userId, isMobile, setLeague, setView, setTab, params2, tp2, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName } = useAppContext();
+    let { tab, view, mode, userId, isMobile, setLeague, setView, setTab, params2, tp2, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamNam,slug,findexarxid } = useAppContext();
 
     tab = tab || "all";
     const onTabNav = async (option: any) => {
@@ -120,6 +120,7 @@ const Mobile: React.FC<Props> = () => {
     }, [fbclid, utm_content,  league, params2, tp2]);
 
     return (
+        <div className="block md:hidden">
         <MobileContainerWrap>
             {pagetype == "landing" && <Landing />}
             {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "Readme", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
@@ -141,9 +142,10 @@ const Mobile: React.FC<Props> = () => {
             {view == 'readme' && <Readme />}
             {view == 'my team' && <MyTeam />}
             {view == 'players' && <Players />}
-            <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />
-            <StoryOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />
+            {findexarxid&&<MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
+           {slug&&<StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
         </MobileContainerWrap >
+        </div>
     )
 }
 

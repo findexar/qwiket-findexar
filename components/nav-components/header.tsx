@@ -59,11 +59,11 @@ const Header = styled.header<HeaderProps>`
       position: -webkit-sticky; /* Safari */
 	    position: sticky;
 	    top: 0;
-      z-index:1000;
+      z-index:10;
   }
   position:sticky;
   top:0px;
-  z-index:1000;
+  z-index:10;
 `;
 
 const ContainerWrap = styled.div`
