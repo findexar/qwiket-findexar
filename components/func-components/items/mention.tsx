@@ -344,7 +344,7 @@ interface Props {
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
-    let { fallback,league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let { fallback, league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -359,7 +359,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam);
-   
+
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);
@@ -524,7 +524,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <br />
 
                     <hr />
-                    <Atmention ><Link href={bottomLink}><b className={localTracked?"bg-teal-50 dark:bg-teal-950 ":""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link href={bottomLink}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
@@ -553,6 +553,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         );
                                         if (mutate)
                                             mutate();
+                                        if (myTeamMutate)
+                                            myTeamMutate();
                                         if (mutatePlayers) {
                                             mutatePlayers(async (players: any) => {
                                                 return players.map((player: any) => {
@@ -561,7 +563,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                                     }
                                                     return player;
                                                 })
-                                            }, {revalidate:true});
+                                            }, { revalidate: true });
                                         }
                                     }
                                     else {
@@ -576,6 +578,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         );
                                         if (mutate)
                                             mutate();
+                                        if (myTeamMutate)
                                             myTeamMutate();
                                         if (mutatePlayers) {
                                             mutatePlayers(async (players: any) => {
@@ -585,7 +588,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                                     }
                                                     return player;
                                                 })
-                                            }, {revalidate:true});
+                                            }, { revalidate: true });
                                         }
                                     }
                                 }} aria-label="Add new list">
