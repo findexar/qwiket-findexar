@@ -104,8 +104,10 @@ const GotoFeed = styled.div`
         color:var(--qwiket-border-recent);
         border-color:var(--qwiket-border-recent);
     }
+    display:none;
     @media (max-width: 1199px) {
         top: 90px;
+        display:visible;
     } 
 `;
 interface Props {

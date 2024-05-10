@@ -404,8 +404,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const onMentionNav = useCallback(async (name: string) => {
         handleClose();
         setLeague(league);
-        setTeam(team);
-        setPlayer(type == 'person' ? name : '');
+        if(setTeam)
+            setTeam(team);
+        if(setPlayer)
+            setPlayer(type == 'person' ? name : '');
         let pgt = "";
         if (type == 'person')
             pgt = 'player';
