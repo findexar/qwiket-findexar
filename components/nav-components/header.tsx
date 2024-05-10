@@ -441,7 +441,7 @@ const HeaderNav: React.FC<Props> = ({  }) => {
     return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l,`/link/${l}${params}${tp}`)}}  />
   })
   //@ts-ignore
-  //MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon className="text-xl"/>} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
   LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon  $scrolled={scrollY != 0} ><HomeIcon className={(scrollY!=0?`text-sm `:`text-xl`)}  /></LeagueIcon></Link></div> 
   : <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY!=0?`text-sm`:`text-xl`)}  /></LeagueIcon></Link></div>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
