@@ -158,6 +158,7 @@ const MyTeam: React.FC<Props> = () => {
     const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
 
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
+    console.log("MyTeam:trackerListMemebrsKey",trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:
@@ -190,7 +191,7 @@ const MyTeam: React.FC<Props> = () => {
                     <br /><br />To view the My Team&apos;s mentions feed<br /> go to Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                 </RightExplanation></>}
             {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
-                return <SideGroup key={`3fdsdvb-${i}`}>
+                return <SideGroup key={`3fdsdvb-${member}`}>
                     <SidePlayer>
                         <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                             {member}

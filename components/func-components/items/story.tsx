@@ -317,7 +317,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const Mentions = <MentionsWrap>{mentions && mentions.map((mention: any, i: number) => {
         return (
-            <MiniMention handleClose={handleClose} onClick={() => onMentionClick(mention)} key={`mention-${i}`} {...mention} params={params} tp={tp} selectedXid={selectedXid} setSelectedXid={setSelectedXid} mutate={() => { }} />
+            <MiniMention handleClose={handleClose} onClick={() => onMentionClick(mention)} key={`mention-${mention.findexarxid}`} {...mention} params={params} tp={tp} selectedXid={selectedXid} setSelectedXid={setSelectedXid} mutate={() => { }} />
         )
     })}</MentionsWrap>;
 

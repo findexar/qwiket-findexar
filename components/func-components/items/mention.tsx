@@ -342,7 +342,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
+    const {league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
 
     let { fallback, league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
@@ -357,9 +357,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
-    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
+    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league:ll };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam);
-
+    console.log("Mention:trackerListMemebrsKey",trackerListMembersKey)
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);

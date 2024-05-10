@@ -184,7 +184,7 @@ const Players: React.FC<Props> = () => {
     }
 
     const PlayersNav = players && players?.map((p: { name: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
-        return <SideGroup className="h-6" key={`ewfggvfn-${i}`}>{p.name == player ?
+        return <SideGroup className="h-6" key={`ewfggvfn-${p.name}`}>{p.name == player ?
             <SelectedSidePlayer $highlight={p.tracked}>
                 <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
                     {p.name} ({`${p.mentions?p.mentions:0}`})

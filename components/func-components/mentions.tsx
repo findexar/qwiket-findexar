@@ -73,7 +73,7 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
         return (
             <Mention
                 mention={m}
-                key={`mention${i}`}
+                key={`mention-${m.findexarxid}`}
                 mutate={() => { mutate() }}
                 handleClose={() => { }}
                 mutatePlayers={mutatePlayers}

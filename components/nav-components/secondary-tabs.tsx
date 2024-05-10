@@ -76,7 +76,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
       selected = true;
       selectedValue = i;
     }
-    return <STab iconPosition="start" selected={selected} key={`tab-${i}`} label={option.name} icon={option.icon} />;
+    return <STab iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} icon={option.icon} />;
   });
   return <TabsWrap><STabs textColor="primary" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
 };
