@@ -8,12 +8,8 @@ import { SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/next
 
 import { styled, useTheme } from "styled-components";
 
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-//import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-//import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
-import HomeIcon from '@mui/icons-material/HomeOutlined';
-import LoginIcon from '@mui/icons-material/Login';
+import HomeIcon from '@/components/icons/home';
+import LoginIcon  from '@/components/icons/login';
 
 import { useAppContext } from '@/lib/context';
 import { actionMyTeam } from "@/lib/fetchers/myteam";
@@ -187,7 +183,7 @@ const MyTeam: React.FC<Props> = () => {
                 <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                 <hr />
             </RightExplanation>
-                <RightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
+                <RightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><button  style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</button></SignInButton></SignedOut>
                     <br /><br />To view the My Team&apos;s mentions feed<br /> go to Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                 </RightExplanation></>}
             {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
@@ -252,7 +248,7 @@ const MyTeam: React.FC<Props> = () => {
                         <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                         <hr />
                     </MobileRightExplanation>
-                        <MobileRightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the player&apos;s name in the team roster (&ldquo;players&ldquo; tab) to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their Findexar account.<br /><br /><SignInButton><Button size="small" variant="outlined" style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></SignedOut>
+                        <MobileRightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the player&apos;s name in the team roster (&ldquo;players&ldquo; tab) to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their Findexar account.<br /><br /><SignInButton><button style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</button></SignInButton></SignedOut>
                             <br /><br />To view My Team&apos;s mentions feed go to <br />Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                         </MobileRightExplanation></>}
                 {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {

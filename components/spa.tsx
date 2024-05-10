@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
 import useSWR from 'swr';
-import { ThemeProvider as MuiTP } from '@mui/material/styles';
-import { useTheme } from '@mui/material/styles';
+
 import GlobalStyle from '@/components/globalstyles';
 import { styled, ThemeProvider as StyledThemeProvider } from "styled-components";
 /*import Header from './header';
@@ -54,7 +53,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
   // console.log("()()()() league", league)
-  const muiTheme = useTheme();
+
   const themeClass = localMode === 'dark' ? 'dark' : '';
 
   useEffect(() => {
@@ -108,7 +107,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
 
   }, []);
   return (
-    <MuiTP theme={muiTheme}>
+   
       <StyledThemeProvider 
         //@ts-ignore //
         theme={palette}>
@@ -125,7 +124,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
           </main>
         </AppWrapper>
       </StyledThemeProvider>
-    </MuiTP>
+   
   )
 }
 export default LeagueLayout;

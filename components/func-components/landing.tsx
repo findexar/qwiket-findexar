@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import 'material-icons/iconfont/outlined.css';
 
 import { styled} from "styled-components";
-import '@mui/material/Button';
+
 import { recordEvent } from '@/lib/api';
 const OuterContainer = styled.div`
     background-color:var(--background);

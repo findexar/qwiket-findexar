@@ -17,10 +17,10 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 //mui icons
-import HomeIcon from '@mui/icons-material/HomeOutlined';
-import LoginIcon from '@mui/icons-material/Login';
-import ModeNightTwoToneIcon from '@mui/icons-material/ModeNightOutlined';
-import LightModeTwoToneIcon from '@mui/icons-material/LightModeOutlined';
+import HomeIcon from '@/components/icons/home'; 
+import LoginIcon from '@/components/icons/login';
+import ModeNightTwoToneIcon from '@/components/icons/moon';
+import LightModeTwoToneIcon from '@/components/icons/sun';
 //clerk
 import { UserButton, SignInButton, SignedOut, SignedIn } from "@clerk/nextjs";
 //other
@@ -101,24 +101,26 @@ const MobileContainerWrap = styled.div`
 `;
 
 const League = styled.div<HeaderProps>`
-    height: ${({ $scrolled }) => $scrolled ? 16 : 24}px;
+    height: ${({ $scrolled }) => $scrolled ? 16 : 26}px;
     width: 100px; 
     color: var(--leagues-text);
     text-align: center;
     margin: 0px;
     padding-top:${({ $scrolled }) => $scrolled ? 0 : 3}px;
+    margin-bottom:${({ $scrolled }) => $scrolled ? 2 : 6}px;
     @media screen and (max-width: 1199px) {
       height: 24px;
     }
 `;
 
 const SelectedLeague = styled.div<HeaderProps>`
-    height: ${({ $scrolled }) => $scrolled ? 16 : 24}px;
+    height: ${({ $scrolled }) => $scrolled ? 16 : 26}px;
     width: 100px;
     color: var(--leagues-selected);
     text-align: center;
     margin: 0px;
-    padding-top:${({ $scrolled }) => $scrolled ? 1 : 3}px;
+    padding-top:${({ $scrolled }) => $scrolled ? 0 : 3}px;
+    margin-bottom:${({ $scrolled }) => $scrolled ? 2 : 6}px;
     a{
         color:var(--leagues-selected) !important;
         text-decoration: none;
@@ -137,8 +139,8 @@ const Leagues = styled.div<HeaderProps>`
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
-    height:${({ $scrolled }) => $scrolled ? 21 : 28}px;
-    padding-bottom:4px;
+    height:${({ $scrolled }) => $scrolled ? 21 : 32}px;
+    padding-bottom:0px;
     width: 100%;
     background-color:var(--leagues-bg);
     color: #aaa;
@@ -158,8 +160,8 @@ const Leagues = styled.div<HeaderProps>`
 `;
 
 const LeagueIcon = styled.div<HeaderProps>`
-    min-height: ${({ $scrolled }) => $scrolled ? 10 : 26}px;
-    margin-top:${({ $scrolled }) => $scrolled ? -3 : -3}px;
+   // min-height: ${({ $scrolled }) => $scrolled ? 10 : 26}px;
+   // margin-top:${({ $scrolled }) => $scrolled ? -3 : -3}px;
 `;
 
 const MuiTabs = styled(Tabs)`
@@ -431,16 +433,17 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${i}`} ><Link href={`/${l}${params}${tp}`} onClick={ () => { onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link href={`/${l}${params}${tp}`} onClick={ () => { onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     //@ts-ignore
-    return <LeaguesTab selected={l == league} key={`league-${i}`} label={l} onClick={() => { onLeagueNavClick(l,`/link/${l}${params}${tp}`)}}  />
+    return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l,`/link/${l}${params}${tp}`)}}  />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
-  LeaguesNav?.unshift(league ? <League $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></League> : <SelectedLeague $scrolled={scrollY != 0} key={`league-${leagues?.length}`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon fontSize={scrollY != 0 ? "small" : "medium"} sx={{ m: 0.3 }} /></LeagueIcon></Link></SelectedLeague>)
+  //MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon />} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
+  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon  $scrolled={scrollY != 0} ><HomeIcon className={(scrollY!=0?`text-sm `:`text-xl`)}  /></LeagueIcon></Link></div> 
+  : <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY!=0?`text-sm`:`text-xl`)}  /></LeagueIcon></Link></div>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>

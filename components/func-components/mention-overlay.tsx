@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'
-//import Dialog from '@mui/material/Dialog';
-//import DialogTitle from '@mui/material/DialogTitle';
-//import useMediaQuery from '@mui/material/useMediaQuery';
-//import { useTheme } from '@mui/material/styles';
+
 import { AMentionKey, getAMention, recordEvent, removeAMention } from '@/lib/api';
 import Mention from '@/components/func-components/items/mention';
 import { useAppContext } from '@/lib/context';
