@@ -154,6 +154,7 @@ interface Props {
 const MyTeam: React.FC<Props> = () => {
     const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
+    const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     console.log("MyTeam:trackerListMemebrsKey",trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
@@ -198,7 +199,7 @@ const MyTeam: React.FC<Props> = () => {
                         <div
                             onClick={async () => {
                                 const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
-                                trackerListMutate(newTrackerListMembers, false);
+                                trackerListMutate(newTrackerListMembers, true);
                                 await actionRemoveMyTeamMember({ member, teamid });
                             }} aria-label="Add new list">
                             <SideIcon>
@@ -210,6 +211,11 @@ const MyTeam: React.FC<Props> = () => {
                         <div className="mt-2"
                             onClick={async () => {
                                     console.log("TRACKED", member)
+                                    setToastMessage("Player removed from My Team");
+                                   
+                                    await actionRemoveMyTeamMember({ member, teamid });
+                                    //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                    trackerListMutate();
                                     /*mutatePlayers(async (players: any) => {
                                         return players.map((player: any) => {
                                             if (player.name == p.name) {
@@ -227,7 +233,7 @@ const MyTeam: React.FC<Props> = () => {
                                         'player-remove-myteam',
                                         `{"params":"${params}","team":"${teamid}","player":"$member}"}`
                                     );
-                                    setToastMessage("Player removed from My Team");
+                                   
                               
                             }} aria-label="Add new list">
                             <SideIcon $highlight={false}>
@@ -276,7 +282,7 @@ const MyTeam: React.FC<Props> = () => {
                         </SideButton>
                     </MobileSideGroup>
                 })}
-                {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
+                {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
             </MobilePlayersPanel>}
         </>
     );
