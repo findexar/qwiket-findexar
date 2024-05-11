@@ -1,8 +1,5 @@
 import React from "react";
-import useSWR from 'swr';
-import useSWRInfinite from 'swr/infinite'
 import { styled } from "styled-components";
-import { getFavorites, FavoritesKey, FetchedMentionsKey, fetchMentions } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
 import Mention from "@/components/func-components/items/mention";
 import LoadMore from "@/components/func-components/load-more";

@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, useTheme } from "styled-components";
-import { Tabs, Tab } from '@mui/material'
+import { Tabs, Tab } from '@/components/nav-components/tabs'
 
 const TabsWrap = styled.div`
   background-color:var(--secondary-tabs-bg);

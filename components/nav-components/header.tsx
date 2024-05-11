@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 //next
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-
 import useSWR from "swr";
 import { LeaguesKey } from '@/lib/keys';
 import fetchLeagues from '@/lib/fetchers/leagues';
@@ -11,7 +10,7 @@ import { Roboto } from 'next/font/google';
 //styled-components
 import { styled, ThemeProvider } from "styled-components";
 //mui
-import { Tabs, Tab, } from '@mui/material'
+import { Tabs, Tab, } from '@/components/nav-components/tabs'
 import { blueGrey, cyan, teal } from '@mui/material/colors'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';

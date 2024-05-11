@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Tabs, Tab } from '@mui/material'
+import { Tabs, Tab } from '@/components/nav-components/tabs'
 
 const TabsWrap = styled.div`
 `;

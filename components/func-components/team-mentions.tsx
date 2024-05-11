@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite'
-import { styled } from "styled-components";
-//import { getFavorites, FavoritesKey, FetchedMentionsKey, fetchMentions } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { TeamMentionsKey } from '@/lib/keys';
 import { actionTeamMentions } from '@/lib/fetchers/team-mentions';
-import { TeamPlayersKey, MyTeamKey } from '@/lib/keys';
 import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
 interface Props {
 }

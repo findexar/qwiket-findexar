@@ -6,9 +6,7 @@ import useSWRInfinite from 'swr/infinite';
 
 import { UserButton, SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
-import IconButton from '@mui/material/IconButton';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
+
 import {useAppContext} from '@/lib/context';
 import {TeamPlayersKey,MyTeamKey} from '@/lib/keys';
 import {actionFetchLeagueTeams} from '@/lib/fetchers/team-players';

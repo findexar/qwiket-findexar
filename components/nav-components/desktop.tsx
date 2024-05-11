@@ -28,7 +28,7 @@ const PageWrap = styled.div`
 `;
 
 const Page = styled.div`
-  max-width:1600px;
+  max-width:1200px;
 `;
 
 const ContainerWrap = styled.div`
@@ -95,6 +95,7 @@ const CenterPanel = styled.div`
     height:auto;
     flex-grow:1;
     width:600px;
+    min-width:600px;
     @media screen and (min-width: 1600px) {
         width:800px;
     }
