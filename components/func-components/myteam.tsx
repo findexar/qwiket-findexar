@@ -9,7 +9,7 @@ import { SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/next
 import { styled, useTheme } from "styled-components";
 
 import HomeIcon from '@/components/icons/home';
-import LoginIcon  from '@/components/icons/login';
+import LoginIcon from '@/components/icons/login';
 
 import { useAppContext } from '@/lib/context';
 import { actionMyTeam } from "@/lib/fetchers/myteam";
@@ -156,7 +156,7 @@ const MyTeam: React.FC<Props> = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
-    console.log("MyTeam:trackerListMemebrsKey",trackerListMembersKey)
+    console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:
@@ -185,7 +185,7 @@ const MyTeam: React.FC<Props> = () => {
                 <br /><br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                 <hr />
             </RightExplanation>
-                <RightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><button  style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</button></SignInButton></SignedOut>
+                <RightExplanation>Use  &nbsp;<TeamAddIcon />&nbsp;  icon to the right of the<br /> player&apos;s name in the team roster<br />(click on the league and the team name)<br />to add to &ldquo;My Team&ldquo; tracking list.<br /><br /><SignedOut>Note, My Team featue requires the user to be signed into their {process.env.NEXT_PUBLIC_APP_NAME} account.<br /><br /><SignInButton><button style={{ paddingRight: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 4 }}><LoginIcon />&nbsp;&nbsp;Sign-In</button></SignInButton></SignedOut>
                     <br /><br />To view the My Team&apos;s mentions feed<br /> go to Home <HomeIcon /> or select a League. Then select a &ldquo;My Feed&ldquo; tab.
                 </RightExplanation></>}
             {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
@@ -210,40 +210,44 @@ const MyTeam: React.FC<Props> = () => {
                     <SideButton>
                         <div className="mt-2"
                             onClick={async () => {
-                                    console.log("TRACKED", member)
-                                    setToastMessage("Player removed from My Team");
-                                   
-                                    await actionRemoveMyTeamMember({ member, teamid });
-                                    //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
-                                    trackerListMutate();
-                                    /*mutatePlayers(async (players: any) => {
-                                        return players.map((player: any) => {
-                                            if (player.name == p.name) {
-                                                player.tracked = false;
-                                            }
-                                            return player;
-                                        })
-                                    }, {revalidate:true});*/
-                                    await actionRemoveMyTeamMember({ member, teamid });
-                                   
-                                    // mutateMentions();
-                                    mutateMyFeed();
-                                    //mutatePlayerMentions();
-                                    await actionRecordEvent(
-                                        'player-remove-myteam',
-                                        `{"params":"${params}","team":"${teamid}","player":"$member}"}`
-                                    );
-                                   
-                              
+                                console.log("TRACKED", member)
+                                setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
+
+                                setToastMessage("Player removed from My Team");
+
+                                await actionRemoveMyTeamMember({ member, teamid });
+                                //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                trackerListMutate();
+                                /*mutatePlayers(async (players: any) => {
+                                    return players.map((player: any) => {
+                                        if (player.name == p.name) {
+                                            player.tracked = false;
+                                        }
+                                        return player;
+                                    })
+                                }, {revalidate:true});*/
+                                await actionRemoveMyTeamMember({ member, teamid });
+
+                                // mutateMentions();
+                                mutateMyFeed();
+                                //mutatePlayerMentions();
+                                await actionRecordEvent(
+                                    'player-remove-myteam',
+                                    `{"params":"${params}","team":"${teamid}","player":"$member}"}`
+                                );
+
+
                             }} aria-label="Add new list">
                             <SideIcon $highlight={false}>
-                                { <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400" /> }
-                              
+                                {<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400" />}
+
                             </SideIcon>
                         </div>
                     </SideButton>
+
                 </SideGroup>
             })}
+            {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
         </RightScroll> :
             <MobilePlayersPanel>
                 <MobileTeamName>My Team: </MobileTeamName>

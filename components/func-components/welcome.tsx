@@ -3,11 +3,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {  SignInButton} from "@clerk/nextjs";
 import { styled } from "styled-components";
-import Button from '@mui/material/Button';
-import HomeIcon from '@mui/icons-material/HomeOutlined';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import LoginIcon from '@mui/icons-material/Login';
+
+import HomeIcon from '@/components/icons/home';
+import HelpOutlineIcon from '@/components/icons/help';
+
+import LoginIcon from '@/components/icons/login';
 import { useAppContext } from '@/lib/context';
+import Button from '@/components/func-components/button';
 
 const WelcomeWrap = styled.div`
     padding-top:18px;
