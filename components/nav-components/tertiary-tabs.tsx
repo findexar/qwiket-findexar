@@ -34,7 +34,7 @@ const TertiaryTabs: React.FC<Props> = ({ options, onChange,selectedOptionName }:
           selected=true;  
           selectedValue=i;
         }
-        return <STab disabled={option.disabled}selected={selected} key={`t3ab-${option.name}`} label={option.name} />;
+        return <STab disabled={option.disabled} selected={selected} key={`t3ab-${option.name}`} label={option.name} />;
     });
     return <TabsWrap>< Tabs textColor="primary" variant="fullWidth" value={selectedValue} onChange={(event, value) =>{console.log("onChange",value); onChange(options[value])}}>{tabs}</Tabs></TabsWrap>;
 };

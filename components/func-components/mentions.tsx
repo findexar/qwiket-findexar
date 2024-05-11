@@ -36,6 +36,7 @@ const MobileMentionsOuterContainer = styled.div`
     flex-direction:column;
     justify-content:flex-start;
     height:100%;
+    min-height:100%;
     font-family: 'Roboto', sans-serif;
     align-content:flex-start;
     a{
@@ -89,12 +90,12 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
                     <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                 </MentionsOuterContainer>
                 :
-                <MobileMentionsOuterContainer>
+                <div className="h-full"><MobileMentionsOuterContainer>
                     <MentionsBody>
                         {Mentions}
                     </MentionsBody>
                     <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MobileMentionsOuterContainer>
+                </MobileMentionsOuterContainer></div>
             }
         </>
     )

@@ -113,7 +113,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
         theme={palette}>
         <GlobalStyle $light={localMode == "light"} />
         <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode}  >
-          <main className={localMode=="light" ? roboto.className : roboto.className + " dark"} >
+          <main className={(localMode=="light" ? roboto.className : roboto.className + " dark")+" h-full"} >
             <Head>
               <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
               <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import useSWR from "swr";
-import {LeaguesKey} from '@/lib/keys';
+import { LeaguesKey } from '@/lib/keys';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import { Roboto } from 'next/font/google';
 //styled-components
@@ -17,7 +17,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 //mui icons
-import HomeIcon from '@/components/icons/home'; 
+import HomeIcon from '@/components/icons/home';
 import LoginIcon from '@/components/icons/login';
 import ModeNightTwoToneIcon from '@/components/icons/moon';
 import LightModeTwoToneIcon from '@/components/icons/sun';
@@ -335,7 +335,7 @@ const PlayerNameGroup = styled.div`
 const PlayerName = styled.div`
     text-align:left;
 `;
-const Wiggly=styled.div`
+const Wiggly = styled.div`
   position:absolute;
   top:0;
   left:0;
@@ -362,32 +362,32 @@ const LeaguesTab = styled(Tab) <LeaguesNavProps>`
 `;
 /*==========================================*/
 interface Props {
- // leagues: string[];
+  // leagues: string[];
 }
 let s = false;
 
-const HeaderNav: React.FC<Props> = ({  }) => {
-  const { fallback,mode, userId, isMobile, setLeague, setView, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
-  const leaguesKey={type:"leagues"};
-  const key:LeaguesKey={type:"leagues"};
-  const { data:leagues=[], error } = useSWR(key,fetchLeagues,{fallback});
+const HeaderNav: React.FC<Props> = ({ }) => {
+  const { fallback, mode, userId, setLeague, setView, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
+  const leaguesKey = { type: "leagues" };
+  const key: LeaguesKey = { type: "leagues" };
+  const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  
+
   const router = useRouter();
-  const onLeagueNavClick = useCallback((l: string,url:string) => {
-    console.log("onLeagueNavClick",l,url,'params:',params,'tp:',tp)
+  const onLeagueNavClick = useCallback((l: string, url: string) => {
+    console.log("onLeagueNavClick", l, url, 'params:', params, 'tp:', tp)
     setLeague(l);
-   // setView('mentions');
+    // setView('mentions');
     setPagetype('league');
     setTeamid("");
-    console.log("replaceState",url)
+    console.log("replaceState", url)
     window.history.replaceState({}, "", url);
-    setTimeout(async()=>
-    await recordEvent(
-      'league-nav',
-      `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
-    ),0);
+    setTimeout(async () =>
+      await recordEvent(
+        'league-nav',
+        `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
+      ), 0);
   }, [fbclid, utm_content]);
 
   useEffect(() => {
@@ -429,75 +429,75 @@ const HeaderNav: React.FC<Props> = ({  }) => {
 
   const updateMode = useCallback(async (mode: string) => {
     setMode(mode);
-   /* await fetch(`/api/save-session`,
+    /* await fetch(`/api/save-session`,
+ 
+     {
+       method: 'POST',
+       headers: {
+         'Content-type': 'application/json',
+       },
+       body: JSON.stringify({ session: { dark: mode=='dark'?1:0 } })
+     });*/
+    await saveSession({ dark: mode == 'dark' ? 1 : 0 })
 
-    {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({ session: { dark: mode=='dark'?1:0 } })
-    });*/
-    await saveSession({dark: mode=='dark'?1:0 })
-   
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link href={`/${l}${params}${tp}`} onClick={ () => { onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l,`/${l}${params}${tp}`) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link href={`/${l}${params}${tp}`} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} shallow onClick={async () => { await onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     //@ts-ignore
-    return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l,`/link/${l}${params}${tp}`)}}  />
+    return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon className="text-xl"/>} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
-  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon  $scrolled={scrollY != 0} ><HomeIcon className={(scrollY!=0?`text-sm `:`text-xl`)}  /></LeagueIcon></Link></div> 
-  : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY!=0?`text-sm`:`text-xl`)}  /></LeagueIcon></Link></SelectedHome>)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon className="text-xl" />} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }} />)
+  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
+    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
-  
+
   return (
     <>
-      <Header $scrolled={!isMobile && scrollY != 0}>
+      <Header $scrolled={scrollY != 0}>
         <HeaderTopline>
           <LeftContainer>
             <HeaderLeft>
-              <FLogo><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogo>
-              <FLogoMobile ><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME=='Findexar'?"Fi":"Q"}</Avatar></Link></FLogoMobile>
+              <FLogo><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
+              <FLogoMobile ><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()+(league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase() + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
-                
+
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
-           
-           
-            </LeftContainer>    
-            {(pagetype == "league" || pagetype == "landing"|| pagetype == "team"|| pagetype == "player")&&<Wiggly className="hidden md:block">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"  viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" strokeWidth="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" strokeLinecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stopColor="hsl(37, 99%, 67%)" offset="0"></stop><stop stopColor="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
-            </Wiggly>}
+
+
+          </LeftContainer>
+          {(pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player") && <Wiggly className="hidden md:block">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" strokeWidth="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" strokeLinecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stopColor="hsl(37, 99%, 67%)" offset="0"></stop><stop stopColor="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
+          </Wiggly>}
           <HeaderRight>  <IconButton color={"inherit"} size="small" onClick={async () => {
             await updateMode(mode == "light" ? "dark" : "light");
           }}>
-            
+
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
             <SUserButton afterSignOutUrl="/" />
             {pagetype != 'landing' && !userId && <SignInButton><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignInButton>}
           </HeaderRight>
         </HeaderTopline>
-        {!isMobile &&<ContainerWrap> <Leagues $scrolled={scrollY != 0}>
+        <div className="hidden md:block"><ContainerWrap> <Leagues $scrolled={scrollY != 0}>
           {LeaguesNav}
-        </Leagues></ContainerWrap>}
+        </Leagues></ContainerWrap></div>
       </Header>
-      {isMobile && <MobileContainerWrap>
+      <div className="block md:hidden"><MobileContainerWrap>
         <MuiTabs
           value={selectedLeague}
           variant="scrollable"
@@ -507,7 +507,8 @@ const HeaderNav: React.FC<Props> = ({  }) => {
         >
           {MobileLeaguesNav}
         </MuiTabs>
-      </MobileContainerWrap>}
+      </MobileContainerWrap>
+      </div>
     </>
   )
 }

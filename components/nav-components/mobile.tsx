@@ -56,6 +56,7 @@ const LeftMobilePanel = styled.div`
 const CenterPanel = styled.div`
     position:relative;
     width:100%;
+    height:100%;
     max-width:1000px;
     margin-right:auto;
     margin-left:auto;
@@ -68,7 +69,7 @@ const CenterPanel = styled.div`
     padding-top:18px;
     height:auto;
     flex-grow:1;
-    padding-bottom:60px;
+    padding-bottom:200px;
 `;
 
 const SideLeagueName = styled.div`
@@ -121,7 +122,7 @@ const Mobile: React.FC<Props> = () => {
     }, [fbclid, utm_content,  league, params2, tp2]);
 
     return (
-        <div className="block md:hidden">
+        <div className="block md:hidden h-full">
         <MobileContainerWrap>
             {pagetype == "landing" && <Landing />}
             {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "Readme", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
@@ -130,7 +131,7 @@ const Mobile: React.FC<Props> = () => {
                 <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
             }
             {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Feed", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
-            {view == 'mentions'&&pagetype=="league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: !userId }, { name: "Favorites", tab: "fav", disabled: !userId }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+            {view == 'mentions'&&pagetype=="league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled:false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
             {view == 'teams' &&
                 <LeftMobilePanel>
@@ -138,7 +139,7 @@ const Mobile: React.FC<Props> = () => {
                 </LeftMobilePanel>
             }
             {view == 'mentions' && <CenterPanel>
-            {pagetype == "league" && tab == "all" ? <Stories /> : <Mentions />}
+            {pagetype == "league" && tab == "all" ? <Stories /> :null}
             {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
             {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
             </CenterPanel>}
