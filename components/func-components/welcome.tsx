@@ -63,7 +63,7 @@ const Welcome: React.FC<Props> = () => {
         using the My Team feature<br /><br />
         <hr />
         Powered by OpenAI.</WelcomeWrap>
-        <br /><br />
+        <br />
         <Favorites><Button disabled={view == 'fav'} onClick={() => {
             if (view != 'readme') {
                 setView("readme")
