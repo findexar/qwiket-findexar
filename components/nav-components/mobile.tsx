@@ -23,7 +23,8 @@ import TertiaryTabs from "@/components/nav-components/tertiary-tabs";
 import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
-
+import MyfeedMentions from "@/components/func-components/myfeed-mentions";
+import FavMentions from "@/components/func-components/fav-mentions";
 const MobileContainerWrap = styled.div`
     display: flex;
     flex-direction: column;
@@ -137,7 +138,9 @@ const Mobile: React.FC<Props> = () => {
                 </LeftMobilePanel>
             }
             {view == 'mentions' && <CenterPanel>
-                {pagetype == "league" && tab == "all" ? <Stories /> : <Mentions />}
+            {pagetype == "league" && tab == "all" ? <Stories /> : <Mentions />}
+            {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
+            {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
             </CenterPanel>}
             {view == 'readme' && <Readme />}
             {view == 'my team' && <MyTeam />}

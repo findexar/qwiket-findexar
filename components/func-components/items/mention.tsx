@@ -23,6 +23,7 @@ import { actionRecordEvent } from "@/lib/actions";
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
 import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
 import { actionMyTeam } from "@/lib/fetchers/myteam";
 import { MyTeamRosterKey } from '@/lib/keys';
 
@@ -515,7 +516,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
-                        {!localFav ? <StarOutlineIcon className="h-6 w-6" onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /> : <StarIcon className="h-6 w-6" onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                        {!localFav ? <StarOutlineIcon className="h-6 w-6" onClick={async () => { if (noUser) return; setLocalFav(1); await actionAddFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /> : <StarIcon className="h-6 w-6" onClick={async () => { if (noUser) return; setLocalFav(0); await actionRemoveFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
                         <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                             {summary}

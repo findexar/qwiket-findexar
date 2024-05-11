@@ -124,7 +124,7 @@ export default async function Page({
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }*/
   if (tab == 'fav' && view == 'mentions') { //favorites
-    calls.push(fetchFavorites({ userId, sessionid, league, page: 0 }));
+    calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
   if (view == 'my team' || view == 'mentions') { //my feed
     calls.push(await fetchMyTeam({ userId, sessionid, league }));
