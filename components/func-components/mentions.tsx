@@ -94,7 +94,7 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
                     <MentionsBody>
                         {Mentions}
                     </MentionsBody>
-                    <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
+                    <LoadMore name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                 </MobileMentionsOuterContainer></div>
             }
         </>

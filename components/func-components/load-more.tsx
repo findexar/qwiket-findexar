@@ -7,13 +7,15 @@ interface Props {
     isReachingEnd: boolean;
     size: number;
     setSize: any;
+    name?:string;
 }
 
-const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size }) => {
+const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size,name }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef<HTMLDivElement | null>(null)
     const entry = useIntersectionObserver(ref, {});
     const isVisible = !!entry?.isIntersecting || false;
+    name=name||"stories";
 
     useEffect(() => {
         if (isVisible) {
@@ -33,7 +35,7 @@ const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size
             {isLoadingMore
                 ? "loading..."
                 : isReachingEnd
-                    ? `no more stories`
+                    ? `no more ${name}`
                     : "load more"}
         </button></div>
 }
