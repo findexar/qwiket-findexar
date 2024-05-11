@@ -178,7 +178,7 @@ const MyTeam: React.FC<Props> = () => {
             <TeamName>My Team{league ? ` for ${league}` : ``}: </TeamName>
             {(!trackerListMembers || trackerListMembers.length == 0) && <><RightExplanation>
                 <b>My Team</b> is a feature designed for Fantasy Sports fans who need to track media
-                mentions of their's fantasy teams members.<br /><br />
+                mentions of their&apos;s fantasy teams members.<br /><br />
                  <br />Imagine the power of getting a feed of your athletes&apos; mentions across the media! No need to spend hours hunting and searching.
                 <hr />
             </RightExplanation>

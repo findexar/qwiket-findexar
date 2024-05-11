@@ -13,29 +13,6 @@ interface StyledTabsProps {
   onChange: (event: React.SyntheticEvent, newValue: number) => void;
 }
 
-const StyledTabs = styled((props: StyledTabsProps) => (
-  <Tabs
-    {...props}
-    TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
-  />
-))({
-  '& .MuiTabs-indicator': {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  '& .MuiTabs-indicatorSpan': {
-    maxWidth: 40,
-    width: '100%',
-    backgroundColor: '#635ee7',
-  },
-});
-
-interface StyledTabProps {
-  label: string;
-  icon: any;
-
-}
 interface STabsProps {
     selected: boolean;
 }
@@ -76,7 +53,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
       selected = true;
       selectedValue = i;
     }
-    return <STab iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} icon={option.icon} />;
+    return <STab iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
   });
   return <TabsWrap><STabs textColor="primary" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
 };
