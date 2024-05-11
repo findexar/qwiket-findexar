@@ -132,6 +132,16 @@ const SelectedLeague = styled.div<HeaderProps>`
       height: 24px;
     }
 `;
+const SelectedHome = styled.div<HeaderProps>`
+    color: var(--leagues-selected);   
+    a{
+        color:var(--leagues-selected) !important;
+        text-decoration: none;
+        &:hover{
+          color:var(--leagues-highlight);
+        }
+    }
+`;
 
 const Leagues = styled.div<HeaderProps>`
     display: flex;
@@ -443,7 +453,7 @@ const HeaderNav: React.FC<Props> = ({  }) => {
   //@ts-ignore
   MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon className="text-xl"/>} onClick={() => { onLeagueNavClick('',`/${params}${tp}`)} } />)
   LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`) }}><LeagueIcon  $scrolled={scrollY != 0} ><HomeIcon className={(scrollY!=0?`text-sm `:`text-xl`)}  /></LeagueIcon></Link></div> 
-  : <div key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY!=0?`text-sm`:`text-xl`)}  /></LeagueIcon></Link></div>)
+  : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`}  onClick={() => { onLeagueNavClick('',`/${params}${tp}`)}}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY!=0?`text-sm`:`text-xl`)}  /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
