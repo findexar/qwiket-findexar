@@ -20,6 +20,7 @@ import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/
 import { actionRecordEvent } from "@/lib/actions";
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';
+import Toast from './toaster';
 
 declare global {
     interface Window {
@@ -152,7 +153,7 @@ interface Props {
 }
 const MyTeam: React.FC<Props> = () => {
     const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-
+    const [toastMessage, setToastMessage] = useState("");
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     console.log("MyTeam:trackerListMemebrsKey",trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
@@ -226,6 +227,7 @@ const MyTeam: React.FC<Props> = () => {
                                         'player-remove-myteam',
                                         `{"params":"${params}","team":"${teamid}","player":"$member}"}`
                                     );
+                                    setToastMessage("Player removed from My Team");
                               
                             }} aria-label="Add new list">
                             <SideIcon $highlight={false}>
@@ -265,6 +267,7 @@ const MyTeam: React.FC<Props> = () => {
                                     const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                     trackerListMutate(newTrackerListMembers, false);
                                     await actionRemoveMyTeamMember({ member, teamid });
+                                    setToastMessage("Player removed from My Team");
                                 }} >
                                 <SideIcon>
                                     <TeamRemoveIcon className="text-yellow-400" />
@@ -273,6 +276,7 @@ const MyTeam: React.FC<Props> = () => {
                         </SideButton>
                     </MobileSideGroup>
                 })}
+                {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
             </MobilePlayersPanel>}
         </>
     );

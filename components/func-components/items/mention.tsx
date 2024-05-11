@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import useSWRImmutable from 'swr/immutable';
 import useSWR from 'swr';
 import Link from 'next/link';
@@ -26,6 +26,7 @@ import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/
 import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
 import { actionMyTeam } from "@/lib/fetchers/myteam";
 import { MyTeamRosterKey } from '@/lib/keys';
+import Toast from '@/components/func-components/toaster';
 
 declare global {
     interface Window {
@@ -344,7 +345,8 @@ interface Props {
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
     const {fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
-
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastIcon, setToastIcon] = useState(<></>);
     let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
@@ -545,7 +547,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                      }*/
                                     if (localTracked == true) {
                                         console.log("TRACKED", name);
-
+                                        setToastMessage("Player removed from My Team");
+                                        setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
+                                     
                                         console.log("tracked after mutatePlayers", name, team);
                                         setLocalTracked(false);
                                         await actionRemoveMyTeamMember({ member: name, teamid: team });
@@ -570,7 +574,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     }
                                     else {
                                         console.log("UNTRACKED", name)
-
+                                        setToastMessage("Player added to My Team");
+                                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
                                         setLocalTracked(true);
                                         console.log("untracked after mutatePlayers", name, team);
                                         await actionAddMyTeamMember({ member: name, teamid: team });
@@ -578,7 +583,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             'mention-add-myteam',
                                             `{"params":"${params}","team":"${team}","player":"${name}"}`
                                         );
-                                        if (mutate)
+                                         if (mutate)
                                             mutate();
                                         if (myTeamMutate)
                                             myTeamMutate();
@@ -729,6 +734,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     </MobileExtendedMention>}
                 </MentionSummary>
             </MobileMentionWrap>
+            {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
         </>
     );
 };
