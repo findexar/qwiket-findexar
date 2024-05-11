@@ -13,7 +13,7 @@ interface Props {
 }
 const MyFeed: React.FC<Props> = () => {
     let {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
-   // const [mentions, setMentions] = React.useState([]);
+   const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {
         let key: FetchMyFeedKey = { type: "fetch-my-feed", page: pageIndex, league};
         if (previousPageData && !previousPageData.length) return null; // reached the end
@@ -21,10 +21,10 @@ const MyFeed: React.FC<Props> = () => {
     }
     // now swrInfinite code:
     const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionMyFeed, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
-   /* useEffect(()=>{
+    useEffect(()=>{
         setMentions(data ? [].concat(...data) : []);
-    },[data])*/
-    let mentions = data ? [].concat(...data):[];
+    },[data])
+   // let mentions = data ? [].concat(...data):[];
     
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
@@ -51,7 +51,7 @@ const MyFeed: React.FC<Props> = () => {
 
    */
     return (
-        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers}/>
+        <Mentions  mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers}/>
     )
 }
 export default MyFeed;

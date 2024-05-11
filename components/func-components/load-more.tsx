@@ -2,15 +2,18 @@ import React, { useEffect, useState, useRef } from "react";
 
 import useIntersectionObserver from '@/lib/use-intersection-observer';
 import Button from '@/components/func-components/button';
+import IconReload from '@/components/icons/reload';
+
 interface Props {
     isLoadingMore: boolean;
     isReachingEnd: boolean;
     size: number;
     setSize: any;
     name?:string;
+    items?:any[];
 }
 
-const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size,name }) => {
+const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size,name,items=[] }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef<HTMLDivElement | null>(null)
     const entry = useIntersectionObserver(ref, {});
@@ -30,12 +33,12 @@ const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size
         }
     }, [isVisible, entry, ref]);
 
-    return <div ref={ref}>
-        <Button style={{ padding: 4, marginTop: 20 }} onClick={() => setSize(size + 1)}>
+    return <div ref={ref} >
+        <Button className="m-1" onClick={() => setSize(size + 1)}>
             {isLoadingMore
                 ? "loading..."
                 : isReachingEnd
-                    ? `no more ${name}`
+                    ? (items.length>0?`no more ${size} ${name}`:<IconReload />)
                     : "load more"}
         </Button></div>
 }
