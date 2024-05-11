@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import useIntersectionObserver from '@/lib/use-intersection-observer';
-
+import Button from '@/components/func-components/button';
 interface Props {
     isLoadingMore: boolean;
     isReachingEnd: boolean;
@@ -31,13 +31,13 @@ const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size
     }, [isVisible, entry, ref]);
 
     return <div ref={ref}>
-        <button style={{ padding: 4, marginTop: 20 }} onClick={() => setSize(size + 1)}>
+        <Button style={{ padding: 4, marginTop: 20 }} onClick={() => setSize(size + 1)}>
             {isLoadingMore
                 ? "loading..."
                 : isReachingEnd
                     ? `no more ${name}`
                     : "load more"}
-        </button></div>
+        </Button></div>
 }
 
 export default LoadMore;
