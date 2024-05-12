@@ -368,7 +368,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);
-
+    useEffect(() => {
+       setLocalFav(fav);
+    }, [fav]);
     useEffect(() => {
         setExpanded(startExtended);
     }, [startExtended, url]);
@@ -520,7 +522,25 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
-                        {!localFav ? <StarOutlineIcon className="h-6 w-6" onClick={async () => { if (noUser) return; setLocalFav(1); await actionAddFavorite({ findexarxid }); if (mutate) mutate() }} style={{ color: "#888" }} /> : <StarIcon className="h-6 w-6" onClick={async () => { if (noUser) return; setLocalFav(0); await actionRemoveFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                        {!localFav ? <StarOutlineIcon className="h-4 w-4" 
+                        onClick={async () => { if (noUser) return; 
+                        setLocalFav(1); 
+                        await actionAddFavorite({ findexarxid });
+                        if (mutate) mutate();
+                        setToastMessage("Added to Favorites.");
+                        setToastIcon(<StarIcon className="h-4 w-4"/>);
+                   
+                    
+                    
+                    }} style={{ color: "#888" }} /> : 
+                    <StarIcon className="h-4 w-4" onClick={async () => { 
+                        if (noUser) return; 
+                        setLocalFav(0); 
+                        await actionRemoveFavorite({ findexarxid }); mutate(); 
+                        setToastMessage("Removed from Favorites.");
+                        setToastIcon(<StarOutlineIcon className="h-4 w-4"/>);
+                        
+                        }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
                         <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
                             {summary}
