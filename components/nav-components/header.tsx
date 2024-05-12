@@ -450,13 +450,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} icon={<HomeIcon className="text-xl" />} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }} />)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league?"text-amber-600 dark-text-amber-200 text-xl h-4 p-0 m-0":"text-slate-950 dark:text-slate-50 text-xl h-4 p-0 m-0"} />} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}></LeaguesTab>)
   LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
     : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
-
+  console.log("selectedLeague",selectedLeague)
   return (
     <>
       <Header $scrolled={scrollY != 0}>
