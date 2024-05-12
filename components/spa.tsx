@@ -181,6 +181,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
             <meta name="twitter:site" content="@findexar" />
             <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no' />
             <link rel="apple-touch-icon" href={process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png"}></link>
+            <link rel="shortcut icon" href={process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png"} type="image/png" />
             <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             {(pagetype != 'league' || league || teamid || player) && <meta name="robots" content="noindex,nofollow" />}
