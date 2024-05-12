@@ -49,6 +49,10 @@ const Teams: React.FC<Props> = () => {
         setTeamName(name);
         setView("mentions");
         setTab("all");
+      //  const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
+        const url = `/${league}/${id}${params}${tp}`;
+        console.log("replaceState", url)
+        window.history.replaceState({}, "", url);
   
         await actionRecordEvent(
           'team-nav',

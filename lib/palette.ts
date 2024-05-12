@@ -35,8 +35,8 @@ export const palette = {
                 "#B71C1C"  // Tailwind red-900
             ],
             secondaryTabsText: "#ECEFF1", // Tailwind blueGray-50
-            secondaryTabsSelectedText: "#FFECB3", // Tailwind amber-100
-            secondaryTabsBackground: "#424242", // Tailwind gray-800
+            secondaryTabsSelectedText: "#00ECB3", // Tailwind amber-100
+            secondaryTabsBackground: "#828282", // Tailwind gray-800
             leaguesBackground: "#212121", // Tailwind gray-900
             leaguesText: "#ECEFF1", // Tailwind blueGray-50
             leaguesSelected: "#FFF59D", // Tailwind yellow-200

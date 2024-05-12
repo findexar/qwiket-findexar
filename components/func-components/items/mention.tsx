@@ -259,10 +259,12 @@ const MobileAtmention2 = styled.div`
 const ShareContainer = styled.div`
     margin-top:14px;
     margin-bottom:14px;
+    margin-left:4px;
+    margin-right:4px;
     height:24px;
     width:100%;
     display:flex;
-    justify-content:flex-end;
+    justify-content:flex-start;
 
     font-size: 28x;  
     height:38px;
@@ -299,9 +301,9 @@ const ShareContainerInline = styled.span`
 const ShareGroup = styled.div`
     display:flex;
     flex-direction:row;
-    justify-content:space-between;
+    justify-content:flex-start;
     align-items:flex-start;
-    width:78px;
+    width:auto;
     height:40px;
     margin-top:10px;
 `;

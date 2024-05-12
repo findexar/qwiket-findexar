@@ -499,6 +499,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
       <div className="block md:hidden"><MobileContainerWrap>
         <MuiTabs
           value={selectedLeague}
+          id="tabs1"
           variant="scrollable"
           scrollButtons={true}
           allowScrollButtonsMobile

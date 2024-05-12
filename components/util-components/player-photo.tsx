@@ -8,6 +8,7 @@ import Avatar from '@/components/util-components/avatar';
 const Photo = styled.div`
     height:60px;
     width:60px;
+    margin-top:-10px;
     @media screen and (max-width: 1199px ){
         display:none
     }

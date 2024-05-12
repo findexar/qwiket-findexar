@@ -1,40 +1,59 @@
 import React from 'react';
-//@ts-ignore
-import { TransitionGroup, CSSTransition } from 'react-transition-group'; // Import TransitionGroup and CSSTransition
+
+const tabClasses={
+  tabs1: ["py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none text-slate-800 dark:text-slate-50 hover:text-slate-500 dark:hover:text-slate-100 bg-white dark:bg-slate-950",
+  "py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none border-b-2 border-blue-500 bg-white dark:bg-slate-950 text-amber-600 dark-text-amber-200 hover:text-slate-500 dark:hover:text-slate-100"],
+  
+  tabs2: ["py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none text-slate-50 hover:text-slate-500 bg-slate-600 dark:bg-slate-150",
+  "py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none  border-b-2 border-pink-500 bg-slate-600 dark:bg-slate-150 text-amber-100 hover:text-slate-500 dark:text-amber-200 dark:hover:text-slate-100"],
+  
+  tabs3: ["py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none text-slate-800 dark:text-slate-50 hover:text-slate-500 bg-white dark:bg-slate-950",
+  "py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out focus:outline-none border-b-2 border-blue-300 dark:border-amber-500 bg-white dark:bg-slate-950 text-amber-600 hover:text-slate-500 dark:text-amber-200 dark:hover:text-slate-100"],
+
+}
+
 
 interface TabProps {
   label: string;
   selected?: boolean;
   onClick?: () => void;
-  value?: any; // Added value property to TabProps
-  disabled?: boolean; // Added disabled property to TabProps
-  iconPosition?: string; // Added iconPosition property to TabProps
+  value?: any;
+  disabled?: boolean;
+  iconPosition?: string;
+  id?: string;
 }
 
-const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start" }) => {
+const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start", id="tabs1" }) => {
+  // console.log("TAB,selected ",selected,"tabClass ",tabClass)
   return (
     <button
-      className={`py-2 px-4 text-sm font-medium text-center transition duration-500 ease-in-out ${selected ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-600'} focus:outline-none`}
+      className={tabClasses[id as keyof typeof tabClasses][selected ? 1 : 0]}
       onClick={onClick}
-      value={value} // Added value attribute to button
-      disabled={disabled} // Added disabled attribute to button
-     >
+      value={value}
+      disabled={disabled}
+    >
       {label}
     </button>
   );
 };
 
-interface TabsProps {
-  children: React.ReactNode;
-  textColor?: string; // Added textColor property to TabsProps
-  variant?: string; // Added variant property to TabsProps
-  value?: any; // Added value property to TabsProps
-  onChange?: (event: React.SyntheticEvent, newValue: any) => void; // Added onChange property to TabsProps
-  scrollButtons?: boolean; // Changed scrollButtons property to boolean in TabsProps
-  allowScrollButtonsMobile?: boolean; // Added allowScrollButtonsMobile property to TabsProps
+const tabsClasses={
+  tabs1: "flex space-x-4 bg-white dark:bg-slate-950",
+  tabs2: "flex space-x-4 bg-slate-600 dark:bg-slate-150",
+  tabs3: "flex space-x-4 bg-white dark:bg-slate-950",
 }
 
-const Tabs: React.FC<TabsProps> = ({ children, textColor, variant, value, onChange, scrollButtons = false, allowScrollButtonsMobile = false }) => {
+interface TabsProps {
+  children: React.ReactNode;
+  id:string;
+  variant?: string;
+  value?: any;
+  onChange?: (event: React.SyntheticEvent, newValue: any) => void;
+  scrollButtons?: boolean;
+  allowScrollButtonsMobile?: boolean;
+}
+
+const Tabs: React.FC<TabsProps> = ({ children, id="tabs1", variant, value, onChange, scrollButtons = false, allowScrollButtonsMobile = false }) => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: any) => {
     if (onChange) {
       onChange(event, newValue);
@@ -45,42 +64,28 @@ const Tabs: React.FC<TabsProps> = ({ children, textColor, variant, value, onChan
   const scrollClass = scrollable && scrollButtons ? 'overflow-x-auto' : '';
 
   return (
-    <div className={`flex space-x-4 ${textColor ? textColor : ''} ${variant === 'fullWidth' ? 'w-full' : ''} ${scrollClass}`}>
-      <TransitionGroup className="tab-transition-group">
-        {React.Children.map(children, (child, index) => {
-          if (React.isValidElement(child)) {
-            return (
-              <CSSTransition
-                key={index}
-                timeout={500}
-                classNames={{
-                  enter: 'tab-enter',
-                  enterActive: 'tab-enter-active',
-                  exit: 'tab-exit',
-                  exitActive: 'tab-exit-active'
-                }}
-              >
-                {React.cloneElement(child, {
-                  ...child.props,
-                  onClick: (event: React.SyntheticEvent) => {
-                    handleTabChange(event, index);
-                    if (child.props.onClick) {
-                      child.props.onClick();
-                    }
-                  },
-                  selected: value === index,
-                  allowScrollButtonsMobile: allowScrollButtonsMobile, // Pass allowScrollButtonsMobile to each Tab
-                  iconPosition: "start" // Pass iconPosition to each Tab
-                })
+    <div className={tabsClasses[id as keyof typeof tabsClasses]}>
+      {React.Children.map(children, (child, index) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            ...child.props,
+            onClick: (event: React.SyntheticEvent) => {
+              handleTabChange(event, index);
+              if (child.props.onClick) {
+                child.props.onClick();
               }
-              </CSSTransition>
-            );
-          }
-          return child;
-        })}
-      </TransitionGroup>
+            },
+            selected: value === index,
+            allowScrollButtonsMobile: allowScrollButtonsMobile,
+            iconPosition: "start",
+            id
+          });
+        }
+        return child;
+      })}
     </div>
   );
 };
 
 export { Tabs, Tab };
+

@@ -126,7 +126,7 @@ const RightScroll = styled.div<ScrollProps>`
     top:-${({ $numPlayers }) => $numPlayers > 60 ? $numPlayers * $numPlayers * 0.30 : $numPlayers * $numPlayers *0.30}px;
     overflow-y: hidden;
     padding-bottom:20px;
-    width:100%;
+    width:auto;
 `;
 interface Props {
 }
@@ -175,6 +175,9 @@ const Players: React.FC<Props> = () => {
         setPlayer(name);
         setView("mentions");
         setTab("all");
+        const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
+        console.log("replaceState", url)
+        window.history.replaceState({}, "", url);
         await actionRecordEvent(
             'player-nav',
             `{"params":"${params}","player":"${name}"}`

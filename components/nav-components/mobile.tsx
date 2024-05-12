@@ -25,6 +25,8 @@ import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import FavMentions from "@/components/func-components/fav-mentions";
+import TeamMentions from "@/components/func-components/team-mentions";
+import PlayerMentions from "@/components/func-components/player-mentions";
 const MobileContainerWrap = styled.div`
     display: flex;
     flex-direction: column;
@@ -56,7 +58,7 @@ const LeftMobilePanel = styled.div`
 const CenterPanel = styled.div`
     position:relative;
     width:100%;
-    height:100%;
+    min-height:1000px !important;
     max-width:1000px;
     margin-right:auto;
     margin-left:auto;
@@ -139,6 +141,8 @@ const Mobile: React.FC<Props> = () => {
                 </LeftMobilePanel>
             }
             {view == 'mentions' && <CenterPanel>
+            {pagetype=="team"?<TeamMentions/>:null}
+            {(pagetype == "player") && <PlayerMentions />}
             {pagetype == "league" && tab == "all" ? <Stories /> :null}
             {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
             {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}

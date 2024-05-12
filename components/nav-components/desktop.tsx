@@ -34,7 +34,8 @@ const Page = styled.div`
 const ContainerWrap = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 1000px;
+    height:auto;
     width: 100%;
     font-family: 'Roboto', sans-serif;
     font-size:14px;
@@ -60,6 +61,7 @@ const MainPanel = styled.div`
     flex-direction:row;
     justify-content:flex-start;
     height:100%;
+    min-height:100vh;
 `;
 
 const LeftPanel = styled.div`

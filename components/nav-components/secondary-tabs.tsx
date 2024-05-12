@@ -4,6 +4,7 @@ import { Tabs, Tab } from '@/components/nav-components/tabs'
 
 const TabsWrap = styled.div`
   background-color:var(--secondary-tabs-bg);
+  color:var(--secondary-tabs-text);
   font-size:10px;
 `;
 
@@ -18,7 +19,7 @@ interface STabsProps {
 }
 const STab = styled(Tab) <STabsProps>`
     color:${({ selected }) => selected ? 'var(--secondary-tabs-selected)' : 'var(--secondary-tabs-text)'} !important;
-    font-size: 9px !important;
+    font-size: ${({ selected }) => selected ? '12px' : '9px'} !important;
     max-height: 10px !important;
     margin:-10px !important;
  `;
@@ -52,10 +53,11 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
     if (name == selectedOptionName?.toLowerCase()) {
       selected = true;
       selectedValue = i;
+      console.log("selectedValue", selectedValue)
     }
     return <STab iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
   });
-  return <TabsWrap><STabs textColor="primary" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
+  return <TabsWrap><STabs id="tabs2" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
 };
 
 export default SecondaryTabs;
