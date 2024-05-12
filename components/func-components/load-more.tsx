@@ -38,7 +38,7 @@ const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size
             {isLoadingMore
                 ? "loading..."
                 : isReachingEnd
-                    ? (items.length>0?`no more ${size} ${name}`:<IconReload />)
+                    ? (items.length>0?`no more ${name}`:<IconReload />)
                     : "load more"}
         </Button></div>
 }
