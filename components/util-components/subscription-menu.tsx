@@ -1,9 +1,9 @@
 import React from 'react';
 //@ts-ignore
 import { Gate, useSubscription } from "use-stripe-subscription";
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
+import Alert from '@/components/util-components/alert';
+import Button from '@/components/util-components/button';
+//import { styled } from '@mui/material/styles';
 
 interface Props {
     products: any[];
@@ -13,7 +13,7 @@ interface Props {
     hardStop:boolean;
 }
 const SubscriptionMenu = ({hardStop,setDismiss,products,redirectToCheckout,redirectToCustomerPortal}:Props) => {
-    return <Alert severity="warning" >
+    return <Alert type="info" severity="medium" >
        <p>Utilizing AI technology, and specifically the OpenAI service, for the in-depth analysis and processing of media content to track athletes and teams, is critical for our operations. This sophisticated technology, which comes with relatively high costs, enables us to slice and dice published articles to provide concise, time-saving summaries of mentions, giving our Fantasy Sports users a distinct competitive advantage.</p>
 
 <p>Findexar offers insights on par with those from high-end agencies like Nielsen, which typically cost professional teams and agencies tens of thousands of dollars monthly, but at a far more accessible price point.</p>

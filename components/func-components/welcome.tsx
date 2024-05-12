@@ -9,7 +9,7 @@ import HelpOutlineIcon from '@/components/icons/help';
 
 import LoginIcon from '@/components/icons/login';
 import { useAppContext } from '@/lib/context';
-import Button from '@/components/func-components/button';
+import Button from '@/components/util-components/button';
 
 const WelcomeWrap = styled.div`
     padding-top:18px;

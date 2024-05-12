@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import useIntersectionObserver from '@/lib/use-intersection-observer';
-import Button from '@/components/func-components/button';
+import Button from '@/components/util-components/button';
 import IconReload from '@/components/icons/reload';
 
 interface Props {

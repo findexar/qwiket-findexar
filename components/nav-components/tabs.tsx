@@ -1,5 +1,6 @@
 import React from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+//@ts-ignore
+import { TransitionGroup, CSSTransition } from 'react-transition-group'; // Import TransitionGroup and CSSTransition
 
 interface TabProps {
   label: string;

@@ -10,11 +10,11 @@ import { Roboto } from 'next/font/google';
 //styled-components
 import { styled, ThemeProvider } from "styled-components";
 //mui
-import { Tabs, Tab, } from '@/components/nav-components/tabs'
-import { blueGrey, cyan, teal } from '@mui/material/colors'
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+import { Tabs, Tab } from '@/components/nav-components/tabs'
+
+import Avatar from '@/components/util-components/avatar';
+//import Button from '@/components/func-components/button';
+import IconButton from '@/components/util-components/icon-button';
 //mui icons
 import HomeIcon from '@/components/icons/home';
 import LoginIcon from '@/components/icons/login';
@@ -463,8 +463,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
         <HeaderTopline>
           <LeftContainer>
             <HeaderLeft>
-              <FLogo><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
-              <FLogoMobile ><Link href={`/${params}`}><Avatar sx={{ bgcolor: cyan[800] }}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
+              <FLogo><Link href={`/${params}`}><Avatar size={scrollY != 0?"medium":"large"} className={scrollY != 0?"bg-cyan-800 text-2xl":"bg-cyan-800 text-4xl"}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
+              <FLogoMobile ><Link href={`/${params}`}><Avatar className="bg-cyan-800">{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>

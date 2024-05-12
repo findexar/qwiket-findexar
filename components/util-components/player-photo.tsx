@@ -1,9 +1,9 @@
 import React from "react";
 import useSWR from 'swr';
 import { styled } from "styled-components";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from '@/components/util-components/skeleton';
 import { PlayerPhotoKey, getPlayerPhoto } from '@/lib/api';
-import Avatar from '@mui/material/Avatar';
+import Avatar from '@/components/util-components/avatar';
 
 const Photo = styled.div`
     height:60px;
@@ -30,11 +30,11 @@ const PlayerPhoto: React.FC<Props> = (props) => {
     const { data: photo, error, isLoading } = useSWR(photoKey, getPlayerPhoto);
 
     if (isLoading || !photo) return (
-        <Skeleton variant="circular" animation="pulse" height={40} />
+        <Skeleton variant="circular" height="40px" width="40px" />
     )
     return (<>
-        <Photo><Avatar sx={{ width: 60, height: 60 }} src={photo} alt={name}></Avatar></Photo>
-        <MobilePhoto><Avatar sx={{ width: 40, height: 40 }} src={photo} alt={name}></Avatar></MobilePhoto>
+        <Photo><Avatar size="large"  alt={name}><img src={photo} alt={name} /></Avatar></Photo>
+        <MobilePhoto><Avatar size="small" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>
     </>
     );
 };

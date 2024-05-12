@@ -2,10 +2,10 @@ import React, { useEffect, useCallback, useRef } from "react";
 import Link from 'next/link';
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
-import XIcon from '@mui/icons-material/X';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import IosShareIcon from '@mui/icons-material/IosShare';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import XIcon from '@/components/icons/twitter';
+import FacebookIcon from '@/components/icons/facebook';
+import IosShareIcon from '@/components/icons/share';
+import ContentCopyIcon from '@/components/icons/copy';
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
@@ -351,7 +351,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                             <Link href={url} onClick={onStoryClick} target="_blank">
                                 <div dangerouslySetInnerHTML={{ __html: digest }} />
                             </Link>
-                            <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer' }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                            <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer',color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
                         </Digest>
                     </Body>
                 </HorizontalContainer>
@@ -399,7 +399,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <Digest>
                             <Link href={url || ""} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                             <ShareContainerInline>
-                                <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10 }} fontSize="small" sx={{ color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                                <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10,color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
                             </ShareContainerInline>
                         </Digest>
                     </Body>

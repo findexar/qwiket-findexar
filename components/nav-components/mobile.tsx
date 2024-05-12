@@ -3,11 +3,11 @@ import React, { useEffect, useCallback } from "react";
 import { useRouter } from 'next/navigation'
 import { styled, ThemeProvider } from "styled-components";
 
-import MentionIcon from '@mui/icons-material/AlternateEmailOutlined';
-import TeamIcon from '@mui/icons-material/PeopleAltOutlined';
-import ListIcon from '@mui/icons-material/ListOutlined';
-import ContactSupportIcon from '@mui/icons-material/ContactSupport';
-import PlayerIcon from '@mui/icons-material/PersonPinOutlined';
+import MentionIcon from '@/components/icons/at';
+import TeamIcon from '@/components/icons/people';
+import ListIcon from '@/components/icons/list';
+import ContactSupportIcon from '@/components/icons/support';
+import PlayerIcon from '@/components/icons/person';
 
 import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
