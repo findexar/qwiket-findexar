@@ -26,10 +26,10 @@ import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
 import fetchTeamPlayers from '@/lib/fetchers/team-players';
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
-
+import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { ASlugStoryKey } from '@/lib/api';
 import SPALayout from '@/components/spa';
-
+import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
 import type { Metadata, ResolvingMetadata } from 'next'
@@ -56,11 +56,11 @@ export async function generateMetadata(
      */
     let amention,astory;
     if (findexarxid) {  // if a mention story is opened
-      amention=await fetchMention({ type: "AMention", findexarxid });
+      amention=await getAMention({ type: "AMention", findexarxid });
     //  const metalink=await fetchMetaLink({ func: "meta", findexarxid, long: 1 });
     }
     if (story) { // if a digest story is opened
-      astory=await fetchSlugStory({ type: "ASlugStory", slug: story });
+      astory=await getASlugStory({ type: "ASlugStory", slug: story });
     }
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};

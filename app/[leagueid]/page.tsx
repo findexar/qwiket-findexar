@@ -22,10 +22,10 @@ import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
-
+import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { getLeagues } from '@/lib/api';
 import { isbot } from '@/lib/is-bot';
-
+import { getAMention } from '@/lib/fetchers/mention';
 import { ASlugStoryKey } from '@/lib/api';
 import SPALayout from '@/components/spa';
 
@@ -54,11 +54,11 @@ export async function generateMetadata(
      */
     let amention,astory;
     if (findexarxid) {  // if a mention story is opened
-      amention=await fetchMention({ type: "AMention", findexarxid });
+      amention=await getAMention({ type: "AMention", findexarxid });
     //  const metalink=await fetchMetaLink({ func: "meta", findexarxid, long: 1 });
     }
     if (story) { // if a digest story is opened
-      astory=await fetchSlugStory({ type: "ASlugStory", slug: story });
+      astory=await getASlugStory({ type: "ASlugStory", slug: story });
     }
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};

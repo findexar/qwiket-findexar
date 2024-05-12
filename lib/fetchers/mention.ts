@@ -1,7 +1,7 @@
 'use server';
 import { unstable_serialize } from 'swr'
 import { AMentionKey,MetaLinkKey } from '@/lib/keys';
-const getAMention = async ({ type, findexarxid}: AMentionKey) => {
+export const getAMention = async ({ type, findexarxid}: AMentionKey) => {
     try {
         let url = '';
         url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-mention?findexarxid=${findexarxid}`;
