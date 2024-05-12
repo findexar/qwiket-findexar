@@ -1,4 +1,3 @@
-
 import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { getIronSession } from "iron-session";
@@ -31,6 +30,91 @@ import SPALayout from '@/components/spa';
 
 import fetchData from '@/lib/fetchers/fetch-data';
 //import { isbot } from '@/lib/isbot.js';
+import type { Metadata, ResolvingMetadata } from 'next'
+ 
+type Props = {
+  params: {}
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+ 
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  let { tab="", fbclid, utm_content, view = "mentions", id, story }:
+    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
+    let findexarxid = id || "";
+    const league='';
+    /**
+     * Fill an array of fetch promises for parallel execution
+     * note: view - only on mobile, tab - on both
+     * 
+     */
+    let amention,astory;
+    if (findexarxid) {  // if a mention story is opened
+      amention=await fetchMention({ type: "AMention", findexarxid });
+    //  const metalink=await fetchMetaLink({ func: "meta", findexarxid, long: 1 });
+    }
+    if (story) { // if a digest story is opened
+      astory=await fetchSlugStory({ type: "ASlugStory", slug: story });
+    }
+    //@ts-ignore
+    const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
+    //@ts-ignore
+    const { title: astoryTitle = "", site_name: astorySite_Name = "", authors: astoryAuthors = "", digest: astoryDigest = "", image: astoryImage = "", createdTime: astoryDate = "", mentions: mentions = [], image_width = 0, image_height = 0 } = astory ? astory : {};
+    const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
+  
+    //prep meta data for amention
+    let ogUrl = '';
+    if (amention && amentionLeague && amentionTeam && amentionPlayer) {
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}/team/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
+    } else if (amention && amentionLeague && amentionTeam) {
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}/team/${amentionTeam}?id=${findexarxid}`;
+    } else if (amention && amentionLeague) {
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}?id=${findexarxid}`;
+    }
+    else if (amention)
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub?id=${findexarxid}`;
+    else
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
+    let ogTarget = '';
+    if (amention && amentionLeague && amentionTeam && amentionPlayer && type == 'person')
+      ogTarget = `${amentionPlayer} of ${amentionTeamName}`;
+    else if (amention && amentionLeague && amentionTeam)
+      ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_SITE_NAME}`;
+  
+    let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Index.";
+    let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_SITE_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
+    let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_SITE_NAME]} Sports Media Index`;
+    if (astory) {
+      ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${league}?${story ? `story=${story}` : ``}`
+        : `${process.env.NEXT_PUBLIC_SERVER}/pub?${story ? `story=${story}` : ``}`;
+      ogTitle = astoryTitle;
+      ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
+      ogImage = astoryImageOgUrl;
+    }
+    const noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
+    
+  return {
+    title: ogTitle,
+    openGraph: {
+      title: ogTitle,
+      description: ogDescription,
+      url: ogUrl,
+      images: [
+        {
+          url: ogImage,
+          width: image_width,
+          height: image_height,
+          alt: ogTitle,
+        }
+      ],
+      type: 'website'
+    },
+    robots: noindex ? 'noindex, nofollow' : 'index, follow'
+  }
+}
 export default async function Page({
   params,
   searchParams,
