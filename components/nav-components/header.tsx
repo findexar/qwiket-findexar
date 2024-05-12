@@ -463,8 +463,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
         <HeaderTopline>
           <LeftContainer>
             <HeaderLeft>
-              <FLogo><Link href={`/${params}`}><Avatar size={scrollY != 0?"medium":"large"} className={scrollY != 0?"bg-cyan-800 text-2xl":"bg-cyan-800 text-4xl"}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
-              <FLogoMobile ><Link href={`/${params}`}><Avatar className="bg-cyan-800">{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
+              <FLogo><Link href={`/${params}`}><Avatar size={scrollY != 0?"medium":"large"} className={scrollY != 0?"text-white bg-cyan-800 text-2xl":"text-white bg-cyan-800 text-4xl"}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
+              <FLogoMobile ><Link href={`/${params}`}><Avatar className="text-white bg-cyan-800">{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
