@@ -20,6 +20,7 @@ import fetchSlugStory from '@/lib/fetchers/slug-story';
 import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
+import { getASlugStory } from '@/lib/fetchers/slug-story';
 
 
 import { getLeagues } from '@/lib/api';
@@ -46,6 +47,7 @@ export async function generateMetadata(
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
     let findexarxid = id || "";
     const league='';
+    console.log("********************************************************************LLLLLLLLLL GENERATE META:",league)
     /**
      * Fill an array of fetch promises for parallel execution
      * note: view - only on mobile, tab - on both
@@ -57,14 +59,17 @@ export async function generateMetadata(
     //  const metalink=await fetchMetaLink({ func: "meta", findexarxid, long: 1 });
     }
     if (story) { // if a digest story is opened
-      astory=await fetchSlugStory({ type: "ASlugStory", slug: story });
+      astory=await getASlugStory({ type: "ASlugStory", slug: story });
     }
+    console.log("=====================================================")
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
     //@ts-ignore
     const { title: astoryTitle = "", site_name: astorySite_Name = "", authors: astoryAuthors = "", digest: astoryDigest = "", image: astoryImage = "", createdTime: astoryDate = "", mentions: mentions = [], image_width = 0, image_height = 0 } = astory ? astory : {};
     const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
-  
+    console.log("astory:",astory)
+    console.log("++++++++++++++++++",astory.image)
+    console.log("astoryImageOgUrl:",astoryImageOgUrl)
     //prep meta data for amention
     let ogUrl = '';
     if (amention && amentionLeague && amentionTeam && amentionPlayer) {
@@ -95,7 +100,7 @@ export async function generateMetadata(
       ogImage = astoryImageOgUrl;
     }
     const noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
-    
+    console.log("ogImage:",ogImage)
   return {
     title: ogTitle,
     openGraph: {

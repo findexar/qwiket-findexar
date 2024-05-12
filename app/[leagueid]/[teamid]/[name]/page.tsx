@@ -98,7 +98,7 @@ export async function generateMetadata(
       ogImage = astoryImageOgUrl;
     }
     const noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
-    
+    console.log("ogImage:",ogImage)
     return {
         title: ogTitle,
         openGraph: {

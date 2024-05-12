@@ -2,7 +2,7 @@
 import { unstable_serialize } from 'swr'
 import { ASlugStoryKey } from '@/lib/keys';
 const api_key=process.env.LAKE_API_KEY;;
-const getASlugStory = async ({slug }: ASlugStoryKey) => {
+export const getASlugStory = async ({slug }: ASlugStoryKey) => {
     try {
       let url = '';
       url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-slug-story?slug=${slug}&api_key=${api_key}`;
