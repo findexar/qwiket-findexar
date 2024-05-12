@@ -92,11 +92,11 @@ export default async function Page({
      */
     calls.push(await fetchLeagueTeams({ league }));
     if (findexarxid) {  // if a mention story is opened
-        calls.push(fetchMention({ type: "AMention", findexarxid }));
-        calls.push(fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
+        calls.push(await fetchMention({ type: "AMention", findexarxid }));
+        calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
     }
     if (story) { // if a digest story is opened
-        calls.push(fetchSlugStory({ type: "ASlugStory", slug: story }));
+        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
     calls.push(await fetchTeamPlayers({ userId, sessionid,  teamid }));
    

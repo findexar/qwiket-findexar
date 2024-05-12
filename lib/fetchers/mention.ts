@@ -1,3 +1,4 @@
+'use server';
 import { unstable_serialize } from 'swr'
 import { AMentionKey,MetaLinkKey } from '@/lib/keys';
 const getAMention = async ({ type, findexarxid}: AMentionKey) => {
@@ -13,7 +14,11 @@ const getAMention = async ({ type, findexarxid}: AMentionKey) => {
         return false;
     }
 }
-const promiseAMention=(key:AMentionKey)=>{
-  return { key: unstable_serialize(key), call: getAMention(key) };
+const promiseAMention=async (key:AMentionKey)=>{
+  return { key: unstable_serialize(key), call: await getAMention(key) };
 }
+export const actionAMention=async (key:AMentionKey)=>{
+    'use server';
+    return  getAMention(key);
+  }
 export default promiseAMention;

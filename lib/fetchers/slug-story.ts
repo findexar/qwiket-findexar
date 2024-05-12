@@ -1,3 +1,4 @@
+'use server';
 import { unstable_serialize } from 'swr'
 import { ASlugStoryKey } from '@/lib/keys';
 const api_key=process.env.LAKE_API_KEY;;
@@ -14,7 +15,12 @@ const getASlugStory = async ({slug }: ASlugStoryKey) => {
       return false;
     }
   }
-const promiseASlugStory=(key:ASlugStoryKey)=>{
+const promiseASlugStory=async (key:ASlugStoryKey)=>{
   return { key: unstable_serialize(key), call: getASlugStory(key) };
 }
+export const actionASlugStory = async (key:ASlugStoryKey)=>{
+  'use server';
+  return getASlugStory(key);
+}
 export default promiseASlugStory;
+
