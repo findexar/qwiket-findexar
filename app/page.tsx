@@ -60,15 +60,13 @@ export async function generateMetadata(
     if (story) { // if a digest story is opened
       astory=await getASlugStory({ type: "ASlugStory", slug: story });
     }
-   //console.log("=====================================================")
+
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
     //@ts-ignore
     const { title: astoryTitle = "", site_name: astorySite_Name = "", authors: astoryAuthors = "", digest: astoryDigest = "", image: astoryImage = "", createdTime: astoryDate = "", mentions: mentions = [], image_width = 0, image_height = 0 } = astory ? astory : {};
     const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
-    //console.log("astory:",astory)
-    //console.log("++++++++++++++++++",astory.image)
-   //console.log("astoryImageOgUrl:",astoryImageOgUrl)
+
     //prep meta data for amention
     let ogUrl = '';
     if (amention && amentionLeague && amentionTeam && amentionPlayer) {
@@ -148,21 +146,11 @@ export default async function Page({
        // await session.save();
         console.log("after save")
     }
-    /* if(!session||!session.sessionid){
-        const resp=await fetch(`${process.env.NEXT_PUBLIC_SERVER}/api/init-session`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({})
-        });
-        const respJson=await resp.json();
-        session=respJson.session;
-     }*/
+
    return session;
 }
   const t1 = new Date().getTime();
-  //console.log("entered root page", t1)
+
   let sessionid = "";
   let dark=0;
   try {
