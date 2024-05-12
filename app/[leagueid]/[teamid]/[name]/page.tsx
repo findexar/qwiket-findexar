@@ -99,24 +99,33 @@ export async function generateMetadata(
     }
     const noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
     
-  return {
-    title: ogTitle,
-    openGraph: {
-      title: ogTitle,
-      description: ogDescription,
-      url: ogUrl,
-      images: [
-        {
-          url: ogImage,
-          width: image_width,
-          height: image_height,
-          alt: ogTitle,
-        }
-      ],
-      type: 'website'
-    },
-    robots: noindex ? 'noindex, nofollow' : 'index, follow'
-  }
+    return {
+        title: ogTitle,
+        openGraph: {
+          title: ogTitle,
+          description: ogDescription,
+          url: ogUrl,
+          images: [
+            {
+              url: ogImage,
+              width: image_width,
+              height: image_height,
+              alt: ogTitle,
+            }
+          ],
+          type: 'website'
+        },
+        robots: noindex ? 'noindex, nofollow' : 'index, follow',
+        alternates: {
+          canonical: ogUrl,
+        },
+        icons: {
+          icon: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
+          shortcut: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
+         
+        },
+        
+      }
 }
 export default async function Page({
     params,

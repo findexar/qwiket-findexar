@@ -112,7 +112,16 @@ export async function generateMetadata(
       ],
       type: 'website'
     },
-    robots: noindex ? 'noindex, nofollow' : 'index, follow'
+    robots: noindex ? 'noindex, nofollow' : 'index, follow',
+    alternates: {
+      canonical: ogUrl,
+    },
+    icons: {
+      icon: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
+      shortcut: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
+     
+    },
+    
   }
 }
 export default async function Page({
