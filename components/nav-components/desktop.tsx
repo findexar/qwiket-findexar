@@ -125,7 +125,7 @@ interface Props {
 
 const Desktop: React.FC<Props> = () => {
     const router = useRouter();
-    let { slug,tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
+    let { slug,tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
     tab=tab||"all";
     view=view||"mentions";
     const onTabNav =  (option: any) => {

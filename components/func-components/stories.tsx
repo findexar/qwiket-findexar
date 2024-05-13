@@ -65,7 +65,7 @@ interface Props {
 }
 
 const Stories: React.FC<Props> = () => {
-    const {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     const [firstXid, setFirstXid] = useState("");
      
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {

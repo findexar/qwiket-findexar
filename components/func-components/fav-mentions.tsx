@@ -12,7 +12,7 @@ import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
 interface Props {
 }
 const Fav: React.FC<Props> = () => {
-    let {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    let {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
     const [mentions,setMentions]=useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): FavoritesKey | null => {
         let key: FavoritesKey = { type: "favorites", page: pageIndex, league};

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation'
+//import { useRouter } from 'next/navigation'
 
 import { AMentionKey, getAMention, recordEvent, removeAMention } from '@/lib/api';
 import Mention from '@/components/func-components/items/mention';
@@ -93,7 +93,7 @@ interface Props {
 
 const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
   const [open, setOpen] = React.useState(false);
-  let { fallback,tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
+  let { fallback,tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
   const [xid, setXid] = React.useState<string>(findexarxid || "");
 
   const key: AMentionKey = { type: "AMention", findexarxid: xid, noLoad: xid !== "" ? false : true };

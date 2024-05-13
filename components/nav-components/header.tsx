@@ -373,7 +373,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
-  const router = useRouter();
+ 
   const onLeagueNavClick = useCallback((l: string, url: string) => {
     console.log("onLeagueNavClick", l, url, 'params:', params, 'tp:', tp)
     setLeague(l);

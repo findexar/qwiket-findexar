@@ -348,7 +348,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const {fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamName } = useAppContext();
+    const {fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
@@ -439,10 +439,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string,url:string) => {
-        handleClose();
+           await handleClose();
+      
         setLeague(league);
-        if(setTeam)
-        setTeam(team);
+        setTeamid(team);
+        setTeamName(teamName);
         setPlayer(type == 'person' ? name : '');
         let pgt = "";
         if (type == 'person')
@@ -451,11 +452,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             pgt = 'team';
         setPagetype(pgt);
         window.history.pushState({}, "", url);
-        window.scrollTo(0, 0);
+       // window.scrollTo(0, 0);
         await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
         );
+         
     }, [league, team, type, params]);
 
     const enableRedirect = useCallback(() => {
@@ -546,15 +548,15 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         
                         }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <a href={localUrl}  onClick={async () => { await onMentionNav(name,localUrl) }}>
+                        <Link scroll={linkType == 'final' ? false : true} href={localUrl}  onClick={async () => { await onMentionNav(name,localUrl) }}>
                             {summary}
-                        </a>
+                        </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                     </SummaryWrap>
                     <br />
 
                     <hr />
-                    <Atmention ><a href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </a>
+                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"

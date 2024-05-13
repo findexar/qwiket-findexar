@@ -50,7 +50,7 @@ interface Props {
 }
 const Welcome: React.FC<Props> = () => {
     const router = useRouter();
-    const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype,  setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     return <> <WelcomeWrap>
         Welcome to {process.env.NEXT_PUBLIC_APP_NAME}!<br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
