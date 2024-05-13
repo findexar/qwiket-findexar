@@ -127,7 +127,7 @@ const Mobile: React.FC<Props> = () => {
     }, [fbclid, utm_content, league, params2, tp2]);
 
     return (
-        <div className="block md:hidden h-full">
+        <div className="block lg:hidden h-full">
             <MobileContainerWrap>
                 {pagetype == "landing" && <Landing />}
                 {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "Readme", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />

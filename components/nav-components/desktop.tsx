@@ -41,8 +41,8 @@ const ContainerWrap = styled.div`
     font-size:14px;
     margin-top:12px;
     color:var(--text);
-    @media screen and (max-width: 1199px) {
-        display: none;
+    @media screen and (max-width: 1024px) {
+       display: none;
     }
     @media screen and (min-width: 1600px) {
       font-size: 18px;
@@ -153,7 +153,7 @@ const Desktop: React.FC<Props> = () => {
     console.log("overlays:",{findexarxid,slug})
     return (
         //complete in tailwind to make visible only on md and up
-        <div className="md:block hidden">
+        <div className="lg:block hidden h-full w-full">
         <ContainerWrap >
             {localFindexarxid&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             {slug&& <StoryOverlay idx="desktop" setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
