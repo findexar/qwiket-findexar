@@ -7,18 +7,21 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Basic redirect
-      {
-        source: '/pub',
-        destination: '/',
-        permanent: true,
-      },
-      // Wildcard path matching
-      {
-        source: '/pub/:slug*',
-        destination: '/:slug*',
-        permanent: true,
-      },
+    {
+      source: '/pub/league/:league',
+      destination: '/:league',
+      permanent: true,
+    },
+    {
+      source: '/pub/league/:league/team/:team',
+      destination: '/:league/:team',
+      permanent: true,
+    },
+    {
+      source: '/pub/league/:league/team/:team/player/:player',
+      destination: '/:league/:team/:player',
+      permanent: true,
+    },
     ]
   },
 };
