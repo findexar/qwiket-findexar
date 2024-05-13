@@ -85,9 +85,12 @@ interface Props {
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab, view, mode, userId, isMobile, setLeague, setView, setTab, params2, tp2, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamNam,slug,findexarxid } = useAppContext();
-
+    let { tab, view, mode, userId, isMobile, setLeague, setView, setTab, params2, tp2, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamNam, slug, findexarxid } = useAppContext();
+    const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     tab = tab || "all";
+    useEffect(() => {
+        setLocalFindexarxid(findexarxid);
+    }, [findexarxid]);
     const onTabNav = async (option: any) => {
         const tab = option.tab;
         setTab(tab);
@@ -95,7 +98,7 @@ const Mobile: React.FC<Props> = () => {
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
-      
+
         await recordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
@@ -108,51 +111,51 @@ const Mobile: React.FC<Props> = () => {
             name = 'mentions';
 
         setView(name);
-        if (!team){
+        if (!team) {
             //router.replace(league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
             window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-        } 
-        else{
+        }
+        else {
             //router.replace(`/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
             window.history.replaceState({}, "", `/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-   
+
         }
         await recordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );
-    }, [fbclid, utm_content,  league, params2, tp2]);
+    }, [fbclid, utm_content, league, params2, tp2]);
 
     return (
         <div className="block md:hidden h-full">
-        <MobileContainerWrap>
-            {pagetype == "landing" && <Landing />}
-            {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "Readme", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
-            }
-            {pagetype == "league" && league &&
-                <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
-            }
-            {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Feed", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
-            {view == 'mentions'&&pagetype=="league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled:false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+            <MobileContainerWrap>
+                {pagetype == "landing" && <Landing />}
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "Readme", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                }
+                {pagetype == "league" && league &&
+                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
+                }
+                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Feed", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
+                {view == 'mentions' && pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
-            {view == 'teams' &&
-                <LeftMobilePanel>
-                    <Teams />
-                </LeftMobilePanel>
-            }
-            {view == 'mentions' && <CenterPanel>
-            {pagetype=="team"?<TeamMentions/>:null}
-            {(pagetype == "player") && <PlayerMentions />}
-            {pagetype == "league" && tab == "all" ? <Stories /> :null}
-            {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
-            {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
-            </CenterPanel>}
-            {view == 'readme' && <Readme />}
-            {view == 'my team' && <MyTeam />}
-            {view == 'players' && <Players />}
-            {findexarxid&&<MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
-           {slug&&<StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
-        </MobileContainerWrap >
+                {view == 'teams' &&
+                    <LeftMobilePanel>
+                        <Teams />
+                    </LeftMobilePanel>
+                }
+                {view == 'mentions' && <CenterPanel>
+                    {pagetype == "team" ? <TeamMentions /> : null}
+                    {(pagetype == "player") && <PlayerMentions />}
+                    {pagetype == "league" && tab == "all" ? <Stories /> : null}
+                    {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
+                    {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
+                </CenterPanel>}
+                {view == 'readme' && <Readme />}
+                {view == 'my team' && <MyTeam />}
+                {view == 'players' && <Players />}
+                {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
+                {slug && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
+            </MobileContainerWrap >
         </div>
     )
 }
