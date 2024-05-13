@@ -69,14 +69,14 @@ export async function generateMetadata(
     //prep meta data for amention
     let ogUrl = '';
     if (amention && amentionLeague && amentionTeam && amentionPlayer) {
-      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}/team/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}/${amentionPlayer}?id=${findexarxid}`;
     } else if (amention && amentionLeague && amentionTeam) {
-      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}/team/${amentionTeam}?id=${findexarxid}`;
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}?id=${findexarxid}`;
     } else if (amention && amentionLeague) {
-      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${amentionLeague}?id=${findexarxid}`;
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}?id=${findexarxid}`;
     }
     else if (amention)
-      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/pub?id=${findexarxid}`;
+      ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/id=${findexarxid}`;
     else
       ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
     let ogTarget = '';
@@ -89,13 +89,13 @@ export async function generateMetadata(
     let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
     let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_APP_NAME]} Sports Media Index`;
     if (astory) {
-      ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${league}?${story ? `story=${story}` : ``}`
-        : `${process.env.NEXT_PUBLIC_SERVER}/pub?${story ? `story=${story}` : ``}`;
+      ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`
+        : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
       ogTitle = astoryTitle;
       ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
       ogImage = astoryImageOgUrl;
     }
-    const noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
+    const noindex = 1;
     
     return {
       title: ogTitle,

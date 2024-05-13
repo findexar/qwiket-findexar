@@ -69,11 +69,11 @@ const Welcome: React.FC<Props> = () => {
         <Favorites><Button disabled={view == 'fav'} onClick={() => {
             if (view != 'readme') {
                 setView("readme")
-                router.push(`/pub?view=readme${params2}${tp2.replace('?', '&')}`);
+                router.push(`/?view=readme${params2}${tp2.replace('?', '&')}`);
             }
             else {
                 setView("mentions")
-                router.push(`/pub${params}${tp2.replace('?', '&')}`);
+                router.push(`/${params}${tp2.replace('?', '&')}`);
             }
         }} style={{ padding: 10 }} variant="outlined">{view == "readme" ? <HomeIcon fontSize="small" /> : <HelpOutlineIcon fontSize="small" />}&nbsp;&nbsp;{view == "readme" ? <span>Back to Home</span> : <span>Read Me</span>}</Button></Favorites>
 
