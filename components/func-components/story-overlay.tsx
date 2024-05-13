@@ -183,11 +183,11 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
 
     return <>{open &&
         <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
+          
             <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center md:p-4 text-center ">
                     <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-2 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full ">
-                    <div className="md:hidden text-white px-4 pt-6"> QWIKET</div>
-                           
+                    <div className="md:hidden text-white px-4 pt-6"> QWIKET </div>
                         <div className="bg-transparent md:px-8 md:pt-12 pt-4 pb-4 sm:p-4 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-0 sm:text-left">

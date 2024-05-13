@@ -34,7 +34,7 @@ const MobileContainerWrap = styled.div`
     width: 100%;
     font-family: 'Roboto', sans-serif;
     border-top: 1px solid #ccc;
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1024px) {
       display: none;
     }
 `;

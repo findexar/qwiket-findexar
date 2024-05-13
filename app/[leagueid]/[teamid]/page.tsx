@@ -204,8 +204,10 @@ export default async function Page({
         calls.push(fetchMyTeam({ userId, sessionid, league }));
     }*/
     if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //entions
+      if(!story&&!findexarxid)
         calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
     }
+    if(!story&&!findexarxid)
     calls.push(await fetchTeamPlayers({ userId, sessionid,  teamid }));
     
     await fetchData(t1, fallback, calls);

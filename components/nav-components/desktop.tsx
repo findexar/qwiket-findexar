@@ -156,7 +156,7 @@ const Desktop: React.FC<Props> = () => {
         <div className="lg:block hidden h-full w-full">
         <ContainerWrap >
             {(localFindexarxid)&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
-            {slug&& <StoryOverlay idx="desktop" setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
+            {slug&& <StoryOverlay idx={"desktop"} setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             <PageWrap>
                 <Page>
                     {pagetype == "landing" && <Landing />}

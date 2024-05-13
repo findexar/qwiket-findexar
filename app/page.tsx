@@ -210,18 +210,22 @@ export default async function Page({
     calls.push(fetchMyTeam({ userId, sessionid, league }));
   }*/
   if (tab == 'fav' && view == 'mentions') { //favorites
+    if(!story&&!findexarxid)
     calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
   if (view == 'my team' || view == 'mentions') { //my feed
+    if(!story&&!findexarxid)
     calls.push(await fetchMyTeam({ userId, sessionid, league }));
   }
   if (tab == 'myfeed' || view == 'mentions') { //my feed
     console.log("TAB=myfeed")
+    if(!story&&!findexarxid)
     calls.push(await fetchMyFeed({ userId, sessionid, league }));
   }
   console.log("view:============>>>>>>>", view, tab, league)
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') { //stories
     console.log("fetchStories",JSON.stringify({userId,sessionid,league}))
+    if(!story&&!findexarxid)
     calls.push(await fetchStories({ userId, sessionid, league }));
   }
   await fetchData(t1, fallback, calls);

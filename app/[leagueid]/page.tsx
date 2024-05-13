@@ -181,6 +181,7 @@ export default async function Page({
    * 
    */
   console.log("***> view,tab",view,tab)
+  if(!story&&!findexarxid)
   calls.push(await fetchLeagueTeams({ league }));
   if (findexarxid) {  // if a mention story is opened
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
@@ -194,17 +195,21 @@ export default async function Page({
     calls.push(await fetchMyTeam({ userId, sessionid, league }));
   }*/
   if (tab == 'fav' && view == 'mentions') { //favorites
+    if(!story&&!findexarxid)
     calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
   if (view == 'my team' || view == 'mentions') { //my feed
     console.log("GET MY TEAM")
+    if(!story&&!findexarxid)
     calls.push(await fetchMyTeam({ userId, sessionid, league }));
   }
   if (tab == 'myfeed' || view == 'mentions') { //my feed
     console.log("TAB=myfeed")
+    if(!story&&!findexarxid)
     calls.push(await fetchMyFeed({ userId, sessionid, league }));
   }
   if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
+    if(!story&&!findexarxid)
     calls.push(await fetchStories({ userId, sessionid, league}));
   }
   await fetchData(t1, fallback, calls);

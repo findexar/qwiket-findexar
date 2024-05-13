@@ -193,9 +193,11 @@ export default async function Page({
     if (story) { // if a digest story is opened
         calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
+    if(!story&&!findexarxid)
     calls.push(await fetchTeamPlayers({ userId, sessionid,  teamid }));
    
     //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
+    if(!story&&!findexarxid)
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid,name }));
     //}
     await fetchData(t1, fallback, calls);
