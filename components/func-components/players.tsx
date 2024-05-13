@@ -168,7 +168,7 @@ const Players: React.FC<Props> = () => {
     //@ts-ignore
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
-    console.log("PLAYERS:",players,"key:",teamPlayersKey)
+   // console.log("PLAYERS:",players,"key:",teamPlayersKey)
     const onPlayerNav = async (name: string) => {
         console.log("onPlayerNav", name)
         setPagetype("player");

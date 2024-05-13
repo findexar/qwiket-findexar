@@ -96,10 +96,10 @@ interface Props {
 }
 
 const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
-  const [open, setOpen] = React.useState(false);
+
   let { fallback,tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
   const [xid, setXid] = React.useState<string>(findexarxid || "");
-
+  const [open, setOpen] = React.useState(findexarxid?true:false);
   const key: AMentionKey = { type: "AMention", findexarxid: xid };
   const { data: amention, error, isLoading } = useSWR(key, actionAMention,{fallback})
   const { date, url, summary, fav, type, league, team, teamName, name } = amention || {};

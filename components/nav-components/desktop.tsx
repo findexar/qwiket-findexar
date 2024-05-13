@@ -129,7 +129,7 @@ const Desktop: React.FC<Props> = () => {
     tab=tab||"all";
     view=view||"mentions";
     const [localFindexarxid,setLocalFindexarxid] = React.useState(findexarxid);
-    console.log("findexarxid:",localFindexarxid);
+    console.log("findexarxid:",localFindexarxid,"local:",findexarxid);
     useEffect(()=>{
         setLocalFindexarxid(findexarxid);
     },[findexarxid]);
@@ -155,7 +155,7 @@ const Desktop: React.FC<Props> = () => {
         //complete in tailwind to make visible only on md and up
         <div className="lg:block hidden h-full w-full">
         <ContainerWrap >
-            {localFindexarxid&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
+            {(localFindexarxid)&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             {slug&& <StoryOverlay idx="desktop" setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             <PageWrap>
                 <Page>

@@ -49,7 +49,7 @@ const PlayerMentions: React.FC<Props> = () => {
         view = "mentions";
 
    */
-  console.log("mentions:",mentions)
+  //console.log("mentions:",mentions)
     return (
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers}/>
     )

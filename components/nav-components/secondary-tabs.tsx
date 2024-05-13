@@ -48,7 +48,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
     let name = option.name.toLowerCase();
     if (name == 'feed')
       name = 'mentions';
-    console.log("options.map", option.name, selectedOptionName)
+    //console.log("options.map", option.name, selectedOptionName)
     let selected = false;
     if (name == selectedOptionName?.toLowerCase()) {
       selected = true;
