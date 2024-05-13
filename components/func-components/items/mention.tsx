@@ -436,7 +436,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [date])
 
-    const onMentionNav = useCallback(async (name: string) => {
+    const onMentionNav = useCallback(async (name: string,url:string) => {
         handleClose();
         setLeague(league);
         if(setTeam)
@@ -448,6 +448,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         else
             pgt = 'team';
         setPagetype(pgt);
+        window.history.replaceState({}, "", url);
         await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
@@ -542,7 +543,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         
                         }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
+                        <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name,localUrl) }}>
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
@@ -550,7 +551,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <br />
 
                     <hr />
-                    <Atmention ><Link href={bottomLink}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
@@ -694,14 +695,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <div>
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
                         <SummaryWrap>
-                            <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name) }} shallow>
+                            <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name,localUrl) }}>
                                 {summary}
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{ }</Atmention>
+                        <Atmention onClick={async () => { await onMentionNav(name,bottomLink) }}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{ }</Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
                     <BottomLine>
