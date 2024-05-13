@@ -141,11 +141,11 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   if (amention && amentionLeague && amentionTeam && amentionPlayer && type == 'person')
     ogTarget = `${amentionPlayer} of ${amentionTeamName}`;
   else if (amention && amentionLeague && amentionTeam)
-    ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_SITE_NAME}`;
+    ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
 
   let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Index.";
-  let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_SITE_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
-  let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_SITE_NAME]} Sports Media Index`;
+  let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
+  let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_APP_NAME]} Sports Media Index`;
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/pub/league/${league}?${story ? `story=${story}` : ``}`
       : `${process.env.NEXT_PUBLIC_SERVER}/pub?${story ? `story=${story}` : ``}`;
