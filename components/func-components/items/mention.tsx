@@ -334,7 +334,9 @@ const SummaryWrap = styled.div`
       
     }
 `;
-
+const LocalLink = styled.a`
+    cursor:pointer;
+`;
 interface Props {
     mention: any,
     linkType?: string;
@@ -448,7 +450,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         else
             pgt = 'team';
         setPagetype(pgt);
-        window.history.replaceState({}, "", url);
+        window.history.pushState({}, "", url);
+        window.scrollTo(0, 0);
         await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
@@ -543,15 +546,15 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         
                         }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name,localUrl) }}>
+                        <a href={localUrl}  onClick={async () => { await onMentionNav(name,localUrl) }}>
                             {summary}
-                        </Link>
+                        </a>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                     </SummaryWrap>
                     <br />
 
                     <hr />
-                    <Atmention ><Link href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><a href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </a>
 
                         {type == "person" && <div>
                             <div className="mt-2"
