@@ -2,7 +2,10 @@ import React, { useEffect, useCallback } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
 import { useRouter } from 'next/router'; // Corrected import for useRouter
-import { recordEvent, ASlugStoryKey, getASlugStory, removeASlugStory } from '@/lib/api';
+
+import{ASlugStoryKey} from '@/lib/keys';
+import { actionRecordEvent } from "@/lib/actions";
+import{actionASlugStory,removeASlugStory} from '@/lib/fetchers/slug-story';
 import Story from '@/components/func-components/items/story';
 import { useAppContext } from '@/lib/context';
 
@@ -119,8 +122,8 @@ interface Props {
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
 
-    const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug, noLoad: slug == "" ? true : false };
-    let { data: aSlugStory } = useSWR(aSlugStoryKey, getASlugStory, { fallback });
+    const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
+    let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);
     console.log("DIALOG open:", open)
@@ -141,7 +144,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         console.log("closeDialog slug=", slug)
        // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
         //router.push(localUrl); // Correctly using router to navigate
-        recordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
+        actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
                 console.log("recordEvent", r);
             });

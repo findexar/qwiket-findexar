@@ -43,7 +43,7 @@ interface LeagueLayoutProps {
 }
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
 
-const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark, teamName: startTeamName = "" }) => {
+const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid: startFindexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark, teamName: startTeamName = "" }) => {
   const [tab, setTab] = React.useState(startTab || "");
   const [view, setView] = React.useState(startView || "");
   const [league, setLeague] = React.useState(startLeague);
@@ -51,6 +51,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   const [player, setPlayer] = React.useState(startName);
   const [pagetype, setPagetype] = React.useState(startPagetype);
   const [teamName, setTeamName] = React.useState(startTeamName);
+  const[findexarxid,setFindexarxid] = React.useState(startFindexarxid);
+  const[slug,setSlug] = React.useState(story);
+
+
   //const [mutatePlayers, setMutatePlayers] = React.useState<any>(undefined);
   const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
   const [params, setParams] = useState("");
@@ -114,7 +118,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   const aMentionKey: AMentionKey = { type: "AMention", findexarxid };
   const { data: amention } = useSWR(aMentionKey, actionAMention, { fallback })
   const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
-  const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: story };
+  const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug };
   let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory);
   let astory = aSlugStory;
   const { title: astoryTitle = "", site_name: astorySite_Name = "", authors: astoryAuthors = "", digest: astoryDigest = "", image: astoryImage = "", createdTime: astoryDate = "", mentions: mentions = [], image_width = 0, image_height = 0 } = astory ? astory : {};
@@ -157,7 +161,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
       //@ts-ignore //
       theme={palette}>
       <GlobalStyle $light={localMode == "light"} />
-      <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={story} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode}  >
+      <AppWrapper teamName={teamName} setTeamName={setTeamName} setLeague={setLeague} setTab={setTab} setView={setView} params={params} params2={params2} tp={tp} tp2={tp2} fallback={fallback} isMobile={isMobile} fbclid={fbclid} utm_content={utm_content} slug={slug} findexarxid={findexarxid} league={league} view={view} tab={tab} teamid={teamid} player={player} setTeamid={setTeamid} setPlayer={setPlayer} pagetype={pagetype} setPagetype={setPagetype} mode={localMode} setMode={setLocalMode} setFindexarxid={setFindexarxid} setSlug={setSlug}  >
         <main className={(localMode == "light" ? roboto.className : roboto.className + " dark") + " h-full"} >
           <Head>
             <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />

@@ -348,7 +348,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const {fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
+    const {setFindexarxid,fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
@@ -366,7 +366,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league:ll };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam,fallback);
-    console.log("Mention:trackerListMemebrsKey",trackerListMembersKey)
+    
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);
@@ -443,6 +443,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
       
         setLeague(league);
         setTeamid(team);
+        setFindexarxid(findexarxid);
         setTeamName(teamName);
         setPlayer(type == 'person' ? name : '');
         let pgt = "";

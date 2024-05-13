@@ -124,10 +124,15 @@ interface Props {
 }
 
 const Desktop: React.FC<Props> = () => {
-    const router = useRouter();
+
     let { slug,tab,view,mode, userId, isMobile, setLeague, setView,setTab, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName ,findexarxid} = useAppContext();
     tab=tab||"all";
     view=view||"mentions";
+    const [localFindexarxid,setLocalFindexarxid] = React.useState(findexarxid);
+    console.log("findexarxid:",localFindexarxid);
+    useEffect(()=>{
+        setLocalFindexarxid(findexarxid);
+    },[findexarxid]);
     const onTabNav =  (option: any) => {
         const tab = option.tab;
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
@@ -150,7 +155,7 @@ const Desktop: React.FC<Props> = () => {
         //complete in tailwind to make visible only on md and up
         <div className="md:block hidden">
         <ContainerWrap >
-            {findexarxid&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
+            {localFindexarxid&&<MentionOverlay setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             {slug&& <StoryOverlay idx="desktop" setDismiss={(dismiss:boolean)=>{setView("mentions");}} mutate={() => {}}  />}
             <PageWrap>
                 <Page>

@@ -3,8 +3,12 @@ import useSWR from 'swr';
 import styled from 'styled-components';
 //import { useRouter } from 'next/navigation'
 
-import { AMentionKey, getAMention, recordEvent, removeAMention } from '@/lib/api';
+
+import{AMentionKey} from '@/lib/keys';
+import{actionAMention,removeAMention} from '@/lib/fetchers/mention';
 import Mention from '@/components/func-components/items/mention';
+import { actionRecordEvent } from "@/lib/actions";
+
 import { useAppContext } from '@/lib/context';
 
 const ContentWrap = styled.div`
@@ -96,8 +100,8 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
   let { fallback,tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
   const [xid, setXid] = React.useState<string>(findexarxid || "");
 
-  const key: AMentionKey = { type: "AMention", findexarxid: xid, noLoad: xid !== "" ? false : true };
-  const { data: amention, error, isLoading } = useSWR(key, getAMention,{fallback})
+  const key: AMentionKey = { type: "AMention", findexarxid: xid };
+  const { data: amention, error, isLoading } = useSWR(key, actionAMention,{fallback})
   const { date, url, summary, fav, type, league, team, teamName, name } = amention || {};
   //const theme = useTheme();
   //const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
