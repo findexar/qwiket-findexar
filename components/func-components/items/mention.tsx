@@ -348,7 +348,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const {setFindexarxid,fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
+    const {setFindexarxid,setSlug,fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
@@ -443,7 +443,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
       
         setLeague(league);
         setTeamid(team);
+        if(!mini)
         setFindexarxid(findexarxid);
+    else
+        setSlug("");
         setTeamName(teamName);
         setPlayer(type == 'person' ? name : '');
         let pgt = "";
@@ -549,7 +552,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         
                         }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={localUrl}  onClick={async () => { await onMentionNav(name,localUrl) }}>
+                        <Link scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl}  onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
@@ -634,7 +637,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </div>
                         </div>}
                     </Atmention>
-                    <BottomLine>
+                    <BottomLine> 
                         <ShareGroup><RWebShare
                             data={{
                                 text: summary,
@@ -700,8 +703,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 <MentionSummary>
                     <div>
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                     
                         <SummaryWrap>
-                            <Link scroll={linkType == 'final' ? false : true} href={localUrl} onClick={async () => { await onMentionNav(name,localUrl) }}>
+                            <Link scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl} onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
                                 {summary}
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
