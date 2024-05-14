@@ -33,6 +33,7 @@ const Title = styled.div`
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
+    text-align:left;
 `;
 
 const Digest = styled.div`
@@ -209,7 +210,7 @@ const MentionsWrap = styled.div`
     display:flex;
     flex-direction:column;
     width:100%;
-    padding-right:20px;
+    //padding-right:20px;
     margin-top:6px;
     margin-bottom:6px;
     a{

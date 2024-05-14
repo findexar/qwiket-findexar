@@ -21,7 +21,7 @@ const MentionWrap = styled.div<MentionsProps>`
     flex-direction: row;
     justify-content: flex-start;
     align-items:flex-start;
-    margin:4px;
+    margin-top:4px;
     padding-left:16px;
     color:var(--text);
   // z-index:200;
@@ -30,6 +30,7 @@ const MentionWrap = styled.div<MentionsProps>`
         background-color:var(--mention-high-bg);
         color: var(--mention-text);
         cursor:pointer;
+        
     }   
     a{
         color:var(--mention-text);
@@ -39,7 +40,7 @@ const MentionWrap = styled.div<MentionsProps>`
         }   
     }
     display:${props => props.$hideit ? 'none' : 'flex'};
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display: none;
     }
 `;
@@ -53,11 +54,11 @@ const InnerMention = styled.div`
 const MobileMentionWrap = styled.div<MentionsProps>` 
     width:100%;
     display:${props => props.$hideit ? 'none' : 'flex'};
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items:flex-start;
-    margin:4px;
-    padding-left:12px;
+    //flex-direction: row;
+    //justify-content: center;
+    //align-items:flex-start;
+    margin-top:6px;
+    //padding-left:12px;
     &:hover{
         color: var(--mention-text);
     } 
@@ -68,7 +69,7 @@ const MobileMentionWrap = styled.div<MentionsProps>`
            color: var(--mention-text);
         }   
     }
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1024px) {
         display: none;
     }
 `;
@@ -82,13 +83,19 @@ const MentionSummary = styled.div`
         background-color:var(--mention-high-bg);
     } 
     border-radius: 5px 5px 5px 5px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
        margin:0px;
+       padding:0px;
     }
 `;
 
 const Atmention = styled.div`
     font-size: 13px;   
+   
+    @media screen and (max-width: 1024px) {
+        text-align:left;
+        padding-left:4px;
+    }
 `;
 
 interface Props {
