@@ -24,8 +24,8 @@ const Readme = () => {
             <p className="mt-2">If you stay at the top level, or the league level, you can jump off to an athlete&apos;s or team&apos;s section by clicking on a mention.</p>
             <h3 className="text-xl font-semibold mt-3">Favorites</h3>
             <p className="mt-2">Click on a star on a mention to add the mention to the Favorites collection.</p>
-            <h4 className="text-lg font-semibold mt-3">My Team</h4>
-            <p className="mt-2">When in the team area, click on the icon to the right of the athlete&apos;s name to add them to the My Team collection. Use the My Team checkbox to filter mentions by My Team when at the top or league levels.</p>
+            <h4 className="text-lg font-semibold mt-3">My Fantasy Team</h4>
+            <p className="mt-2">When in the team area, click on the icon to the right of the athlete&apos;s name to add them to the My Fantasy Team collection. Use the My Fantasy Team checkbox to filter mentions by My Fantasy Team when at the top or league levels.</p>
             <h2 className="text-2xl font-semibold mt-4">How does {process.env.NEXT_PUBLIC_APP_NAME} work?</h2>
             <p className="mt-2">Suffice it to say, we use AI to create digests for the article with athletes or teams mentions. Then, for every mention in the article, we create a short mention gist, to give you an idea of the nature and context of each mention, as much as possible.</p>
             <h2 className="text-2xl font-semibold mt-4">Are there any social media accounts to follow Findexar on?</h2>

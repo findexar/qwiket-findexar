@@ -62,7 +62,7 @@ const Welcome: React.FC<Props> = () => {
         individual athletes and teams.<br /><br />
 
         Track the media mentions across <br />your fantasy teams effortlessly<br />
-        using the My Team feature<br /><br />
+        using the My Fantasy Team feature<br /><br />
         <hr />
         Powered by OpenAI.</WelcomeWrap>
         <br />

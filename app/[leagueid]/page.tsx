@@ -190,15 +190,12 @@ export default async function Page({
   if (story) { // if a digest story is opened
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
-  /*if (!isMobile || view == 'my team') { // if my team roster is opened
-    console.log("my team=>",)
-    calls.push(await fetchMyTeam({ userId, sessionid, league }));
-  }*/
+  
   if (tab == 'fav' && view == 'mentions') { //favorites
     if(!story&&!findexarxid)
     calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
   }
-  if (view == 'my team' || view == 'mentions') { //my feed
+  if (view == 'my fantasy team' || view == 'mentions') { //my feed
     console.log("GET MY TEAM")
     if(!story&&!findexarxid)
     calls.push(await fetchMyTeam({ userId, sessionid, league }));

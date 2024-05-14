@@ -47,10 +47,10 @@ const removeFavorite = async ({ findexarxid}: FavoriteParams,userId:string,sessi
 
     userId=userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/favorites/remove?api_key=${api_key}&userid=${userId}&findexarxid=${encodeURIComponent(findexarxid as string||"")}`;
-    console.log("remove my team member:",url)
+   // console.log("remove my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET remove my team:",res.success)
+    //console.log("RET remove my team:",res.success)
     return res.success;
 }
 export const actionAddFavorite = async (props: FavoriteParams) => {

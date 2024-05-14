@@ -15,10 +15,10 @@ interface FetchMyTeamProps {
 const fetchMyTeam = async (key: MyTeamKey,userId:string,sessionid:string) => {
     const { league } = key;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-my-team?api_key=${api_key}&league=${league || ""}&userid=${userId}&sessionid=${sessionid}`;
-    console.log("fetching my team players:",url)
+    //console.log("fetching my team players:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET fetch my team:",res.members)
+   //console.log("RET fetch my team:",res.members)
     return res.members;
 }
 const promiseFetchMyTeam = async ({ league = "",userId="",sessionid="" }: FetchMyTeamProps) => {
@@ -42,20 +42,20 @@ const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:strin
   
     userId=userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/tracker-list/add?api_key=${api_key}&member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
-    console.log("add my team member:",url)
+    //console.log("add my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET add my team:",res.success)
+    //console.log("RET add my team:",res.success)
     return res.success;
 }
 const removeMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
 
     userId=userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/tracker-list/remove?api_key=${api_key}&member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
-    console.log("remove my team member:",url)
+  //  console.log("remove my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET remove my team:",res.success)
+  //  console.log("RET remove my team:",res.success)
     return res.success;
 }
 export const actionAddMyTeamMember = async (props: MyTeamMemberProps) => {

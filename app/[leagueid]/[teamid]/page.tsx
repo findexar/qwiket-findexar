@@ -193,16 +193,7 @@ export default async function Page({
         console.log("FETCHING SLUG STORY:",story)
         calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
     }
-   /* if (!isMobile || view == 'my team') { // if my team roster is opened
-        console.log("my team=>",)
-        calls.push(fetchMyTeam({ userId, sessionid, league }));
-    }
-    if (tab == 'fav' && view == 'mentions') { //favorites
-        calls.push(fetchFavorites({ userId, sessionid, league, page: 0 }));
-    }
-    if (tab == 'myteam' && view == 'mentions') { //my feed
-        calls.push(fetchMyTeam({ userId, sessionid, league }));
-    }*/
+
     if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //entions
       if(!story&&!findexarxid)
         calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));

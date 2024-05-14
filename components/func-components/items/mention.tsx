@@ -579,7 +579,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                      }*/
                                     if (localTracked == true) {
                                         console.log("TRACKED", name);
-                                        setToastMessage("Player removed from My Team");
+                                        setToastMessage("Player removed from the Fantasy Team");
                                         setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
                                      
                                         console.log("tracked after mutatePlayers", name, team);
@@ -606,7 +606,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     }
                                     else {
                                         console.log("UNTRACKED", name)
-                                        setToastMessage("Player added to My Team");
+                                        setToastMessage("Player added to the Fantasy Team");
                                         setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
                                         setLocalTracked(true);
                                         console.log("untracked after mutatePlayers", name, team);

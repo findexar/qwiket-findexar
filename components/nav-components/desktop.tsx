@@ -165,7 +165,7 @@ const Desktop: React.FC<Props> = () => {
                             {league ? <Teams /> : <Welcome />}
                         </LeftPanel>
                         <CenterPanel>
-                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={ (option: any) => {  onTabNav(option); }} selectedOptionName={tab} />}
+                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "My Fantasy Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={ (option: any) => {  onTabNav(option); }} selectedOptionName={tab} />}
                             {(pagetype == "team" ||(pagetype=="league"&&(tab=="myteam"))) && <TeamMentions />}
                             { pagetype=="league"&&tab=="myfeed" && <MyfeedMentions />}
                             { pagetype=="league"&&tab=="fav" && <FavMentions />}
