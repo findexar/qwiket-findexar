@@ -330,18 +330,18 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     return (
         <div ref={ref}>
             <DesktopWrap>
-                <Link href={url} onClick={onStoryClick}>
+                <Link href={url} scroll={false} onClick={onStoryClick}>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
                     <Title>{title}</Title>
                 </Link>
-                <Link href={url} onClick={onStoryClick}>
+                <Link href={url} scroll={false} onClick={onStoryClick}>
                     <Byline>
                         {authors && <Authors>{authors}</Authors>}
                         <SiteName>{site_name}</SiteName>
                     </Byline>
                 </Link>
                 <HorizontalContainer>
-                    <Link href={url} onClick={onStoryClick}>
+                    <Link href={url} scroll={false} onClick={onStoryClick}>
                         <ImageWrapper>
                             {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) && <Image src={image} alt={title} />}
                         </ImageWrapper>
@@ -351,7 +351,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                             <b>{true ? 'Digest:' : 'Short Digest:'}</b>
                         </ArticleDigest></Link>}
                         <Digest>
-                            <Link href={url} onClick={onStoryClick} target="_blank">
+                            <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
                                 <div dangerouslySetInnerHTML={{ __html: digest }} />
                             </Link>
                             <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer',color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
@@ -382,25 +382,22 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
             </DesktopWrap>
             <MobileWrap>
                 <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
-                <Link href={url} onClick={onStoryClick}><Title>{title}</Title></Link>
-                <Link href={url} onClick={onStoryClick}><Byline>
+                <Link href={url} scroll={false} onClick={onStoryClick}><Title>{title}</Title></Link>
+                <Link href={url} scroll={false} onClick={onStoryClick}><Byline>
                     {authors && <Authors>{authors}</Authors>}
                     <SiteName>{site_name}</SiteName>
                 </Byline>
                 </Link>
                 <HorizontalContainer>
-                    <Link href={url} onClick={onStoryClick}>
+                    <Link href={url} scroll={false} onClick={onStoryClick}>
                         <ImageWrapper>
                             <Image src={image} width={100} height={100} alt={title} />
                         </ImageWrapper>
                     </Link>
                     <Body>
-                        {false && <Link onClick={onStoryClick} href={url || ""}><ArticleDigest>
-                            {true ? 'Article Digest:' : 'Short Digest:'}
-                        </ArticleDigest>
-                        </Link>}
+           
                         <Digest>
-                            <Link href={url || ""} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
+                            <Link href={url || ""} scroll={false} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                             <ShareContainerInline>
                                 <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10,color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
                             </ShareContainerInline>
@@ -411,7 +408,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
                     {Mentions}</ArticleMentions>
                 <br />
-                <Link href={url || ""}> {url?.substring(0, 30)}...</Link>
+                <Link href={url || ""} scroll={false} onClick={onStoryClick}> {url?.substring(0, 30)}...</Link>
                 <BottomLine>
                     <ShareGroup><RWebShare
                         data={{
