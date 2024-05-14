@@ -147,7 +147,7 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype == "team" ? <TeamMentions /> : null}
                     {(pagetype == "player") && <PlayerMentions />}
                     {pagetype == "league" && tab == "all" ? <Stories /> : null}
-                    {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions /> : null}
+                    {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league}/> : null}
                     {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                 </CenterPanel>}
                 {view == 'readme' && <Readme />}

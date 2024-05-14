@@ -79,21 +79,19 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
     });
     return (
         <>
-            {!isMobile ?
-                <MentionsOuterContainer>
+                <MentionsOuterContainer className="hidden md:block">
                     <MentionsBody>
                         {Mentions}
                     </MentionsBody>
                     <LoadMore items={mentions} name="mentions"  setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                 </MentionsOuterContainer>
-                :
-                <div className="h-full"><MobileMentionsOuterContainer>
+                <div className="h-full md:hidden"><MobileMentionsOuterContainer>
                     <MentionsBody>
                         {Mentions}
                     </MentionsBody>
                     <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                 </MobileMentionsOuterContainer></div>
-            }
+            
         </>
     )
 }
