@@ -8,6 +8,7 @@ import { actionRecordEvent } from "@/lib/actions";
 import{actionASlugStory,removeASlugStory} from '@/lib/fetchers/slug-story';
 import Story from '@/components/func-components/items/story';
 import { useAppContext } from '@/lib/context';
+import CloseIcon from '@/components/icons/close';
 
 const ContentWrap = styled.div`
     width: 100%;
@@ -201,7 +202,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
                                             <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
                                             <div autoFocus onClick={() => { handleClose(); }}>
-                                                <XContainer><XElement>x</XElement></XContainer>
+                                                <XContainer><XElement><CloseIcon className="text-xl md:text-2xl"/></XElement></XContainer>
                                             </div>
                                             {admin && <div autoFocus onClick={() => { remove(); }}>
                                                 <XContainer><RElement>R</RElement></XContainer>

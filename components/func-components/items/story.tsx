@@ -180,12 +180,14 @@ const DesktopWrap = styled.div`
     max-width:100%;
     margin-top:20px;
     margin-bottom:20px;
-    background-color:var(--mention-bg);
+   // background-color:var(--mention-bg);
+    background-color:var(--background);
+   
     padding:10px;
     a{
         font-size:15px !important;   
     }
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display: none;
     }
 `;
@@ -201,7 +203,7 @@ const MobileWrap = styled.div`
     a{
         font-size:15px !important;
     }
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1024px) {
         display: none;
     }
 `;

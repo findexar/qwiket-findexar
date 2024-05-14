@@ -9,6 +9,7 @@ import{actionAMention,removeAMention} from '@/lib/fetchers/mention';
 import Mention from '@/components/func-components/items/mention';
 import { actionRecordEvent } from "@/lib/actions";
 
+import CloseIcon from '@/components/icons/close';
 import { useAppContext } from '@/lib/context';
 
 const ContentWrap = styled.div`
@@ -176,7 +177,7 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
                     </DialogTitleWrap>
                     <ContentWrap>
                       <div autoFocus onClick={() => { handleClose(); }}>
-                        <XContainer><XElement>x</XElement></XContainer>
+                        <XContainer><XElement><CloseIcon /></XElement></XContainer>
                       </div>
                       {admin && <div autoFocus onClick={() => { remove(); }}>
                         <XContainer><RElement>R</RElement></XContainer>
