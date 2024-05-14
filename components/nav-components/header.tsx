@@ -365,7 +365,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, setView, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
+  const { fallback, mode, userId, setLeague, view,setView,setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
@@ -378,6 +378,10 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     setLeague(l);
     // setView('mentions');
     setPagetype('league');
+    if(view=='teams'){
+      setView('mentions');
+      setTab('');
+    }
     setTeamid("");
     console.log("replaceState", url)
     window.history.replaceState({}, "", url);
