@@ -5,7 +5,7 @@ import { Tabs, Tab } from '@/components/nav-components/tabs'
 const TabsWrap = styled.div`
   background-color:var(--secondary-tabs-bg);
   color:var(--secondary-tabs-text);
-  font-size:10px;
+  //font-size:10px;
 `;
 
 interface StyledTabsProps {
