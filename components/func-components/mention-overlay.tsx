@@ -27,6 +27,7 @@ const MentionWrap = styled.div`
     width: 100%;
     height: 100%;
     font-family:'Roboto','Helvetica',sans-serif;
+    text-align:left;
 `;
 
 const XContainer = styled.div`
@@ -52,10 +53,11 @@ const XElement = styled.div`
     justify-content:center;
     align-items:center;
     font-size:28px;
-    margin-top:-110px;
+    margin-top:-56px;
     color:#fff;
-    @media (max-width: 1199px) {
+    @media (max-width: 1024px) {
       margin-top:-32px;
+      margin-right:10px;
       //margin-top:0px;
     }  
 `;
@@ -73,21 +75,22 @@ const RElement = styled.div`
         margin-top:0px;
     }
 `;
-const TitleWrap = styled.div`
-    color:#fff !important;
-`;
 
 const DialogTitleWrap = styled.div`
     display:block;
-    @media (max-width: 1199px) {
-       // display:none;
+   
+    @media (max-width: 1024px) {
+        display:none;
     }
 `;
 
 const DialogTitleMobileWrap = styled.div`
     display:block;
-    margin-top:20px;
-    @media (min-width: 1200px) {
+    text-align:left;
+    margin-left:16px;
+    height:16px;
+   // margin-top:20px;
+    @media (min-width: 1024px) {
         display:none;
     }
 `;
@@ -163,15 +166,17 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
   if (!amention)
     return null;
   return <>{open &&
-    <div className='fixed inset-0 z-50 bg-black bg-opacity-25'>
+    <div className='fixed inset-0 z-50 bg-black bg-opacity-25 sm:bg-opacity-50'>
       <div className="fixed inset-0 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4 text-center">
+        <div className="flex min-h-full items-center justify-center md:p-4 text-center">
           <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full">
-            <div className="bg-black bg-opacity-25 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="md:hidden text-white px-4 py-1"> QWIKET </div>
+            <div className="bg-black bg-opacity-25 md:px-4 md:pt-4 md:pb-4 pt-2 pb-2">
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                 <div className="mt-2">
-                    <DialogTitleMobileWrap> </DialogTitleMobileWrap>
+                <div className="mt-3 text-left sm:mt-0 sm:ml-0 sm:text-left">
+                 <div className="mt-0">
+                    <DialogTitleMobileWrap> <div className='h-4 text-white text-xl md:text-2xl'>{target}</div>
+                    </DialogTitleMobileWrap>
                     <DialogTitleWrap>
                         <div className='text-white text-xl md:text-2xl'>{target}</div>
                     </DialogTitleWrap>
