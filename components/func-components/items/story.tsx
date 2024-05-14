@@ -58,6 +58,7 @@ const ArticleMentions = styled.div`
     padding-top:4px;
     padding-bottom:4px;
     margin-bottom:4px;
+    margin-top:8px;
 `;
 
 const ImageWrapper = styled.div`

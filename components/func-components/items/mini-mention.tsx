@@ -14,8 +14,9 @@ interface MentionsProps {
 }
 
 const MentionWrap = styled.div<MentionsProps>`
-    width:100%;
+    //width:100%;
     margin-right:20px;
+    margin-left:20px;
     position:relative;
     background-color: var(--mention-bg);//var(--mention-border);
     flex-direction: row;
@@ -24,6 +25,7 @@ const MentionWrap = styled.div<MentionsProps>`
     margin-top:4px;
     padding-left:16px;
     color:var(--text);
+    border-radius: 2px 2px 2px 2px;
   // z-index:200;
     font-size: 16px;
     &:hover{
