@@ -48,7 +48,7 @@ const ArticleDigest = styled.div`
 const ArticleMentionsTitle = styled.div`
     font-size: 14px;
     padding-top:4px;
-    margin-left:10px;
+    margin-left:4px;
 `;
 
 const ArticleMentions = styled.div`
