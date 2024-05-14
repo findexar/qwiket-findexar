@@ -41,6 +41,7 @@ const XContainer = styled.div`
     :hover{
         cursor:pointer;
         color:var(--xColor);
+        
     }
 `;
 
@@ -53,8 +54,10 @@ const XElement = styled.div`
     align-items:center;
     font-size:28px;
     color:#fff;
-    @media (max-width: 1199px) {
-      margin-top:0px;
+    @media (max-width: 1024px) {
+     // margin-top:0px;
+      margin-top:-28px;
+      margin-right:10px;
     }  
 `;
 
@@ -191,7 +194,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
             <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center md:p-4 text-center ">
                     <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-2 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full ">
-                    <div className="md:hidden text-white px-4 pt-6"> QWIKET </div>
+                    <div className="md:hidden text-white text-xl px-4 pt-6"> QWIKET </div>
                         <div className="bg-transparent md:px-8 md:pt-12 pt-4 pb-4 sm:p-4 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-0 sm:text-left">
