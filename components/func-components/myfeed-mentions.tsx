@@ -37,7 +37,12 @@ const MyFeed: React.FC<Props> = ({league}) => {
         isEmpty || (data && data[data.length - 1]?.length < 25) || false;
    
     return <>
-        {isEmpty&&<>Empty Fantasy Feed - perhaps your team is not yet created.</>}
+        {isEmpty && (
+            <div className="bg-slate-100 mt-6 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+               
+                <p className="text-sm">Empty Fantasy Feed - perhaps your team is not yet created.</p>
+            </div>
+        )}
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} />
        
     </>

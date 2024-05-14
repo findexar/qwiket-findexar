@@ -52,8 +52,14 @@ const Fav: React.FC<Props> = () => {
         view = "mentions";
 
    */
-    return (
+    return (<>
+        {isEmpty && (
+            <div className="bg-slate-100 mt-6 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+               
+                <p className="text-sm">Empty Favorites Feed - click on a star in the top right corner of a mention to save as a favorite.</p>
+            </div>
+        )}
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers}/>
-    )
+        </>)
 }
 export default Fav;
