@@ -124,7 +124,7 @@ interface Props {
 }
 
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
-    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug } = useAppContext();
+    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug,setSlug } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
     let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
@@ -145,6 +145,9 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     const handleClose = useCallback(() => {
         console.log("handleClose")
         setOpen(false);
+        setSlug("");
+        let newUrl = window.location.href.replace(/([&?])story=[^&]*&?/, '$1').replace(/&$/, '');
+        window.history.pushState({ path: newUrl }, '', newUrl);
         console.log("closeDialog slug=", slug)
        // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
         //router.push(localUrl); // Correctly using router to navigate
