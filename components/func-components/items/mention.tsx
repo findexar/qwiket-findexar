@@ -526,7 +526,75 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         setDigestCopied(true);
         copy(digest);
     }, [digest]);
-
+    const iconClick=useCallback(()=>{
+        async () => {
+            console.log("ICON CLICK")
+            // console.log("TRACKED", name)
+            // setPlayer(name);
+            /* if (window && window.Clerk) {
+                 const Clerk = window.Clerk;
+                 const user = Clerk.user;
+                 const id = Clerk.user?.id;
+                 if (!id) {
+                     setSignin(true);
+                     return;
+                 }
+             }*/
+            if (localTracked == true) {
+                console.log("TRACKED", name);
+                setToastMessage("Player removed from the Fantasy Team");
+                setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
+             
+                console.log("tracked after mutatePlayers", name, team);
+                setLocalTracked(false);
+                await actionRemoveMyTeamMember({ member: name, teamid: team });
+                await actionRecordEvent(
+                    'mention-remove-myteam',
+                    `{"params":"${params}","team":"${team}","player":"${name}"}`
+                );
+                if (mutate)
+                    mutate();
+                if (myTeamMutate)
+                    myTeamMutate();
+                if (mutatePlayers) {
+                    mutatePlayers(async (players: any) => {
+                        return players.map((player: any) => {
+                            if (player.name == name) {
+                                player.tracked = false;
+                            }
+                            return player;
+                        })
+                    }, { revalidate: true });
+                }
+            }
+            else {
+                console.log("UNTRACKED", name)
+                setToastMessage("Player added to the Fantasy Team");
+                setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
+                setLocalTracked(true);
+                console.log("untracked after mutatePlayers", name, team);
+                await actionAddMyTeamMember({ member: name, teamid: team });
+                await actionRecordEvent(
+                    'mention-add-myteam',
+                    `{"params":"${params}","team":"${team}","player":"${name}"}`
+                );
+                 if (mutate)
+                    mutate();
+                if (myTeamMutate)
+                    myTeamMutate();
+                if (mutatePlayers) {
+                    mutatePlayers(async (players: any) => {
+                        return players.map((player: any) => {
+                            if (player.name == name) {
+                                player.tracked = true;
+                            }
+                            return player;
+                        })
+                    }, { revalidate: true });
+                }
+            }
+        }
+    },[mention])
     return (
         <>
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
@@ -564,73 +632,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                         {type == "person" && <div>
                             <div className="mt-2"
-                                onClick={async () => {
-                                    console.log("ICON CLICK")
-                                    // console.log("TRACKED", name)
-                                    // setPlayer(name);
-                                    /* if (window && window.Clerk) {
-                                         const Clerk = window.Clerk;
-                                         const user = Clerk.user;
-                                         const id = Clerk.user?.id;
-                                         if (!id) {
-                                             setSignin(true);
-                                             return;
-                                         }
-                                     }*/
-                                    if (localTracked == true) {
-                                        console.log("TRACKED", name);
-                                        setToastMessage("Player removed from the Fantasy Team");
-                                        setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
-                                     
-                                        console.log("tracked after mutatePlayers", name, team);
-                                        setLocalTracked(false);
-                                        await actionRemoveMyTeamMember({ member: name, teamid: team });
-                                        await actionRecordEvent(
-                                            'mention-remove-myteam',
-                                            `{"params":"${params}","team":"${team}","player":"${name}"}`
-                                        );
-                                        if (mutate)
-                                            mutate();
-                                        if (myTeamMutate)
-                                            myTeamMutate();
-                                        if (mutatePlayers) {
-                                            mutatePlayers(async (players: any) => {
-                                                return players.map((player: any) => {
-                                                    if (player.name == name) {
-                                                        player.tracked = false;
-                                                    }
-                                                    return player;
-                                                })
-                                            }, { revalidate: true });
-                                        }
-                                    }
-                                    else {
-                                        console.log("UNTRACKED", name)
-                                        setToastMessage("Player added to the Fantasy Team");
-                                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
-                                        setLocalTracked(true);
-                                        console.log("untracked after mutatePlayers", name, team);
-                                        await actionAddMyTeamMember({ member: name, teamid: team });
-                                        await actionRecordEvent(
-                                            'mention-add-myteam',
-                                            `{"params":"${params}","team":"${team}","player":"${name}"}`
-                                        );
-                                         if (mutate)
-                                            mutate();
-                                        if (myTeamMutate)
-                                            myTeamMutate();
-                                        if (mutatePlayers) {
-                                            mutatePlayers(async (players: any) => {
-                                                return players.map((player: any) => {
-                                                    if (player.name == name) {
-                                                        player.tracked = true;
-                                                    }
-                                                    return player;
-                                                })
-                                            }, { revalidate: true });
-                                        }
-                                    }
-                                }} aria-label="Add new list">
+                                onClick={()=>iconClick()} aria-label="Add new list">
                                 <SideIcon $highlight={localTracked}>
                                     {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
                                 </SideIcon>
@@ -712,7 +714,16 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention onClick={async () => { await onMentionNav(name,bottomLink) }}><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}{ }</Atmention>
+                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name,bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
+                        {type == "person" && <div>
+                            <div className="mt-2"
+                                onClick={()=>iconClick()} aria-label="Add new list">
+                                <SideIcon $highlight={localTracked}>
+                                    {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
+                                </SideIcon>
+                            </div>
+                        </div>}
+                        </Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
                     <BottomLine>

@@ -247,9 +247,8 @@ const MyTeam: React.FC<Props> = () => {
                 <MobileTeamName>My Fantasy Team: </MobileTeamName>
                 {(!trackerListMembers || trackerListMembers.length == 0) &&
                     <><MobileRightExplanation>
-                        <b>My Fantasy Team</b> is a  feature designed for Fantasy Sports fans who need to track media
-                        mentions of the selected athletes.<br /><br />
-                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline"/>&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
+                        Track sports media mentions of your fantasy athletes across media markets and publications.<br /><br />
+                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline"/>&nbsp;  icon to the right of the<br /> player&apos;s name at the bottom of a mention,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
                  </RightExplanation> <hr />
                     </MobileRightExplanation>
                        </>}
