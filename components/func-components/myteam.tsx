@@ -233,7 +233,7 @@ const MyTeam: React.FC<Props> = () => {
 
                             }} aria-label="Add new list">
                             <SideIcon $highlight={false}>
-                                {<TeamRemoveIcon className="h-6 w-6 opacity-90 hover:opacity-100 text-amber-800 dark:text-amber-200" />}
+                                {<TeamRemoveIcon className="h-6 w-6 opacity-70  hover:opacity-100 text-amber-800 dark:text-amber-200" />}
 
                             </SideIcon>
                         </div>
@@ -270,7 +270,7 @@ const MyTeam: React.FC<Props> = () => {
                                     setToastMessage("Player removed from My Team");
                                 }} >
                                 <SideIcon>
-                                    <TeamRemoveIcon className="opacity-90 text-yellow-800 dark:text-yellow-200" />
+                                    <TeamRemoveIcon className="opacity-80 text-yellow-800 dark:text-yellow-200 hover:opacity-100" />
                                 </SideIcon>
                             </div>
                         </SideButton>

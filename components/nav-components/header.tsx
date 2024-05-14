@@ -175,8 +175,7 @@ const LeagueIcon = styled.div<HeaderProps>`
 
 const MuiTabs = styled(Tabs)`
     width:100%;
-    padding:0px;
-    margin:0px;
+   
     color: var(--mobile-leagues-text);
     background-color:var(--mobile-leagues-bg);
 `;
@@ -450,7 +449,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} />
   })
   //@ts-ignore
-  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league?"text-amber-600 dark-text-amber-200 text-xl h-4 p-0 m-0":"text-slate-950 dark:text-slate-50 text-xl h-4 p-0 m-0"} />} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}></LeaguesTab>)
+  MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league?" text-xl h-5 p-0 ml-4 ":"  text-xl h-5 p-0 ml-4 "} />} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}></LeaguesTab>)
   LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
     : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
@@ -470,7 +469,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
               <HeaderCenter>
                 <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase() + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Index</SubheadMobile></div>}
+                {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports Media Index</Subhead><SubheadMobile>Sports Media Reader</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
 
               </HeaderCenter>
@@ -492,9 +491,11 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             {pagetype != 'landing' && !userId && <SignInButton><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignInButton>}
           </HeaderRight>
         </HeaderTopline>
-        <div className="hidden md:block"><ContainerWrap> <Leagues $scrolled={scrollY != 0}>
+        <div className="hidden md:block ">
+          <ContainerWrap> <Leagues $scrolled={scrollY != 0}>
           {LeaguesNav}
-        </Leagues></ContainerWrap></div>
+        </Leagues>
+        </ContainerWrap></div>
       </Header>
       <div className="block md:hidden"><MobileContainerWrap>
         <MuiTabs
