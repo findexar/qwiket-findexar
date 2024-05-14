@@ -56,7 +56,7 @@ const XElement = styled.div`
     color:#fff;
     @media (max-width: 1024px) {
      // margin-top:0px;
-      margin-top:-28px;
+      margin-top:-32px;
       margin-right:10px;
     }  
 `;
