@@ -86,9 +86,9 @@ export async function generateMetadata(
     else if (amention && amentionLeague && amentionTeam)
       ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   
-    let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Index.";
+    let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Reader and Mentions Index.";
     let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
-    let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_APP_NAME]} Sports Media Index`;
+    let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_APP_NAME]} Sports Media Reader`;
     if (astory) {
       ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`
         : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
