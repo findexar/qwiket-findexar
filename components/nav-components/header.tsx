@@ -491,8 +491,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
-            <SUserButton afterSignOutUrl="/" />
-            {pagetype != 'landing' && !userId && <SignInButton><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignInButton>}
+            <SignedIn><SUserButton afterSignOutUrl="/" /></SignedIn>
+            <SignedOut><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignedOut>
           </HeaderRight>
         </HeaderTopline>
         <div className="hidden md:block ">
