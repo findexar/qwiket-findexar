@@ -38,20 +38,7 @@ const Fav: React.FC<Props> = () => {
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
         isEmpty || (data && data[data.length - 1]?.length < 25)||false;
-    //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
-    //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
 
-   /* if (tab == "fav") {
-        mentions = favoritesMentions;
-        if (!favoritesMentions || favoritesMentions.length == 0) {
-            isReachingEnd = true;
-            isEmpty = true;
-        }
-    }
-    if (!view)
-        view = "mentions";
-
-   */
     return (<>
         {isEmpty && (
             <div className="bg-slate-100 mt-6 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
