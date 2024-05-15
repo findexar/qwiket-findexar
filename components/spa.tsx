@@ -138,7 +138,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     const top=query?.get('top') || "";
     if(top){
       setTimeout(()=>{
-        window.scrollTo(0, 0);
+       // window.scrollTo(0, 0);
       },0)
     }
     console.log("top sparender:",top)
