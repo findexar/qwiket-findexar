@@ -95,7 +95,8 @@ export async function generateMetadata(
     ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
     ogImage = astoryImageOgUrl;
   }
-  const noindex = 1;
+  const indexable=findexarxid||story;
+   let  noindex = +(process.env.NEXT_PUBLIC_NOINDEX ||indexable ? "0" : "1");
 
   return {
     title: ogTitle,
