@@ -308,7 +308,7 @@ const FLogo = styled.div`
 `;
 
 const FLogoMobile = styled.div`
-    margin-left:20px;
+    margin-left:10px;
     margin-right:20px;
     @media screen and (min-width: 1025px) {
         display:none;
