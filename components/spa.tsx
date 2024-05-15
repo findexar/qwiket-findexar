@@ -135,7 +135,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     const qtab = query?.get('tab') || "";
     const qview = query?.get('view') || "mentions";
     const ssr = query?.getAll('ssr') || [];
-
+    const top=query?.get('top') || "";
+    if(top)
+      window.scrollTo(0, 0);
+    console.log("top sparender:",top)
     setTab(qtab);
     setView(qview);
     /* let [arg1, arg2, arg3, arg4, arg5, arg6, arg7] = ssr;

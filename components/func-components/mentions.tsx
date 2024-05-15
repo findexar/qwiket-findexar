@@ -50,7 +50,7 @@ const MobileMentionsOuterContainer = styled.div`
 `;
 
 interface Props {
-    mentions:any;
+    mentions: any;
     setSize: any;
     size: number;
     error: any;
@@ -61,9 +61,9 @@ interface Props {
     mutate: any;
     mutatePlayers?: any;
 }
-const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isEmpty,isReachingEnd,isLoadingMore,mutate,mutatePlayers}) => {
+const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidating, isEmpty, isReachingEnd, isLoadingMore, mutate, mutatePlayers }) => {
     let { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
- 
+
     if (!view)
         view = "mentions";
 
@@ -78,21 +78,21 @@ const Mentions: React.FC<Props> = ({mentions,setSize,size,error,isValidating,isE
             />)
     });
     return (
-        <>
-                <MentionsOuterContainer className="hidden md:block">
-                    <MentionsBody>
-                        {Mentions}
-                    </MentionsBody>
-                    <LoadMore items={mentions} name="mentions"  setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MentionsOuterContainer>
-                <div className="h-full md:hidden"><MobileMentionsOuterContainer>
-                    <MentionsBody>
-                        {Mentions}
-                    </MentionsBody>
-                    <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MobileMentionsOuterContainer></div>
-            
-        </>
+        <div>
+            <MentionsOuterContainer className="hidden md:block">
+                <MentionsBody>
+                    {Mentions}
+                </MentionsBody>
+                <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
+            </MentionsOuterContainer>
+            <div className="h-full md:hidden"><MobileMentionsOuterContainer>
+                <MentionsBody>
+                    {Mentions}
+                </MentionsBody>
+                <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
+            </MobileMentionsOuterContainer></div>
+
+        </div>
     )
 }
 export default Mentions;

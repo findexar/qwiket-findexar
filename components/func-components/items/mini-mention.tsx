@@ -200,7 +200,7 @@ const MiniMention: React.FC<Props> = ({ handleClose,selectedXid, setSelectedXid,
                     <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                 </MentionSummary>
             </MobileMentionWrap>
-            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="top" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, date, url, summary, findexarxid, fav }} mutate={mutate} /></InnerMention>}
+            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="final" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, date, url, summary, findexarxid, fav }} mutate={mutate} /></InnerMention>}
         </>
     );
 };

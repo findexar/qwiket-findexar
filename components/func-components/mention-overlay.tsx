@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
 //import { useRouter } from 'next/navigation'
@@ -131,13 +131,15 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
     }
   }, [findexarxid]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     console.log("handleClose")
     setOpen(false);
     setDismiss(true);
+    let newUrl = window.location.href.replace(/([&?])id=[^&]*&?/, '$1').replace(/&$/, '');
+    window.history.pushState({ path: newUrl }, '', newUrl);
     //let localUrl = router.asPath.replace('&id=' + findexarxid, '').replace('?id=' + findexarxid + "&", '?').replace('?id=' + findexarxid, '');
     //router.replace(localUrl);
-  }
+  }, [setOpen, setDismiss]);
 
   let target = type == 'person' ? `${teamName}: ${name}` : `${teamName}`;
   target = !target || target == 'undefined' ? '' : target;

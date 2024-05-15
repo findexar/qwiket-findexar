@@ -421,7 +421,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     if (mini)
         localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`
 
-    const bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`;
+    const bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary?.substring(0, 140) || "" + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
@@ -439,8 +439,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string,url:string) => {
-           await handleClose();
-      
+        await handleClose();
+        console.log("onMentionNav",name,url)
         setLeague(league);
         setTeamid(team);
         if(!mini)
@@ -455,7 +455,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         else
             pgt = 'team';
         setPagetype(pgt);
-        window.history.pushState({}, "", url);
+       // window.history.pushState({}, "", url);
        // window.scrollTo(0, 0);
         await actionRecordEvent(
             'mention-nav',
@@ -595,6 +595,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             }
         }
     },[mention])
+    console.log("bottomLink",bottomLink)
     return (
         <>
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
@@ -707,7 +708,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
                      
                         <SummaryWrap>
-                            <Link scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl} onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
+                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl} onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
                                 {summary}
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
