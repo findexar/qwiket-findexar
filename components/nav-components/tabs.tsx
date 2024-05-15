@@ -24,7 +24,7 @@ interface TabProps {
 }
 
 const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start", id="tabs1" }) => {
-  console.log("TAB,selected ",selected,"id ",id)
+ // console.log("TAB,selected ",selected,"id ",id)
   return (
     <button
       className={`${tabClasses[id as keyof typeof tabClasses][selected ? 1 : 0]} relative`}

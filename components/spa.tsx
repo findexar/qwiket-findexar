@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
 import useSWR from 'swr';
-
+import { useRouter } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation'
 import GlobalStyle from '@/components/globalstyles';
 import { styled, ThemeProvider as StyledThemeProvider } from "styled-components";
 /*import Header from './header';
@@ -45,15 +46,15 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style
 
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: startTab, fallback, isMobile, fbclid, utm_content, story, findexarxid: startFindexarxid, league: startLeague, teamid: startTeamid = "", name: startName = "", pagetype: startPagetype = "league", dark, teamName: startTeamName = "" }) => {
   const [tab, setTab] = React.useState(startTab || "");
-  const [view, setView] = React.useState(startView || "");
+  const [view, setView] = React.useState(startView || "mentions");
   const [league, setLeague] = React.useState(startLeague);
   const [teamid, setTeamid] = React.useState(startTeamid);
   const [player, setPlayer] = React.useState(startName);
   const [pagetype, setPagetype] = React.useState(startPagetype);
   const [teamName, setTeamName] = React.useState(startTeamName);
-  const[findexarxid,setFindexarxid] = React.useState(startFindexarxid);
-  const[slug,setSlug] = React.useState(story);
-
+  const [findexarxid, setFindexarxid] = React.useState(startFindexarxid);
+  const [slug, setSlug] = React.useState(story);
+  const router = useRouter();
 
   //const [mutatePlayers, setMutatePlayers] = React.useState<any>(undefined);
   const [localMode, setLocalMode] = React.useState(dark == -1 ? 'unknown' : dark == 1 ? 'dark' : 'light');
@@ -75,6 +76,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
       bodyClassList.remove(className);
     }
   }, [localMode]);
+
   useEffect(() => {
     let params = '';
     let params2 = ''
@@ -103,6 +105,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     setTp(tp);
     setTp2(tp2);
   }, [fbclid, utm_content, tab]);
+
   useEffect(() => {
     if (localMode == 'unknown') {
       const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -113,10 +116,59 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     }
 
   }, []);
+  const query = useSearchParams();
+  const pathname = usePathname();
+  useEffect(() => {
+    // Get the updated query params
+    const updatedQueryParams = query;// new URLSearchParams(router.query as any as string);
+    const story = updatedQueryParams?.get('story');
+    if (story != slug)
+      setSlug(story || "");
+    const id = query?.get('id') || "";
+    if (findexarxid != id) {
+      setFindexarxid(id);
+    }
+  }, [query]);
 
+  useEffect(() => {
+    const findexarxid = query?.get('id') || "";
+    const qtab = query?.get('tab') || "";
+    const qview = query?.get('view') || "mentions";
+    const ssr = query?.getAll('ssr') || [];
 
+    setTab(qtab);
+    setView(qview);
+    /* let [arg1, arg2, arg3, arg4, arg5, arg6, arg7] = ssr;
  
+     let qpagetype = 'league';
+     let qleague = '';
+     let qteam = '';
+     let qplayer = '';
+     qleague = arg2 || "";
+ 
+     if (view == 'landing')
+       qpagetype = "landing";
+ 
+     if (arg3 == 'team') {
+       qteam = arg4;
+       qpagetype = "team";
+       if (arg5 == 'player') {
+         qplayer = arg6.replaceAll('_', ' ');
+         qpagetype = "player";
+       }
+     }
+     else if (arg3 == 'player') {
+       qplayer = arg4.replaceAll('_', ' ');
+       
+     }
+     setLocalLeague(qleague);
+     setLocalTeam(qteam);
+     setLocalPlayer(qplayer);
+     setLocalPageType(qpagetype);
+     setLocalFindexarxid(findexarxid);*/
+  }, [query]);
 
+  console.log("SPARENDER===>", { tab, view, league, teamid, player, pagetype, findexarxid, slug, query, pathname })
   return (
 
     <StyledThemeProvider
@@ -129,7 +181,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
             <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
-           
+
             <link rel="apple-touch-icon" href={process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png"}></link>
             <link rel="shortcut icon" href={process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png"} type="image/png" />
             <meta name="theme-color" content={localMode == 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
