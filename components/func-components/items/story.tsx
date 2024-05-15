@@ -425,6 +425,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
+                <hr/>
             </MobileWrap>
         </div>
     );

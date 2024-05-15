@@ -47,7 +47,9 @@ const MobileMentionsOuterContainer = styled.div`
     height:100%;
     font-family: 'Roboto', sans-serif;
     align-content:flex-start;
-    background-color:var(--mention-bg);
+    
+
+  //  background-color:var(--mention-bg);
     a{
         font-size: 18px;
       
