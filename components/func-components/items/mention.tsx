@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useCallback, useState } from "react";
 import useSWRImmutable from 'swr/immutable';
 import useSWR from 'swr';
