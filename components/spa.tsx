@@ -120,10 +120,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   const pathname = usePathname();
   useEffect(() => {
     // Get the updated query params
+    console.log("query effect",query,pathname)
     const updatedQueryParams = query;// new URLSearchParams(router.query as any as string);
     const story = updatedQueryParams?.get('story');
-    if (story != slug)
+    if (story != slug){
       setSlug(story || "");
+      console.log("setSlug",{story,slug})
+    }
     const id = query?.get('id') || "";
     if (findexarxid != id) {
       setFindexarxid(id);
@@ -144,34 +147,36 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     console.log("top sparender:",top)
     setTab(qtab);
     setView(qview);
-    /* let [arg1, arg2, arg3, arg4, arg5, arg6, arg7] = ssr;
- 
+     let [arg1, arg2, arg3, arg4, arg5, arg6, arg7] = ssr;
+    let parts=pathname?.split("/")||[]
+
+    console.log("parts",parts)
      let qpagetype = 'league';
-     let qleague = '';
-     let qteam = '';
-     let qplayer = '';
-     qleague = arg2 || "";
+     let qleague = parts&&parts.length>1?parts[1]:'';
+     let qteam = parts&&parts.length>2?parts[2]:'';
+     let qplayer = parts&&parts.length>3?parts[3]:'';
+    // qleague = arg2 || "";
  
      if (view == 'landing')
        qpagetype = "landing";
  
-     if (arg3 == 'team') {
-       qteam = arg4;
+     if (qteam) {
        qpagetype = "team";
-       if (arg5 == 'player') {
-         qplayer = arg6.replaceAll('_', ' ');
+       if (qplayer) {
+         qplayer = qplayer.replaceAll('_', ' ');
          qpagetype = "player";
        }
      }
-     else if (arg3 == 'player') {
-       qplayer = arg4.replaceAll('_', ' ');
+     else if (player) {  
+       qplayer = qplayer.replaceAll('_', ' ');
        
      }
-     setLocalLeague(qleague);
-     setLocalTeam(qteam);
-     setLocalPlayer(qplayer);
-     setLocalPageType(qpagetype);
-     setLocalFindexarxid(findexarxid);*/
+     console.log("processed parts:",{qleague,qteam,qplayer,qpagetype})
+     setLeague(qleague);
+     setTeamid(qteam);
+     setPlayer(qplayer);
+     setPagetype(qpagetype);
+   //  setLocalFindexarxid(findexarxid);
   }, [query]);
 
   console.log("SPARENDER===>", { tab, view, league, teamid, player, pagetype, findexarxid, slug, query, pathname })

@@ -460,7 +460,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
-  console.log("selectedLeague",selectedLeague)
+  //console.log("selectedLeague",selectedLeague)
   return (
     <>
       <Header $scrolled={scrollY != 0}>

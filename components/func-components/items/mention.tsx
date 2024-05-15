@@ -440,6 +440,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string,url:string) => {
+       
         await handleClose();
         console.log("onMentionNav",name,url)
         setLeague(league);
@@ -456,7 +457,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         else
             pgt = 'team';
         setPagetype(pgt);
-       // window.history.pushState({}, "", url);
+        window.history.pushState({}, "", url);
        // window.scrollTo(0, 0);
         await actionRecordEvent(
             'mention-nav',
@@ -596,7 +597,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             }
         }
     },[mention])
-    console.log("bottomLink",bottomLink)
+    //console.log("bottomLink",bottomLink)
     return (
         <>
             <MentionWrap onMouseEnter={() => onHover('desktop')}>

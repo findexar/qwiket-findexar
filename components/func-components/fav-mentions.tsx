@@ -27,10 +27,10 @@ const Fav: React.FC<Props> = () => {
     },[data])
    // console.log("client side data",{data})
    // let mentions = data ? [].concat(...data):[];
-    console.log("client side favorites data",{data,mentions})
+  // console.log("client side favorites data",{data,mentions})
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    console.log("team-mentions teamPlayersKey",teamPlayersKey)
+   // console.log("team-mentions teamPlayersKey",teamPlayersKey)
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
     const isLoadingMore =

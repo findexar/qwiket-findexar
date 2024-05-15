@@ -53,7 +53,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
     if (name == selectedOptionName?.toLowerCase()) {
       selected = true;
       selectedValue = i;
-      console.log("selectedValue", selectedValue)
+      //console.log("selectedValue", selectedValue)
     }
     return <STab  iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
   });

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
-import { useRouter } from 'next/router'; // Corrected import for useRouter
+import { useRouter } from 'next/navigation'; // Corrected import for useRouter
 
 import{ASlugStoryKey} from '@/lib/keys';
 import { actionRecordEvent } from "@/lib/actions";
@@ -134,28 +134,30 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);
-    console.log("DIALOG open:", open)
+    //console.log("DIALOG open:", open)
     const { title, url, digest, site_name, image, authors, createdTime, mentions } = astory || {};
-   // const router = useRouter(); // Correctly initialized useRouter
+   const router = useRouter(); // Correctly initialized useRouter
     const admin = params && params.includes('x17nz') ? true : false;
-    console.log("StoryOverlay:slug", idx, slug)
+   // console.log("StoryOverlay:slug", idx, slug)
     useEffect(() => {
         if (astory) {
-            console.log("openDialog")
+            //console.log("openDialog")
             setOpen(true);
         }
     }, [astory]);
 
-    const handleClose = useCallback(() => {
-        console.log("handleClose")
+    const handleClose = useCallback(async () => {
+       // console.log("handleClose")
         setOpen(false);
         setSlug("");
         let newUrl = window.location.href.replace(/([&?])story=[^&]*&?/, '$1').replace(/&$/, '');
         window.history.pushState({ path: newUrl }, '', newUrl);
-        console.log("closeDialog slug=", slug)
+        
+       //router.push(newUrl);
+      // console.log("closeDialog slug=", slug)
        // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
         //router.push(localUrl); // Correctly using router to navigate
-        actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
+        await actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
                 console.log("recordEvent", r);
             });

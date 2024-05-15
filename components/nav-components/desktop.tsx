@@ -143,7 +143,7 @@ const Desktop: React.FC<Props> = () => {
     tab=tab||"all";
     view=view||"mentions";
     const [localFindexarxid,setLocalFindexarxid] = React.useState(findexarxid);
-    console.log("findexarxid:",localFindexarxid,"local:",findexarxid);
+    //console.log("findexarxid:",localFindexarxid,"local:",findexarxid);
     useEffect(()=>{
         setLocalFindexarxid(findexarxid);
     },[findexarxid]);
@@ -151,7 +151,7 @@ const Desktop: React.FC<Props> = () => {
         const tab = option.tab;
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
        // router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
-       console.log("pushing tab",tab);
+       //console.log("pushing tab",tab);
        window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
         setTimeout(()=>
         setTab(tab),0);
@@ -163,8 +163,8 @@ const Desktop: React.FC<Props> = () => {
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
         ),1);
     }
-    console.log("TAB render:",tab)
-    console.log("overlays:",{findexarxid,slug})
+    //console.log("TAB render:",tab)
+    //console.log("overlays:",{findexarxid,slug})
     return (
         //complete in tailwind to make visible only on md and up
         <div className="lg:block hidden h-full w-full">

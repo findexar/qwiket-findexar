@@ -27,7 +27,7 @@ const MyFeed: React.FC<Props> = ({league}) => {
 
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    console.log("team-mentions teamPlayersKey", teamPlayersKey)
+    //console.log("team-mentions teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
     const isLoadingMore =

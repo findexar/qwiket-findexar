@@ -155,7 +155,7 @@ const MyTeam: React.FC<Props> = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
-    console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
+   // console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:

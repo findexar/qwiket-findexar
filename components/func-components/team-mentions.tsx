@@ -25,7 +25,7 @@ const Stories: React.FC<Props> = () => {
     let mentions = data ? [].concat(...data) : [];
 
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    console.log("team-mentions teamPlayersKey",teamPlayersKey)
+    //console.log("team-mentions teamPlayersKey",teamPlayersKey)
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
      if(playersError){

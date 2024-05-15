@@ -154,7 +154,7 @@ const MiniMention: React.FC<Props> = ({ handleClose,selectedXid, setSelectedXid,
     }, [copied]);
 
     useEffect(() => {
-        console.log("Mention, extended:", "useEffect", startExtended, expanded)
+       // console.log("Mention, extended:", "useEffect", startExtended, expanded)
         setExpanded(startExtended);
     }, [startExtended]);
 
