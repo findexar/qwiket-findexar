@@ -202,7 +202,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
                                     <div className="mt-2">
                                         <DialogTitleWrap>
                                             <TitleWrap>
-                                                <div className='text-white text-2xl'> Qwiket Sports Media Index</div>
+                                                <div className='text-white text-2xl'> Qwiket Sports Media Reader</div>
                                             </TitleWrap>
                                         </DialogTitleWrap>
                                         <ContentWrap>

@@ -8,7 +8,7 @@ const tabClasses={
   "py-2 px-4 text-sm font-medium text-center focus:outline-none bg-slate-600 dark:bg-slate-150 text-amber-200  dark:text-amber-200 transition duration-500 ease-in-out"],
   
   tabs3: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 hover:text-slate-500 bg-white dark:bg-slate-950",
-  "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500 bg-white dark:bg-slate-950 text-amber-600 hover:text-slate-500 dark:text-amber-200 dark:hover:text-slate-100 transition duration-500 ease-in-out"],
+  "py-2 px-4 text-xs md:text-sm Ffont-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500 bg-white dark:bg-slate-950 text-amber-600 hover:text-slate-500 dark:text-amber-200 dark:hover:text-slate-100 transition duration-500 ease-in-out"],
 
 }
 
