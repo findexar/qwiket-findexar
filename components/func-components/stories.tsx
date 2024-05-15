@@ -84,7 +84,7 @@ const Stories: React.FC<Props> = () => {
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
         isEmpty || (data && data[data.length - 1]?.length < 5);
-    const Stories = stories && stories.map((s: any, i: number) => <Story
+    const Stories = stories && stories.filter((s: any, i: number) => s).map((s: any, i: number) => <Story
         story={s}
         handleClose={()=>{}}
         key={`story-${i}`}

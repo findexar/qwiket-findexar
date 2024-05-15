@@ -227,9 +227,8 @@ interface Props {
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype,  setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-    if(!story)
-        return null;
-    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug } = story;
+    
+    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug } = story||{};
     //console.log("STORY CREATED TIME", createdTime,title,site_name);
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
