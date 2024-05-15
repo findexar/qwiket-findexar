@@ -170,14 +170,14 @@ const Players: React.FC<Props> = () => {
     const palette = theme[mode].colors;
    // console.log("PLAYERS:",players,"key:",teamPlayersKey)
     const onPlayerNav = async (name: string) => {
-        console.log("onPlayerNav", name)
+       // console.log("onPlayerNav", name)
         setPagetype("player");
         setPlayer(name);
         setView("mentions");
         setTab("all");
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
-        console.log("replaceState", url)
-        window.history.replaceState({}, "", url);
+      //  console.log("replaceState", url)
+      //  window.history.replaceState({}, "", url);
         await actionRecordEvent(
             'player-nav',
             `{"params":"${params}","player":"${name}"}`

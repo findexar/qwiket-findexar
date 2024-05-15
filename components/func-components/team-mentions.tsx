@@ -10,7 +10,7 @@ interface Props {
 }
 const Stories: React.FC<Props> = () => {
     let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
-    // const [mentions, setMentions] = React.useState([]);
+    const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
         let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid, page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null; // reached the end
@@ -18,13 +18,13 @@ const Stories: React.FC<Props> = () => {
     }
     // now swrInfinite code:
     const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
-    /* useEffect(()=>{
+    useEffect(()=>{
          setMentions(data ? [].concat(...data) : []);
-     },[data])*/
-    let mentions = data ? [].concat(...data) : [];
+     },[data])
+   // let mentions = data ? [].concat(...data) : [];
 
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    console.log("team-mentions teamPlayersKey",teamPlayersKey)
+  //  console.log("team-mentions teamPlayersKey",teamPlayersKey)
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
      if(playersError){
