@@ -50,7 +50,7 @@ const Header = styled.header<HeaderProps>`
   }
 
   @media screen and (max-width: 1024px) {
-      height: 64px;
+      height: 68px;
       background-color:var(--mobile-header-bg);
       a{
           color: var(--mobile-header-title-color);  
