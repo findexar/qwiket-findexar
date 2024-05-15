@@ -34,8 +34,8 @@ const PlayerPhoto: React.FC<Props> = (props) => {
         <Skeleton variant="circular" height="40px" width="40px" />
     )*/
     return (<>
-        <Photo><Avatar size="large"  alt={name}><img src={photo} alt={name} /></Avatar></Photo>
-        <MobilePhoto><Avatar size="small" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>
+        {!isLoading && photo && <Photo><Avatar size="large"  alt={name}><img src={photo} alt={name} /></Avatar></Photo>}    
+        {!isLoading && photo && <MobilePhoto><Avatar size="small" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>}
     </>
     );
 };
