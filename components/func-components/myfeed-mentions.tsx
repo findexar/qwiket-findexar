@@ -38,7 +38,7 @@ const MyFeed: React.FC<Props> = ({league}) => {
    
     return <>
         {isEmpty && (
-            <div className="bg-slate-100 mt-6 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+            <div className="bg-slate-100 mt-1 mx-1 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
                
                 <p className="text-sm">Empty Fantasy Feed - perhaps your team is not yet created.</p>
             </div>

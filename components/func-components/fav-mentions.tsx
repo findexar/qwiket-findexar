@@ -41,7 +41,7 @@ const Fav: React.FC<Props> = () => {
 
     return (<>
         {isEmpty && (
-            <div className="bg-slate-100 mt-6 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+            <div className="bg-slate-100 mt-1 mx-1 border border-slate-500 text-slate-700 px-4 py-3 rounded-lg shadow-md" role="alert">
                
                 <p className="text-sm">Empty Favorites Feed - click on a star in the top right corner of a mention to save as a favorite.</p>
             </div>
