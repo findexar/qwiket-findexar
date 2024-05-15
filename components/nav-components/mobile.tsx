@@ -150,7 +150,7 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league}/> : null}
                     {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                 </CenterPanel>}
-                {view == 'readme' && <Readme />}
+                {view == 'faq' && <Readme />}
                 {view == 'my fantasy team' && <MyTeam />}
                 {view == 'players' && <Players />}
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}

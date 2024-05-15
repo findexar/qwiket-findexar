@@ -165,14 +165,14 @@ const Desktop: React.FC<Props> = () => {
                             {league ? <Teams /> : <Welcome />}
                         </LeftPanel>
                         <CenterPanel>
-                            {pagetype=="league" &&view!='readme'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "Fantasy Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={ (option: any) => {  onTabNav(option); }} selectedOptionName={tab} />}
+                            {pagetype=="league" &&view!='faq'&& <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all',disabled:false }, { name: "Fantasy Feed", tab: "myfeed",disabled:false }, { name: "Favorites", tab: "fav",disabled:false }]} onChange={ (option: any) => {  onTabNav(option); }} selectedOptionName={tab} />}
                             {(pagetype == "team" ||(pagetype=="league"&&(tab=="myteam"))) && <TeamMentions />}
                             { pagetype=="league"&&tab=="myfeed" && <MyfeedMentions league={league}/>}
                             { pagetype=="league"&&tab=="fav" && <FavMentions />}
                             {(pagetype == "player") && <PlayerMentions />}
                           
-                            { (pagetype == "league"&&view!='readme'&& (tab=='all'||tab==''))&&<Stories />}
-                            {view == 'readme' && <Readme />}
+                            { (pagetype == "league"&&view!='faq'&& (tab=='all'||tab==''))&&<Stories />}
+                            {view == 'faq' && <Readme />}
                         </CenterPanel>
                         <RightPanel>
                             {pagetype=='league'&&<MyTeam />}

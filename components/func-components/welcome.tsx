@@ -67,15 +67,15 @@ const Welcome: React.FC<Props> = () => {
         Powered by OpenAI.</WelcomeWrap>
         <br />
         <Favorites><Button disabled={view == 'fav'} onClick={() => {
-            if (view != 'readme') {
-                setView("readme")
-                router.push(`/?view=readme${params2}${tp2.replace('?', '&')}`);
+            if (view != 'faq') {
+                setView("faq")
+                router.push(`/?view=faq${params2}${tp2.replace('?', '&')}`);
             }
             else {
                 setView("mentions")
                 router.push(`/${params}${tp2.replace('?', '&')}`);
             }
-        }} style={{ padding: 10 }} variant="outlined">{view == "readme" ? <HomeIcon fontSize="small" /> : <HelpOutlineIcon fontSize="small" />}&nbsp;&nbsp;{view == "readme" ? <span>Back to Home</span> : <span>Read Me</span>}</Button></Favorites>
+        }} style={{ padding: 10 }} variant="outlined">{view == "faq" ? <HomeIcon fontSize="small" /> : <HelpOutlineIcon fontSize="small" />}&nbsp;&nbsp;{view == "faq" ? <span>Back to Home</span> : <span>Read Me</span>}</Button></Favorites>
 
         <LeftText><hr />Copyright &#169; 2024, Findexar, Inc.<br />Made in Minnesota. L&apos;Étoile du Nord.</LeftText>
         {noUser && <><LeftText>Click here to sign-in or sign-up: <br /><br /><br /></LeftText>
