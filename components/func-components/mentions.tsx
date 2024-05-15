@@ -23,7 +23,7 @@ const MentionsOuterContainer = styled.div`
     padding-right:20px;
     padding-bottom:100px;
     padding-top:20px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display: none;
     }
 `;
@@ -44,7 +44,7 @@ const MobileMentionsOuterContainer = styled.div`
           color: var(--highlight);
         }   
     }
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1025px) {
     display: none;
   }
 `;
@@ -79,13 +79,13 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
     });
     return (
         <div>
-            <MentionsOuterContainer className="hidden md:block">
+            <MentionsOuterContainer className="hidden lg:block">
                 <MentionsBody>
                     {Mentions}
                 </MentionsBody>
                 <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
             </MentionsOuterContainer>
-            <div className="h-full md:hidden"><MobileMentionsOuterContainer>
+            <div className="h-full lg:hidden"><MobileMentionsOuterContainer>
                 <MentionsBody>
                     {Mentions}
                 </MentionsBody>

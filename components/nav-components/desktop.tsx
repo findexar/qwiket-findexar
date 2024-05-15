@@ -84,6 +84,11 @@ const LeftPanel = styled.div`
     max-height: 150vh;
     position:sticky;
     top:-400px;
+    @media screen and (max-width: 1200px) {
+        top:-300px;
+        min-width:200px;
+        width:250px;
+    }
 `;
 
 const CenterPanel = styled.div`
@@ -100,6 +105,11 @@ const CenterPanel = styled.div`
     min-width:600px;
     @media screen and (min-width: 1600px) {
         width:800px;
+        
+    }
+    @media screen and (max-width: 1200px) {
+        width:540px;
+        min-width:500px;
     }
 `;
 
@@ -118,6 +128,10 @@ const RightPanel = styled.div`
         &:hover{
         color: var(--highlight);//#4f8;
         }
+    }
+    @media screen and (max-width: 1200px) {
+        min-width:200px;
+        width:250px;
     }
 `;
 interface Props {

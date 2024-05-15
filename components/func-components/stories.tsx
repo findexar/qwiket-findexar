@@ -25,7 +25,7 @@ const MentionsOuterContainer = styled.div`
     height:100%;
     font-family: 'Roboto', sans-serif;
     padding-right:20px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display: none;
     }
 `;
@@ -58,7 +58,7 @@ const MobileMentionsOuterContainer = styled.div`
           color: var(--highlight);
         }   
     }
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1025px) {
         display: none;
     }
 `;
@@ -94,21 +94,21 @@ const Stories: React.FC<Props> = () => {
     }
     return (
         <>
-            {!isMobile ?
-                <MentionsOuterContainer>
+           
+                <div className=""><MentionsOuterContainer className="hidden lg:block">
                     <MentionsBody>
                         {Stories}
                     </MentionsBody>
                     <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MentionsOuterContainer>
-                :
-                <MobileMentionsOuterContainer>
+                </MentionsOuterContainer></div>
+                
+                <MobileMentionsOuterContainer className="h-full lg:hidden">
                     <MentionsBody>
                         {Stories}
                     </MentionsBody>
                     <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                     <ButtonContainer> </ButtonContainer>
-                </MobileMentionsOuterContainer>}
+                </MobileMentionsOuterContainer>
         </>
     )
 }

@@ -496,13 +496,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             <SignedOut><SignInButton><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignInButton></SignedOut>
           </HeaderRight>
         </HeaderTopline>
-        <div className="hidden md:block ">
+        <div className="hidden lg:block ">
           <ContainerWrap> <Leagues $scrolled={scrollY != 0}>
           {LeaguesNav}
         </Leagues>
         </ContainerWrap></div>
       </Header>
-      <div className="block md:hidden"><MobileContainerWrap>
+      <div className="block lg:hidden"><MobileContainerWrap>
         <MuiTabs
           value={selectedLeague}
           id="tabs1"

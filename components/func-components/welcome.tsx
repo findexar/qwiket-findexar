@@ -14,11 +14,15 @@ import Button from '@/components/util-components/button';
 const WelcomeWrap = styled.div`
     padding-top:18px;
     padding-right:40px;
+    width:100%;
     a{
         text-decoration: none;
         &:hover{
             color:var(--highlight);
         }
+    }
+    @media screen and (max-width: 1200px) {
+        padding-right:30px;
     }
 `;
 
@@ -45,13 +49,14 @@ const LeftText = styled.div`
             color: var(--highlight);
         }
     }
+   
 `;
 interface Props {
 }
 const Welcome: React.FC<Props> = () => {
     const router = useRouter();
     const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype,  setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-    return <> <WelcomeWrap>
+    return <> <WelcomeWrap className="text-left">
         Welcome to {process.env.NEXT_PUBLIC_APP_NAME}!<br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
         <br />The indispensable Fantasy Sports<br />
