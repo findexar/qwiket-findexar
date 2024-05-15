@@ -49,8 +49,8 @@ const Header = styled.header<HeaderProps>`
       }  
   }
 
-  @media screen and (max-width: 1199px) {
-      height: 84px;
+  @media screen and (max-width: 1024px) {
+      height: 64px;
       background-color:var(--mobile-header-bg);
       a{
           color: var(--mobile-header-title-color);  
@@ -59,6 +59,7 @@ const Header = styled.header<HeaderProps>`
 	    position: sticky;
 	    top: 0;
       z-index:10;
+      padding-bottom:6px;
   }
   position:sticky;
   top:0px;
@@ -72,7 +73,7 @@ const ContainerWrap = styled.div`
     font-family: 'Roboto', sans-serif;
     font-size:14px;
     color:var(--text);
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display: none;
     }
     @media screen and (min-width: 1600px) {
@@ -94,7 +95,7 @@ const MobileContainerWrap = styled.div`
     color: #111;
     font-family: 'Roboto', sans-serif;
     border-top: 1px solid #ccc;
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1025px) {
       display: none;
     }
 `;
@@ -107,7 +108,7 @@ const League = styled.div<HeaderProps>`
     margin: 0px;
     padding-top:${({ $scrolled }) => $scrolled ? 0 : 3}px;
     margin-bottom:${({ $scrolled }) => $scrolled ? 2 : 6}px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
       height: 24px;
     }
 `;
@@ -127,7 +128,7 @@ const SelectedLeague = styled.div<HeaderProps>`
           color:var(--leagues-highlight);
         }
     }
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
       height: 24px;
     }
 `;
@@ -163,7 +164,7 @@ const Leagues = styled.div<HeaderProps>`
             color:var(--leagues-highlight);
         } 
     }
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
       font-size: 17px;
     }
 `;
@@ -187,7 +188,7 @@ const Superhead = styled.div<HeaderProps>`
     color:var(--header-title-color);
     font-size:18px;
     transition: font-size 0.2s ease;
-    @media screen and (max-width: 1199px ){
+    @media screen and (max-width: 1024px ){
         display:none;
     }
 `;
@@ -197,7 +198,7 @@ const SuperheadMobile = styled.div`
     margin-top:4px;
     text-align:left;
     color:var(--mobile-header-title-color); 
-    @media screen and (min-width: 1200px ){
+    @media screen and (min-width: 1025px ){
         display:none;
     }
 `;
@@ -208,7 +209,7 @@ const Subhead = styled.div<HeaderProps>`
     text-align:left;
     color:var(--subheader-color);
     transition: font-size 0.2s ease;
-    @media screen and (max-width: 1199px ){
+    @media screen and (max-width: 1024px ){
         display:none;
     }
 `;
@@ -218,7 +219,7 @@ const SubheadMobile = styled.div`
     text-align:left;
     color:var(--mobile-subheader-color);    
     font-size:14px;
-    @media screen and (min-width: 1200px ){
+    @media screen and (min-width: 1025px ){
         display:none;
     }
 `;
@@ -230,7 +231,7 @@ const HeaderTopline = styled.div`
     justify-content:space-between;
     align-items:center;
     color:var(--header-title-color);
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         font-size: 20px;
         margin-bottom:0px;
         color:var(--mobile-header-title-color); 
@@ -250,7 +251,7 @@ const HeaderLeft = styled.div`
     justify-content:center;
     align-items:center;
     margin-left:20px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         margin-left:0px;
         margin-right:0px;
     }
@@ -269,7 +270,7 @@ const HeaderCenter = styled.div`
     flex-direction:column;
     align-items: flex-start;
     text-align: left;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         margin-left:0px;
     }
 `;
@@ -281,7 +282,7 @@ const HeaderRight = styled.div`
     align-items:center;
     margin-right:30px;
     width:80px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         margin-left:0px;
         margin-right:16px;
         width:80px;   
@@ -291,7 +292,7 @@ const HeaderRight = styled.div`
 const Photo = styled.div`
     height:60px;
     width:60px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         height:40px;
         width:40px;
         margin-left:10px;
@@ -301,7 +302,7 @@ const Photo = styled.div`
 const FLogo = styled.div`
     margin-left:20px;
     margin-right:20px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         display:none;
     }
 `;
@@ -309,7 +310,7 @@ const FLogo = styled.div`
 const FLogoMobile = styled.div`
     margin-left:20px;
     margin-right:20px;
-    @media screen and (min-width: 1200px) {
+    @media screen and (min-width: 1025px) {
         display:none;
     }
 `;
@@ -324,7 +325,7 @@ const PlayerNameGroup = styled.div`
     align-items:center;
     font-size: 28px;
     margin-right:20px;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1024px) {
         font-size: 14px;
         margin-right:0px;
     }
@@ -492,7 +493,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
             <SignedIn><SUserButton afterSignOutUrl="/" /></SignedIn>
-            <SignedOut><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignedOut>
+            <SignedOut><SignInButton><IconButton color={"inherit"} size="small" ><LoginIcon fontSize="small" /></IconButton></SignInButton></SignedOut>
           </HeaderRight>
         </HeaderTopline>
         <div className="hidden md:block ">
