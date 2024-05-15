@@ -156,7 +156,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
      let qteam = parts&&parts.length>2?parts[2]:'';
      let qplayer = parts&&parts.length>3?parts[3]:'';
     // qleague = arg2 || "";
- 
+     qleague=qleague.toUpperCase();
      if (view == 'landing')
        qpagetype = "landing";
  
