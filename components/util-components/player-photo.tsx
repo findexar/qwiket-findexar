@@ -30,9 +30,9 @@ const PlayerPhoto: React.FC<Props> = (props) => {
     const photoKey: PlayerPhotoKey = { func: "photo", teamid: teamid || "", name: name || "" };
     const { data: photo, error, isLoading } = useSWR(photoKey, getPlayerPhoto);
 
-    if (isLoading || !photo) return (
+    /*if (isLoading || !photo) return (
         <Skeleton variant="circular" height="40px" width="40px" />
-    )
+    )*/
     return (<>
         <Photo><Avatar size="large"  alt={name}><img src={photo} alt={name} /></Avatar></Photo>
         <MobilePhoto><Avatar size="small" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>
