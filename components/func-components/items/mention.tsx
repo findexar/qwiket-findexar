@@ -29,6 +29,7 @@ import { actionMyTeam } from "@/lib/fetchers/myteam";
 import { MyTeamRosterKey } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
 
+
 declare global {
     interface Window {
         Clerk: any;
@@ -422,7 +423,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     if (mini)
         localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`
 
-    const bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
+    //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
+    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`;
+    if(linkType=='final')
+        bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary?.substring(0, 140) || "" + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
@@ -440,14 +444,15 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string,url:string) => {
-       
-       // await handleClose();
+        /*setTimeout(async ()=>{
+        await handleClose();
+        },100)*/
         console.log("onMentionNav",name,url)
         setLeague(league);
         setTeamid(team);
         if(!mini)
-        setFindexarxid(findexarxid);
-    else
+            setFindexarxid(findexarxid);
+       
         setSlug("");
         setTeamName(teamName);
         setPlayer(type == 'person' ? name : '');
