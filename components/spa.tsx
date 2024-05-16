@@ -121,7 +121,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
   
   // to handle shallow back and explicit top scroll
   useEffect(() => {
-    console.log("++++++++++++++++++ USE EFFECT")
+   // console.log("++++++++++++++++++ USE EFFECT")
     const id = query?.get('id') || "";
     const qtab = query?.get('tab') || "";
     const qview = query?.get('view') || "mentions";
@@ -135,7 +135,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
     if (findexarxid != id) {
       setFindexarxid(id);
     }
-    console.log("++++++++++++++++++ USE EFFECT2")
+ 
     if (top) {
       setTimeout(() => {
         window.scrollTo(0, 0);
@@ -148,14 +148,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
       setView(qview);
     let [arg1, arg2, arg3, arg4, arg5, arg6, arg7] = ssr;
     let parts = pathname?.split("/") || []
-    console.log("++++++++++++++++++ USE EFFECT3")
+  
     console.log("parts", parts)
     let qpagetype = 'league';
     let qleague = parts && parts.length > 1 ? parts[1] : '';
     let qteam = parts && parts.length > 2 ? parts[2] : '';
     let qplayer = parts && parts.length > 3 ? parts[3] : '';
     // qleague = arg2 || "";
-    console.log("++++++++++++++++++ USE EFFECT4")
     qleague = qleague.toUpperCase();
     if (view == 'landing')
       qpagetype = "landing";
@@ -171,16 +170,16 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({ view: startView, tab: start
       qplayer = qplayer.replaceAll('_', ' ');
 
     }
-    console.log("processed parts:", { qleague, qteam, qplayer, qpagetype })
+    //console.log("processed parts:", { qleague, qteam, qplayer, qpagetype })
     setLeague(qleague);
     setTeamid(qteam);
     setPlayer(qplayer);
     setPagetype(qpagetype);
-    console.log("++++++++++++++++++ USE EFFECT END")
+    //console.log("++++++++++++++++++ USE EFFECT END")
     //  setLocalFindexarxid(findexarxid);
   }, [query]);
 
-  console.log("SPARENDER===>", { tab, view, league, teamid, player, pagetype, findexarxid, slug, query, pathname })
+  console.log("SPARENDER===>", { tab, view, league, teamid, player, pagetype, findexarxid, slug, , pathname })
   return (
 
     <StyledThemeProvider
