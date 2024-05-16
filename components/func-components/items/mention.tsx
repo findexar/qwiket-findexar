@@ -448,21 +448,23 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         await handleClose();
         },100)*/
         console.log("onMentionNav",name,url)
-        setLeague(league);
-        setTeamid(team);
-        if(!mini)
-            setFindexarxid(findexarxid);
+       // setLeague(league);
+       // setTeamid(team);
+        //if(!mini)
+        //    setFindexarxid(findexarxid);
        
-        setSlug("");
-        setTeamName(teamName);
-        setPlayer(type == 'person' ? name : '');
+        //setSlug("");
+        //setTeamName(teamName);
+        //setPlayer(type == 'person' ? name : '');
         let pgt = "";
         if (type == 'person')
             pgt = 'player';
         else
             pgt = 'team';
-        setPagetype(pgt);
-        window.history.pushState({}, "", url);
+        //setPagetype(pgt);
+        //window.history.pushState({}, "", url);
+        
+      //  window.history.pushState({}, "", url);
        // window.scrollTo(0, 0);
         await actionRecordEvent(
             'mention-nav',

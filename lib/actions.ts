@@ -18,9 +18,13 @@ const recordEvent = async ({ name,params }: RecordEventProps,userId:string,sessi
     //console.log("RET record-event:",res.success)
     return res.success;
 }
-export const actionRecordEvent = async (name: string, params: string) => {
+ const workRecordEvent = async (name: string, params: string) => {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const userId=session.username?session.username:"";
     const sessionid=session.sessionid;
     return recordEvent({name,params}, userId,sessionid);
 }
+export const actionRecordEvent=(name:string,params:string)=>{
+    return workRecordEvent(name,params);
+}
+
