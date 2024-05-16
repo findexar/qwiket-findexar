@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useCallback } from "react";
 import { useRouter } from 'next/navigation'
-import { styled, ThemeProvider } from "styled-components";
+import { styled } from "styled-components";
 
 import MentionIcon from '@/components/icons/at';
 import TeamIcon from '@/components/icons/people';
@@ -13,7 +13,6 @@ import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
 
 import Readme from "@/components/func-components/readme";
-import Mentions from "@/components/func-components/team-mentions";
 import Stories from "@/components/func-components/stories";
 import MyTeam from "@/components/func-components/myteam";
 import Players from "@/components/func-components/players";
@@ -27,6 +26,7 @@ import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import FavMentions from "@/components/func-components/fav-mentions";
 import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
+
 const MobileContainerWrap = styled.div`
     display: flex;
     flex-direction: column;
@@ -40,58 +40,53 @@ const MobileContainerWrap = styled.div`
 `;
 
 const LeftMobilePanel = styled.div`
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    padding-left:20px;
-    align-items:flex-start; 
-    padding-top:18px;
-    a{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    align-items: flex-start; 
+    padding-top: 18px;
+    a {
         color: var(--text);
         text-decoration: none;
-        &:hover{
-            color:var(--highlight);
+        &:hover {
+            color: var(--highlight);
         }
     }
 `;
 
 const CenterPanel = styled.div`
-    position:relative;
-    width:100%;
-    min-height:1000px !important;
-    max-width:1000px;
-    margin-right:auto;
-    margin-left:auto;
+    position: relative;
+    width: 100%;
+    min-height: 1000px !important;
+    max-width: 1000px;
+    margin-right: auto;
+    margin-left: auto;
     overflow-y: auto;
     overflow-x: hidden;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    align-items:flex-start;
-    padding-top:18px;
-    height:auto;
-    flex-grow:1;
-    padding-bottom:200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 18px;
+    height: auto;
+    flex-grow: 1;
+    padding-bottom: 200px;
 `;
 
-const SideLeagueName = styled.div`
-    height: 40px;
-    width: 200px; 
-    color:var(--text);
-    font-size: 20px;
-`;
-interface Props {
-}
+interface Props {}
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab, view, mode, userId, isMobile, setLeague, setView, setTab, params2, tp2, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamNam, slug, findexarxid } = useAppContext();
+    let { tab, view,  setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, team, slug, findexarxid } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     tab = tab || "all";
+
     useEffect(() => {
         setLocalFindexarxid(findexarxid);
     }, [findexarxid]);
-    const onTabNav = async (option: any) => {
+
+    const onTabNav = useCallback(async (option: any) => {
         const tab = option.tab;
         setTab(tab);
         setView("mentions");
@@ -103,28 +98,24 @@ const Mobile: React.FC<Props> = () => {
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
         );
-    }
+    }, [fbclid, utm_content, league, params, tab, fbclid, utm_content, league, params, tab, fbclid, utm_content, league, params, tab]);
 
     const onViewNav = useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
         if (name == 'feed')
             name = 'mentions';
-
         setView(name);
         if (!team) {
-            //router.replace(league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`)
             window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
         }
         else {
-            //router.replace(`/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
             window.history.replaceState({}, "", `/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-
         }
         await recordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );
-    }, [fbclid, utm_content, league, params2, tp2]);
+    }, [team, league, params2, tp2, fbclid, utm_content, setView, recordEvent]);
 
     return (
         <div className="block lg:hidden h-full">
