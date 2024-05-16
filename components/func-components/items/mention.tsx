@@ -441,7 +441,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onMentionNav = useCallback(async (name: string,url:string) => {
        
-        await handleClose();
+       // await handleClose();
         console.log("onMentionNav",name,url)
         setLeague(league);
         setTeamid(team);
