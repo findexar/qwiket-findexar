@@ -23,9 +23,9 @@ import { useAppContext } from '@/lib/context';
 import { actionRecordEvent } from "@/lib/actions";
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
-import { actionMyTeam } from "@/lib/fetchers/myteam";
+
 import { MyTeamRosterKey } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
 
@@ -367,7 +367,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league:ll };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionMyTeam,fallback);
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam,fallback);
     
     useEffect(() => {
         setLocalTracked(tracked);

@@ -9,11 +9,11 @@ import { SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/next
 import { styled, useTheme } from "styled-components";
 
 import { useAppContext } from '@/lib/context';
-import { actionMyTeam } from "@/lib/fetchers/myteam";
+
 import { MyTeamRosterKey } from '@/lib/keys';
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionFetchMyTeam,actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionRecordEvent } from "@/lib/actions";
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';
@@ -156,7 +156,7 @@ const MyTeam: React.FC<Props> = () => {
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
    // console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionMyTeam, { fallback });
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, { fallback });
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:
     const fetchMyFeedKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {

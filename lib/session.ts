@@ -3,15 +3,11 @@ import { env } from "process";
 
 export interface SessionData {
   sessionid:string;
-  username: string;
-  isLoggedIn: boolean;
   dark:number;
 }
 
 export const defaultSession: SessionData = {
   sessionid:"",
-  username: "",
-  isLoggedIn: false,
   dark:-1,
 };
 

@@ -6,14 +6,12 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { SWRConfig, unstable_serialize } from 'swr'
 import { unstable_serialize as us } from 'swr/infinite';
-import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
-
-import { clerkClient } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider'
 
 import { initSessionClient } from '@/app/client';
 
-import fetchMyTeam from '@/lib/fetchers/myteam';
+import fetchMyTeam from '@/lib/fetchers/my-team-actions';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import fetchFavorites from '@/lib/fetchers/favorites';
 import fetchSession from '@/lib/fetchers/session';
@@ -138,6 +136,10 @@ export default async function Page({
 
   const t1 = new Date().getTime();
   //console.log("entered root page", t1)
+  let { userId } = auth();
+  if (!userId) {
+    userId = "";
+  }
   let sessionid = "";
   let dark = 0;
   try {
@@ -151,7 +153,7 @@ export default async function Page({
   }
   console.log("sessionid", sessionid);
   console.log("==============================================*****===>")
-  const userId = '';
+  
   let fallback: { [key: string]: any } = {}; // Add index signature
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);

@@ -4,6 +4,7 @@ import { StoriesKey } from '@/lib/keys';
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions,SessionData } from "@/lib/session";
+import { auth } from "@clerk/nextjs/server";
 
 const lake_api=process.env.NEXT_PUBLIC_LAKEAPI
 const api_key=process.env.LAKE_API_KEY;;
@@ -38,14 +39,13 @@ const promiseStories =async ({userId,sessionid,league}:FetchStoriesProps)=>{
 export const actionStories=async (key:StoriesKey)=>{
 
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const userId=session.username?session.username:"";
+    const { userId } = auth() || { userId: "" };
+ 
     const sessionid=session.sessionid;
     setTimeout(async () => {
         try {
             const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
-            console.log("cacheInitUrl",cacheInitUrl);
             const cacheResponse = await fetch(cacheInitUrl);
-            console.log("cacheResponse",cacheResponse);
             const cacheResult = await cacheResponse.json();
             if (cacheResult.success) {
                 console.log("Cache initialization for rosters started in background");
@@ -56,7 +56,7 @@ export const actionStories=async (key:StoriesKey)=>{
             console.error("Error making API call to initialize rosters cache:", error);
         }
     }, 0);
-    return fetchStories(key,userId,sessionid);
+    return fetchStories(key,userId||"",sessionid);
 }
 
 export default promiseStories;

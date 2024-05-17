@@ -3,7 +3,8 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { unstable_serialize } from 'swr'
 import { SWRProvider } from '@/app/swr-provider'
-import fetchMyTeam from '@/lib/fetchers/myteam';
+import { auth } from "@clerk/nextjs/server";
+import fetchMyTeam from '@/lib/fetchers/my-team-actions';
 import fetchMyFeed from '@/lib/fetchers/myfeed';
 import fetchLeagues from '@/lib/fetchers/leagues';
 import fetchFavorites from '@/lib/fetchers/favorites';
@@ -22,7 +23,7 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 export async function generateMetadata(
-  {searchParams }: Props,
+  { searchParams }: Props,
 ): Promise<Metadata> {
 
   let { id, story }:
@@ -119,19 +120,25 @@ export default async function Page({
     if (!session.sessionid) {
       var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       session.sessionid = randomstring();
-      session.username = "";
-      session.isLoggedIn = false;
       session.dark = -1;
     }
     return session;
   }
+
   const t1 = new Date().getTime();
 
   let sessionid = "";
   let dark = 0;
-
+  let { userId } = auth();
+  
+  if (!userId) {
+    userId = "";
+  }
+  console.log("*** *** *** userId", userId);
   try {
+
     const session = await fetchSession();
+    console.log("*** *** *** session", session);
     sessionid = session.sessionid;
     dark = session.dark;
   }
@@ -140,14 +147,14 @@ export default async function Page({
   }
   console.log("sessionid", sessionid);
 
-  const userId = '';
+
   let fallback: { [key: string]: any } = {}; // Add index signature
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
   let headerslist = headers();
   let { tab = "", fbclid, utm_content, view = "mentions", id, story }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
-  
+
   let findexarxid = id || "";
   let pagetype = "league";
   let league = "";
@@ -180,11 +187,11 @@ export default async function Page({
   }
   if (tab == 'fav' && view == 'mentions') { //favorites
     if (!story && !findexarxid)
-      calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
+      calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
   }
   if (view == 'my fantasy team' || view == 'mentions') { //my feed
     if (!story && !findexarxid)
-      calls.push(await fetchMyTeam({ userId, sessionid, league }));
+      calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
   }
   if (tab == 'myfeed' || view == 'mentions') { //my feed
     if (!story && !findexarxid)

@@ -4,6 +4,7 @@ import { FetchMyFeedKey } from '@/lib/keys';
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions,SessionData } from "@/lib/session";
+import { auth } from "@clerk/nextjs/server";
 
 const lake_api=process.env.NEXT_PUBLIC_LAKEAPI
 const api_key=process.env.LAKE_API_KEY;;
@@ -32,8 +33,8 @@ const promiseMyFeed =async ({userId,sessionid,league}:FetchMyFeedProps)=>{
 export const actionMyFeed=async (key:FetchMyFeedKey)=>{
     'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const userId=session.username?session.username:"";
+    const { userId } = auth() || { userId: "" };
     const sessionid=session.sessionid;
-    return fetchMyFeed(key,userId,sessionid);
+    return fetchMyFeed(key,userId||"",sessionid);
 }
 export default promiseMyFeed;
