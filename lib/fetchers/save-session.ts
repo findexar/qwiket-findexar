@@ -8,8 +8,6 @@ const saveSession=async (sessionData:any)=>{
     if(!session.sessionid){
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
-        session.username="";
-        session.isLoggedIn=false;
         session.dark=-1;
         console.log("********** NEW SESSION",session)
         //await session.save();

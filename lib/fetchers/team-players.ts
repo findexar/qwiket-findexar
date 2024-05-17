@@ -4,7 +4,7 @@ import { unstable_serialize } from 'swr'
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions,SessionData } from "@/lib/session";
-
+import { auth } from "@clerk/nextjs/server";
 
 const api_key = process.env.LAKE_API_KEY;;
 interface FetchTeamPlayersProps {
@@ -31,9 +31,10 @@ const promiseFetchLeagueTeams = async ({ teamid = "",userId="",sessionid="" }: F
 }
 export const actionFetchLeagueTeams = async (key: TeamPlayersKey) => {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const userId=session.username?session.username:"";
+    const { userId } = auth() || { userId: "" };
     const sessionid=session.sessionid;
  
-    return fetchTeamPlayers(key,userId,sessionid);
+    return fetchTeamPlayers(key,userId||"",sessionid);
 }
 export default promiseFetchLeagueTeams;
+
