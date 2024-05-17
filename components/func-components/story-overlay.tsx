@@ -159,7 +159,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         //router.push(localUrl); // Correctly using router to navigate
         await actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
-                console.log("recordEvent", r);
+                //console.log("recordEvent", r);
             });
     }, [slug]);
     let target = `${teamName}`;

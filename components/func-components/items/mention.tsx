@@ -497,7 +497,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         try {
             actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("actionRecordEvent", r);
+                    //console.log("actionRecordEvent", r);
                 });
         } catch (x) {
             console.log('actionRecordEvent', x);
@@ -508,7 +508,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         try {
             actionRecordEvent(`mention-share`, `{"url","${url}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("actionRecordEvent", r);
+                    //console.log("actionRecordEvent", r);
                 });
         } catch (x) {
             console.log('actionRecordEvent', x);
@@ -535,20 +535,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         setDigestCopied(true);
         copy(digest);
     }, [digest]);
-    const iconClick=useCallback(()=>{
-        async () => {
+    const iconClick=useCallback(async () => {
             console.log("ICON CLICK")
-            // console.log("TRACKED", name)
-            // setPlayer(name);
-            /* if (window && window.Clerk) {
-                 const Clerk = window.Clerk;
-                 const user = Clerk.user;
-                 const id = Clerk.user?.id;
-                 if (!id) {
-                     setSignin(true);
-                     return;
-                 }
-             }*/
+            
             if (localTracked == true) {
                 console.log("TRACKED", name);
                 setToastMessage("Player removed from the Fantasy Team");
@@ -557,10 +546,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 console.log("tracked after mutatePlayers", name, team);
                 setLocalTracked(false);
                 await actionRemoveMyTeamMember({ member: name, teamid: team });
-                await actionRecordEvent(
-                    'mention-remove-myteam',
-                    `{"params":"${params}","team":"${team}","player":"${name}"}`
-                );
+               
                 if (mutate)
                     mutate();
                 if (myTeamMutate)
@@ -575,6 +561,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         })
                     }, { revalidate: true });
                 }
+                await actionRecordEvent(
+                    'mention-remove-myteam',
+                    `{"params":"${params}","team":"${team}","player":"${name}"}`
+                );
             }
             else {
                 console.log("UNTRACKED", name)
@@ -583,10 +573,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 setLocalTracked(true);
                 console.log("untracked after mutatePlayers", name, team);
                 await actionAddMyTeamMember({ member: name, teamid: team });
-                await actionRecordEvent(
-                    'mention-add-myteam',
-                    `{"params":"${params}","team":"${team}","player":"${name}"}`
-                );
                  if (mutate)
                     mutate();
                 if (myTeamMutate)
@@ -601,8 +587,13 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         })
                     }, { revalidate: true });
                 }
+                await actionRecordEvent(
+                    'mention-add-myteam',
+                    `{"params":"${params}","team":"${team}","player":"${name}"}`
+                );
+                
             }
-        }
+        
     },[mention])
     //console.log("bottomLink",bottomLink)
     return (
@@ -642,7 +633,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                         {type == "person" && <div>
                             <div className="mt-2"
-                                onClick={()=>iconClick()} aria-label="Add new list">
+                                onClick={async ()=>await iconClick()} aria-label="Add to my team or remove from my team">
                                 <SideIcon $highlight={localTracked}>
                                     {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
                                 </SideIcon>
@@ -727,7 +718,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name,bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
                         {type == "person" && <div>
                             <div className="mt-2"
-                                onClick={()=>iconClick()} aria-label="Add new list">
+                                onClick={async ()=>await iconClick()} aria-label="Add player to fantasy team">
                                 <SideIcon $highlight={localTracked}>
                                     {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
                                 </SideIcon>

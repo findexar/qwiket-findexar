@@ -388,7 +388,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             setScrolled(true);
             recordEvent(`header-scrolled`, `{"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
               .then((r: any) => {
-                console.log("recordEvent", r);
+                //console.log("recordEvent", r);
               });
           } catch (x) {
             console.log('recordEvent', x);

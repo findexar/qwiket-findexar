@@ -177,7 +177,7 @@ const MiniMention: React.FC<Props> = ({ handleClose,selectedXid, setSelectedXid,
         try {
             recordEvent(`mini-mention-hover`, `{"label","${label}","params":"${params}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    //console.log("recordEvent", r);
                 });
         } catch (x) {
             console.log('recordEvent', x);

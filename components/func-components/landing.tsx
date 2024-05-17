@@ -211,7 +211,7 @@ const Landing = () => {
         try {
             recordEvent(`enter-clicked`, `{"fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    //console.log("recordEvent", r);
                 });
         } catch (x) {
             console.log('recordEvent', x);
@@ -221,7 +221,7 @@ const Landing = () => {
         try {
             recordEvent( `far-side`, `{"fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    //console.log("recordEvent", r);
                 });
         } catch (x) {
             console.log('recordEvent', x);
@@ -232,7 +232,7 @@ const Landing = () => {
         try {
             recordEvent( `hover`, `{"label","${label}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
                 .then((r: any) => {
-                    console.log("recordEvent", r);
+                    //console.log("recordEvent", r);
                 });
         } catch (x) {
             console.log('recordEvent', x);
