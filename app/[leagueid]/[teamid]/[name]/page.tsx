@@ -1,36 +1,23 @@
 'use server';
-import { cookies, headers } from "next/headers";
-
-import { revalidatePath } from "next/cache";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
-import { SWRConfig, unstable_serialize } from 'swr'
-import { unstable_serialize as us } from 'swr/infinite';
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
+import { unstable_serialize } from 'swr'
+import { auth } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider'
 
-import { initSessionClient } from '@/app/client';
-
-import fetchMyTeam from '@/lib/fetchers/my-team-actions';
 import fetchLeagues from '@/lib/fetchers/leagues';
-import fetchFavorites from '@/lib/fetchers/favorites';
 import fetchSession from '@/lib/fetchers/session';
 import fetchSlugStory from '@/lib/fetchers/slug-story';
 import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
-import fetchStories from '@/lib/fetchers/stories';
+
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
-import fetchTeamMentions from '@/lib/fetchers/team-mentions';
 import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
 import fetchTeamPlayers from '@/lib/fetchers/team-players';
-import { getLeagues } from '@/lib/api';
-import { isbot } from '@/lib/is-bot';
 import { getASlugStory } from '@/lib/fetchers/slug-story';
-import { ASlugStoryKey } from '@/lib/api';
+
 import SPALayout from '@/components/spa';
 import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
-//import { isbot } from '@/lib/isbot.js';
 import type { Metadata, ResolvingMetadata } from 'next'
 
 type Props = {
@@ -43,11 +30,10 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
-  let { tab = "", fbclid, utm_content, view = "mentions", id, story }:
+  let { id, story }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
-  let teamid = params.teamid;
   /**
    * Fill an array of fetch promises for parallel execution
    * note: view - only on mobile, tab - on both
@@ -56,7 +42,6 @@ export async function generateMetadata(
   let amention, astory;
   if (findexarxid) {  // if a mention story is opened
     amention = await getAMention({ type: "AMention", findexarxid });
-    //  const metalink=await fetchMetaLink({ func: "meta", findexarxid, long: 1 });
   }
   if (story) { // if a digest story is opened
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
@@ -135,7 +120,6 @@ export default async function Page({
 }) {
 
   const t1 = new Date().getTime();
-  //console.log("entered root page", t1)
   let { userId } = auth();
   if (!userId) {
     userId = "";
@@ -144,41 +128,38 @@ export default async function Page({
   let dark = 0;
   try {
     const session = await fetchSession();
-    //console.log("=>",session)
     sessionid = session.sessionid;
     dark = session.dark;
   }
   catch (x) {
     console.log("error fetching sessionid", x);
   }
-  console.log("sessionid", sessionid);
-  console.log("==============================================*****===>")
-  
   let fallback: { [key: string]: any } = {}; // Add index signature
   const leaguesKey = { type: "leagues" };
+  
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
+  
   let headerslist = headers();
+  
   let { tab, fbclid, utm_content, view = "mentions", id, story }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
-  //let { userId }: { userId: string | null } = getAuth(context.req);
+  
   let findexarxid = id || "";
   let pagetype = "player";
   let league = params.leagueid.toUpperCase();
   let teamid = params.teamid;
   let name = params.name.replaceAll('_', ' ').replaceAll('%20', ' ');;
 
-  console.log("league->", league)
+
   utm_content = utm_content || '';
   fbclid = fbclid || '';
   const ua = headerslist.get('user-agent') || "";
-  const botInfo = isbot({ ua });
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
   ))
   view = view.toLowerCase();
   if (view == 'feed')
     view = 'mentions';
-  console.log("VIEW:", view, isMobile)
   if (view == 'home')
     view = 'mentions';
   let calls: { key: any, call: Promise<any> }[] = [];
@@ -199,12 +180,11 @@ export default async function Page({
   if (!story && !findexarxid)
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
-  //if (view == 'mentions'&&tab!='myteam'&&tab!='fav') { //stories
   if (!story && !findexarxid)
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name }));
-  //}
+
   await fetchData(t1, fallback, calls);
-  // console.log("final fallback:",fallback)
+
   const key = { type: "league-teams", league };
 
   let teams = fallback[unstable_serialize(key)];
