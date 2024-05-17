@@ -255,7 +255,7 @@ const MyTeam: React.FC<Props> = () => {
                 {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                     return <MobileSideGroup key={`3fdsdvb-${i}`}>
                         <MobileSidePlayer>
-                            <Link onClick={() => { setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
+                            <Link onClick={() => {setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                                 {member}
                             </Link>
                         </MobileSidePlayer>

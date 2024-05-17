@@ -140,20 +140,20 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     let qleague = parts && parts.length > 1 ? parts[1] : '';
     let qteam = parts && parts.length > 2 ? parts[2] : '';
     let qplayer = parts && parts.length > 3 ? parts[3] : '';
+    qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');;
     qleague = qleague.toUpperCase();
     if (view === 'landing') qpagetype = "landing";
 
     if (qteam) {
       qpagetype = "team";
       if (qplayer) {
-        qplayer = qplayer.replaceAll('_', ' ');
+
         qpagetype = "player";
       }
-    } else if (player) {
-      qplayer = qplayer.replaceAll('_', ' ');
-    }
+    } 
     setLeague(qleague);
     setTeamid(qteam);
+    console.log("spa setPlayer", qplayer);
     setPlayer(qplayer);
     setPagetype(qpagetype);
   }, [query]);

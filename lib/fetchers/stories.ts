@@ -16,8 +16,12 @@ interface FetchStoriesProps{
 const fetchStories=async (key:StoriesKey,userId:string,sessionid:string)=>{
     const {league, page}=key;
     const url=`${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
-    console.log("fetchStories",url);
+    const t1 = Date.now();
+    console.log("fetchStories", url);
     const fetchResponse = await fetch(url);
+    const t2 = Date.now();
+
+    console.log("fetchResponse", t2 - t1);
     const res = await fetchResponse.json();
     return res.stories;
 }
@@ -39,7 +43,9 @@ export const actionStories=async (key:StoriesKey)=>{
     setTimeout(async () => {
         try {
             const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
+            console.log("cacheInitUrl",cacheInitUrl);
             const cacheResponse = await fetch(cacheInitUrl);
+            console.log("cacheResponse",cacheResponse);
             const cacheResult = await cacheResponse.json();
             if (cacheResult.success) {
                 console.log("Cache initialization for rosters started in background");
