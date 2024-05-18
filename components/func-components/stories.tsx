@@ -1,13 +1,13 @@
 'use client';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWRInfinite from 'swr/infinite'
 import { styled } from "styled-components";
 //import { FetchedStoriesKey, fetchStories } from '@/lib/api';
 import { useAppContext } from '@/lib/context';
 import Story from "@/components/func-components/items/story";
 import LoadMore from "@/components/func-components/load-more";
-import {actionStories} from '@/lib/fetchers/stories';
-import {StoriesKey} from '@/lib/keys';
+import { actionStories } from '@/lib/fetchers/stories';
+import { StoriesKey } from '@/lib/keys';
 
 const MentionsBody = styled.div`
     height:100%;
@@ -65,20 +65,64 @@ const MobileMentionsOuterContainer = styled.div`
 
 interface Props {
 }
-
+let lastMutate = 0;
+let scrollY = 0;
 const Stories: React.FC<Props> = () => {
-    const {fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     const [firstXid, setFirstXid] = useState("");
-     
+    // const [scrollY, setScrollY] = useState(0);
+    const [top, setTop] = useState(true);
+
+
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
-        let key: StoriesKey = { type: "fetch-stories",  page: pageIndex, league };
+        let key: StoriesKey = { type: "fetch-stories", page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null // reached the end
         return key;
     }
-    const { data, error: storiesError, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
-   
-    let stories = data ? [].concat(...data):[];
-   
+    const { data, error: storiesError, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: false, parallel: true, fallback, revalidateFirstPage: false/*scrollY === 0*/ })
+
+    let stories = data ? [].concat(...data) : [];
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // console.log("mutate-interval",{lastMutate, scrollY:window.scrollY})
+            if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {
+                lastMutate = Date.now();
+                //console.log("Interval mutate")
+                mutate();
+
+            }
+        }, 20 * 1000); // Check every 20 secs
+
+        return () => clearInterval(intervalId);
+    }, [mutate]);
+
+
+    useEffect(() => {
+        const listener = () => {
+            if (window.scrollY === 0) {
+                if (lastMutate < Date.now() - 1000) {
+                    // console.log("mutate2",{win:window.scrollY})
+                    mutate();
+                }
+                lastMutate = Date.now();
+            }
+        }
+        function debounce(callbackFn: any, delay: number) {
+            let timeoutId: NodeJS.Timeout | null = null;
+            return function () {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                timeoutId = setTimeout(() => {
+                    callbackFn.call();
+                }, delay);
+            }
+        }
+        window.addEventListener("scroll", debounce(listener, 100));
+        return () => window.removeEventListener("scroll", listener);
+    }, [scrollY]);
+
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
     let isEmpty = data?.[0]?.length === 0;
@@ -86,29 +130,29 @@ const Stories: React.FC<Props> = () => {
         isEmpty || (data && data[data.length - 1]?.length < 5);
     const Stories = stories && stories.filter((s: any, i: number) => s).map((s: any, i: number) => <Story
         story={s}
-        handleClose={()=>{}}
+        handleClose={() => { }}
         key={`story-${i}`}
     />);
-    if(!stories||stories.length==0){
+    if (!stories || stories.length == 0) {
         return null;
     }
     return (
         <>
-           
-                <div className=""><MentionsOuterContainer className="hidden lg:block">
-                    <MentionsBody>
-                        {Stories}
-                    </MentionsBody>
-                    <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MentionsOuterContainer></div>
-                
-                <MobileMentionsOuterContainer className="h-full lg:hidden">
-                    <MentionsBody>
-                        {Stories}
-                    </MentionsBody>
-                    <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                    <ButtonContainer> </ButtonContainer>
-                </MobileMentionsOuterContainer>
+
+            <div className=""><MentionsOuterContainer className="hidden lg:block">
+                <MentionsBody>
+                    {Stories}
+                </MentionsBody>
+                <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
+            </MentionsOuterContainer></div>
+
+            <MobileMentionsOuterContainer className="h-full lg:hidden">
+                <MentionsBody>
+                    {Stories}
+                </MentionsBody>
+                <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
+                <ButtonContainer> </ButtonContainer>
+            </MobileMentionsOuterContainer>
         </>
     )
 }
