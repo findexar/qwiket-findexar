@@ -29,6 +29,7 @@ import PlayerMentions from "@/components/func-components/player-mentions";
 
 const MobileContainerWrap = styled.div`
     display: flex;
+    background-color: var(--background);
     flex-direction: column;
     height: 100%;
     width: 100%;
@@ -41,6 +42,7 @@ const MobileContainerWrap = styled.div`
 
 const LeftMobilePanel = styled.div`
     width: 100%;
+    min-height:1600px;
     display: flex;
     flex-direction: column;
     padding-left: 20px;
@@ -58,8 +60,9 @@ const LeftMobilePanel = styled.div`
 const CenterPanel = styled.div`
     position: relative;
     width: 100%;
-    min-height: 1000px !important;
+    min-height: 1600px !important;
     max-width: 1000px;
+    background-color: var(--background);
     margin-right: auto;
     margin-left: auto;
     overflow-y: auto;
@@ -78,10 +81,10 @@ interface Props {}
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab, view,  setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, team, slug, findexarxid } = useAppContext();
+    let { tab, view,  setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     tab = tab || "all";
-
+    console.log("Mobile, teamid:",teamid)
     useEffect(() => {
         setLocalFindexarxid(findexarxid);
     }, [findexarxid]);
@@ -105,17 +108,17 @@ const Mobile: React.FC<Props> = () => {
         if (name == 'feed')
             name = 'mentions';
         setView(name);
-        if (!team) {
+        if (!teamid) {
             window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
         }
         else {
-            window.history.replaceState({}, "", `/${league}/${team}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+            window.history.replaceState({}, "", `/${league}/${teamid}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
         }
         await recordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );
-    }, [team, league, params2, tp2, fbclid, utm_content, setView, recordEvent]);
+    }, [teamid, league, params2, tp2, fbclid, utm_content, setView, recordEvent]);
 
     return (
         <div className="block lg:hidden h-full">

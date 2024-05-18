@@ -191,7 +191,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setFindexarxid={setFindexarxid}
         setSlug={setSlug}
       >
-        <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full"}>
+        <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>
           <Head>
             <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
