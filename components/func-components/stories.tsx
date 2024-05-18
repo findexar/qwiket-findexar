@@ -66,13 +66,11 @@ let scrollY = 0;
 const Stories: React.FC<Props> = () => {
     const { fallback,league } = useAppContext();
 
-
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
         let key: StoriesKey = { type: "fetch-stories", page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     };
-
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: false, parallel: true, fallback, revalidateFirstPage: false });
 
     let stories = data ? [].concat(...data) : [];
