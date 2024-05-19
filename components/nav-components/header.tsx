@@ -369,8 +369,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
       setTab('');
     }
     setTeamid("");
-    console.log("replaceState", url);
-    window.history.replaceState({}, "", url);
+   // console.log("replaceState", url);
+   window.history.pushState({}, "", url);
     setTimeout(async () =>
       await recordEvent(
         'league-nav',
