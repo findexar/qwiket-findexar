@@ -71,7 +71,7 @@ const Stories: React.FC<Props> = () => {
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     };
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: false, parallel: true, fallback, revalidateFirstPage: false });
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: false, parallel: true, fallback, revalidateFirstPage: true });
 
     let stories = data ? [].concat(...data) : [];
 
