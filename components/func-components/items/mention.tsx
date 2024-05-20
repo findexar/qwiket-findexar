@@ -413,7 +413,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [summary, mutate, date, url]);
 
     //prepare urls:
-    const prepName = name?.replaceAll(' ', '_') || "";
+    const prepName = encodeURIComponent(name);//name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
 
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
