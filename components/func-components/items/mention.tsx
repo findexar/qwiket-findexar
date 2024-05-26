@@ -434,6 +434,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const meta = useSWR(mentionsKey, getMetaLink, { fallback }).data;
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
+
+
+
+    
     useEffect(() => {
         try {
             setLocalDate(convertToReadableLocalTime(date));
