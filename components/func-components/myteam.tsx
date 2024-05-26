@@ -13,7 +13,7 @@ import { useAppContext } from '@/lib/context';
 import { MyTeamRosterKey } from '@/lib/keys';
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionFetchMyTeam,actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionFetchMyTeam, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionRecordEvent } from "@/lib/actions";
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';

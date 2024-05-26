@@ -50,7 +50,7 @@ const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:strin
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
     //console.log("RET add my team:",res.success)
-    return res.success;
+    return {success:res.success,maxUser:res.maxUser,maxSubscription:res.maxSubscription,error:res.error};
 }
 const removeMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
 

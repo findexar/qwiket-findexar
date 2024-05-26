@@ -7,9 +7,9 @@ import useSWRInfinite from 'swr/infinite';
 import { UserButton, SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 
-import {useAppContext} from '@/lib/context';
-import {TeamPlayersKey,MyTeamKey} from '@/lib/keys';
-import {actionFetchLeagueTeams} from '@/lib/fetchers/team-players';
+import { useAppContext } from '@/lib/context';
+import { TeamPlayersKey, MyTeamKey } from '@/lib/keys';
+import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
 
 import { actionRecordEvent } from "@/lib/actions";
 import TeamAddIcon from "@/components/icons/usergroup-add";
@@ -20,7 +20,7 @@ import { PlayerMentionsKey } from '@/lib/keys';
 import { actionPlayerMentions } from '@/lib/fetchers/player-mentions';
 import { FetchMyFeedKey } from '@/lib/keys';
 import { actionMyFeed } from '@/lib/fetchers/myfeed';
-import { actionFetchMyTeam,actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
+import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { MyTeamRosterKey } from '@/lib/keys';
 
 declare global {
@@ -123,7 +123,7 @@ interface ScrollProps {
 const RightScroll = styled.div<ScrollProps>`
     position:sticky;
     height:auto !important;
-    top:-${({ $numPlayers }) => $numPlayers > 60 ? $numPlayers * $numPlayers * 0.30 : $numPlayers * $numPlayers *0.30}px;
+    top:-${({ $numPlayers }) => $numPlayers > 60 ? $numPlayers * $numPlayers * 0.30 : $numPlayers * $numPlayers * 0.30}px;
     overflow-y: hidden;
     padding-bottom:20px;
     width:auto;
@@ -137,14 +137,14 @@ const Players: React.FC<Props> = () => {
     //console.log("players teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
     const theme = useTheme();
-   //this is to be able to mutate team mentions
+    //this is to be able to mutate team mentions
     const fetchTeamMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
         let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid, page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
-    const { data:mentions, error:mentionsError, mutate:mutateMentions, size:mentionsSize, setSize:setMentionsSize, isValidating:mentionsIsValidating, isLoading:mentionsIsLoading } = useSWRInfinite(fetchTeamMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
-   //this is to be able to mutate player mentions
+    const { data: mentions, error: mentionsError, mutate: mutateMentions, size: mentionsSize, setSize: setMentionsSize, isValidating: mentionsIsValidating, isLoading: mentionsIsLoading } = useSWRInfinite(fetchTeamMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    //this is to be able to mutate player mentions
     const fetchPlayerMentionsKey = (pageIndex: number, previousPageData: any): PlayerMentionsKey | null => {
         let key: PlayerMentionsKey = { type: "fetch-player-mentions", teamid, page: pageIndex, league, name: player };
         if (previousPageData && !previousPageData.length) return null; // reached the end
@@ -160,24 +160,24 @@ const Players: React.FC<Props> = () => {
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate:mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true,parallel:true,fallback })
-  
+    const { data, error, mutate: mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, { fallback });
-   
+
     //@ts-ignore
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
-   // console.log("PLAYERS:",players,"key:",teamPlayersKey)
+    // console.log("PLAYERS:",players,"key:",teamPlayersKey)
     const onPlayerNav = async (name: string) => {
-       // console.log("onPlayerNav", name)
+        // console.log("onPlayerNav", name)
         setPagetype("player");
         setPlayer(name);
         setView("mentions");
         setTab("all");
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
-      //  console.log("replaceState", url)
-      //  window.history.replaceState({}, "", url);
+        //  console.log("replaceState", url)
+        //  window.history.replaceState({}, "", url);
         await actionRecordEvent(
             'player-nav',
             `{"params":"${params}","player":"${name}"}`
@@ -188,7 +188,7 @@ const Players: React.FC<Props> = () => {
         return <SideGroup className="h-6" key={`ewfggvfn-${p.name}`}>{p.name == player ?
             <SelectedSidePlayer $highlight={p.tracked}>
                 <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
-                    {p.name} ({`${p.mentions?p.mentions:0}`})
+                    {p.name} ({`${p.mentions ? p.mentions : 0}`})
                 </Link>
             </SelectedSidePlayer>
             :
@@ -201,7 +201,7 @@ const Players: React.FC<Props> = () => {
                 <div className="mt-2"
                     onClick={async () => {
                         setPlayer(p.name);
-      
+
                         if (p.tracked == true) {
                             console.log("TRACKED", p.name)
                             mutatePlayers(async (players: any) => {
@@ -211,8 +211,8 @@ const Players: React.FC<Props> = () => {
                                     }
                                     return player;
                                 })
-                            }, {revalidate:true});
-                            await actionRemoveMyTeamMember({member:p.name,teamid});
+                            }, { revalidate: true });
+                            await actionRemoveMyTeamMember({ member: p.name, teamid });
                             await actionRecordEvent(
                                 'player-remove-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
@@ -223,30 +223,33 @@ const Players: React.FC<Props> = () => {
                             trackerListMutate();
                         }
                         else {
-                           
+
                             console.log("after mutatePlayers");
-                            mutatePlayers(async (players: any) => {
-                                return players.map((player: any) => {
-                                    if (player.name == p.name) {
-                                        player.tracked = true;
-                                    }
-                                    return player;
-                                })
-                            }, {revalidate:true});
-                            await actionAddMyTeamMember({member:p.name,teamid});
-                            await actionRecordEvent(
-                                'player-add-myteam',
-                                `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
-                            );
-                            mutateMentions();
-                            mutateMyFeed();
-                            mutatePlayerMentions();
-                            trackerListMutate();
                            
+                            const response = await actionAddMyTeamMember({ member: p.name, teamid });
+                            if (response.success) {
+                                mutatePlayers(async (players: any) => {
+                                    return players.map((player: any) => {
+                                        if (player.name == p.name) {
+                                            player.tracked = true;
+                                        }
+                                        return player;
+                                    })
+                                }, { revalidate: true });
+                                await actionRecordEvent(
+                                    'player-add-myteam',
+                                    `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
+                                );
+                                mutateMentions();
+                                mutateMyFeed();
+                                mutatePlayerMentions();
+                                trackerListMutate();
+                            }
+
                         }
                     }} aria-label="Add new list">
                     <SideIcon $highlight={p.tracked}>
-                        {p.tracked ? <TeamRemoveIcon  className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400"  /> : <TeamAddIcon  className="h-6 w-6 opacity-60 hover:opacity-100  text-teal-400"/>}
+                        {p.tracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-teal-400" />}
                         {signin && <RedirectToSignIn />}
                     </SideIcon>
                 </div>

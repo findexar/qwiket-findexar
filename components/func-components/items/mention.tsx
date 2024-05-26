@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useCallback, useState } from "react";
-import useSWRImmutable from 'swr/immutable';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
+import { useUser} from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
 
@@ -350,10 +350,10 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const {setFindexarxid,setSlug,fallback,league:ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype,setTeamid, setTeamName } = useAppContext();
+    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-    let {  league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -366,14 +366,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
-    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league:ll };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam,fallback);
-    
+    const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league: ll };
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, fallback);
+
     useEffect(() => {
         setLocalTracked(tracked);
     }, [tracked]);
     useEffect(() => {
-       setLocalFav(fav);
+        setLocalFav(fav);
     }, [fav]);
     useEffect(() => {
         setExpanded(startExtended);
@@ -425,15 +425,15 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
     let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`;
-    if(linkType=='final')
+    if (linkType == 'final')
         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary?.substring(0, 140) || "" + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
-    const meta = useSWR(mentionsKey, getMetaLink,{fallback}).data;
+    const meta = useSWR(mentionsKey, getMetaLink, { fallback }).data;
     let digest = meta?.digest || "";
-
+    const { isLoaded, isSignedIn, user } = useUser();
     useEffect(() => {
         try {
             setLocalDate(convertToReadableLocalTime(date));
@@ -443,34 +443,21 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [date])
 
-    const onMentionNav = useCallback(async (name: string,url:string) => {
-        /*setTimeout(async ()=>{
-        await handleClose();
-        },100)*/
-        console.log("onMentionNav",name,url)
-       // setLeague(league);
-       // setTeamid(team);
-        //if(!mini)
-        //    setFindexarxid(findexarxid);
-       
-        //setSlug("");
-        //setTeamName(teamName);
-        //setPlayer(type == 'person' ? name : '');
+    const onMentionNav = useCallback(async (name: string, url: string) => {
+
+        console.log("onMentionNav", name, url)
+      
         let pgt = "";
         if (type == 'person')
             pgt = 'player';
         else
             pgt = 'team';
-        //setPagetype(pgt);
-        //window.history.pushState({}, "", url);
-        
-      //  window.history.pushState({}, "", url);
-       // window.scrollTo(0, 0);
+ 
         await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
         );
-         
+
     }, [league, team, type, params]);
 
     const enableRedirect = useCallback(() => {
@@ -497,7 +484,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         try {
             actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
-                    //console.log("actionRecordEvent", r);
+                  
                 });
         } catch (x) {
             console.log('actionRecordEvent', x);
@@ -535,45 +522,47 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         setDigestCopied(true);
         copy(digest);
     }, [digest]);
-    const iconClick=useCallback(async () => {
-            console.log("ICON CLICK")
-            
-            if (localTracked == true) {
-                console.log("TRACKED", name);
-                setToastMessage("Player removed from the Fantasy Team");
-                setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
-             
-                console.log("tracked after mutatePlayers", name, team);
-                setLocalTracked(false);
-                await actionRemoveMyTeamMember({ member: name, teamid: team });
-               
-                if (mutate)
-                    mutate();
-                if (myTeamMutate)
-                    myTeamMutate();
-                if (mutatePlayers) {
-                    mutatePlayers(async (players: any) => {
-                        return players.map((player: any) => {
-                            if (player.name == name) {
-                                player.tracked = false;
-                            }
-                            return player;
-                        })
-                    }, { revalidate: true });
-                }
-                await actionRecordEvent(
-                    'mention-remove-myteam',
-                    `{"params":"${params}","team":"${team}","player":"${name}"}`
-                );
+    const iconClick = useCallback(async () => {
+        console.log("ICON CLICK")
+
+        if (localTracked == true) {
+            console.log("TRACKED", name);
+            setToastMessage("Player removed from the Fantasy Team");
+            setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
+
+            console.log("tracked after mutatePlayers", name, team);
+            setLocalTracked(false);
+            await actionRemoveMyTeamMember({ member: name, teamid: team });
+
+            if (mutate)
+                mutate();
+            if (myTeamMutate)
+                myTeamMutate();
+            if (mutatePlayers) {
+                mutatePlayers(async (players: any) => {
+                    return players.map((player: any) => {
+                        if (player.name == name) {
+                            player.tracked = false;
+                        }
+                        return player;
+                    })
+                }, { revalidate: true });
             }
-            else {
-                console.log("UNTRACKED", name)
+            await actionRecordEvent(
+                'mention-remove-myteam',
+                `{"params":"${params}","team":"${team}","player":"${name}"}`
+            );
+        }
+        else {
+            console.log("UNTRACKED", name)
+            const response = await actionAddMyTeamMember({ member: name, teamid: team });
+            if (response.success) {
                 setToastMessage("Player added to the Fantasy Team");
                 setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
                 setLocalTracked(true);
                 console.log("untracked after mutatePlayers", name, team);
-                await actionAddMyTeamMember({ member: name, teamid: team });
-                 if (mutate)
+
+                if (mutate)
                     mutate();
                 if (myTeamMutate)
                     myTeamMutate();
@@ -591,37 +580,59 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     'mention-add-myteam',
                     `{"params":"${params}","team":"${team}","player":"${name}"}`
                 );
-                
             }
-        
-    },[mention])
+            else {
+                const { error, maxUser, maxSubscription } = response;
+                if (error) {
+                    setToastMessage(error);
+                    setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
+                }
+                if(maxUser){ // should only happen if the user is not logged in
+                    //check if there is a logged in user
+                   if (isLoaded && !isSignedIn) {
+                        //if there is a logged in user, show a toast message
+                        //setToastMessage("You have reached the maximum number of users allowed.");
+                        //setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
+                        //put up a reponsive modal dialog, explaining that to have more than 10 players, one need to create a login.
+                    
+                    }
+                    else {
+                        setToastMessage("There was an error adding the player to your team.");
+                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);           
+                    }
+                }
+            }
+        }
+
+    }, [mention])
     //console.log("bottomLink",bottomLink)
     return (
         <>
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
-                        {!localFav ? <StarOutlineIcon className="h-4 w-4" 
-                        onClick={async () => { if (noUser) return; 
-                        setLocalFav(1); 
-                        await actionAddFavorite({ findexarxid });
-                        if (mutate) mutate();
-                        setToastMessage("Added to Favoritess.");
-                        setToastIcon(<StarIcon className="h-4 w-4"/>);
-                   
-                    
-                    
-                    }} style={{ color: "#888" }} /> : 
-                    <StarIcon className="h-4 w-4" onClick={async () => { 
-                        if (noUser) return; 
-                        setLocalFav(0); 
-                        await actionRemoveFavorite({ findexarxid }); mutate(); 
-                        setToastMessage("Removed from Favoritess.");
-                        setToastIcon(<StarOutlineIcon className="h-4 w-4"/>);
-                        
-                        }} style={{ color: "FFA000" }} />}</Topline>
+                        {!localFav ? <StarOutlineIcon className="h-4 w-4"
+                            onClick={async () => {
+                                if (noUser) return;
+                                setLocalFav(1);
+                                await actionAddFavorite({ findexarxid });
+                                if (mutate) mutate();
+                                setToastMessage("Added to Favoritess.");
+                                setToastIcon(<StarIcon className="h-4 w-4" />);
+
+
+
+                            }} style={{ color: "#888" }} /> :
+                            <StarIcon className="h-4 w-4" onClick={async () => {
+                                if (noUser) return;
+                                setLocalFav(0);
+                                await actionRemoveFavorite({ findexarxid }); mutate();
+                                setToastMessage("Removed from Favoritess.");
+                                setToastIcon(<StarOutlineIcon className="h-4 w-4" />);
+
+                            }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl}  onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
+                        <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, mini ? bottomLink : localUrl) }}>
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
@@ -629,18 +640,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <br />
 
                     <hr />
-                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink}  onClick={async () => { await onMentionNav(name,bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
-                                onClick={async ()=>await iconClick()} aria-label="Add to my team or remove from my team">
+                                onClick={async () => await iconClick()} aria-label="Add to my team or remove from my team">
                                 <SideIcon $highlight={localTracked}>
                                     {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
                                 </SideIcon>
                             </div>
                         </div>}
                     </Atmention>
-                    <BottomLine> 
+                    <BottomLine>
                         <ShareGroup><RWebShare
                             data={{
                                 text: summary,
@@ -706,24 +717,24 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 <MentionSummary>
                     <div>
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
-                     
+
                         <SummaryWrap>
-                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini?bottomLink:localUrl} onClick={async () => { await onMentionNav(name,mini?bottomLink:localUrl) }}>
+                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, mini ? bottomLink : localUrl) }}>
                                 {summary}
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name,bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
-                        {type == "person" && <div>
-                            <div className="mt-2"
-                                onClick={async ()=>await iconClick()} aria-label="Add player to fantasy team">
-                                <SideIcon $highlight={localTracked}>
-                                    {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
-                                </SideIcon>
-                            </div>
-                        </div>}
+                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
+                            {type == "person" && <div>
+                                <div className="mt-2"
+                                    onClick={async () => await iconClick()} aria-label="Add player to fantasy team">
+                                    <SideIcon $highlight={localTracked}>
+                                        {localTracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />}
+                                    </SideIcon>
+                                </div>
+                            </div>}
                         </Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
