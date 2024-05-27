@@ -46,10 +46,10 @@ const addMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:strin
   
     userId=userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/tracker-list/add?api_key=${api_key}&member=${encodeURIComponent(member)}&teamid=${teamid}&userid=${userId}&sessionid=${sessionid}`;
-    //console.log("add my team member:",url)
+    console.log("==================> add my team member:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    //console.log("RET add my team:",res.success)
+    console.log("RET add my team:",res.success)
     return {success:res.success,maxUser:res.maxUser,maxSubscription:res.maxSubscription,error:res.error};
 }
 const removeMyTeamMember = async ({ teamid,member }: MyTeamMemberProps,userId:string,sessionid:string) => {
