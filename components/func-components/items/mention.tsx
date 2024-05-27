@@ -28,6 +28,7 @@ import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorite
 
 import { MyTeamRosterKey } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
+import LimitAccountModal from '@/components/util-components/user-account';
 
 
 declare global {
@@ -434,7 +435,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const meta = useSWR(mentionsKey, getMetaLink, { fallback }).data;
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
-
+    const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
 
 
     
@@ -598,7 +599,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         //setToastMessage("You have reached the maximum number of users allowed.");
                         //setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                         //put up a reponsive modal dialog, explaining that to have more than 10 players, one need to create a login.
-                    
+                        setOpenLimitAccountModal(true);
                     }
                     else {
                         setToastMessage("There was an error adding the player to your team.");
@@ -611,9 +612,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [mention])
     //console.log("bottomLink",bottomLink)
     return (
-        <>
+        <>   {openLimitAccountModal &&<LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
+             
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
-                <MentionSummary>
+                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
                         {!localFav ? <StarOutlineIcon className="h-4 w-4"
                             onClick={async () => {
@@ -640,6 +642,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
+                     
                     </SummaryWrap>
                     <br />
 

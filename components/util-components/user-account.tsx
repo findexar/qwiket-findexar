@@ -6,21 +6,23 @@ Create a responsive (full screen on small screen) modal dialog governed by "open
 interface SignInModalProps {
     setOpenCreateUser: (open: boolean) => void;
 }
-const SignInModal = ({ setOpenCreateUser }: SignInModalProps) => {
+const LimitAccountModal = ({ setOpenCreateUser }: SignInModalProps) => {
 
     const handleClose = () => {
+        console.log("handleClose")
         setOpenCreateUser(false);
     };
 
     return (
-        <div className={`fixed inset-0 z-50 overflow-y-auto'`}>
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="fixed inset-0 bg-black opacity-50"></div>
-                <div className="bg-white p-5 rounded-lg max-w-sm mx-auto">
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+              <div className="fixed inset-0 bg-black bg-opacity-50">
+            <div className="flex items-center justify-center min-h-screen w-full">
+              
+                <div className="bg-white p-5 rounded-lg w-full max-w-sm mx-auto sm:w-auto">
                     <h2 className="text-lg font-bold">Create {process.env.NEXT_PUBLIC_APP_NAME} Account or Log In</h2>
                     <p>You need to create an account or log in to manage more than 10 fantasy players in your team.</p>
                     <div className="mt-4">
-                        <SignInButton mode="modal">
+                        <SignInButton mode="redirect">
                             <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                                 Sign In / Register
                             </button>
@@ -30,11 +32,11 @@ const SignInModal = ({ setOpenCreateUser }: SignInModalProps) => {
                         Close
                     </button>
                 </div>
+                </div>
             </div>
         </div>
     );
 };
 
-export default SignInModal;
-
+export default LimitAccountModal;
 
