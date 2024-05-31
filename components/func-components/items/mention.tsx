@@ -419,6 +419,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
     const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
+   // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
+  
     let localUrl = "";
     localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
     if (mini)
@@ -429,10 +431,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     if (linkType == 'final')
         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
-    const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary?.substring(0, 140) || "" + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
+    summary = summary || "";
+    // Normalize summary to ensure it's safe for URI encoding
+    summary= summary.normalize("NFKC");
+    //console.log("******** SUMMARY", normalizedSummary, fbShareUrl, {quote: normalizedSummary.substring(0, 140) + '...'})
+    const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
-    const meta = useSWR(mentionsKey, getMetaLink, { fallback }).data;
+    const meta:any = useSWR(mentionsKey, getMetaLink, { fallback }).data;
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
