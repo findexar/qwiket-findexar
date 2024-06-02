@@ -442,6 +442,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
+    const [openLimitSubscriptionModal, setOpenLimitSubscriptionModal] = useState(false);
 
 
     
@@ -611,6 +612,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         setToastMessage("There was an error adding the player to your team.");
                         setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);           
                     }
+                }
+                else if(maxSubscription){
+                    setToastMessage("You have reached the maximum number of players allowed.");
+                    setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                 }
             }
         }

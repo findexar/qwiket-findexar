@@ -3,7 +3,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { unstable_serialize } from 'swr';
 import { SWRProvider } from '@/app/swr-provider';
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import fetchMyTeam from '@/lib/fetchers/my-team-actions';
 import fetchMyFeed from '@/lib/fetchers/myfeed';
 import fetchLeagues from '@/lib/fetchers/leagues';
@@ -150,6 +150,10 @@ export default async function Page({ searchParams }: { params: { slug: string };
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
+  if (userId) {
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+  }
   let headerslist = headers();
   let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
 
