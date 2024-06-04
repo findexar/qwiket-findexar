@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { unstable_serialize } from 'swr';
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider';
 
 import fetchMyTeam from '@/lib/fetchers/my-team-actions';
@@ -13,6 +13,7 @@ import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
+import fetchUserSubscription from "@/lib/fetchers/user-subscription";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { isbot } from '@/lib/is-bot';
 import { getAMention } from '@/lib/fetchers/mention';
@@ -198,6 +199,12 @@ export default async function Page({
   console.log("***> view,tab", view, tab);
   if (!story && !findexarxid) {
     calls.push(await fetchLeagueTeams({ league }));
+  }
+  if (userId) {
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
+
   }
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));

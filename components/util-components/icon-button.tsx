@@ -3,9 +3,6 @@ import React from 'react';
 interface TailwindIconButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  className?: string;
-  color?: string;
-  size?: 'small' | 'medium' | 'large';
 }
 
 const sizeClasses = {
@@ -24,15 +21,11 @@ const colorClasses = {
 const TailwindIconButton: React.FC<TailwindIconButtonProps> = ({
   children,
   onClick,
-  className = '',
-  color = 'default',
-  size = 'medium'
+
 }) => {
-  const sizeClass = sizeClasses[size];
-  const colorClass = colorClasses[color as keyof typeof colorClasses];
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-full ${sizeClass} ${colorClass} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full`}
       onClick={onClick}
     >
       {children}

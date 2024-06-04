@@ -1,7 +1,7 @@
 'use server';
 import { headers } from "next/headers";
 import { unstable_serialize } from 'swr'
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider'
 
 import fetchLeagues from '@/lib/fetchers/leagues';
@@ -13,6 +13,7 @@ import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
 import fetchTeamPlayers from '@/lib/fetchers/team-players';
+import fetchUserSubscription from "@/lib/fetchers/user-subscription";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 
 import SPALayout from '@/components/spa';
@@ -170,6 +171,12 @@ export default async function Page({
    * 
    */
   calls.push(await fetchLeagueTeams({ league }));
+  if (userId) {
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
+  }
+  
   if (findexarxid) {  // if a mention story is opened
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));

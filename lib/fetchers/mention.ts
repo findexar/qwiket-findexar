@@ -28,7 +28,7 @@ export const removeAMention = async ({ type, findexarxid }: AMentionKey) => {
     }
 }
 const promiseAMention = async (key: AMentionKey) => {
-    return { key: unstable_serialize(key), call: await getAMention(key) };
+    return { key: unstable_serialize(key), call: getAMention(key) };
 }
 export const actionAMention = async (key: AMentionKey) => {
     'use server';

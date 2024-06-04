@@ -13,5 +13,5 @@ export type StoriesKey = { type: string, league?: string,  page: number, firstXi
 export type TeamMentionsKey = { type: string, league?:string,teamid: string,page:number};
 export type PlayerMentionsKey = { type: string, league?:string,teamid: string,name:string,page:number};
 export type MyTeamKey = { type: string, league: string };
-export type UserSubscriptionKey = { type: string, userId: string, email: string };
+export type UserSubscriptionKey = { type: string};
 

@@ -12,8 +12,10 @@ import fetchSlugStory from '@/lib/fetchers/slug-story';
 import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
+import fetchUserSubscription from "@/lib/fetchers/user-subscription";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { getAMention } from '@/lib/fetchers/mention';
+
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
@@ -150,10 +152,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-  if (userId) {
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-  }
+
   let headerslist = headers();
   let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
 
@@ -174,7 +173,12 @@ export default async function Page({ searchParams }: { params: { slug: string };
     view = 'mentions';
   }
   let calls: { key: any; call: Promise<any> }[] = [];
+  if (userId) {
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
 
+  }
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));

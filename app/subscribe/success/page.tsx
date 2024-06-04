@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { auth } from "@clerk/nextjs/server";
 import { stripe } from '@/lib/stripe';
 import { currentUser } from '@clerk/nextjs/server';
+
 const SuccessPage = () => {
   const router = useRouter();
 
