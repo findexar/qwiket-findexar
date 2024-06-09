@@ -26,9 +26,11 @@ import TeamRemoveIcon from "@/components/icons/usergroup-delete";
 import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
 
-import { MyTeamRosterKey } from '@/lib/keys';
+import { MyTeamRosterKey, UserSubscriptionKey as SubscriptionKey } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
 import LimitAccountModal from '@/components/util-components/user-account';
+import LimitSubscriptionModal from "@/components/util-components/user-subscription";
+import { actionUserSubscription } from "@/lib/fetchers/user-subscription";
 
 
 declare global {
@@ -412,7 +414,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             setHide(false);
         }
     }, [summary, mutate, date, url]);
-
+    
+    const subscriptionKey: SubscriptionKey = { type: "subscription" };
+    const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
+    const subscrLevel=subscription?.subscrLevel||0;
     //prepare urls:
     const prepName = encodeURIComponent(name);//name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
@@ -607,6 +612,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         //setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                         //put up a reponsive modal dialog, explaining that to have more than 10 players, one need to create a login.
                         setOpenLimitAccountModal(true);
+                        setToastMessage("You have reached the maximum number of players allowed as a guest.");
+                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
+                        
                     }
                     else {
                         setToastMessage("There was an error adding the player to your team.");
@@ -614,7 +622,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     }
                 }
                 else if(maxSubscription){
-                    setToastMessage("You have reached the maximum number of players allowed.");
+                    setOpenLimitSubscriptionModal(true);
+                    setToastMessage("You have reached the maximum number of players allowed under your subscription plan.");
                     setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                 }
             }
@@ -623,8 +632,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [mention])
     //console.log("bottomLink",bottomLink)
     return (
-        <>   {openLimitAccountModal &&<LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
-             
+        <>   
+        {openLimitAccountModal &&<LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
+        {openLimitSubscriptionModal &&<LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />}
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                  <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>

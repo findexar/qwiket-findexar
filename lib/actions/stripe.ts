@@ -8,7 +8,7 @@ import { stripe } from "@/lib/stripe";
 export async function createCheckoutSession(
   level: number,
   ui_mode: Stripe.Checkout.SessionCreateParams.UiMode
-): Promise<Stripe.Checkout.Session> {
+): Promise<string> {
   const origin: string = headers().get("origin") as string;
   let { userId } = auth() || { userId: "" };
   if (!userId) {
@@ -17,7 +17,7 @@ export async function createCheckoutSession(
   let priceId: string;
   switch (level) {
     case 1:
-      priceId = "price_1PMVQwDOGFJmkdXRZkUWhguB"; 
+      priceId = "price_1PMVNqDOGFJmkdXRW8aPAT6n"; 
       break;
     case 2:
       priceId = "price_1PMVP6DOGFJmkdXRN3VpgdNZ";
@@ -31,7 +31,7 @@ export async function createCheckoutSession(
     default:
       throw new Error("Invalid subscription level");
   }
-
+ console.log("")
   const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create({
     mode: "subscription",
     client_reference_id:userId,
@@ -54,7 +54,7 @@ export async function createCheckoutSession(
     }),
     ui_mode,
   });
-
-  return checkoutSession;
+  console.log("checkoutSession",checkoutSession)
+  return checkoutSession.id;
 }
 

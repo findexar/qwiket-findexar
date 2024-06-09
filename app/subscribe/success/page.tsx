@@ -1,15 +1,26 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+//import { useEffect } from 'react';
+//import { useRouter } from 'next/router';
 import { auth } from "@clerk/nextjs/server";
 import { stripe } from '@/lib/stripe';
 import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation'
 
-const SuccessPage = () => {
-  const router = useRouter();
-
-  useEffect(() => {
+export default async function SuccessPage({
+  params,
+  searchParams,
+}: {
+  params: {};
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  
+  let {
+   session_id
+  }: {
+    session_id:string
+  } = searchParams as any;
+  console.log("Session_id:",session_id);
     const handleRedirect = async () => {
-      const session_id = router.query.session_id;
+    
       if (typeof session_id === 'string') { // Ensure session_id is a string
         try {
           const session = await stripe.checkout.sessions.retrieve(session_id);
@@ -28,6 +39,7 @@ const SuccessPage = () => {
         };
 
         try {
+          console.log('Updating subscription:', updateSubscriptionData, updateSubscriptionUrl);
           const response = await fetch(updateSubscriptionUrl, {
             method: 'POST',
             headers: {
@@ -55,14 +67,15 @@ const SuccessPage = () => {
           console.error('Failed to retrieve Stripe session:', error);
         }
       }
-      router.push('/');
     };
 
     handleRedirect();
-  }, [router]);
+    redirect("/");
+   
 
   return <>SUBSCRIPTION SUCCESS</>;
 };
 
-export default SuccessPage;
+
+
 

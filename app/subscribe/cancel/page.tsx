@@ -1,14 +1,7 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { redirect } from 'next/navigation'
 
 const CancelPage = () => {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Redirect to the home page
-    router.push('/');
-  }, [router]);
-
+  redirect("/");
   return null;
 };
 
