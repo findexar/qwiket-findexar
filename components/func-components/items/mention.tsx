@@ -644,7 +644,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 setLocalFav(1);
                                 await actionAddFavorite({ findexarxid });
                                 if (mutate) mutate();
-                                setToastMessage("Added to Favoritess.");
+                                setToastMessage("Added to Favorites.");
                                 setToastIcon(<StarIcon className="h-4 w-4" />);
 
 
@@ -654,7 +654,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 if (noUser) return;
                                 setLocalFav(0);
                                 await actionRemoveFavorite({ findexarxid }); mutate();
-                                setToastMessage("Removed from Favoritess.");
+                                setToastMessage("Removed from Favorites.");
                                 setToastIcon(<StarOutlineIcon className="h-4 w-4" />);
 
                             }} style={{ color: "FFA000" }} />}</Topline>
