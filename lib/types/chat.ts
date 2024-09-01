@@ -17,7 +17,7 @@ export type Chat = {
 }
 
 export type ContextInput = {
-    contextInputUUId: string,
+    contextInputUUId?: string,
     type: ContextInputType,
     scope: ContextScopeType,
     athleteUUId?: string,
@@ -26,6 +26,7 @@ export type ContextInput = {
     athleteUUIds?: string[],
     teamids?: string[],
 }
+
 export type Mention = {
     league: string | null;
     url: string | null;

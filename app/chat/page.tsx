@@ -39,7 +39,9 @@ export default function ChatPage() {
         setMessages(prevMessages => [...prevMessages, assistantMessage]);
 
         try {
-            const res = await fetch('https://dev-lake-api.qwiket.com/api/v50/findexar/ai-chat/create', {
+            const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create`;   
+   
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
