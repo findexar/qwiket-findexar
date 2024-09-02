@@ -39,3 +39,8 @@ export type Mention = {
     teamName: string | null;
     athleteUUId: string | null;
 }
+
+export type Message = {
+    role: string;
+    content: string;
+}

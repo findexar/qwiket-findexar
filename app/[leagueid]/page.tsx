@@ -93,9 +93,9 @@ export async function generateMetadata(
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
 
-  let ogDescription = amentionSummary || "Fantasy Sports Media Reader and Mentions Index.";
+  let ogDescription = amentionSummary || "Professional and Fantasy Sports AI and Media Reader and Mentions Index.";
   let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
-  let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports Media Reader`;
+  let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
 
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
@@ -203,7 +203,7 @@ export default async function Page({
   if (userId) {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
-    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
+    calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
 
   }
   if (findexarxid) {

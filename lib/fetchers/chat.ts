@@ -105,6 +105,7 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
 }
 
 export const actionCreateChat = async (props: CreateChatProps) => {
+    'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";

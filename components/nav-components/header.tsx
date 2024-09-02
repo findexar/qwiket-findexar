@@ -21,7 +21,7 @@ import { useAppContext } from '@/lib/context';
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import PlayerPhoto from "@/components/util-components/player-photo";
 import saveSession from '@/lib/fetchers/save-session';
-import {actionUserSubscription} from '@/lib/fetchers/user-subscription';
+import { actionUserSubscription } from '@/lib/fetchers/user-subscription';
 
 interface HeaderProps {
   $scrolled: boolean;
@@ -359,13 +359,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
-  const { data: leagues = [], error } = useSWR(key, fetchLeagues, {fallback });
+  const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
 
   // Ensure that 'subscriptionKey' and 'fetchSubscription' are defined and used correctly
   const subscriptionKey: SubscriptionKey = { type: "subscription" };
   const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
-  const subscrLevel=subscription?.subscrLevel||0;
-  console.log("subscrLevel",subscrLevel);
+  const subscrLevel = subscription?.subscrLevel || 0;
+  console.log("subscrLevel", subscrLevel);
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const onLeagueNavClick = useCallback((l: string, url: string) => {
@@ -453,7 +453,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
               <HeaderCenter>
                 <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase() + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports Media Reader</Subhead><SubheadMobile>Sports Media Reader</SubheadMobile></div>}
+                {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Professional and Fantasy Sports AI</Subhead><SubheadMobile>Sports AI</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
@@ -467,13 +467,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           }}>
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
-          <SignedIn>
-          <IconButton onClick={async () => {
-            await updateMode(mode == "light" ? "dark" : "light");
-          }}>
-            {subscrLevel == 0 ? <div className="text-white-100"><StarOutlineIcon fontSize="small" /></div> : subscrLevel == 1 ?<div className="text-white-500"><StarIcon fontSize="small" /></div>:subscrLevel == 2 ?<div className="text-amber-600"><StarIcon fontSize="small" /></div>:<div className="text-emerald-700"><StarIcon fontSize="small" /></div>}
-          </IconButton>
-          </SignedIn>
+            <SignedIn>
+              <IconButton onClick={async () => {
+                await updateMode(mode == "light" ? "dark" : "light");
+              }}>
+                {subscrLevel == 0 ? <div className="text-white-100"><StarOutlineIcon fontSize="small" /></div> : subscrLevel == 1 ? <div className="text-white-500"><StarIcon fontSize="small" /></div> : subscrLevel == 2 ? <div className="text-amber-600"><StarIcon fontSize="small" /></div> : <div className="text-emerald-700"><StarIcon fontSize="small" /></div>}
+              </IconButton>
+            </SignedIn>
             <SignedIn><SUserButton afterSignOutUrl="/" /></SignedIn>
             <SignedOut><SignInButton><IconButton ><LoginIcon fontSize="small" /></IconButton></SignInButton></SignedOut>
           </HeaderRight>

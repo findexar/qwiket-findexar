@@ -3,7 +3,7 @@ import React, { useEffect, useCallback, useState } from "react";
 import useSWR from 'swr';
 import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
-import { useUser} from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
 
@@ -353,10 +353,10 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
+    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer,  setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-    let { league, type, team, teamName, name, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -414,43 +414,43 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             setHide(false);
         }
     }, [summary, mutate, date, url]);
-    
+
     const subscriptionKey: SubscriptionKey = { type: "subscription" };
     const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
-    const subscrLevel=subscription?.subscrLevel||0;
+    const subscrLevel = subscription?.subscrLevel || 0;
     //prepare urls:
     const prepName = encodeURIComponent(name);//name?.replaceAll(' ', '_') || "";
-    let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
+    let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink`);
 
-    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
-    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
-   // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
-  
+    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink`);
+    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink`);
+    // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
+
     let localUrl = "";
-    localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
+    localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
     if (mini)
-        localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`
+        localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}` : `/${league}/${team}${params}${tp}`
 
     //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
-    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}` : `/${league}/${team}${params}${tp}`;
+    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}` : `/${league}/${team}${params}${tp}`;
     if (linkType == 'final')
         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     summary = summary || "";
     // Normalize summary to ensure it's safe for URI encoding
-    summary= summary.normalize("NFKC");
+    summary = summary.normalize("NFKC");
     //console.log("******** SUMMARY", normalizedSummary, fbShareUrl, {quote: normalizedSummary.substring(0, 140) + '...'})
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
-    const meta:any = useSWR(mentionsKey, getMetaLink, { fallback }).data;
+    const meta: any = useSWR(mentionsKey, getMetaLink, { fallback }).data;
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
     const [openLimitSubscriptionModal, setOpenLimitSubscriptionModal] = useState(false);
 
 
-    
+
     useEffect(() => {
         try {
             setLocalDate(convertToReadableLocalTime(date));
@@ -460,19 +460,19 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [date])
 
-    const onMentionNav = useCallback(async (name: string, url: string) => {
+    const onMentionNav = useCallback(async (name: string, athleteUUId: string, url: string) => {
 
-        console.log("onMentionNav", name, url)
-      
+        console.log("onMentionNav", name, athleteUUId, url)
+
         let pgt = "";
         if (type == 'person')
             pgt = 'player';
         else
             pgt = 'team';
- 
+
         await actionRecordEvent(
             'mention-nav',
-            `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}","pagetype":"${pgt}"}`
+            `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
         );
 
     }, [league, team, type, params]);
@@ -501,7 +501,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         try {
             actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
-                  
+
                 });
         } catch (x) {
             console.log('actionRecordEvent', x);
@@ -549,7 +549,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
             console.log("tracked after mutatePlayers", name, team);
             setLocalTracked(false);
-            await actionRemoveMyTeamMember({ member: name, teamid: team });
+            await actionRemoveMyTeamMember({ member: name, teamid: team, athleteUUId: athleteUUId });
 
             if (mutate)
                 mutate();
@@ -567,17 +567,17 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             }
             await actionRecordEvent(
                 'mention-remove-myteam',
-                `{"params":"${params}","team":"${team}","player":"${name}"}`
+                `{"params":"${params}","team":"${team}","player":"${name}", "athleteUUId": "${athleteUUId}"}`
             );
         }
         else {
             console.log("UNTRACKED", name)
-            const response = await actionAddMyTeamMember({ member: name, teamid: team });
+            const response = await actionAddMyTeamMember({ member: name, teamid: team, athleteUUId: athleteUUId });
             if (response.success) {
                 setToastMessage("Player added to the Fantasy Team");
                 setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
                 setLocalTracked(true);
-                console.log("untracked after mutatePlayers", name, team);
+                console.log("untracked after mutatePlayers", name, team, athleteUUId);
 
                 if (mutate)
                     mutate();
@@ -604,9 +604,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     setToastMessage(error);
                     setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                 }
-                if(maxUser){ // should only happen if the user is not logged in
+                if (maxUser) { // should only happen if the user is not logged in
                     //check if there is a logged in user
-                   if (isLoaded && !isSignedIn) {
+                    if (isLoaded && !isSignedIn) {
                         //if there is a logged in user, show a toast message
                         //setToastMessage("You have reached the maximum number of users allowed.");
                         //setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
@@ -614,14 +614,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         setOpenLimitAccountModal(true);
                         setToastMessage("You have reached the maximum number of players allowed as a guest.");
                         setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
-                        
+
                     }
                     else {
                         setToastMessage("There was an error adding the player to your team.");
-                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);           
+                        setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
                     }
                 }
-                else if(maxSubscription){
+                else if (maxSubscription) {
                     setOpenLimitSubscriptionModal(true);
                     setToastMessage("You have reached the maximum number of players allowed under your subscription plan.");
                     setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-4000" />);
@@ -632,11 +632,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [mention])
     //console.log("bottomLink",bottomLink)
     return (
-        <>   
-        {openLimitAccountModal &&<LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
-        {openLimitSubscriptionModal &&<LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />}
+        <>
+            {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
+            {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />}
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
-                 <MentionSummary>
+                <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
                         {!localFav ? <StarOutlineIcon className="h-4 w-4"
                             onClick={async () => {
@@ -659,16 +659,16 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                             }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, mini ? bottomLink : localUrl) }}>
+                        <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
                             {summary}
                         </Link>
                         <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
-                     
+
                     </SummaryWrap>
                     <br />
 
                     <hr />
-                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
@@ -747,14 +747,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
 
                         <SummaryWrap>
-                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, mini ? bottomLink : localUrl) }}>
+                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
                                 {summary}
                             </Link>
                             <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
 
                         <hr />
-                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
+                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
                             {type == "person" && <div>
                                 <div className="mt-2"
                                     onClick={async () => await iconClick()} aria-label="Add player to fantasy team">
