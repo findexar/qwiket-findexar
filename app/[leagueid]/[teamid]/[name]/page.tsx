@@ -189,7 +189,7 @@ export default async function Page({
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
   if (!story && !findexarxid)
-    calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name }));
+    calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
 
   await fetchData(t1, fallback, calls);
 
