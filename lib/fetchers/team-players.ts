@@ -21,6 +21,7 @@ const fetchTeamPlayers = async (key: TeamPlayersKey,userId:string,sessionid:stri
     console.log("fetching team players:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
+   // console.log("RET:",res.players)
     return res.players;
 }
 const promiseFetchLeagueTeams = async ({ teamid = "",userId="",sessionid="" }: FetchTeamPlayersProps) => {

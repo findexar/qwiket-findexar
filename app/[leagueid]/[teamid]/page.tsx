@@ -67,9 +67,9 @@ export async function generateMetadata(
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
 
-  let ogDescription = amentionSummary || "Professional and Fantasy Sports AI and Media Reader and Mentions Index.";
-  let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
-  let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
+  let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Reader and Mentions Index.";
+  let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
+  let ogTitle = ogTarget ? `${ogTarget}` : `${process.env.NEXT_PUBLIC_APP_NAME} Sports Media Reader`;
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
     ogTitle = astoryTitle;
@@ -162,14 +162,14 @@ export default async function Page({
   if (userId) {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
-    calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
   }
 
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
   }
-
+  
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
@@ -183,7 +183,6 @@ export default async function Page({
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
   await fetchData(t1, fallback, calls);
-  // console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
   let teamName = teams?.find((x: any) => x.id == teamid)?.name;
