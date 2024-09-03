@@ -72,9 +72,10 @@ export async function generateMetadata(
   else if (amention && amentionLeague && amentionTeam)
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
 
-  let ogDescription = amentionSummary ? amentionSummary : "Fantasy Sports Media Reader and Mentions Index.";
-  let ogImage = astoryImageOgUrl ? astoryImageOgUrl : process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "https://findexar.com/findexar-logo.png" : "https://www.qwiket.com/QLogo.png";
-  let ogTitle = ogTarget ? `${ogTarget}` : `${[process.env.NEXT_PUBLIC_APP_NAME]} Sports Media Reader`;
+  let ogDescription = amentionSummary || "Professional and Fantasy Sports AI and Media Reader and Mentions Index.";
+  let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
+  let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
+
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`
       : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
@@ -137,14 +138,14 @@ export default async function Page({
   }
   let fallback: { [key: string]: any } = {}; // Add index signature
   const leaguesKey = { type: "leagues" };
-  
+
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-  
+
   let headerslist = headers();
-  
+
   let { tab, fbclid, utm_content, view = "mentions", id, story }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
-  
+
   let findexarxid = id || "";
   let pagetype = "player";
   let league = params.leagueid.toUpperCase();
@@ -174,9 +175,9 @@ export default async function Page({
   if (userId) {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
-    calls.push(await fetchUserSubscription({ type:"UserSubscription"}, userId, email || "" ));
+    calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
   }
-  
+
   if (findexarxid) {  // if a mention story is opened
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
@@ -188,7 +189,7 @@ export default async function Page({
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
   if (!story && !findexarxid)
-    calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name }));
+    calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
 
   await fetchData(t1, fallback, calls);
 

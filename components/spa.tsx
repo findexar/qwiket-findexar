@@ -23,6 +23,7 @@ interface LeagueLayoutProps {
   league?: string,
   teamid?: string,
   name?: string,
+  athleteUUId?: string,
   view: string,
   tab: string,
   pagetype?: string,
@@ -44,6 +45,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   league: startLeague,
   teamid: startTeamid = "",
   name: startName = "",
+  athleteUUId: startAthleteUUId = "",
   pagetype: startPagetype = "league",
   dark,
   teamName: startTeamName = ""
@@ -53,6 +55,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [league, setLeague] = useState(startLeague);
   const [teamid, setTeamid] = useState(startTeamid);
   const [player, setPlayer] = useState(startName);
+  const [athleteUUId, setAthleteUUId] = useState(startAthleteUUId);
   const [pagetype, setPagetype] = useState(startPagetype);
   const [teamName, setTeamName] = useState(startTeamName);
   const [findexarxid, setFindexarxid] = useState(startFindexarxid);
@@ -140,6 +143,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     let qleague = parts && parts.length > 1 ? parts[1] : '';
     let qteam = parts && parts.length > 2 ? parts[2] : '';
     let qplayer = parts && parts.length > 3 ? parts[3] : '';
+    let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
     qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');;
     qleague = qleague.toUpperCase();
     if (view === 'landing') qpagetype = "landing";
@@ -150,14 +154,15 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
 
         qpagetype = "player";
       }
-    } 
+    }
     setLeague(qleague);
     setTeamid(qteam);
     console.log("spa setPlayer", qplayer);
     setPlayer(qplayer);
+    setAthleteUUId(qathleteUUId);
     setPagetype(qpagetype);
   }, [query]);
-
+  console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   return (
     <StyledThemeProvider theme={palette}>
       <GlobalStyle $light={localMode === "light"} />
@@ -182,6 +187,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         tab={tab}
         teamid={teamid}
         player={player}
+        athleteUUId={athleteUUId}
+        setAthleteUUId={setAthleteUUId}
         setTeamid={setTeamid}
         setPlayer={setPlayer}
         pagetype={pagetype}
