@@ -1,6 +1,6 @@
 'use server';
 import { unstable_serialize } from 'swr'
-import { ChatKey } from '@/lib/keys';
+import { ChatKey, CreateChatKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
@@ -29,10 +29,7 @@ export const fetchChat = async (key: ChatKey, userId: string, sessionid: string)
     }
 }
 
-const promiseChat = async (key: ChatKey, userId: string, sessionid: string) => {
-    'use server';
-    return { key: unstable_serialize(key), call: fetchChat(key, userId, sessionid) };
-}
+
 export const actionChat = async (key: ChatKey): Promise<Chat> => {
     'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
@@ -108,7 +105,6 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
     console.log("RET create chat:", data.success)
     return { success: data.success, chat: data.chat, error: data.error };
 }
-
 export const actionCreateChat = async (props: CreateChatProps) => {
     'use server';
     console.log("actionCreateChat", props)
@@ -118,6 +114,72 @@ export const actionCreateChat = async (props: CreateChatProps) => {
     return createChat(props, userId || "", sessionid);
 }
 
+const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
+    'use server';
+    const { athleteUUId, teamid, league, fantasyTeam = false } = props;
+    console.log("****** loadLatestChat", props)
+    userId = userId || sessionid;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest-create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
+    console.log("loadLatestChat", url);
+    let contextInputs: ContextInput[] = [];
+    if (athleteUUId) {
+        contextInputs.push({
+            "scope": 'Athlete',
+            "type": 'IncludeMentions',
+            "athleteUUId": "self",
+        });
+    }
+    else if (teamid) {
+        contextInputs.push({
+            "scope": 'Team',
+            "type": 'IncludeMentions',
+            "teamid": "self",
+        });
+    }
+    else if (league) {
+        contextInputs.push({
+            "scope": 'League',
+            "type": 'IncludeMentions',
+            "league": "self",
+        });
+    }
+    else {
+        contextInputs.push({
+            "scope": 'All',
+            "type": 'IncludeMentions',
+        });
+    }
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            athleteUUId,
+            teamid,
+            league,
+            fantasyTeam,
+            contextInputs
+        }),
+    });
+
+    if (!res.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await res.json();
+    console.log("RET loadLatestChat:", data.success)
+    return { success: data.success, chat: data.chat, error: data.error };
+}
+
+
+export const actionLoadLatestChat = async (key: CreateChatKey) => {
+    'use server';
+    console.log("actionLoadLatestChat", key)
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const { userId = "" } = auth() || {};
+    const sessionid = session.sessionid || "";
+    return loadLatestChat(key , userId || "", sessionid);
+}
 interface ChatNameProps {
     chatUUId: string;
 }
@@ -140,6 +202,9 @@ export const actionChatName = async (props: ChatNameProps) => {
     return chatName(props, userId || "", sessionid);
 }
 
+const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: string) => {
+    'use server';
+    return { key: unstable_serialize(key), call: loadLatestChat(key, userId, sessionid) };
+}
 
-
-export default promiseChat;
+export default promiseCreateChat;

@@ -12,6 +12,7 @@ import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchTeamMentions from '@/lib/fetchers/team-mentions';
 import fetchTeamPlayers from '@/lib/fetchers/team-players';
 import fetchUserSubscription from "@/lib/fetchers/user-subscription";
+import fetchChat from "@/lib/fetchers/chat";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 
 import { getAMention } from '@/lib/fetchers/mention';
@@ -123,6 +124,9 @@ export default async function Page({
   try {
     const session = await fetchSession();
     sessionid = session.sessionid;
+    if (process.env.NODE_ENV == "development") {
+      userId = sessionid;
+    }
     dark = session.dark;
   } catch (x) {
     console.log("error fetching sessionid", x);
@@ -174,7 +178,7 @@ export default async function Page({
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
 
-  if (view == 'mentions' && tab != 'myteam' && tab != 'fav') {
+  if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
       calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
     }
@@ -182,8 +186,11 @@ export default async function Page({
   if (!story && !findexarxid) {
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
+  if (tab == 'chat') {
+    calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId: "", fantasyTeam: false }, userId, sessionid));
+  }
   await fetchData(t1, fallback, calls);
-  // console.log("=======>TEAM FALLBACK:", fallback)
+  console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
   let teamName = teams?.find((x: any) => x.id == teamid)?.name;

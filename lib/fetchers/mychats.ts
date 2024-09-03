@@ -1,13 +1,13 @@
 'use server';
 import { unstable_serialize } from 'swr'
-import { MyChatsKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
-import { Chat } from "@/lib/types/chat";
+import { ChatItem } from "@/lib/types/chat";
+import { MyChatsKey } from "@/lib/keys";
 import { cookies } from "next/headers";
 const api_key = process.env.LAKE_API_KEY;
-export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: string, page: number): Promise<Chat[]> => {
+export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: string, page: number): Promise<ChatItem[]> => {
     try {
         const { league = '', teamid = '', athleteUUId = '' } = key;
         let url = '';
@@ -19,7 +19,7 @@ export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: s
         console.log("return fetching my chats", url, data);
         if (data.success) {
             console.log("===>GET MY CHATS", data.chats);
-            return data.chats as Chat[];
+            return data.chats as ChatItem[];
         }
         throw new Error("Failed to fetchMyChats");
     }
@@ -32,14 +32,13 @@ export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: s
 const promiseMyChats = async (key: MyChatsKey, userId: string, sessionid: string) => {
     return { key: unstable_serialize(key), call: fetchMyChats(key, userId, sessionid, 0) };
 }
-export const actionMyChats = async (key: MyChatsKey): Promise<Chat[]> => {
+export const actionMyChats = async (key: MyChatsKey): Promise<ChatItem[]> => {
     'use server';
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
-
+    let { userId } = auth() || { userId: "" };
     if (!userId) {
-        return [];
+        userId = sessionid;
     }
     return fetchMyChats(key, userId, sessionid, 0);
 }

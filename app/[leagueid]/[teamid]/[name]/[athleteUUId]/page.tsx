@@ -20,6 +20,7 @@ import SPALayout from '@/components/spa';
 import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
+import fetchChat from "@/lib/fetchers/chat";
 
 type Props = {
     params: { leagueid: string, teamid: string }
@@ -122,7 +123,7 @@ export default async function Page({
 
     const t1 = new Date().getTime();
     let { userId } = process.env.NODE_ENV == "development" ? { userId: "1" } : auth();
- 
+
     if (!userId) {
         userId = "";
     }
@@ -131,6 +132,9 @@ export default async function Page({
     try {
         const session = await fetchSession();
         sessionid = session.sessionid;
+        if (process.env.NODE_ENV == "development") {
+            userId = sessionid;
+        }
         dark = session.dark;
     }
     catch (x) {
@@ -190,6 +194,10 @@ export default async function Page({
 
     if (!story && !findexarxid)
         calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId }));
+
+    if (tab == 'chat') {
+        calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false }, userId, sessionid));
+    }
 
     await fetchData(t1, fallback, calls);
 

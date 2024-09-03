@@ -16,6 +16,13 @@ export type Chat = {
     position?: number,
 }
 
+export type ChatItem = {
+    chatUUId: string,
+    name: string,
+    lastSaved: Date,
+    groupName: string,
+}
+
 export type ContextInput = {
     contextInputUUId?: string,
     type: ContextInputType,
