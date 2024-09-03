@@ -4,8 +4,6 @@ import Link from 'next/link'
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
-import { SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
-
 import { styled, useTheme } from "styled-components";
 
 import { useAppContext } from '@/lib/context';

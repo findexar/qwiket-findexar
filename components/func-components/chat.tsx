@@ -4,7 +4,7 @@ import { useAppContext } from '@lib/context';
 import LoadMore from "@components/func-components/load-more";
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { Chat, Message } from "@lib/types/chat";
-import { actionCreateChat, CreateChatProps } from "@lib/fetchers/chat";
+import { actionChatName, actionCreateChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane } from 'react-icons/fa'; // Import the paper airplane icon
 import { actionUserRequest } from "@lib/actions/user-request";
@@ -19,8 +19,8 @@ const ChatsComponent: React.FC<Props> = ({
     chat: chatProp,
     isFantasyTeam
 }) => {
-    const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, athleteUUId } = useAppContext();
-    console.log(`==> chat`, { teamName, league, team, player, athleteUUId });
+    const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
+    console.log(`==> chat`, { teamName, league, teamid, player, athleteUUId });
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -34,7 +34,7 @@ const ChatsComponent: React.FC<Props> = ({
             const createChatProps: CreateChatProps = {
                 fantasyTeam: isFantasyTeam || false,
                 athleteUUId: athleteUUId,
-                teamid: team?.teamid,
+                teamid: teamid,
                 league: league,
             }
             console.log(`==> calling create chat`, createChatProps);
@@ -77,7 +77,7 @@ const ChatsComponent: React.FC<Props> = ({
                 chatUUId: chat?.chatUUId || "",
                 userRequest: userInput,
                 athleteUUId: athleteUUId,
-                teamid: team?.teamid,
+                teamid: teamid,
                 league: league,
                 fantasyTeam: isFantasyTeam || false,
                 onUpdate: (content: string) => {
@@ -93,6 +93,13 @@ const ChatsComponent: React.FC<Props> = ({
                 },
                 onDone: () => {
                     setIsLoading(false);
+                    actionChatName({ chatUUId: chat?.chatUUId || "" }).then(
+                        (data) => {
+                            if (data.success) {
+                                setChatName(data.chatName);
+                            }
+                        }
+                    );
                 }
             });
 
@@ -118,8 +125,9 @@ const ChatsComponent: React.FC<Props> = ({
     };
 
     return (
-        <div className="p-4 w-full flex flex-col h-[100%] bg-white dark:bg-black">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{chatName}</h1>
+        <div className="p-4 w-full flex flex-col h-full bg-white dark:bg-black">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 text-right">{chatName}</h1>
+            <hr />
             <div className="flex-grow mb-4 h-96 p-4 rounded bg-white dark:bg-black">
                 {messages.map((message, index) => (
                     <div key={index} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>

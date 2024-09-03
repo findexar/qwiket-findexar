@@ -142,7 +142,7 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const t1 = new Date().getTime();
-  let { userId } = auth();
+  let { userId } = process.env.NODE_ENV == "development" ? { userId: "1" } : auth();
   userId = userId || "";
   let sessionid = "";
   let dark = 0;

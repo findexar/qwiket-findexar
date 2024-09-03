@@ -137,13 +137,14 @@ interface Props { }
 
 const Desktop: React.FC<Props> = () => {
   const {
-    slug, tab: initialTab, view: initialView, setView, setTab, fbclid, utm_content, team, player, params, league, pagetype, findexarxid
+    teamid,
+    slug, tab: initialTab, view: initialView, setView, setTab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
   const tab = initialTab || "chat";
   const view = initialView || "mentions";
-
+  console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
     setLocalFindexarxid(findexarxid);
   }, [findexarxid]);
@@ -157,7 +158,15 @@ const Desktop: React.FC<Props> = () => {
     setView("mentions");
     setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
   }
-
+  const onTeamPlayerTabNav = (option: any) => {
+    const newTab = option.tab;
+    const tabParam = newTab !== 'mentions' ? params ? `&tab=${newTab}` : `?tab=${newTab}` : '';
+    const newPath = player ? `/${league}/${teamid}/${player}/${athleteUUId}${params}${tabParam}` : params ? `/${league}/${teamid}/${params}${tabParam}` : `/${league}/${teamid}?tab=${newTab}`;
+    window.history.pushState({}, "", newPath);
+    setTimeout(() => setTab(newTab), 0);
+    setView("mentions");
+    setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+  }
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>
@@ -174,7 +183,7 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "league" && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `QwiketAI ${league || 'All'} Chat`, tab: 'chat', disabled: false },
+                        { name: `QwiketAI ${league || ''} Chat`, tab: 'chat', disabled: false },
                         { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
                         { name: "Fantasy Feed", tab: "myfeed", disabled: false },
                         { name: "Favorites", tab: "fav", disabled: false }
@@ -190,14 +199,14 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Press Mentions`, tab: 'mentions', disabled: false },
 
                       ]}
-                      onChange={onTabNav}
+                      onChange={onTeamPlayerTabNav}
                       selectedOptionName={tab}
                     />
                   )}
-                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && tab == "mentions" ? <TeamMentions /> : null}
+                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "league" && tab === "myfeed" && <MyfeedMentions league={league} />}
                   {pagetype === "league" && tab === "fav" && <FavMentions />}
-                  {pagetype === "player" && tab === "mentions" && <PlayerMentions />}
+                  {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
                   {tab === 'chat' && <Chat />}

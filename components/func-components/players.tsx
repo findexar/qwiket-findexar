@@ -4,7 +4,6 @@ import Link from 'next/link'
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
-import { UserButton, SignInButton, SignedOut, SignedIn, RedirectToSignIn } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 
 import { useAppContext } from '@/lib/context';
@@ -131,7 +130,7 @@ const RightScroll = styled.div<ScrollProps>`
 interface Props {
 }
 const Players: React.FC<Props> = () => {
-    const [signin, setSignin] = React.useState(false);
+
     const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, teamName, setTeamName } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
@@ -250,7 +249,7 @@ const Players: React.FC<Props> = () => {
                     }} aria-label="Add new list">
                     <SideIcon $highlight={p.tracked}>
                         {p.tracked ? <TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-yellow-400" /> : <TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-teal-400" />}
-                        {signin && <RedirectToSignIn />}
+
                     </SideIcon>
                 </div>
             </SideButton>
