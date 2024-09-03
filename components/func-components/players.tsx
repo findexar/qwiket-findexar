@@ -132,7 +132,7 @@ interface Props {
 }
 const Players: React.FC<Props> = () => {
     const [signin, setSignin] = React.useState(false);
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
@@ -146,7 +146,7 @@ const Players: React.FC<Props> = () => {
     const { data: mentions, error: mentionsError, mutate: mutateMentions, size: mentionsSize, setSize: setMentionsSize, isValidating: mentionsIsValidating, isLoading: mentionsIsLoading } = useSWRInfinite(fetchTeamMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
     //this is to be able to mutate player mentions
     const fetchPlayerMentionsKey = (pageIndex: number, previousPageData: any): PlayerMentionsKey | null => {
-        let key: PlayerMentionsKey = { type: "fetch-player-mentions", teamid, page: pageIndex, league, name: player, athleteUUId };
+        let key: PlayerMentionsKey = { type: "fetch-player-mentions", teamid, page: pageIndex, league, name: player };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
@@ -184,16 +184,16 @@ const Players: React.FC<Props> = () => {
         );
     }
 
-    const PlayersNav = players && players?.map((p: { name: string, athleteUUId: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
+    const PlayersNav = players && players?.map((p: { name: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
         return <SideGroup className="h-6" key={`ewfggvfn-${p.name}`}>{p.name == player ?
             <SelectedSidePlayer $highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}/${p.athleteUUId}${params}`} >
+                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}`} >
                     {p.name} ({`${p.mentions ? p.mentions : 0}`})
                 </Link>
             </SelectedSidePlayer>
             :
             <SidePlayer $highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}/${p.athleteUUId}${params}`} >
+                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}${params}${tp}`} >
                     {p.name} ({`${p.mentions || 0}`})
                 </Link>
             </SidePlayer>}
@@ -212,7 +212,7 @@ const Players: React.FC<Props> = () => {
                                     return player;
                                 })
                             }, { revalidate: true });
-                            await actionRemoveMyTeamMember({ member: p.name, athleteUUId: p.athleteUUId, teamid });
+                            await actionRemoveMyTeamMember({ member: p.name, teamid });
                             await actionRecordEvent(
                                 'player-remove-myteam',
                                 `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
@@ -225,8 +225,8 @@ const Players: React.FC<Props> = () => {
                         else {
 
                             console.log("after mutatePlayers");
-
-                            const response = await actionAddMyTeamMember({ member: p.name, athleteUUId: p.athleteUUId, teamid });
+                           
+                            const response = await actionAddMyTeamMember({ member: p.name, teamid });
                             if (response.success) {
                                 mutatePlayers(async (players: any) => {
                                     return players.map((player: any) => {

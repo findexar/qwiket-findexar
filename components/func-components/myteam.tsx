@@ -155,7 +155,7 @@ const MyTeam: React.FC<Props> = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
-    // console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
+   // console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, { fallback });
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:
@@ -178,11 +178,11 @@ const MyTeam: React.FC<Props> = () => {
             <TeamName>My Fantasy Team{league ? ` for ${league}` : ``}: </TeamName>
             {(!trackerListMembers || trackerListMembers.length == 0) && <><RightExplanation>
                 <b>My Fantasy Team</b> is a feature designed for Fantasy Sports fans who need to track media
-                mentions of their&apos;s fantasy teams members.<br /><br />    <hr />
+                mentions of their&apos;s fantasy teams members.<br /><br/>    <hr />
             </RightExplanation>
-                <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
-                </RightExplanation></>}
-            {trackerListMembers && trackerListMembers.map(({ member, athleteUUId, teamid, league }: { member: string, athleteUUId: string, teamid: string, league: string }, i: number) => {
+                <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline"/>&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
+                 </RightExplanation></>}
+            {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                 return <SideGroup key={`3fdsdvb-${member}`}>
                     <SidePlayer>
                         <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
@@ -194,7 +194,7 @@ const MyTeam: React.FC<Props> = () => {
                             onClick={async () => {
                                 const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                 trackerListMutate(newTrackerListMembers, true);
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                await actionRemoveMyTeamMember({ member, teamid });
                             }} aria-label="Add new list">
                             <SideIcon>
                                 <TeamRemoveIcon className="text-amber-400 hover:text-green-400" />
@@ -209,7 +209,7 @@ const MyTeam: React.FC<Props> = () => {
 
                                 setToastMessage("Player removed from the Fantasy Team");
 
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                await actionRemoveMyTeamMember({ member, teamid });
                                 //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                 trackerListMutate();
                                 /*mutatePlayers(async (players: any) => {
@@ -220,7 +220,7 @@ const MyTeam: React.FC<Props> = () => {
                                         return player;
                                     })
                                 }, {revalidate:true});*/
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                await actionRemoveMyTeamMember({ member, teamid });
 
                                 // mutateMentions();
                                 mutateMyFeed();
@@ -248,14 +248,14 @@ const MyTeam: React.FC<Props> = () => {
                 {(!trackerListMembers || trackerListMembers.length == 0) &&
                     <><MobileRightExplanation>
                         Track sports media mentions of your fantasy athletes across media markets and publications.<br /><br />
-                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name at the bottom of a mention,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
-                        </RightExplanation> <hr />
+                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline"/>&nbsp;  icon to the right of the<br /> player&apos;s name at the bottom of a mention,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
+                 </RightExplanation> <hr />
                     </MobileRightExplanation>
-                    </>}
-                {trackerListMembers && trackerListMembers.map(({ member, athleteUUId, teamid, league }: { member: string, athleteUUId: string, teamid: string, league: string }, i: number) => {
+                       </>}
+                {trackerListMembers && trackerListMembers.map(({ member, teamid, league }: { member: string, teamid: string, league: string }, i: number) => {
                     return <MobileSideGroup key={`3fdsdvb-${i}`}>
                         <MobileSidePlayer>
-                            <Link onClick={() => { setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
+                            <Link onClick={() => {setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}${params}`}>
                                 {member}
                             </Link>
                         </MobileSidePlayer>
@@ -265,7 +265,7 @@ const MyTeam: React.FC<Props> = () => {
                                     console.log("TRACKED", member)
                                     const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                     trackerListMutate(newTrackerListMembers, false);
-                                    await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                    await actionRemoveMyTeamMember({ member, teamid });
                                     setToastMessage("Player removed from the Fantasy Team");
                                 }} >
                                 <SideIcon>

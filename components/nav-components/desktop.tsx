@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from "react";
-import { styled } from "styled-components";
+import { styled} from "styled-components";
 import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
 import Welcome from "@/components/func-components/welcome";
@@ -10,7 +10,6 @@ import PlayerMentions from "@/components/func-components/player-mentions";
 import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import FavMentions from "@/components/func-components/fav-mentions";
 import Stories from "@/components/func-components/stories";
-import Chat from "@/components/func-components/chat";
 import MyTeam from "@/components/func-components/myteam";
 import Players from "@/components/func-components/players";
 import { useAppContext } from '@/lib/context';
@@ -133,15 +132,15 @@ const RightPanel = styled.div`
   }
 `;
 
-interface Props { }
+interface Props {}
 
 const Desktop: React.FC<Props> = () => {
   const {
-    slug, tab: initialTab, view: initialView, setView, setTab, fbclid, utm_content, team, player, params, league, pagetype, findexarxid
+    slug, tab: initialTab, view: initialView, setView, setTab,  fbclid, utm_content, params, league, pagetype,  findexarxid
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
-  const tab = initialTab || "chat";
+  const tab = initialTab || "all";
   const view = initialView || "mentions";
 
   useEffect(() => {
@@ -174,7 +173,6 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "league" && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `QwiketAI ${league || 'All'} Chat`, tab: 'chat', disabled: false },
                         { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
                         { name: "Fantasy Feed", tab: "myfeed", disabled: false },
                         { name: "Favorites", tab: "fav", disabled: false }
@@ -183,26 +181,12 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
-                  {(pagetype === "team" || pagetype === "player") && view !== 'faq' && (
-                    <TertiaryTabs
-                      options={[
-                        { name: `QwiketAI Chat`, tab: 'chat', disabled: false },
-                        { name: `Press Mentions`, tab: 'mentions', disabled: false },
-
-                      ]}
-                      onChange={onTabNav}
-                      selectedOptionName={tab}
-                    />
-                  )}
-                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && tab == "mentions" ? <TeamMentions /> : null}
+                  {pagetype === "team" || (pagetype === "league" && tab === "myteam") ? <TeamMentions /> : null}
                   {pagetype === "league" && tab === "myfeed" && <MyfeedMentions league={league} />}
                   {pagetype === "league" && tab === "fav" && <FavMentions />}
-                  {pagetype === "player" && tab === "mentions" && <PlayerMentions />}
+                  {pagetype === "player" && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
-                  {tab === 'chat' && <Chat />}
-
-
                 </CenterPanel>
                 <RightPanel>
                   {pagetype === 'league' && <MyTeam />}
