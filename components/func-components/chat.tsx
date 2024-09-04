@@ -42,6 +42,7 @@ const ChatsComponent: React.FC<Props> = ({
         if (loadedChat) {
             setChat(loadedChat.chat);
             setMessages(loadedChat.chat.messages || []);
+            setIsLoading(false);
             console.log("loadedChat.chat.name", loadedChat.chat.name)
             if (loadedChat.chat.name?.includes("ChatGPT")) {
                 setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || '');
