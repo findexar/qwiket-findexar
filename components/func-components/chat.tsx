@@ -24,7 +24,7 @@ const ChatsComponent: React.FC<Props> = ({
     const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
     console.log(`==> chat`, { teamName, league, teamid, player, athleteUUId });
     const [response, setResponse] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [userInput, setUserInput] = useState<string>('');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const [messages, setMessages] = useState<Message[]>(chatProp?.messages || []);
