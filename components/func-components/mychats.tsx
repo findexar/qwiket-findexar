@@ -23,14 +23,19 @@ const ChatsComponent: React.FC<Props> = ({
 }) => {
     const { fallback, league, teamid, athleteUUId } = useAppContext();
 
-    const fetchMyChatsKey = (pageIndex: number, previousPageData: any): MyChatsKey | null => {
-        let key: MyChatsKey = { type: "fetch-mychats", page: pageIndex, league, teamid, athleteUUId };
-        if (previousPageData && !previousPageData.length) return null; // reached the end
-        return key;
+    const fetchMyChatsKey = (pageIndex: number, previousPageData: ChatItem[]): MyChatsKey | null => {
+        // If there's no previous data and it's the first page, return the key
+        if (pageIndex === 0) return { type: "fetch-mychats", page: 0, league, teamid, athleteUUId };
+
+        // If the previous request returned less than 5 items, we've reached the end
+        if (previousPageData && previousPageData.length < 5) return null;
+
+        // Otherwise, return the key for the next page
+        return { type: "fetch-mychats", page: pageIndex, league, teamid, athleteUUId };
     };
 
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchMyChatsKey, actionMyChats, { initialSize: 1, revalidateAll: true, parallel: true, fallback });
-
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchMyChatsKey, actionMyChats, { fallback });
+    console.log(`==> raw data`, { data, size, isLoading });
     let chats: ChatItem[] = data ? ([] as ChatItem[]).concat(...(data as ChatItem[][])) : [];
     console.log(`==> chats`, chats);
     useEffect(() => {
@@ -76,7 +81,7 @@ const ChatsComponent: React.FC<Props> = ({
         return () => window.removeEventListener("scroll", listener);
     }, [mutate]);
 
-    const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
+    const isLoadingMore = isLoading;
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < 5);
 
@@ -93,7 +98,7 @@ const ChatsComponent: React.FC<Props> = ({
                 <div
                     key={chat.chatUUId}
                     onClick={() => onChatSelect(chat.chatUUId)}
-                    className="w-full p-3 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors duration-200"
+                    className="w-full p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-lg transition-colors duration-200"
                 >
                     <div className="text-sm font-medium">{chat.name}</div>
                 </div>
@@ -103,8 +108,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     return (
         <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-xl font-semibold">Chats</h2>
+            <div className="flex items-center justify-end p-4 ">
                 <button
                     onClick={onNewChat}
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
@@ -112,10 +116,10 @@ const ChatsComponent: React.FC<Props> = ({
                     <IoAddCircleOutline className="w-6 h-6 text-gray-600" />
                 </button>
             </div>
-            <div className="flex-grow overflow-y-auto p-4">
+            <div className="flex-grow p-4">
                 {ChatGroups}
             </div>
-            <div className="p-4">
+            {false && <div className="p-4">
                 <LoadMore
                     items={chats}
                     name="chats"
@@ -124,7 +128,7 @@ const ChatsComponent: React.FC<Props> = ({
                     isLoadingMore={isLoadingMore || false}
                     isReachingEnd={isReachingEnd || false}
                 />
-            </div>
+            </div>}
         </div>
     );
 };

@@ -5,7 +5,7 @@ import { useAppContext } from '@lib/context';
 import LoadMore from "@components/func-components/load-more";
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { Chat, Message } from "@lib/types/chat";
-import { actionChat, actionChatName, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
+import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Added chevron icons
 import { actionUserRequest } from "@lib/actions/user-request";
@@ -42,11 +42,23 @@ const ChatsComponent: React.FC<Props> = ({
         if (loadedChat) {
             setChat(loadedChat.chat);
             setMessages(loadedChat.chat.messages || []);
-            setChatName(loadedChat.chat.name || '');
+            console.log("loadedChat.chat.name", loadedChat.chat.name)
+            if (loadedChat.chat.name?.includes("ChatGPT")) {
+                setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || '');
+            } else {
+                setChatName(loadedChat.chat.name || '');
+            }
         }
     }, [loadedChat]);
 
-
+    useEffect(() => {
+        console.log("chatName", chatName)
+        if (chatName?.includes("ChatGPT")) {
+            setChatName(chatName?.replace("ChatGpt", "QwiketAI") || '');
+        } else {
+            setChatName(chatName || '');
+        }
+    }, [chatName])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -130,36 +142,52 @@ const ChatsComponent: React.FC<Props> = ({
             )}
             {chat && (
                 <div className="p-4">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex  items-center mb-4">
                         <button
                             onClick={() => setOpenMyChats(!openMyChats)}
                             className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                         >
                             {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
                         </button>
-                        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
+                        <h1 className="ml-4 text-xl font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
+                        <span className="text-gray-600 dark:text-gray-400"></span>
                     </div>
                     {openMyChats && (
                         <MyChats
                             onChatSelect={async (selectedChatUUId) => {
                                 // Handle chat selection
+                                setChat(null);
+                                setMessages([]);
+                                //  setChatName('New Chat');
+                                setOpenMyChats(false);
+                                setIsLoading(true);
+                                console.log("selectedChatUUId", selectedChatUUId)
                                 const newChat = await actionChat({ type: "chat", chatUUId: selectedChatUUId });
+                                setIsLoading(false);
                                 setChat(newChat);
+                                setMessages(newChat.messages || []);
+                                setChatName(newChat.name || 'New Chat');
                                 setOpenMyChats(false);
                             }}
-                            onNewChat={() => {
+                            onNewChat={async () => {
                                 // Handle new chat creation
                                 setChat(null);
                                 setMessages([]);
                                 setChatName('New Chat');
                                 setOpenMyChats(false);
+                                setIsLoading(true);
+                                const newChat = await actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false });
+                                setChat(newChat);
+                                setMessages(newChat.messages || []);
+                                setChatName(newChat.name || 'New Chat');
+                                setIsLoading(false);
                             }}
                             onFirstChat={(firstChat) => {
                                 // Handle first chat selection if needed
                             }}
                         />
                     )}
-                    <hr />
+
                 </div>
             )}
 

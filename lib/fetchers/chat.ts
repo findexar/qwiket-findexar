@@ -49,7 +49,7 @@ export interface CreateChatProps {
     fantasyTeam?: boolean;
     //@TODO add multi-athlete
 }
-const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
+const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<Chat> => {
     'use server';
     const { athleteUUId, teamid, league, fantasyTeam = false } = props;
     console.log("****** createChat", props)
@@ -103,7 +103,7 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
     }
     const data = await res.json();
     console.log("RET create chat:", data.success)
-    return { success: data.success, chat: data.chat, error: data.error };
+    return data.chat as Chat;
 }
 export const actionCreateChat = async (props: CreateChatProps) => {
     'use server';
@@ -178,7 +178,7 @@ export const actionLoadLatestChat = async (key: CreateChatKey) => {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
-    return loadLatestChat(key , userId || "", sessionid);
+    return loadLatestChat(key, userId || "", sessionid);
 }
 interface ChatNameProps {
     chatUUId: string;

@@ -142,7 +142,7 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const t1 = new Date().getTime();
-  let { userId } = process.env.NODE_ENV == "development" ? { userId: "1" } : auth();
+  let { userId } = auth();
   userId = userId || "";
   let sessionid = "";
   let dark = 0;
@@ -150,9 +150,7 @@ export default async function Page({
   try {
     const session = await fetchSession();
     sessionid = session.sessionid;
-    if (process.env.NODE_ENV == "development") {
-      userId = sessionid;
-    }
+
     dark = session.dark;
   } catch (x) {
     console.log("error fetching sessionid", x);
