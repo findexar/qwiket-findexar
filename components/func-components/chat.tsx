@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect, startTransition } from "react";
+import React, { useState, useRef, useEffect, startTransition, useCallback } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import LoadMore from "@components/func-components/load-more";
@@ -38,6 +38,15 @@ const ChatsComponent: React.FC<Props> = ({
     console.log("createChatKey", createChatKey)
     console.log("fallback", fallback)
     const { data: loadedChat, error: loadingChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
+    const update = useCallback((message: string) => {
+        setUpdateMessage(message);
+        setTimeout(() => {
+            setUpdateMessage('waiting for response...');
+            setTimeout(() => {
+                setUpdateMessage('');
+            }, 2000);
+        }, 2000);
+    }, []);
     useEffect(() => {
         if (!chat || !chat.chatUUId) {
             actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
@@ -86,10 +95,8 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'user',
             content: userInput
         };
-        setUpdateMessage('Loading...');
-        setTimeout(() => {
-            setUpdateMessage('');
-        }, 2000);
+        update('Loading...');
+
         setMessages(prevMessages => [...prevMessages, newMessage]);
         setUserInput('');
         setIsLoading(true);
@@ -114,6 +121,7 @@ const ChatsComponent: React.FC<Props> = ({
                 fantasyTeam: isFantasyTeam || false,
                 onUpdate: (content: string) => {
                     console.log('*********************** onUpdate', content);
+                    setUpdateMessage('');
                     setResponse(prev => {
                         const updatedContent = prev + content;
                         setMessages(prevMessages => {
@@ -146,10 +154,7 @@ const ChatsComponent: React.FC<Props> = ({
                 },
                 onMetaUpdate: (content: string) => {
                     console.log('*********************** onMetaUpdate', content);
-                    setUpdateMessage(content);
-                    setTimeout(() => {
-                        setUpdateMessage('');
-                    }, 2000);
+                    update(content);
                 }
             });
         } catch (error) {
