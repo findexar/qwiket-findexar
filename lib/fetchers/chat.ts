@@ -119,36 +119,9 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     const { athleteUUId, teamid, league, fantasyTeam = false } = props;
     console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest-create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
     console.log("loadLatestChat", url);
-    let contextInputs: ContextInput[] = [];
-    if (athleteUUId) {
-        contextInputs.push({
-            "scope": 'Athlete',
-            "type": 'IncludeMentions',
-            "athleteUUId": "self",
-        });
-    }
-    else if (teamid) {
-        contextInputs.push({
-            "scope": 'Team',
-            "type": 'IncludeMentions',
-            "teamid": "self",
-        });
-    }
-    else if (league) {
-        contextInputs.push({
-            "scope": 'League',
-            "type": 'IncludeMentions',
-            "league": "self",
-        });
-    }
-    else {
-        contextInputs.push({
-            "scope": 'All',
-            "type": 'IncludeMentions',
-        });
-    }
+
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -159,7 +132,6 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
             teamid,
             league,
             fantasyTeam,
-            contextInputs
         }),
     });
 

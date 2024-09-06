@@ -94,7 +94,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     if (p2.length > 0) {
       params2 = `&${p2.join('&')}`;
     }
-    let tp = tab && tab !== 'all' ? `&tab=${tab}` : '';
+    let tp = tab /*&& tab !== 'all'*/ ? `&tab=${tab}` : '';
     let tp2 = tp;
     if (!params2) tp2 = tp.replace(/&/g, '?');
     if (!params) tp = tp.replace(/&/g, '?');

@@ -142,7 +142,7 @@ const Desktop: React.FC<Props> = () => {
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
-  const tab = initialTab || "chat";
+  const tab = initialTab || "";
   const view = initialView || "mentions";
   console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
@@ -167,6 +167,7 @@ const Desktop: React.FC<Props> = () => {
     setView("mentions");
     setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
   }
+  console.log("==> pagetype", pagetype, tab);
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>
@@ -183,8 +184,9 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "league" && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `QwiketAI ${league || ''} Chat`, tab: 'chat', disabled: false },
                         { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
+
+                        { name: `AI Chat`, tab: 'chat', disabled: false },
                         { name: "Fantasy Feed", tab: "myfeed", disabled: false },
                         { name: "Favorites", tab: "fav", disabled: false }
                       ]}
@@ -195,7 +197,7 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === "team" || pagetype === "player") && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `QwiketAI Chat`, tab: 'chat', disabled: false },
+                        { name: `AI Chat`, tab: 'chat', disabled: false },
                         { name: `Press Mentions`, tab: 'mentions', disabled: false },
 
                       ]}
@@ -203,13 +205,14 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
-                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
+                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions") ? <TeamMentions /> : null}
                   {pagetype === "league" && tab === "myfeed" && <MyfeedMentions league={league} />}
                   {pagetype === "league" && tab === "fav" && <FavMentions />}
-                  {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
+                  {pagetype === "player" && (tab === "mentions") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
-                  {tab === 'chat' && <Chat />}
+                  {(pagetype === 'league' && tab === 'chat') && <Chat />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat' || tab === '') && <Chat />}
 
 
                 </CenterPanel>

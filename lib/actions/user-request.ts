@@ -14,7 +14,7 @@ export const actionUserRequest = async (props: UserRequestProps) => {
     try {
         const { chatUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone } = props;
         // Create a ReadableStream for the response
-        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request`;
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
         try {
 
@@ -55,11 +55,11 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
                     if (line.trim() === 'data: [DONE]') {
-                        console.log('data: [DONE] received');
+                        console.log('*********************** data: [DONE] received', line);
                         onDone();
                         return;
                     } else if (line.startsWith('data: ')) {
-                        console.log('data: content received');
+                        console.log('*********************** data: content received', line);
                         try {
                             const jsonData = JSON.parse(line.slice(5));
                             if (jsonData.content) {
