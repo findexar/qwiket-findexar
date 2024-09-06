@@ -32,12 +32,27 @@ const ChatsComponent: React.FC<Props> = ({
     const [chat, setChat] = useState<Chat | null>(chatProp || null);
     const [chatName, setChatName] = useState<string>(chatProp?.name || 'New Chat');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
+    const [updateMessage, setUpdateMessage] = useState<string>('');
 
     const createChatKey: CreateChatKey = { type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false };
     console.log("createChatKey", createChatKey)
     console.log("fallback", fallback)
     const { data: loadedChat, error: loadingChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-
+    useEffect(() => {
+        if (!chat || !chat.chatUUId) {
+            actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
+                (chatUUId) => {
+                    console.log("=============> chat createdchatUUId", chatUUId)
+                    setChat((prev) => {
+                        if (prev === null) {
+                            return { chatUUId: chatUUId as string, messages: [] };
+                        }
+                        return { ...prev, chatUUId: chatUUId as string };
+                    });
+                }
+            );
+        }
+    }, [chat]);
     useEffect(() => {
         setIsLoading(false);
         if (loadedChat) {
@@ -71,6 +86,10 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'user',
             content: userInput
         };
+        setUpdateMessage('Loading...');
+        setTimeout(() => {
+            setUpdateMessage('');
+        }, 2000);
         setMessages(prevMessages => [...prevMessages, newMessage]);
         setUserInput('');
         setIsLoading(true);
@@ -115,16 +134,30 @@ const ChatsComponent: React.FC<Props> = ({
                             }
                         }
                     );
+                },
+                onChatUUId: (content: string) => {
+                    console.log('*********************** onChatUUId', content);
+                    setChat(prev => {
+                        if (prev === null) {
+                            return { chatUUId: content, messages: [] };
+                        }
+                        return { ...prev, chatUUId: content };
+                    });
+                },
+                onMetaUpdate: (content: string) => {
+                    console.log('*********************** onMetaUpdate', content);
+                    setUpdateMessage(content);
+                    setTimeout(() => {
+                        setUpdateMessage('');
+                    }, 2000);
                 }
             });
-
         } catch (error) {
-            console.error('Error user-request chat:', error);
-            setResponse('Error calling user-request chat. Please try again.');
-        } finally {
+            console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
+            // Optionally, update the UI to show an error message
         }
-    };
+    }
 
     useEffect(() => {
         if (responseTextareaRef.current) {
@@ -182,10 +215,13 @@ const ChatsComponent: React.FC<Props> = ({
                             setChatName('New Chat');
                             setOpenMyChats(false);
                             setIsLoading(true);
-                            const newChat = await actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false });
-                            setChat(newChat);
-                            setMessages(newChat.messages || []);
-                            setChatName(newChat.name || 'New Chat');
+                            const chatUUId = await actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false });
+                            setChat((prev) => {
+                                if (prev === null) {
+                                    return { chatUUId: chatUUId as string, messages: [] };
+                                }
+                                return { ...prev, chatUUId: chatUUId as string };
+                            });
                             setIsLoading(false);
                         }}
                         onFirstChat={(firstChat) => {
@@ -212,9 +248,9 @@ const ChatsComponent: React.FC<Props> = ({
                             </div>
                         </div>
                     ))}
-                    {false && isLoading && (
+                    {updateMessage && (
                         <div className="flex justify-center items-center mt-4">
-                            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500"></div>
+                            {updateMessage}
                         </div>
                     )}
                 </>

@@ -8,8 +8,6 @@ export type ChatMessage = {
 
 export type Chat = {
     chatUUId: string,
-    cost: number,
-    remainingTokens: number,
     contextInputs?: ContextInput[],
     messages?: ChatMessage[],
     name?: string,

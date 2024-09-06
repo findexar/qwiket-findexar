@@ -49,41 +49,14 @@ export interface CreateChatProps {
     fantasyTeam?: boolean;
     //@TODO add multi-athlete
 }
-const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<Chat> => {
+const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<String> => {
     'use server';
     const { athleteUUId, teamid, league, fantasyTeam = false } = props;
     console.log("****** createChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
     console.log("createChat", url);
-    let contextInputs: ContextInput[] = [];
-    if (athleteUUId) {
-        contextInputs.push({
-            "scope": 'Athlete',
-            "type": 'IncludeMentions',
-            "athleteUUId": "self",
-        });
-    }
-    else if (teamid) {
-        contextInputs.push({
-            "scope": 'Team',
-            "type": 'IncludeMentions',
-            "teamid": "self",
-        });
-    }
-    else if (league) {
-        contextInputs.push({
-            "scope": 'League',
-            "type": 'IncludeMentions',
-            "league": "self",
-        });
-    }
-    else {
-        contextInputs.push({
-            "scope": 'All',
-            "type": 'IncludeMentions',
-        });
-    }
+
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -94,7 +67,6 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
             teamid,
             league,
             fantasyTeam,
-            contextInputs
         }),
     });
 
@@ -103,7 +75,7 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
     }
     const data = await res.json();
     console.log("RET create chat:", data.success)
-    return data.chat as Chat;
+    return data.chatUUId as string;
 }
 export const actionCreateChat = async (props: CreateChatProps) => {
     'use server';

@@ -7,12 +7,14 @@ export interface UserRequestProps {
     userRequest: string;
     onUpdate: (content: string) => void;
     onDone: () => void;
+    onChatUUId: (chatUUId: string) => void;
+    onMetaUpdate: (content: string) => void;
 }
 
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone } = props;
+        const { chatUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
@@ -68,6 +70,16 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                         } catch (error) {
                             console.error('Error parsing JSON:', error);
                         }
+                    }
+                    if (line.startsWith('chatUUId: ')) {
+                        console.log('*********************** chatUUId: content received', line);
+                        const jsonData = JSON.parse(line.slice(9));
+                        onChatUUId(jsonData.content);
+                    }
+                    if (line.startsWith('meta: ')) {
+                        console.log('*********************** meta: content received', line);
+                        const jsonData = JSON.parse(line.slice(5));
+                        onMetaUpdate(jsonData.content);
                     }
                 }
             }
