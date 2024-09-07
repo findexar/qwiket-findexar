@@ -16,4 +16,4 @@ export type MyTeamKey = { type: string, league: string };
 export type UserSubscriptionKey = { type: string };
 export type MyChatsKey = { type: string, league: string, teamid: string, athleteUUId: string, page: number };
 export type ChatKey = { type: string, chatUUId: string };
-export type CreateChatKey = { type: string, league?: string, teamid?: string, athleteUUId?: string, fantasyTeam?: boolean };
+export type CreateChatKey = { type: string, chatUUId?: string, league?: string, teamid?: string, athleteUUId?: string, fantasyTeam?: boolean };

@@ -88,11 +88,10 @@ export const actionCreateChat = async (props: CreateChatProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
-    const { athleteUUId, teamid, league, fantasyTeam = false } = props;
+    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false } = props;
     console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
-    console.log("loadLatestChat", url);
 
     const res = await fetch(url, {
         method: 'POST',
@@ -104,6 +103,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
             teamid,
             league,
             fantasyTeam,
+            chatUUId,
         }),
     });
 
@@ -111,14 +111,12 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         throw new Error('Network response was not ok');
     }
     const data = await res.json();
-    console.log("RET loadLatestChat:", data.success)
     return { success: data.success, chat: data.chat, error: data.error };
 }
 
 
 export const actionLoadLatestChat = async (key: CreateChatKey) => {
     'use server';
-    console.log("actionLoadLatestChat", key)
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
