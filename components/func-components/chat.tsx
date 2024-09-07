@@ -21,7 +21,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam
 }) => {
     const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
-
+    // console.log("==> ChatsComponent:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -33,8 +33,9 @@ const ChatsComponent: React.FC<Props> = ({
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
+    const [chatSelected, setChatSelected] = useState<boolean>(false);
 
-    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
+    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false, chatSelected };
     const { data: loadedChat, error: loadingChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
 
     useEffect(() => {
@@ -42,7 +43,6 @@ const ChatsComponent: React.FC<Props> = ({
     }, [isLoadingChat]);
 
     const update = useCallback((message: string) => {
-
         setUpdateMessage(message);
         setTimeout(() => {
             setUpdateMessage('waiting for response...');
@@ -51,6 +51,7 @@ const ChatsComponent: React.FC<Props> = ({
             }, 2000);
         }, 2000);
     }, []);
+
     const userRequest = useCallback(() => {
 
         if (!userInput.trim()) return;
@@ -60,7 +61,6 @@ const ChatsComponent: React.FC<Props> = ({
         };
         update('Loading...');
 
-        setMessages(prevMessages => [...prevMessages, newMessage]);
         console.log("messages", messages);
         setUserInput('');
         setIsLoading(true);
@@ -72,7 +72,7 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'QwiketAI',
             content: ''
         };
-        setMessages(prevMessages => [...prevMessages, assistantMessage]);
+        setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         setPendingUserRequest(false);
         actionUserRequest({
@@ -89,7 +89,10 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        updatedMessages[updatedMessages.length - 1].content = updatedContent;
+
+                        if (updatedMessages.length > 0) {
+                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                        }
                         return updatedMessages;
                     });
                     return updatedContent;
@@ -130,21 +133,20 @@ const ChatsComponent: React.FC<Props> = ({
             setPendingUserRequest(false);
             userRequest();
         }
-    }, [chatUUId]);
+    }, [chatUUId, pendingUserRequest]);
 
     useEffect(() => {
         setIsLoading(false);
-        if (loadedChat) {
-            if (loadedChat.success) {
-                setChatUUId(loadedChat.chat.chatUUId);
-                setMessages(loadedChat.chat.messages || []);
+        setChatSelected(true);
+        if (loadedChat && loadedChat.success) {
+            setChatUUId(loadedChat.chat.chatUUId);
+            setMessages(loadedChat.chat.messages || []);
 
-                console.log("loadedChat.chat.name", loadedChat.chat.name)
-                if (loadedChat.chat.name?.includes("ChatGPT")) {
-                    setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || '');
-                } else {
-                    setChatName(loadedChat.chat.name || '');
-                }
+            console.log("loadedChat.chat.name", loadedChat.chat.name)
+            if (loadedChat.chat.name?.includes("ChatGPT")) {
+                setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || '');
+            } else {
+                setChatName(loadedChat.chat.name || '');
             }
         }
     }, [loadedChat]);
@@ -158,12 +160,13 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [chatName])
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             if (!chatUUId) {
                 setPendingUserRequest(true);
+                console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
                 actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
                     (chatUUId) => {
                         console.log("=============> chat createdchatUUId", chatUUId)
@@ -182,7 +185,7 @@ const ChatsComponent: React.FC<Props> = ({
             setIsLoading(false);
             // Optionally, update the UI to show an error message
         }
-    }
+    }, [chatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
         if (responseTextareaRef.current) {
@@ -220,10 +223,13 @@ const ChatsComponent: React.FC<Props> = ({
                     <MyChats
                         onChatSelect={async (selectedChatUUId) => {
                             // Handle chat selection
+                            setChatSelected(false);
                             setChatUUId(selectedChatUUId);
                             setOpenMyChats(false);
                         }}
                         onNewChat={async () => {
+                            console.log("onNewChat");
+                            setChatSelected(true);
                             // Handle new chat creation
                             setChatUUId("");
                             setMessages([]);

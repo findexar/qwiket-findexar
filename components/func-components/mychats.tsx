@@ -116,6 +116,8 @@ const ChatsComponent: React.FC<Props> = ({
                     <IoAddCircleOutline className="w-6 h-6 text-gray-600" />
                 </button>
             </div>
+            {!ChatGroups.length && <div className="text-sm text-gray-500">No chat history yet...</div>}
+
             <div className="flex-grow p-4">
                 {ChatGroups}
             </div>

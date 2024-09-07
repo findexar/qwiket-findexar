@@ -65,7 +65,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
-
+  console.log("==> start spa", { startAthleteUUId });
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
   }, [localMode]);

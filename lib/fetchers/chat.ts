@@ -88,7 +88,10 @@ export const actionCreateChat = async (props: CreateChatProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
-    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false } = props;
+    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, chatSelected = false } = props;
+    if (chatSelected) {
+        return { success: false, chat: {} as Chat, error: '' };
+    }
     console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
