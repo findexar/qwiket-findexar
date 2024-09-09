@@ -245,7 +245,7 @@ const ChatsComponent: React.FC<Props> = ({
             </div>
 
 
-            <div className="p-4">
+            <div className="p-1">
                 <>
                     {messages.map((message, index) => (
                         console.log("message", message),
@@ -260,7 +260,7 @@ const ChatsComponent: React.FC<Props> = ({
                         </div>
                     ))}
 
-                    <div className="flex justify-center items-center mt-4">
+                    <div className="flex justify-center items-center mt-0">
                         {updateMessage || "***"}
                     </div>
                 </>
