@@ -33,10 +33,12 @@ const ChatsComponent: React.FC<Props> = ({
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
-    const [chatSelected, setChatSelected] = useState<boolean>(false);
+    // const [chatSelected, setChatSelected] = useState<boolean>(false);
 
-    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false, chatSelected };
-    const { data: loadedChat, error: loadingChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
+
+    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
+    console.log("==> createChatKey", createChatKey)
+    const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
 
     useEffect(() => {
         setIsLoading(isLoadingChat);
@@ -83,7 +85,6 @@ const ChatsComponent: React.FC<Props> = ({
             league: league,
             fantasyTeam: isFantasyTeam || false,
             onUpdate: (content: string) => {
-                console.log('*********************** onUpdate', content);
                 setUpdateMessage('');
                 setResponse(prev => {
                     const updatedContent = prev + content;
@@ -109,13 +110,11 @@ const ChatsComponent: React.FC<Props> = ({
                 );
             },
             onChatUUId: (content: string) => {
-                console.log('*********************** onChatUUId', content);
                 setChatUUId(prev => {
                     return content;
                 });
             },
             onMetaUpdate: (content: string) => {
-                console.log('*********************** onMetaUpdate', content);
                 update(content);
             }
 
@@ -136,9 +135,8 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, pendingUserRequest]);
 
     useEffect(() => {
-        setIsLoading(false);
-        setChatSelected(true);
-        if (loadedChat && loadedChat.success) {
+        console.log("useEffectloadedChatData", loadedChat);
+        if (loadedChat && !loadedChatError && !isLoadingChat) {
             setChatUUId(loadedChat.chat.chatUUId);
             setMessages(loadedChat.chat.messages || []);
 
@@ -148,6 +146,8 @@ const ChatsComponent: React.FC<Props> = ({
             } else {
                 setChatName(loadedChat.chat.name || '');
             }
+            setIsLoading(false);
+
         }
     }, [loadedChat]);
 
@@ -223,15 +223,19 @@ const ChatsComponent: React.FC<Props> = ({
                     <MyChats
                         onChatSelect={async (selectedChatUUId) => {
                             // Handle chat selection
-                            setChatSelected(false);
+
                             setChatUUId(selectedChatUUId);
-                            setOpenMyChats(false);
+                            setTimeout(() => {
+
+                                setOpenMyChats(false);
+                            }, 200);
+
                         }}
                         onNewChat={async () => {
                             console.log("onNewChat");
-                            setChatSelected(true);
+                            // setNewChat(true);
                             // Handle new chat creation
-                            setChatUUId("");
+                            setChatUUId("_new");
                             setMessages([]);
                             setChatName('New Chat');
                             setOpenMyChats(false);

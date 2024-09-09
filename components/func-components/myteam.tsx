@@ -173,9 +173,9 @@ const MyTeam: React.FC<Props> = () => {
     //const palette = theme[mode||'dark'].colors;
     return (
         <>{!isMobile ? <RightScroll>
-            <TeamName>My Fantasy Team{league ? ` for ${league}` : ``}: </TeamName>
+            <TeamName>My Team{league ? ` for ${league}` : ``}: </TeamName>
             {(!trackerListMembers || trackerListMembers.length == 0) && <><RightExplanation>
-                <b>My Fantasy Team</b> is a feature designed for Fantasy Sports fans who need to track media
+                <b>My Team</b> is a feature designed for Fantasy Sports fans who need to track media
                 mentions of their&apos;s fantasy teams members.<br /><br />    <hr />
             </RightExplanation>
                 <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
@@ -205,7 +205,7 @@ const MyTeam: React.FC<Props> = () => {
                                 console.log("TRACKED", member)
                                 setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
 
-                                setToastMessage("Player removed from the Fantasy Team");
+                                setToastMessage("Player removed from the Your Team");
 
                                 await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
                                 //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
@@ -242,11 +242,11 @@ const MyTeam: React.FC<Props> = () => {
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
         </RightScroll> :
             <MobilePlayersPanel>
-                <MobileTeamName>My Fantasy Team: </MobileTeamName>
+                <MobileTeamName>My Team: </MobileTeamName>
                 {(!trackerListMembers || trackerListMembers.length == 0) &&
                     <><MobileRightExplanation>
                         Track sports media mentions of your fantasy athletes across media markets and publications.<br /><br />
-                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name at the bottom of a mention,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
+                        <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name at the bottom of a mention,<br />to add an athlete to your Team (players tracking list).<br /><br />
                         </RightExplanation> <hr />
                     </MobileRightExplanation>
                     </>}
@@ -264,7 +264,7 @@ const MyTeam: React.FC<Props> = () => {
                                     const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
                                     trackerListMutate(newTrackerListMembers, false);
                                     await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
-                                    setToastMessage("Player removed from the Fantasy Team");
+                                    setToastMessage("Player removed from your Team");
                                 }} >
                                 <SideIcon>
                                     <TeamRemoveIcon className="opacity-80 text-yellow-800 dark:text-yellow-200 hover:opacity-100" />

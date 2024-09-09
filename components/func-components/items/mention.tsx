@@ -353,7 +353,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer,  setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
+    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked } = mention;
@@ -544,7 +544,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
         if (localTracked == true) {
             console.log("TRACKED", name);
-            setToastMessage("Player removed from the Fantasy Team");
+            setToastMessage("Player removed from the Team");
             setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
 
             console.log("tracked after mutatePlayers", name, team);

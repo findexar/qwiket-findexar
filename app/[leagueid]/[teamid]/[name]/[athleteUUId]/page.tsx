@@ -193,7 +193,7 @@ export default async function Page({
         calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId }));
 
     if (tab == 'chat') {
-        calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false }, userId, sessionid));
+        calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
 
     await fetchData(t1, fallback, calls);

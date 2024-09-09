@@ -184,7 +184,7 @@ export default async function Page({
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
   if (tab == 'chat') {
-    calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId: "", fantasyTeam: false }, userId, sessionid));
+    calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
   await fetchData(t1, fallback, calls);
   console.log("=======>TEAM FALLBACK:", fallback)

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import {  SignInButton} from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 import { styled } from "styled-components";
 
 import HomeIcon from '@/components/icons/home';
@@ -55,19 +55,21 @@ interface Props {
 }
 const Welcome: React.FC<Props> = () => {
     const router = useRouter();
-    const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype,  setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     return <> <WelcomeWrap className="text-left">
         Welcome to {process.env.NEXT_PUBLIC_APP_NAME}!<br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
-        <br />The indispensable Fantasy Sports<br />
-        real-time, annotated <br />
-        media index.<br /><br />
+        <br />The Professional and Fantasy <br />Sports AI. <br /><br />
+        With up-to-the-minute, AI Chat. <br /><br />
+        Also featuring
+        a real-time, annotated <br />
+        and indexed sports media feed.<br /><br />
         As new stories are published <br />in the media, they are sliced and diced <br />
         into annotated indexed mentions of <br />
         individual athletes and teams.<br /><br />
 
         Track the media mentions across <br />your fantasy teams effortlessly<br />
-        using the My Fantasy Team feature<br /><br />
+        using the My Team feature<br /><br />
         <hr />
         Powered by OpenAI.</WelcomeWrap>
         <br />

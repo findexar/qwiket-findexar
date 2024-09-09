@@ -88,8 +88,8 @@ export const actionCreateChat = async (props: CreateChatProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
-    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, chatSelected = false } = props;
-    if (chatSelected) {
+    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false } = props;
+    if (chatUUId == "_new") {
         return { success: false, chat: {} as Chat, error: '' };
     }
     console.log("****** loadLatestChat", props)
@@ -114,7 +114,14 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         throw new Error('Network response was not ok');
     }
     const data = await res.json();
-    return { success: data.success, chat: data.chat, error: data.error };
+    if (!data.success) {
+        console.log("RET loadLatestChat:", data)
+        // throw new Error('Failed to loadLatestChat');
+        console.log("NULL RET loadLatestChat:", data.error)
+        return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
+    }
+    console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    return { success: true, chat: data.chat, error: '' };
 }
 
 
@@ -123,7 +130,7 @@ export const actionLoadLatestChat = async (key: CreateChatKey) => {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
-    return loadLatestChat(key, userId || "", sessionid);
+    return await loadLatestChat(key, userId || "", sessionid);
 }
 interface ChatNameProps {
     chatUUId: string;
@@ -149,7 +156,10 @@ export const actionChatName = async (props: ChatNameProps) => {
 
 const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: string) => {
     'use server';
-    return { key: unstable_serialize(key), call: loadLatestChat(key, userId, sessionid) };
+    console.log("promiseCreateChat", key, userId, sessionid)
+    let ret = { key: unstable_serialize(key), call: loadLatestChat(key, userId, sessionid) };
+    console.log("AFTER promiseCreateChat", key, userId, sessionid)
+    return ret;
 }
 
 export default promiseCreateChat;

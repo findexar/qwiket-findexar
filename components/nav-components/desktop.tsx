@@ -187,7 +187,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
 
                         { name: `AI Chat`, tab: 'chat', disabled: false },
-                        { name: "Fantasy Feed", tab: "myfeed", disabled: false },
+                        { name: "My Feed", tab: "myfeed", disabled: false },
                         { name: "Favorites", tab: "fav", disabled: false }
                       ]}
                       onChange={onTabNav}
