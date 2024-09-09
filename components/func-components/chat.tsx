@@ -36,7 +36,6 @@ const ChatsComponent: React.FC<Props> = ({
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
 
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
-    console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
 
     useEffect(() => {
@@ -89,7 +88,7 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-
+                        console.log("prevMessages", updatedMessages)
                         if (updatedMessages.length > 0) {
                             updatedMessages[updatedMessages.length - 1].content = updatedContent;
                         }
@@ -135,29 +134,32 @@ const ChatsComponent: React.FC<Props> = ({
 
     useEffect(() => {
         console.log("useEffectloadedChatData", loadedChat);
-        if (loadedChat && !loadedChatError && !isLoadingChat) {
+        if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
+            console.log("GOT loadedChat.chat.chatUUId", loadedChat.chat.chatUUId)
             setChatUUId(loadedChat.chat.chatUUId);
-            setMessages(loadedChat.chat.messages || []);
+            if (loadedChat.chat.messages) {
+                setMessages(loadedChat.chat.messages);
+            }
 
             console.log("loadedChat.chat.name", loadedChat.chat.name)
             if (loadedChat.chat.name?.includes("ChatGPT")) {
-                setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || '');
+                setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || 'New Chat');
             } else {
-                setChatName(loadedChat.chat.name || '');
+                setChatName(loadedChat.chat.name || 'New Chat');
             }
             setIsLoading(false);
 
         }
     }, [loadedChat]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         console.log("chatName", chatName)
         if (chatName?.includes("ChatGPT")) {
-            setChatName(chatName?.replace("ChatGpt", "QwiketAI") || '');
+            setChatName(chatName?.replace("ChatGpt", "QwiketAI") || 'New Chat');
         } else {
             setChatName(chatName || '');
         }
-    }, [chatName])
+    }, [chatName])*/
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
