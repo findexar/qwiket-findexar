@@ -35,7 +35,6 @@ const ChatsComponent: React.FC<Props> = ({
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
 
-
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
@@ -199,6 +198,9 @@ const ChatsComponent: React.FC<Props> = ({
             handleSubmit(e as unknown as React.FormEvent);
         }
     };
+    if (!league) {
+        return <><br /><h2 className="text-xl font-bold">Please select a league first.</h2></>;
+    }
 
     return (
         <div className="flex flex-col h-full w-full bg-white dark:bg-black">
