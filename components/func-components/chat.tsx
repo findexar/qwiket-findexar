@@ -33,6 +33,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
+    const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
 
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
@@ -48,7 +49,7 @@ const ChatsComponent: React.FC<Props> = ({
             setUpdateMessage('waiting for response...');
             setTimeout(() => {
                 setUpdateMessage('');
-            }, 2000);
+            }, 6000);
         }, 2000);
     }, []);
 
@@ -76,7 +77,7 @@ const ChatsComponent: React.FC<Props> = ({
 
         setPendingUserRequest(false);
         actionUserRequest({
-            chatUUId,
+            chatUUId: provisionalChatUUId || chatUUId,
             userRequest: userInput,
             athleteUUId: athleteUUId,
             teamid: teamid,
@@ -122,11 +123,12 @@ const ChatsComponent: React.FC<Props> = ({
         }).finally(() => {
             setIsLoading(false);
         });
+        setProvisionalChatUUId('');
 
-    }, [chatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
+    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
-        if (chatUUId && pendingUserRequest) {
+        if (chatUUId && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
             setPendingUserRequest(false);
             userRequest();
         }
@@ -171,7 +173,7 @@ const ChatsComponent: React.FC<Props> = ({
                 actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
                     (chatUUId) => {
                         console.log("=============> chat createdchatUUId", chatUUId)
-                        setChatUUId((prev) => { // this will trigger useEffect to call userRequest
+                        setProvisionalChatUUId((prev) => { // this will trigger useEffect to call userRequest
                             return chatUUId as string;
                         });
                     }
