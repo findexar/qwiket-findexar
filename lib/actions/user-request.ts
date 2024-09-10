@@ -17,7 +17,7 @@ export const actionUserRequest = async (props: UserRequestProps) => {
         const { chatUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
-
+      
         try {
 
             const res = await fetch(url, {

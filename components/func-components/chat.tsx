@@ -76,6 +76,7 @@ const ChatsComponent: React.FC<Props> = ({
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         setPendingUserRequest(false);
+        console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             userRequest: userInput,
@@ -128,7 +129,8 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
-        if (chatUUId && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
+        if (chatUUId && chatUUId != '_new' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
+            console.log("CALLING userRequest:", "chatUUId", chatUUId, "provisionalChatUUId", provisionalChatUUId, "pendingUserRequest", pendingUserRequest)
             setPendingUserRequest(false);
             userRequest();
         }
@@ -167,7 +169,7 @@ const ChatsComponent: React.FC<Props> = ({
         e.preventDefault();
 
         try {
-            if (!chatUUId) {
+            if (!chatUUId || chatUUId == '_new') {
                 setPendingUserRequest(true);
                 console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
                 actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
