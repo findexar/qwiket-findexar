@@ -235,7 +235,7 @@ const ChatsComponent: React.FC<Props> = ({
                             setChatName('New Chat');
                             setOpenMyChats(false);
                         }}
-                        className={`bg-teal-700 dark:bg-teal-900 hover:bg-teal-700 hover:dark:bg-teal-700 text-gray-100 hover:text-white font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
+                        className={`bg-teal-700 dark:bg-teal-900 hover:bg-teal-700 hover:dark:bg-teal-700 text-gray-200 hover:text-white font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                         disabled={chatName === 'New Chat'}
                     >
