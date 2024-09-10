@@ -108,14 +108,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     return (
         <div className="h-full flex flex-col">
-            <div className="flex items-center justify-end p-4 ">
-                <button
-                    onClick={onNewChat}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                >
-                    <IoAddCircleOutline className="w-6 h-6 text-gray-600" />
-                </button>
-            </div>
+
             {!ChatGroups.length && <div className="text-sm text-gray-500">No chat history yet...</div>}
 
             <div className="flex-grow p-4">

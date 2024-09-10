@@ -100,6 +100,7 @@ const ChatsComponent: React.FC<Props> = ({
                 });
             },
             onDone: () => {
+                setUpdateMessage('');
                 setIsLoading(false);
                 actionChatName({ chatUUId }).then(
                     (data) => {
@@ -217,15 +218,29 @@ const ChatsComponent: React.FC<Props> = ({
             )}
 
             <div className="p-4">
-                <div className="flex  items-center mb-4">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                        <button
+                            onClick={() => setOpenMyChats(!openMyChats)}
+                            className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        >
+                            {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
+                        </button>
+                        <h1 className="ml-4 text-xl font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
+                    </div>
                     <button
-                        onClick={() => setOpenMyChats(!openMyChats)}
-                        className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        onClick={() => {
+                            setChatUUId("_new");
+                            setMessages([]);
+                            setChatName('New Chat');
+                            setOpenMyChats(false);
+                        }}
+                        className={`bg-teal-700 dark:bg-teal-900 hover:bg-blue-700 hover:dark:bg-teal-700 text-black-100 hover:text-white font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                        disabled={chatName === 'New Chat'}
                     >
-                        {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
+                        New Chat
                     </button>
-                    <h1 className="ml-4 text-xl font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
-                    <span className="text-gray-600 dark:text-gray-400"></span>
                 </div>
                 {openMyChats && (
                     <MyChats
@@ -263,7 +278,7 @@ const ChatsComponent: React.FC<Props> = ({
                         console.log("message", message),
                         <div key={message.content} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] p-3 rounded-2xl ${message.role === 'user'
-                                ? 'bg-blue-100 dark:bg-blue-700'
+                                ? 'bg-blue-100 dark:bg-teal-800'
                                 : 'bg-gray-100 dark:bg-gray-700'
                                 } text-gray-800 dark:text-gray-200`}>
                                 <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
