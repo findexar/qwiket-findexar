@@ -132,7 +132,7 @@ const ChatsComponent: React.FC<Props> = ({
             setPendingUserRequest(false);
             userRequest();
         }
-    }, [chatUUId, pendingUserRequest]);
+    }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 
     useEffect(() => {
         console.log("useEffectloadedChatData", loadedChat);
