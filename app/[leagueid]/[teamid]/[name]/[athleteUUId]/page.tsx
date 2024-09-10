@@ -21,7 +21,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
 import fetchChat from "@/lib/fetchers/chat";
-
+//what conflicts?
 type Props = {
     params: { leagueid: string, teamid: string }
     searchParams: { [key: string]: string | string[] | undefined }
