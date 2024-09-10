@@ -15,7 +15,7 @@ interface StyledTabsProps {
 }
 
 interface STabsProps {
-    selected: boolean;
+  selected: boolean;
 }
 const STab = styled(Tab) <STabsProps>`
     color:${({ selected }) => selected ? 'var(--secondary-tabs-selected)' : 'var(--secondary-tabs-text)'} !important;
@@ -55,7 +55,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
       selectedValue = i;
       //console.log("selectedValue", selectedValue)
     }
-    return <STab  iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
+    return <STab isnew={option.name == 'AI Chat'} iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
   });
   return <TabsWrap className="text-sm"><STabs id="tabs2" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
 };

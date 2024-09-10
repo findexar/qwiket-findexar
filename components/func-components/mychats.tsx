@@ -35,9 +35,9 @@ const ChatsComponent: React.FC<Props> = ({
     };
 
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchMyChatsKey, actionMyChats, { fallback });
-    console.log(`==> raw data`, { data, size, isLoading });
+    //console.log(`==> raw data`, { data, size, isLoading });
     let chats: ChatItem[] = data ? ([] as ChatItem[]).concat(...(data as ChatItem[][])) : [];
-    console.log(`==> chats`, chats);
+    //console.log(`==> chats`, chats);
     useEffect(() => {
         if (chats.length > 0) {
             onFirstChat(chats[0]);

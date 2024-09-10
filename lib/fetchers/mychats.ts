@@ -13,10 +13,10 @@ export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: s
         let url = '';
 
         url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/fetch-chats?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&athleteUUId=${athleteUUId}&sessionid=${sessionid}&page=${page}`;
-        console.log("fetching my chats", url);
+      //  console.log("fetching my chats", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        console.log("return fetching my chats", url, data);
+       // console.log("return fetching my chats", url, data);
         if (data.success) {
             console.log("===>GET MY CHATS", data.chats);
             return data.chats as ChatItem[];

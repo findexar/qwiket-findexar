@@ -144,7 +144,7 @@ const Desktop: React.FC<Props> = () => {
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
   const tab = initialTab || "";
   const view = initialView || "mentions";
-  console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
+  //console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
     setLocalFindexarxid(findexarxid);
   }, [findexarxid]);
@@ -167,7 +167,7 @@ const Desktop: React.FC<Props> = () => {
     setView("mentions");
     setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
   }
-  console.log("==> pagetype", pagetype, tab);
+ // console.log("==> pagetype", pagetype, tab);
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>

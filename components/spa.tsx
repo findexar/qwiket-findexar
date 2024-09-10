@@ -65,7 +65,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
-  console.log("==> start spa", { startAthleteUUId });
+  //console.log("==> start spa", { startAthleteUUId });
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
   }, [localMode]);
@@ -162,7 +162,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     setAthleteUUId(qathleteUUId);
     setPagetype(qpagetype);
   }, [query]);
-  console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
+  //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   return (
     <StyledThemeProvider theme={palette}>
       <GlobalStyle $light={localMode === "light"} />

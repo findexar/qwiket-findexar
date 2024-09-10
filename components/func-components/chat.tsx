@@ -172,10 +172,10 @@ const ChatsComponent: React.FC<Props> = ({
         try {
             if (!chatUUId || chatUUId == '_new') {
                 setPendingUserRequest(true);
-                console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
+                //console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
                 actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
                     (chatUUId) => {
-                        console.log("=============> chat createdchatUUId", chatUUId)
+                        //console.log("=============> chat createdchatUUId", chatUUId)
                         setProvisionalChatUUId((prev) => { // this will trigger useEffect to call userRequest
                             return chatUUId as string;
                         });

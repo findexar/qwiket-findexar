@@ -13,12 +13,12 @@ export const fetchChat = async (key: ChatKey, userId: string, sessionid: string)
     try {
         const { chatUUId = '' } = key;
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load?api_key=${api_key}&userid=${userId || ""}&chatUUId=${chatUUId}&sessionid=${sessionid}`;
-        console.log("fetching chat", url);
+        // console.log("fetching chat", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        console.log("return fetching chat", url, data);
+        // console.log("return fetching chat", url, data);
         if (data.success) {
-            console.log("===>GET CHAT", data.chat);
+            // console.log("===>GET CHAT", data.chat);
             return data.chat as Chat;
         }
         throw new Error("Failed to fetchChat");
