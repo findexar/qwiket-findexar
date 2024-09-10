@@ -206,7 +206,7 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     if (!league) {
-        return <><br /><h2 className="text-xl font-bold">Please select a league first.</h2></>;
+        return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
     }
 
     return (
