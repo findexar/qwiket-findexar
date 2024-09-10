@@ -26,6 +26,7 @@ import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import FavMentions from "@/components/func-components/fav-mentions";
 import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
+import Chat from "@/components/func-components/chat";
 
 const MobileContainerWrap = styled.div`
     display: flex;
@@ -124,12 +125,13 @@ const Mobile: React.FC<Props> = () => {
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
                 {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Fantasy Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "AI Chat", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
                 {pagetype == "league" && league &&
-                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "My Fantasy Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
+                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "AI Chat", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Feed", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
+
                 {view == 'mentions' && pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
                 {view == 'teams' &&
@@ -145,8 +147,12 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                 </CenterPanel>}
                 {view == 'faq' && <Readme />}
-                {view == 'my fantasy team' && <MyTeam />}
+                {view == 'my team' && <MyTeam />}
+                {view == 'ai chat' && <Chat />}
                 {view == 'players' && <Players />}
+                {(pagetype === 'league' && tab === 'chat') && <Chat />}
+                {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat' || tab === '') && <Chat />}
+
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
                 {slug && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
             </MobileContainerWrap >

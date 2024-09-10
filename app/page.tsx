@@ -191,7 +191,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
     }
   }
-  if (view == 'my fantasy team' || view == 'mentions') {
+  if (view == 'my team' || view == 'mentions') {
     if (!story && !findexarxid) {
       calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
     }

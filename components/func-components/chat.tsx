@@ -210,7 +210,7 @@ const ChatsComponent: React.FC<Props> = ({
     }
 
     return (
-        <div className="flex flex-col h-full w-full bg-white dark:bg-black">
+        <div className="flex flex-col min-h-screen  h-full w-full bg-white dark:bg-black">
             {false && (
                 <div className="flex justify-center items-center mt-4">
                     Loading Chat...

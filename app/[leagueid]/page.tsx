@@ -220,7 +220,7 @@ export default async function Page({
       calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
     }
   }
-  if (view == 'my fantasy team' || view == 'mentions') {
+  if (view == 'my team' || view == 'mentions') {
     console.log("GET MY TEAM");
     if (!story && !findexarxid) {
       calls.push(await fetchMyTeam({ userId, sessionid, league }));
@@ -238,7 +238,7 @@ export default async function Page({
     }
   }
   if (tab == 'chat') {
-    calls.push(await fetchChat({ type: "create-chat", league:league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
+    calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
   await fetchData(t1, fallback, calls);
 
