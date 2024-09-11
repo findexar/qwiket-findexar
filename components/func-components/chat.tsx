@@ -35,10 +35,14 @@ const ChatsComponent: React.FC<Props> = ({
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
-
+    console.log("==> ChatsComponent:", league, teamid, athleteUUId, isFantasyTeam)
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-
+    useEffect(() => {
+        setChatUUId(chatUUIdProp || "");
+        setMessages([]);
+        setChatName('New Chat');
+    }, [league])
     useEffect(() => {
         setIsLoading(isLoadingChat);
     }, [isLoadingChat]);
