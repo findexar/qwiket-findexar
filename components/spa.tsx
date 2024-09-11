@@ -101,7 +101,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     if (!params) tp = tp.replace(/&/g, '?');
     console.log("==> view", view);
     if (view == "ai chat") {
-      tp = `${tp}&view=ai%20chat`;
+      tp = tp ? `${tp}&view=ai%20chat` : `?view=ai%20chat`;
       console.log("==> set tp", tp);
     }
     setParams(params);
