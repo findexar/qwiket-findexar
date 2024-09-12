@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect, startTransition, useCallback, ReactNode } from "react";
+import React, { useState, useRef, useEffect, startTransition, useCallback, ReactNode, memo } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 
@@ -15,6 +15,18 @@ interface Props {
     chatUUId?: string;
     isFantasyTeam?: boolean;
 }
+
+const MessageComponent = memo(({ message, MarkdownComponents }: { message: Message, MarkdownComponents: Partial<Components> }) => (
+    <div className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+        <div className={`max-w-[85%] p-3 rounded-2xl ${message.role === 'user' ? 'bg-blue-100 dark:bg-teal-800' : 'bg-gray-100 dark:bg-gray-700'
+            } text-gray-800 dark:text-gray-200`}>
+            <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
+            <ReactMarkdown components={MarkdownComponents}>
+                {message.content.replace(/<img/g, '<img width="64" height="64" ')}
+            </ReactMarkdown>
+        </div>
+    </div>
+));
 
 const ChatsComponent: React.FC<Props> = ({
     chatUUId: chatUUIdProp,
@@ -247,7 +259,11 @@ const ChatsComponent: React.FC<Props> = ({
             );
         },
     };
-
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        requestAnimationFrame(() => {
+            setUserInput(e.target.value);
+        });
+    }, [])
     console.log("messages", messages)
     return (
         <div className="flex flex-col min-h-screen  h-full w-full bg-white dark:bg-black">
@@ -315,18 +331,7 @@ const ChatsComponent: React.FC<Props> = ({
             <div className="p-1">
                 <>
                     {messages.map((message, index) => (
-                        console.log("message", message),
-                        <div key={message.content} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] p-3 rounded-2xl ${message.role === 'user'
-                                ? 'bg-blue-100 dark:bg-teal-800'
-                                : 'bg-gray-100 dark:bg-gray-700'
-                                } text-gray-800 dark:text-gray-200`}>
-                                <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
-                                <ReactMarkdown components={MarkdownComponents}>
-                                    {message.content.replace(/<img/g, '<img width="64" height="64" ')}
-                                </ReactMarkdown>
-                            </div>
-                        </div>
+                        <MessageComponent key={`${index}-${message.role}`} message={message} MarkdownComponents={MarkdownComponents} />
                     ))}
 
                     <div className="flex justify-center items-center mt-0">
