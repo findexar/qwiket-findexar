@@ -1,11 +1,11 @@
 'use client';
-import React, { useState, useRef, useEffect, startTransition, useCallback } from "react";
+import React, { useState, useRef, useEffect, startTransition, useCallback, ReactNode } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 
 import { Chat, Message } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Added chevron icons
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
@@ -212,7 +212,43 @@ const ChatsComponent: React.FC<Props> = ({
     if (!league) {
         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
     }
+    // Custom components for ReactMarkdown
+    const MarkdownComponents: Partial<Components> = {
+        h1: ({ node, ...props }) => <h1 className="text-2xl font-bold my-8" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-xl font-semibold my-4" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-lg font-medium my-2 mt-8" {...props} />,
+        p: ({ node, ...props }) => <p className="my-2" {...props} />,
+        ul: ({ node, ...props }) => <ul className="list-disc list-inside my-2" {...props} />,
+        ol: ({ node, ...props }) => <ol className="list-inside my-2 mt-4" {...props} />,
+        li: ({ node, ...props }) => <li className="my-1" {...props} />,
+        strong: ({ node, ...props }) => <strong className="font-bold mt-4" {...props} />,
+        a: ({ node, href, children, ...props }) => (
+            <a href={href} className="text-blue-500 hover:underline" {...props}>
+                {children}
+            </a>
+        ),
+        img: ({ node, ...props }) => (
+            <img
+                {...props}
+                width="64"
+                height="64"
+                style={{ width: '64px', height: '64px', objectFit: 'cover' }}
+            />
+        ),
+        code: ({ node, className, children, ...props }) => {
+            const match = /language-(\w+)/.exec(className || '');
+            return (
+                <code
+                    className={`${match ? 'block bg-gray-100 dark:bg-gray-800 rounded p-2 my-2' : 'bg-gray-200 dark:bg-gray-700 rounded px-1'}`}
+                    {...props}
+                >
+                    {children}
+                </code>
+            );
+        },
+    };
 
+    console.log("messages", messages)
     return (
         <div className="flex flex-col min-h-screen  h-full w-full bg-white dark:bg-black">
             {false && (
@@ -286,7 +322,9 @@ const ChatsComponent: React.FC<Props> = ({
                                 : 'bg-gray-100 dark:bg-gray-700'
                                 } text-gray-800 dark:text-gray-200`}>
                                 <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
-                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                                <ReactMarkdown components={MarkdownComponents}>
+                                    {message.content.replace(/<img/g, '<img width="64" height="64" ')}
+                                </ReactMarkdown>
                             </div>
                         </div>
                     ))}
