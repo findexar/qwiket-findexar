@@ -114,9 +114,10 @@ const ChatsComponent: React.FC<Props> = ({
             setIsLoading(false);
         }).finally(() => {
             setIsLoading(false);
+
         });
         setProvisionalChatUUId('');
-
+        setProvisionalUserInput('');
     }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
