@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect, startTransition, useCallback, ReactNode } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
+import { motion } from 'framer-motion';
 
 import { Chat, Message } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
@@ -34,6 +35,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
+    const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
     console.log("==> ChatsComponent:", league, teamid, athleteUUId, isFantasyTeam)
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
@@ -44,10 +46,10 @@ const ChatsComponent: React.FC<Props> = ({
         setChatName('New Chat');
     }, [league])
     useEffect(() => {
-        if (isLoadingChat) {
-            setIsLoading(isLoadingChat);
-        }
-    }, [isLoadingChat]);    
+        //if (isLoadingChat) {
+        setIsLoading(isLoadingChat);
+        // }
+    }, [isLoadingChat]);
 
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
@@ -61,31 +63,13 @@ const ChatsComponent: React.FC<Props> = ({
 
     const userRequest = useCallback(() => {
 
-        if (!userInput.trim()) return;
-        const newMessage: Message = {
-            role: 'user',
-            content: userInput
-        };
-        update('Loading...');
 
-        console.log("messages", messages);
-        setUserInput('');
-        setIsLoading(true);
-        setResponse('');
-        responseSetRef.current = false; // Reset the ref when a new request is made
-
-        // Add a placeholder message for the assistant response
-        const assistantMessage: Message = {
-            role: 'QwiketAI',
-            content: ''
-        };
-        setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         setPendingUserRequest(false);
         console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
-            userRequest: userInput,
+            userRequest: provisionalUserInput || userInput,
             athleteUUId: athleteUUId,
             teamid: teamid,
             league: league,
@@ -173,8 +157,29 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatName])*/
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
+        console.log("handleSubmit", userInput)
         e.preventDefault();
+        if (!userInput.trim()) return;
+        const newMessage: Message = {
+            role: 'user',
+            content: userInput
+        };
+        update('Loading...');
 
+        console.log("messages", messages);
+        setProvisionalUserInput(userInput);
+        setUserInput('');
+        setIsLoading(true);
+        setResponse('');
+        console.log("handleSubmit2", userInput)
+        responseSetRef.current = false; // Reset the ref when a new request is made
+
+        // Add a placeholder message for the assistant response
+        const assistantMessage: Message = {
+            role: 'QwiketAI',
+            content: ''
+        };
+        setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
         try {
             if (!chatUUId || chatUUId == '_new') {
                 setIsLoading(true);
@@ -252,6 +257,16 @@ const ChatsComponent: React.FC<Props> = ({
     };
 
     console.log("messages", messages)
+    const BlinkingDot = () => (
+        <motion.span
+            animate={{ opacity: [0, 1] }}
+            transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+            className="inline-block ml-1"
+        >
+            •
+        </motion.span>
+    );
+
     return (
         <div className="flex flex-col min-h-screen  h-full w-full bg-white dark:bg-black">
             {false && (
@@ -277,6 +292,7 @@ const ChatsComponent: React.FC<Props> = ({
                             setMessages([]);
                             setChatName('New Chat');
                             setOpenMyChats(false);
+                            setIsLoading(false);
                         }}
                         className={`bg-teal-700 dark:bg-teal-900 hover:bg-teal-700 hover:dark:bg-teal-700 text-gray-200 hover:text-white font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
@@ -318,8 +334,7 @@ const ChatsComponent: React.FC<Props> = ({
             <div className="p-1">
                 <>
                     {messages.map((message, index) => (
-                        console.log("message", message),
-                        <div key={message.content} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div key={index} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] p-3 rounded-2xl ${message.role === 'user'
                                 ? 'bg-blue-100 dark:bg-teal-800'
                                 : 'bg-gray-100 dark:bg-gray-700'
@@ -328,10 +343,10 @@ const ChatsComponent: React.FC<Props> = ({
                                 <ReactMarkdown components={MarkdownComponents}>
                                     {message.content.replace(/<img/g, '<img width="64" height="64" ')}
                                 </ReactMarkdown>
+                                {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
                             </div>
                         </div>
                     ))}
-
                     <div className="flex justify-center items-center mt-0">
                         {updateMessage || "***"}
                     </div>
