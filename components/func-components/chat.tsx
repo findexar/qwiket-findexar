@@ -44,8 +44,10 @@ const ChatsComponent: React.FC<Props> = ({
         setChatName('New Chat');
     }, [league])
     useEffect(() => {
-        setIsLoading(isLoadingChat);
-    }, [isLoadingChat]);
+        if (isLoadingChat) {
+            setIsLoading(isLoadingChat);
+        }
+    }, [isLoadingChat]);    
 
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
@@ -175,6 +177,7 @@ const ChatsComponent: React.FC<Props> = ({
 
         try {
             if (!chatUUId || chatUUId == '_new') {
+                setIsLoading(true);
                 setPendingUserRequest(true);
                 //console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
                 actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
