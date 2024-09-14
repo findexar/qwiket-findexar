@@ -138,10 +138,10 @@ const ChatsComponent: React.FC<Props> = ({
             }
 
             console.log("loadedChat.chat.name", loadedChat.chat.name)
-            if (loadedChat.chat.name?.includes("ChatGPT")) {
-                setChatName(loadedChat.chat.name?.replace("ChatGPT", "QwiketAI") || 'New Chat');
+            if (loadedChat?.chat?.name?.includes("ChatGPT")) {
+                setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "QwiketAI") || 'New Chat');
             } else {
-                setChatName(loadedChat.chat.name || 'New Chat');
+                setChatName(loadedChat?.chat?.name || 'New Chat');
             }
             setIsLoading(false);
 
@@ -342,7 +342,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 } text-gray-800 dark:text-gray-200`}>
                                 <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
                                 <ReactMarkdown components={MarkdownComponents}>
-                                    {message.content.replace(/<img/g, '<img width="64" height="64" ')}
+                                    {message?.content?.replace(/<img/g, '<img width="64" height="64" ') || ''}
                                 </ReactMarkdown>
                                 {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
                             </div>
