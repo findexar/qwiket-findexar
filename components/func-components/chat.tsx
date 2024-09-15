@@ -347,25 +347,25 @@ const ChatsComponent: React.FC<Props> = ({
                     {updateMessage || "***"}
                 </div>
                 <div className="p-4">
-                    <form onSubmit={handleSubmit} className="flex">
+                    <form onSubmit={handleSubmit} className="relative">
                         <textarea
                             value={userInput}
                             onChange={(e) => setUserInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Message to QwiketAI"
-                            className="flex-grow p-2 border rounded-lg mr-2 text-gray-800 dark:text-gray-200 bg-white dark:bg-black"
+                            className="w-full p-3 pr-12 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
                             rows={3}
                             disabled={isLoading}
                         />
                         <button
                             type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200"
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
                             ) : (
-                                <FaPaperPlane />
+                                <FaPaperPlane size={24} />
                             )}
                         </button>
                     </form>
