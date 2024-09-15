@@ -11,6 +11,7 @@ import { FaPaperPlane, FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Ad
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
 interface Props {
     chatUUId?: string;
@@ -269,14 +270,8 @@ const ChatsComponent: React.FC<Props> = ({
     );
 
     return (
-        <div className="flex flex-col min-h-screen  h-full w-full bg-white dark:bg-black">
-            {false && (
-                <div className="flex justify-center items-center mt-4">
-                    Loading Chat...
-                </div>
-            )}
-
-            <div className="p-4">
+        <div className="flex flex-col h-screen bg-white dark:bg-black w-full relative">
+            <div className="flex-shrink-0 p-4">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                         <button
@@ -295,11 +290,11 @@ const ChatsComponent: React.FC<Props> = ({
                             setOpenMyChats(false);
                             setIsLoading(false);
                         }}
-                        className={`bg-teal-700 dark:bg-teal-900 hover:bg-teal-700 hover:dark:bg-teal-700 text-gray-200 hover:text-white font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
+                        className={` text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                         disabled={chatName === 'New Chat'}
                     >
-                        New Chat
+                        <HiOutlinePencilAlt size={24} />
                     </button>
                 </div>
                 {openMyChats && (
@@ -328,31 +323,30 @@ const ChatsComponent: React.FC<Props> = ({
                         }}
                     />
                 )}
-
             </div>
 
-
-            <div className="p-1">
-                <>
-                    {messages.map((message, index) => (
-                        <div key={index} className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] p-3 rounded-2xl ${message.role === 'user'
-                                ? 'bg-blue-100 dark:bg-teal-800'
-                                : 'bg-gray-100 dark:bg-gray-700'
-                                } text-gray-800 dark:text-gray-200`}>
-                                <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
-                                <ReactMarkdown components={MarkdownComponents}>
-                                    {message?.content?.replace(/<img/g, '<img width="64" height="64" ') || ''}
-                                </ReactMarkdown>
-                                {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
-                            </div>
+            <div className="overflow-y-auto mb-32 p-4 pb-16">
+                {messages.map((message, index) => (
+                    <div key={index} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[80%] p-3 rounded-2xl ${message.role === 'user'
+                            ? 'bg-blue-100 dark:bg-teal-800'
+                            : 'bg-gray-100 dark:bg-gray-700'
+                            } text-gray-800 dark:text-gray-200`}>
+                            <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
+                            <ReactMarkdown components={MarkdownComponents}>
+                                {message?.content?.replace(/<img/g, '<img width="64" height="64" ') || ''}
+                            </ReactMarkdown>
+                            {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
                         </div>
-                    ))}
-                    <div className="flex justify-center items-center mt-0">
-                        {updateMessage || "***"}
                     </div>
-                </>
-                <div className="p-4 bg-white dark:bg-black">
+                ))}
+            </div>
+
+            <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
+                <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
+                    {updateMessage || "***"}
+                </div>
+                <div className="p-4">
                     <form onSubmit={handleSubmit} className="flex">
                         <textarea
                             value={userInput}
