@@ -272,7 +272,7 @@ const ChatsComponent: React.FC<Props> = ({
     return (
         <div className="flex flex-col h-screen bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 p-4">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between h-4">
                     <div className="flex items-center">
                         <button
                             onClick={() => setOpenMyChats(!openMyChats)}
@@ -280,7 +280,7 @@ const ChatsComponent: React.FC<Props> = ({
                         >
                             {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
                         </button>
-                        <h1 className="ml-4 text-xl font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
+                        <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
                     </div>
                     <button
                         onClick={() => {
@@ -342,7 +342,7 @@ const ChatsComponent: React.FC<Props> = ({
                 ))}
             </div>
 
-            <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
+            <div className="flex-shrink-0  fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
                 <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                     {updateMessage || "***"}
                 </div>
