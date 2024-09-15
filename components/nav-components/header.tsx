@@ -210,7 +210,7 @@ const SubheadMobile = styled.div`
   margin-top: 4px;
   text-align: left;
   color: var(--mobile-subheader-color);    
-  font-size: 13px;
+  font-size: 12px;
   @media screen and (min-width: 1025px) {
     display: none;
   }
