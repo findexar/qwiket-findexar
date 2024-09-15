@@ -300,7 +300,6 @@ const ChatsComponent: React.FC<Props> = ({
                 {openMyChats && (
                     <MyChats
                         onChatSelect={async (selectedChatUUId) => {
-                            // Handle chat selection
 
                             setChatUUId(selectedChatUUId);
                             setTimeout(() => {
