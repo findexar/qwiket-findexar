@@ -11,6 +11,7 @@ import Mobile from "@/components/nav-components/mobile";
 import { palette } from '@/lib/palette';
 import { AppWrapper } from '@/lib/context';
 import saveSession from '@/lib/fetchers/save-session';
+import AccountUpgrade from '@/components/func-components/account/upgrade';
 import { Roboto } from 'next/font/google';
 
 interface LeagueLayoutProps {
@@ -147,28 +148,37 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     let parts = pathname?.split("/") || [];
     let qpagetype = 'league';
     let qleague = parts && parts.length > 1 ? parts[1] : '';
+    let isAccount = false;
+
     let qteam = parts && parts.length > 2 ? parts[2] : '';
+    if (qleague === "account") {
+      isAccount = true;
+      qpagetype = `account-${qteam}`;
+    }
     let qplayer = parts && parts.length > 3 ? parts[3] : '';
     let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
     qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');;
     qleague = qleague.toUpperCase();
     if (view === 'landing') qpagetype = "landing";
 
-    if (qteam) {
+    if (qteam && !isAccount) {
       qpagetype = "team";
       if (qplayer) {
 
         qpagetype = "player";
       }
     }
-    setLeague(qleague);
-    setTeamid(qteam);
-    console.log("spa setPlayer", qplayer);
-    setPlayer(qplayer);
-    setAthleteUUId(qathleteUUId);
+    if (!isAccount) {
+      setLeague(qleague);
+      setTeamid(qteam);
+      console.log("spa setPlayer", qplayer);
+      setPlayer(qplayer);
+      setAthleteUUId(qathleteUUId);
+    }
     setPagetype(qpagetype);
   }, [query]);
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
+  console.log("==> pagetype", pagetype);
   return (
     <StyledThemeProvider theme={palette}>
       <GlobalStyle $light={localMode === "light"} />
@@ -204,6 +214,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setFindexarxid={setFindexarxid}
         setSlug={setSlug}
       >
+
         <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>
           <Head>
             <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
@@ -229,8 +240,11 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
             `,
           }} />
           <Header />
-          <Desktop />
-          <Mobile />
+          {pagetype === "account-upgrade" ? <AccountUpgrade /> :
+            <>
+              <Desktop />
+              <Mobile />
+            </>}
         </main>
       </AppWrapper>
     </StyledThemeProvider>

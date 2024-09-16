@@ -22,6 +22,7 @@ import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import PlayerPhoto from "@/components/util-components/player-photo";
 import saveSession from '@/lib/fetchers/save-session';
 import { actionUserSubscription } from '@/lib/fetchers/user-subscription';
+import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
 
 interface HeaderProps {
   $scrolled: boolean;
@@ -451,15 +452,15 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase() + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing") ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing") && <div><Subhead $scrolled={scrollY != 0}>Sports News AI Monitor and Chat</Subhead><SubheadMobile>Sports News AI Monitor and Chat</SubheadMobile></div>}
+                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase() + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? ` ${league}` : `${process.env.NEXT_PUBLIC_APP_NAME?.toUpperCase()}`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Sports News Monitor and AI Chat</Subhead><SubheadMobile>Sports News Monitor and AI Chat</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
           </LeftContainer>
-          {(pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player") && <Wiggly className="hidden md:block">
+          {(pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player" ||pagetype.includes("account")) && <Wiggly className="hidden md:block">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" strokeWidth="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" strokeLinecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stopColor="hsl(37, 99%, 67%)" offset="0"></stop><stop stopColor="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
           </Wiggly>}
           <HeaderRight>  <IconButton onClick={async () => {
@@ -467,22 +468,46 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           }}>
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
-            <SignedIn>
+            {false && <SignedIn>
               <IconButton onClick={async () => {
                 await updateMode(mode == "light" ? "dark" : "light");
               }}>
                 {subscrLevel == 0 ? <div className="text-white-100"><StarOutlineIcon fontSize="small" /></div> : subscrLevel == 1 ? <div className="text-white-500"><StarIcon fontSize="small" /></div> : subscrLevel == 2 ? <div className="text-amber-600"><StarIcon fontSize="small" /></div> : <div className="text-emerald-700"><StarIcon fontSize="small" /></div>}
               </IconButton>
-            </SignedIn>
-            <SignedIn><SUserButton afterSignOutUrl="/" /></SignedIn>
+            </SignedIn>}
+            <SignedIn><SUserButton><UserButton.MenuItems><UserButton.Link
+              label="Usage"
+              labelIcon={<FaChartBar />}
+              href="/account/dashboard"
+            />
+              <UserButton.Link
+                label="Upgrade"
+                labelIcon={<FaArrowUp />}
+                href="/account/upgrade"
+              /><UserButton.Link
+                label="Admin"
+                labelIcon={<FaUserCog />}
+                href="/account/admin"
+              />
+              <UserButton.Link
+                label="Billing"
+                labelIcon={<FaCreditCard />}
+                href="/create-organization"
+              />
+              <UserButton.Link
+                label="Developer Portal"
+                labelIcon={<FaCode />}
+                href="/account/developer"
+              />
+            </UserButton.MenuItems></SUserButton></SignedIn>
             <SignedOut><SignInButton><IconButton ><LoginIcon fontSize="small" /></IconButton></SignInButton></SignedOut>
           </HeaderRight>
         </HeaderTopline>
-        <div className="hidden lg:block ">
+       {!pagetype.includes("account") && <div className="hidden lg:block ">
           <ContainerWrap> <Leagues $scrolled={scrollY != 0}>
             {LeaguesNav}
           </Leagues>
-          </ContainerWrap></div>
+          </ContainerWrap></div>}
       </Header>
       <div className="block lg:hidden"><MobileContainerWrap>
         <MuiTabs

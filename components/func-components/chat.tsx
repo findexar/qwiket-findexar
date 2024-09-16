@@ -358,19 +358,19 @@ const ChatsComponent: React.FC<Props> = ({
                         />
                         <button
                             type="submit"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (
                                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
                             ) : (
-                                <FaPaperPlane size={24} />
+                                <FaPaperPlane size={16} />
                             )}
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
