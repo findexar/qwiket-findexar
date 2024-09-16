@@ -197,22 +197,23 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === "team" || pagetype === "player") && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `AI Chat`, tab: 'chat', disabled: false },
                         { name: `Press Mentions`, tab: 'mentions', disabled: false },
+                        { name: `AI Chat`, tab: 'chat', disabled: false },
+
 
                       ]}
                       onChange={onTeamPlayerTabNav}
                       selectedOptionName={tab}
                     />
                   )}
-                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions") ? <TeamMentions /> : null}
+                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "league" && tab === "myfeed" && <MyfeedMentions league={league} />}
                   {pagetype === "league" && tab === "fav" && <FavMentions />}
-                  {pagetype === "player" && (tab === "mentions") && <PlayerMentions />}
+                  {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat />}
-                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat' || tab === '') && <Chat />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat />}
 
 
                 </CenterPanel>
