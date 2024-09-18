@@ -13,9 +13,10 @@ import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchUserSubscription from "@/lib/fetchers/user-subscription";
+import promiseUser from "@/lib/fetchers/account";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { getAMention } from '@/lib/fetchers/mention';
-
+import { UserAccountKey } from "@/lib/keys";
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
@@ -173,46 +174,27 @@ export default async function Page({ searchParams }: { params: { slug: string };
         view = 'mentions';
     }
     let calls: { key: any; call: Promise<any> }[] = [];
+    let userInfo: any;
     if (userId) {
         const user = await currentUser();
-        const email = user?.emailAddresses[0]?.emailAddress;
-        calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+        const email = user?.emailAddresses[0]?.emailAddress || "";
+        userInfo = JSON.parse(JSON.stringify(user));
+       // calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
 
     }
-    if (findexarxid) {
-        calls.push(await fetchMention({ type: "AMention", findexarxid }));
-        calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
+    if (!userInfo) {
+        userInfo = { email: "" };
     }
-    if (story) {
-        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
+    if (userId) {
+        calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
     }
-    if (tab == 'fav' && view == 'mentions') {
-        if (!story && !findexarxid) {
-            calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
-        }
-    }
-    if (view == 'my team' || view == 'mentions') {
-        if (!story && !findexarxid) {
-            calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
-        }
-    }
-    if (tab == 'myfeed' || view == 'mentions') {
-        if (!story && !findexarxid) {
-            calls.push(await fetchMyFeed({ userId, sessionid, league }));
-        }
-    }
-
-    if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
-        if (!story && !findexarxid) {
-            calls.push(await fetchStories({ userId, sessionid, league }));
-        }
-    }
+   
     await fetchData(t1, fallback, calls);
 
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
+                <SPALayout dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
             </main>
         </SWRProvider>
     );

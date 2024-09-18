@@ -1,0 +1,45 @@
+import "server-only";
+
+import Stripe from "stripe";
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  // https://github.com/stripe/stripe-node#configuration
+  apiVersion: "2024-04-10",
+  appInfo: {
+    name: "qwiket",
+    url: "https://www.qwiket.com",
+  },
+});
+
+export async function createCheckoutSession(planLevel: string, price: number, user: any) {
+  'use server'
+  if (!user) {
+    throw new Error('User must be logged in to create a checkout session');
+  }
+  console.log("calling stripe.checkout.sessions.create")
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `Qwiket AI Chat ${planLevel} Plan`,
+          },
+          unit_amount: price * 100, // Stripe uses cents
+          recurring: {
+            interval: 'month',
+          },
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'subscription',
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/account/upgrade`,
+    customer: user.stripeCustomerId,
+    client_reference_id: user.id,
+  });
+  console.log("after stripe.checkout.sessions.create")
+  return session;
+}

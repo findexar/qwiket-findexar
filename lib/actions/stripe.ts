@@ -1,14 +1,23 @@
 "use server";
 
-import type { Stripe } from "stripe";
+import Stripe from "stripe";
 import { headers } from "next/headers";
-import { auth } from "@clerk/nextjs/server";
-import { stripe } from "@/lib/stripe";
 
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { getUserSubscription } from "@/lib/fetchers/user-subscription";
+const api_key = process.env.LAKE_API_KEY;
 export async function createCheckoutSession(
-  level: number,
+  level: string,
   ui_mode: Stripe.Checkout.SessionCreateParams.UiMode
 ): Promise<string> {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: "2024-04-10",
+    appInfo: {
+      name: "qwiket",
+      url: "https://www.qwiket.com",
+    },
+  });
+
   const origin: string = headers().get("origin") as string;
   let { userId } = auth() || { userId: "" };
   if (!userId) {
@@ -16,28 +25,25 @@ export async function createCheckoutSession(
   }
   let priceId: string;
   switch (level) {
-    case 1:
-      priceId = "price_1PMVNqDOGFJmkdXRW8aPAT6n"; 
+    case 'basic':
+      priceId = process.env.STRIPE_BASIC_PRICE as string;
       break;
-    case 2:
-      priceId = "price_1PMVP6DOGFJmkdXRN3VpgdNZ";
+    case 'creator':
+      priceId = process.env.STRIPE_CREATOR_PRICE as string;
       break;
-    case 3:
-      priceId = "price_1PMVQ0DOGFJmkdXRZ57p0hdD";
-      break;
-    case 4:
-      priceId = "price_1PMVQwDOGFJmkdXRZkUWhguB";
+    case 'enterprise':
+      priceId = process.env.STRIPE_ENTERPRISE_PRICE as string;
       break;
     default:
       throw new Error("Invalid subscription level");
   }
- console.log("")
+
   const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    client_reference_id:userId,
-    metadata:{
-      level:level,
-      client_reference_id:userId,
+    client_reference_id: userId,
+    metadata: {
+      level: level,
+      client_reference_id: userId,
     },
     line_items: [
       {
@@ -54,7 +60,63 @@ export async function createCheckoutSession(
     }),
     ui_mode,
   });
-  console.log("checkoutSession",checkoutSession)
+
   return checkoutSession.id;
 }
 
+export async function cancelSubscription(): Promise<{ success: boolean; error?: string }> {
+  try {
+    console.log("+++++++++++++++++++++++ cancelSubscription")
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+      apiVersion: "2024-04-10",
+      appInfo: {
+        name: "qwiket",
+        url: "https://www.qwiket.com",
+      },
+    });
+
+    const { userId } = auth() || { userId: "" };
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress || "";
+    const userInfo = JSON.parse(JSON.stringify(user));
+    const subscription = await getUserSubscription(userId, email || "");
+
+    console.log("+++++++++++++++++++++++ subscription", subscription)
+
+    // Fetch the customer's subscription
+    const subscriptions = await stripe.subscriptions.list({
+      customer: subscription.customerid,
+      status: 'active',
+      limit: 1,
+    });
+
+    if (subscriptions.data.length === 0) {
+      throw new Error("No active subscription found");
+    }
+
+    const subscriptionId = subscriptions.data[0].id;
+
+    // Cancel the subscription
+    console.log("+++++++++++++++++++++++ subscriptionId", subscriptionId)
+    const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
+    if (canceledSubscription.status === 'canceled') {
+      console.log("canceledSubscription", canceledSubscription)
+      const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/delete-subscription?subscription_id=${subscriptionId}&api_key=${api_key}`;
+      const fetchResponse = await fetch(url);
+      const data = await fetchResponse.json();
+      console.log("delete user subscription", url, data);
+      if (data.success) {
+        console.log("===>DELETE USER SUBSCRIPTION", data.subscription);
+      }
+      return { success: true };
+    } else {
+      throw new Error("Failed to cancel subscription");
+    }
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' };
+  }
+}

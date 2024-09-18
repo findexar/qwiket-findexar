@@ -1,10 +1,8 @@
-
 import { Inter, Roboto } from "next/font/google";
-//import { ThemeProvider } from 'next-themes'
 import { ClerkProvider } from '@clerk/nextjs'
 import StyledComponentsRegistry from '@/lib/registry'
+import StripeProvider from "@/components/StripeProvider";
 import "./globals.css";
-
 
 const inter = Inter({ subsets: ["latin"] });
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
@@ -20,7 +18,9 @@ export default function RootLayout({
       <body className={roboto.className}>
         <ClerkProvider>
           <StyledComponentsRegistry>
-            {children}
+            <StripeProvider>
+              {children}
+            </StripeProvider>
           </StyledComponentsRegistry>
         </ClerkProvider>
       </body>

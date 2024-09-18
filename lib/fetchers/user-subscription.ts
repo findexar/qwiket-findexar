@@ -2,8 +2,27 @@
 import { unstable_serialize } from 'swr'
 import { UserSubscriptionKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
-const api_key = process.env.LAKE_API_KEY;;
-export const getUserSubscription = async (userId: string, email: string): Promise<{ subscrLevel: number }> => {
+const api_key = process.env.LAKE_API_KEY;
+export const cancelUserSubscription = async (userId: string, email: string): Promise<any> => {
+    try {
+        let url = '';
+        url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/delete-subscription?userId=${userId}&email=${email}&api_key=${api_key}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        console.log("delete user subscription", url, data);
+        if (data.success) {
+            console.log("===>DELETE USER SUBSCRIPTION", data.subscription);
+            return data.subscription;
+        }
+        throw new Error("Failed to get user subscription");
+    }
+    catch (e) {
+        console.log("getAMention", e);
+        throw new Error("Failed to get user subscription");
+    }
+}
+
+export const getUserSubscription = async (userId: string, email: string): Promise<any> => {
     try {
         let url = '';
         url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/get-user-subscription?userId=${userId}&email=${email}&api_key=${api_key}`;
@@ -12,7 +31,7 @@ export const getUserSubscription = async (userId: string, email: string): Promis
         console.log("fetching user subscription", url, data);
         if (data.success) {
             console.log("===>GET USER SUBSCRIPTION", data.subscription);
-            return data.subscription as { subscrLevel: number };
+            return data.subscription;
         }
         throw new Error("Failed to get user subscription");
     }

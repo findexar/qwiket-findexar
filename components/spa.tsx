@@ -11,8 +11,11 @@ import Mobile from "@/components/nav-components/mobile";
 import { palette } from '@/lib/palette';
 import { AppWrapper } from '@/lib/context';
 import saveSession from '@/lib/fetchers/save-session';
-import AccountUpgrade from '@/components/func-components/account/upgrade';
+import AccountUpgrade from '@/components/func-components/account/subscriptions/upgrade';
 import { Roboto } from 'next/font/google';
+import { UserAccountKey } from '@/lib/keys';
+import useSWR from 'swr';
+import { actionUser } from '@/lib/fetchers/account';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -30,6 +33,7 @@ interface LeagueLayoutProps {
   pagetype?: string,
   dark: number,
   teamName?: string,
+  userInfo?: any
 }
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
@@ -49,7 +53,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   athleteUUId: startAthleteUUId = "",
   pagetype: startPagetype = "league",
   dark,
-  teamName: startTeamName = ""
+  teamName: startTeamName = "",
+  userInfo
 }) => {
   const [tab, setTab] = useState(startTab || "");
   const [view, setView] = useState(startView || "mentions");
@@ -177,6 +182,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     }
     setPagetype(qpagetype);
   }, [query]);
+  const user = userInfo || {};
+  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email || "" };
+  const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
+
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   console.log("==> pagetype", pagetype);
   return (
@@ -213,6 +222,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setMode={setLocalMode}
         setFindexarxid={setFindexarxid}
         setSlug={setSlug}
+        user={userInfo}
+        userAccount={userAccount}
+        userAccountMutate={userAccountMutate}
+
       >
 
         <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>
