@@ -37,7 +37,7 @@ export default function Success() {
     return (
         <div>
             <h1>Thank you for your purchase!</h1>
-            <p>We're processing your payment. You'll be redirected shortly.</p>
+            <p>We&apos;re processing your payment. You&apos;ll be redirected shortly.</p>
         </div>
     );
 }

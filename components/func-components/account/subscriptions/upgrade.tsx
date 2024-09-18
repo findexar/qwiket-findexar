@@ -45,7 +45,7 @@ const AccountUpgrade: React.FC<Props> = ({
     const sharedFeatures = [
         { icon: FaComments, text: "The first general availability AI chat assistant for sports. Gives you a competitive edge in fantasy sports decision making." },
         { icon: FaLightbulb, text: "Specialized knowledge, insights, and recommendations for major leagues and fantasy sports." },
-        { icon: FaShieldAlt, text: "Secure and private conversations. Never shared, never retained outside of user's data, deleted on demand or after a set period." },
+        { icon: FaShieldAlt, text: "Secure and private conversations. Never shared, never retained outside of user&apos;s data, deleted on demand or after a set period." },
         { icon: FaCheckCircle, text: "Trained on up-to-the-minute flow of sports news, athlete and team mentions available at Qwiket.com. Augmented with hard data from reliable real-time statistics sources." },
     ];
 
@@ -92,7 +92,7 @@ const AccountUpgrade: React.FC<Props> = ({
                             Imagine having a knowledgeable assistant always at your fingertips, ready to provide insights on your favorite sports teams, players, and fantasy leagues. With Qwiket AI Chat, you can quickly analyze player statistics, get injury updates, and receive personalized advice for your fantasy lineup decisions.
                         </p>
                         <p>
-                            Whether you're a casual fan looking to stay informed or a dedicated fantasy sports player aiming for the top of your league, Qwiket AI Chat adapts to your needs. Ask about recent game highlights, discuss team strategies, or get help understanding complex sports rules - our AI is here to enhance your sports experience and keep you ahead of the competition.
+                            Whether you&apos;re a casual fan looking to stay informed or a dedicated fantasy sports player aiming for the top of your league, Qwiket AI Chat adapts to your needs. Ask about recent game highlights, discuss team strategies, or get help understanding complex sports rules - our AI is here to enhance your sports experience and keep you ahead of the competition.
                         </p>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ const AccountUpgrade: React.FC<Props> = ({
                 {/* New section for additional text */}
                 <div className="my-16 max-w-3xl mx-auto text-center">
                     <p className="text-lg italic text-gray-600 dark:text-gray-400">
-                        "The more you know about your sport, the more you can control the game. Intelligence and knowledge are the keys to success in sports, just as they are in life."
+                        &quot;The more you know about your sport, the more you can control the game. Intelligence and knowledge are the keys to success in sports, just as they are in life.&quot;
                     </p>
                     <p className="text-sm mt-2 text-gray-500 dark:text-gray-500">
                         - Billie Jean King

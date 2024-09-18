@@ -26,11 +26,11 @@ import TeamRemoveIcon from "@/components/icons/usergroup-delete";
 import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
 import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
 
-import { MyTeamRosterKey, UserSubscriptionKey as SubscriptionKey } from '@/lib/keys';
+import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
-import LimitAccountModal from '@/components/util-components/user-account';
-import LimitSubscriptionModal from "@/components/util-components/user-subscription";
-import { actionUserSubscription } from "@/lib/fetchers/user-subscription";
+//import LimitAccountModal from '@/components/util-components/user-account';
+//import LimitSubscriptionModal from "@/components/util-components/user-subscription";
+//import { actionUserSubscription } from "@/lib/fetchers/user-subscription";
 
 
 declare global {
@@ -415,9 +415,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [summary, mutate, date, url]);
 
-    const subscriptionKey: SubscriptionKey = { type: "subscription" };
-    const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
-    const subscrLevel = subscription?.subscrLevel || 0;
+    //  const subscriptionKey: SubscriptionKey = { type: "subscription" };
+    //    const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
+    //const subscrLevel = subscription?.subscrLevel || 0;
     //prepare urls:
     const prepName = encodeURIComponent(name);//name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink`);
@@ -633,8 +633,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     //console.log("bottomLink",bottomLink)
     return (
         <>
-            {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />}
-            {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />}
+            {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
+            {/* {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />} */}
             <MentionWrap onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>

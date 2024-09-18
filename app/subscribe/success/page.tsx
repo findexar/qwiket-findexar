@@ -1,9 +1,9 @@
 //import { useEffect } from 'react';
 //import { useRouter } from 'next/router';
 import { auth } from "@clerk/nextjs/server";
-import { stripe } from '@/lib/stripe';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation'
+import Stripe from "stripe";
 
 export default async function SuccessPage({
   params,
@@ -12,19 +12,27 @@ export default async function SuccessPage({
   params: {};
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  
+
   let {
-   session_id
+    session_id
   }: {
-    session_id:string
+    session_id: string
   } = searchParams as any;
-  console.log("Session_id:",session_id);
-    const handleRedirect = async () => {
-    
-      if (typeof session_id === 'string') { // Ensure session_id is a string
-        try {
-          const session = await stripe.checkout.sessions.retrieve(session_id);
-          console.log('Stripe session retrieved:', session);
+  console.log("Session_id:", session_id);
+  const handleRedirect = async () => {
+
+    if (typeof session_id === 'string') { // Ensure session_id is a string
+      try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+          apiVersion: "2024-04-10",
+          appInfo: {
+            name: "qwiket",
+            url: "https://www.qwiket.com",
+          },
+        });
+
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        console.log('Stripe session retrieved:', session);
         const { client_reference_id, metadata } = session;
         const { userId } = auth();
         const user = await currentUser();
@@ -63,15 +71,14 @@ export default async function SuccessPage({
         } else {
           console.log('Metadata is null');
         }
-        } catch (error) {
-          console.error('Failed to retrieve Stripe session:', error);
-        }
+      } catch (error) {
+        console.error('Failed to retrieve Stripe session:', error);
       }
-    };
+    }
+  };
 
-    handleRedirect();
-    redirect("/");
-   
+  handleRedirect();
+  redirect("/");
 
   return <>SUBSCRIPTION SUCCESS</>;
 };
