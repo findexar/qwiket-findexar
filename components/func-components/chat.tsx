@@ -342,7 +342,7 @@ const ChatsComponent: React.FC<Props> = ({
             <div className="overflow-y-auto mb-32 p-4 pb-16">
                 {messages.length === 0 && (
                     <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
-                        Please note that AI results may not always be reliable. It's recommended to ask follow-up questions for clarification and verify important information from trusted sources.
+                        Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                     </p>
                 )}
                 {messages.map((message, index) => (
