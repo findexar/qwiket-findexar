@@ -355,7 +355,7 @@ const ChatsComponent: React.FC<Props> = ({
                             } text-gray-800 dark:text-gray-200`}>
                             <div className="flex justify-between items-center mb-1">
                                 <p className="font-semibold">{message.role === 'user' ? 'You     ' : 'QwiketAI     '}</p>
-                                {message.role !== 'user' && (
+                                {message.role !== 'user' && message.content.length >= 20 && (
                                     <button
                                         onClick={() => copyToClipboard(message.content, index)}
                                         className={`${copiedMessageIndex === index
