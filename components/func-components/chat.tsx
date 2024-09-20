@@ -19,6 +19,8 @@ interface Props {
     source?: string;
 }
 
+import { useRouter } from 'next/navigation';
+
 const ChatsComponent: React.FC<Props> = ({
     chatUUId: chatUUIdProp,
     isFantasyTeam,
@@ -45,6 +47,8 @@ const ChatsComponent: React.FC<Props> = ({
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
+    const router = useRouter();
+
     useEffect(() => {
         setChatUUId(prompt ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
@@ -105,6 +109,12 @@ const ChatsComponent: React.FC<Props> = ({
                         }
                     }
                 );
+
+                // Remove prompt and promptUUId from URL
+                const url = new URL(window.location.href);
+                url.searchParams.delete('prompt');
+                url.searchParams.delete('promptUUId');
+                router.replace(url.toString());
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -124,7 +134,8 @@ const ChatsComponent: React.FC<Props> = ({
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
+
+    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam, router])
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
