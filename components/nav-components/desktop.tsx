@@ -212,8 +212,8 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
-                  {(pagetype === 'league' && tab === 'chat') && <Chat />}
-                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat />}
+                  {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
 
 
                 </CenterPanel>

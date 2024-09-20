@@ -16,11 +16,13 @@ import { HiOutlinePencilAlt } from "react-icons/hi";
 interface Props {
     chatUUId?: string;
     isFantasyTeam?: boolean;
+    source?: string;
 }
 
 const ChatsComponent: React.FC<Props> = ({
     chatUUId: chatUUIdProp,
-    isFantasyTeam
+    isFantasyTeam,
+    source
 }) => {
     const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
     // console.log("==> ChatsComponent:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
@@ -39,7 +41,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
-    console.log("==> ChatsComponent:", league, teamid, athleteUUId, isFantasyTeam, prompt, chatUUId)
+    console.log("==> ChatsComponent: source", source, "league", league, "teamid", teamid, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam, "prompt", prompt, "chatUUId", chatUUId)
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });

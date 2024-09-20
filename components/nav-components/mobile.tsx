@@ -148,9 +148,9 @@ const Mobile: React.FC<Props> = () => {
                 </CenterPanel>}
                 {view == 'faq' && <Readme />}
                 {view == 'my team' && <MyTeam />}
-                {view == 'ai chat' && <Chat />}
+                {view == 'ai chat' && <Chat source="mobile" />}
                 {view == 'players' && <Players />}
-                {(pagetype === 'league' && tab === 'chat') && <Chat />}
+                {(pagetype === 'league' && tab === 'chat' && view !== 'ai chat') && <Chat source="mobile" />}
                 {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat' || tab === '') && <Chat />}
 
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
