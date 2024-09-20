@@ -12,14 +12,13 @@ import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
     chatUUId?: string;
     isFantasyTeam?: boolean;
     source?: string;
 }
-
-import { useRouter } from 'next/navigation';
 
 const ChatsComponent: React.FC<Props> = ({
     chatUUId: chatUUIdProp,
@@ -48,6 +47,32 @@ const ChatsComponent: React.FC<Props> = ({
     console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
+    const [initialPromptUUId, setInitialPromptUUId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const prompt = searchParams?.get('prompt') || "";
+        const promptUUId = searchParams?.get('promptUUId') || "";
+
+        if (prompt) setInitialPrompt(prompt);
+        if (promptUUId) setInitialPromptUUId(promptUUId);
+
+        // Remove params from URL
+        if (prompt || promptUUId) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('prompt');
+            url.searchParams.delete('promptUUId');
+            router.replace(url.toString());
+        }
+    }, []);
+
+    useEffect(() => {
+        if (initialPrompt) {
+            setUserInput(initialPrompt);
+        }
+    }, [initialPrompt]);
 
     useEffect(() => {
         setChatUUId(prompt ? "_new" : (chatUUIdProp || ""));
@@ -78,7 +103,7 @@ const ChatsComponent: React.FC<Props> = ({
         console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
-            promptUUId: promptUUId,
+            promptUUId: initialPromptUUId || "",
             userRequest: provisionalUserInput || userInput,
             athleteUUId: athleteUUId,
             teamid: teamid,
@@ -110,11 +135,9 @@ const ChatsComponent: React.FC<Props> = ({
                     }
                 );
 
-                // Remove prompt and promptUUId from URL
-                const url = new URL(window.location.href);
-                url.searchParams.delete('prompt');
-                url.searchParams.delete('promptUUId');
-                router.replace(url.toString());
+                // Clear the initial prompt and promptUUId
+                setInitialPrompt(null);
+                setInitialPromptUUId(null);
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -135,7 +158,7 @@ const ChatsComponent: React.FC<Props> = ({
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
 
-    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam, router])
+    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
