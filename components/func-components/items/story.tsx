@@ -230,11 +230,11 @@ const PromptsContainer = styled.div`
 `;
 
 const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
-  background-color: ${props => props.$isDarkMode ? '#5D4037' : '#FFE0B2'}; // More muted brown in dark mode, lighter peach in light mode
+  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'}; // More muted brown in dark mode, lighter peach in light mode
   color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'}; // Light gray text in dark mode, dark brown in light mode
-  padding: 4px 10px;
+  padding: 2px 10px;
   border-radius: 16px; // Slightly reduced for smaller size
-  font-size: 12px; // Smaller font size
+  font-size: 10px; // Smaller font size
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
   &:hover {
