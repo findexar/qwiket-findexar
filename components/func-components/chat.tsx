@@ -286,6 +286,23 @@ const ChatsComponent: React.FC<Props> = ({
         });
     };
 
+    const FlashingCircle = () => (
+        <motion.div
+            className="absolute -inset-1.5 rounded-full"
+            animate={{
+                boxShadow: [
+                    '0 0 0 0 rgba(0, 255, 255, 0)',
+                    '0 0 0 6px rgba(0, 255, 255, 0.3)'
+                ]
+            }}
+            transition={{
+                duration: 1,
+                repeat: Infinity,
+                repeatType: 'reverse'
+            }}
+        />
+    );
+
     return (
         <div className="flex flex-col h-screen bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 p-4">
@@ -387,19 +404,22 @@ const ChatsComponent: React.FC<Props> = ({
                             onChange={(e) => setUserInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Message to QwiketAI"
-                            className="w-full p-3 pr-12 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
+                            className="w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
                             rows={3}
                             disabled={isLoading}
                         />
                         <button
                             type="submit"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (
                                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
                             ) : (
-                                <FaPaperPlane size={16} />
+                                <div className="relative p-1.5">
+                                    {messages.length === 0 && userInput.trim() !== '' && <FlashingCircle />}
+                                    <FaPaperPlane size={18} />
+                                </div>
                             )}
                         </button>
                     </form>
