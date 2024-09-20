@@ -3,12 +3,12 @@ import useSWR from 'swr';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'; // Corrected import for useRouter
 
-import{ASlugStoryKey} from '@/lib/keys';
+import { ASlugStoryKey } from '@/lib/keys';
 import { actionRecordEvent } from "@/lib/actions";
-import{actionASlugStory,removeASlugStory} from '@/lib/fetchers/slug-story';
+import { actionASlugStory, removeASlugStory } from '@/lib/fetchers/slug-story';
 import Story from '@/components/func-components/items/story';
 import { useAppContext } from '@/lib/context';
-import CloseIcon from '@/components/icons/close';
+import CloseIcon from '@components/icons/close';
 
 const ContentWrap = styled.div`
     width: 100%;
@@ -48,18 +48,16 @@ const XContainer = styled.div`
 
 const XElement = styled.div`
     width: 40px;
-    height:20px;
+    height: 40px;
     display: flex;
-    flex-direction: row;
-    justify-content:center;
-    align-items:center;
-    font-size:28px;
-    color:#fff;
-    @media (max-width: 1024px) {
-     // margin-top:0px;
-      margin-top:-32px;
-      margin-right:10px;
-    }  
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
+        color: var(--xColor);
+    }
 `;
 
 const RElement = styled.div`
@@ -78,8 +76,12 @@ const RElement = styled.div`
 
 const TitleWrap = styled.div`
     color:#fff !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top:-16px;
     padding-bottom:4px;
+    width:60%;
 `;
 
 const DialogTitleWrap = styled.div`
@@ -121,6 +123,20 @@ const GotoFeed = styled.div`
         display:visible;
     } 
 `;
+
+const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 0;
+`;
+
+const QwiketText = styled.div`
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
@@ -128,7 +144,7 @@ interface Props {
 }
 
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
-    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug,setSlug } = useAppContext();
+    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, setSlug } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
     let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
@@ -136,9 +152,9 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     const [open, setOpen] = React.useState(astory ? true : false);
     //console.log("DIALOG open:", open)
     const { title, url, digest, site_name, image, authors, createdTime, mentions } = astory || {};
-   const router = useRouter(); // Correctly initialized useRouter
+    const router = useRouter(); // Correctly initialized useRouter
     const admin = params && params.includes('x17nz') ? true : false;
-   // console.log("StoryOverlay:slug", idx, slug)
+    // console.log("StoryOverlay:slug", idx, slug)
     useEffect(() => {
         if (astory) {
             //console.log("openDialog")
@@ -147,15 +163,15 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     }, [astory]);
 
     const handleClose = useCallback(async () => {
-       // console.log("handleClose")
+        // console.log("handleClose")
         setOpen(false);
         setSlug("");
         let newUrl = window.location.href.replace(/([&?])story=[^&]*&?/, '$1').replace(/&$/, '');
         window.history.pushState({ path: newUrl }, '', newUrl);
-        
-       //router.push(newUrl);
-      // console.log("closeDialog slug=", slug)
-       // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
+
+        //router.push(newUrl);
+        // console.log("closeDialog slug=", slug)
+        // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
         //router.push(localUrl); // Correctly using router to navigate
         await actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
@@ -193,26 +209,20 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
 
     return <>{open &&
         <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
-          
             <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center md:p-4 text-left ">
                     <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-2 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full ">
-                    <div className="md:hidden text-white text-xl px-4 pt-6"> QWIKET </div>
+                        <HeaderContainer>
+                            <QwiketText>QWIKET</QwiketText>
+                            <XElement onClick={() => handleClose()}>&#x2715;</XElement>
+                        </HeaderContainer>
                         <div className="bg-transparent md:px-8 md:pt-12 pt-4 pb-4 sm:p-4 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-0 sm:text-left">
                                     <div className="mt-2">
-                                        <DialogTitleWrap>
-                                            <TitleWrap>
-                                                <div className='text-white text-2xl'> Qwiket Sports AI</div>
-                                            </TitleWrap>
-                                        </DialogTitleWrap>
                                         <ContentWrap>
                                             <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
-                                            <div autoFocus onClick={() => { handleClose(); }}>
-                                                <XContainer><XElement><CloseIcon className="text-xl md:text-2xl"/></XElement></XContainer>
-                                            </div>
                                             {admin && <div autoFocus onClick={() => { remove(); }}>
                                                 <XContainer><RElement>R</RElement></XContainer>
                                             </div>}
