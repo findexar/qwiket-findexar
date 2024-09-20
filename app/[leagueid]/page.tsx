@@ -166,14 +166,18 @@ export default async function Page({
     utm_content,
     view = "mentions",
     id,
-    story
+    story,
+    prompt = '',
+    promptUUId = ''
   }: {
     fbclid: string,
     utm_content: string,
     view: string,
     tab: string,
     id: string,
-    story: string
+    story: string,
+    prompt: string,
+    promptUUId: string
   } = searchParams as any;
 
   let findexarxid = id || "";
@@ -245,7 +249,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} />
+        <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
       </main>
     </SWRProvider>
   );

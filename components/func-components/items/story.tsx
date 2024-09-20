@@ -220,16 +220,41 @@ const MentionsWrap = styled.div`
         font-size:15px !important;    
     }
 `;
+
+const PromptsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
+  background-color: ${props => props.$isDarkMode ? '#5D4037' : '#FFE0B2'}; // More muted brown in dark mode, lighter peach in light mode
+  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'}; // Light gray text in dark mode, dark brown in light mode
+  padding: 4px 10px;
+  border-radius: 16px; // Slightly reduced for smaller size
+  font-size: 12px; // Smaller font size
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  &:hover {
+    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'}; // Slightly lighter in dark mode, slightly darker in light mode
+    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'}; // White in dark mode, darker text in light mode
+  }
+`;
+
 interface Props {
     story: any;
     handleClose: () => void;
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype,  setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
-    
-    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug } = story||{};
+    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const isDarkMode = mode === 'dark';
+
+    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     //console.log("STORY CREATED TIME", createdTime,title,site_name);
+    console.log("==> story prompts", prompts);
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
@@ -319,6 +344,23 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
         }
     }, []);
 
+    const renderPrompts = () => {
+        if (!prompts || prompts.length === 0) return null;
+        return (
+            <PromptsContainer>
+                {prompts.map((p: any, index: number) => (
+                    <PromptTag
+                        key={`prompt-${index}`}
+                        href={`/${p.league}?tab=chat&view=ai%20chat&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
+                        $isDarkMode={isDarkMode}
+                    >
+                        {p.prompt}
+                    </PromptTag>
+                ))}
+            </PromptsContainer>
+        );
+    };
+
     const Mentions = <MentionsWrap>{mentions && mentions.map((mention: any, i: number) => {
         return (
             <MiniMention handleClose={handleClose} onClick={() => onMentionClick(mention)} key={`mention-${mention.findexarxid}`} {...mention} params={params} tp={tp} selectedXid={selectedXid} setSelectedXid={setSelectedXid} mutate={() => { }} />
@@ -355,10 +397,11 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                             <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
                                 <div dangerouslySetInnerHTML={{ __html: digest }} />
                             </Link>
-                            <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer',color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
+                            <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer', color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
                         </Digest>
                     </Body>
                 </HorizontalContainer>
+                {renderPrompts()}
                 <ArticleMentions>
                     <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
                     {Mentions}
@@ -380,7 +423,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
-                <hr/>
+                <hr />
             </DesktopWrap>
             <MobileWrap>
                 <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
@@ -397,15 +440,16 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </ImageWrapper>
                     </Link>
                     <Body>
-           
+
                         <Digest>
                             <Link href={url || ""} scroll={false} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                             <ShareContainerInline>
-                                <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10,color: digestCopied ? 'green' : '' }}  onClick={() => onDigestCopyClick()} />
+                                <ContentCopyIcon style={{ paddingTop: 6, marginBottom: 0, marginTop: -10, color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
                             </ShareContainerInline>
                         </Digest>
                     </Body>
                 </HorizontalContainer>
+                {renderPrompts()}
                 <ArticleMentions>
                     <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
                     {Mentions}</ArticleMentions>
@@ -426,7 +470,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
-                <hr/>
+                <hr />
             </MobileWrap>
         </div>
     );

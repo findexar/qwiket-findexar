@@ -5,6 +5,7 @@ export interface UserRequestProps {
     athleteUUId?: string;
     fantasyTeam?: boolean;
     userRequest: string;
+    promptUUId?: string;
     onUpdate: (content: string) => void;
     onDone: () => void;
     onChatUUId: (chatUUId: string) => void;
@@ -14,10 +15,10 @@ export interface UserRequestProps {
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate } = props;
+        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
-      
+
         try {
 
             const res = await fetch(url, {
@@ -32,6 +33,7 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                     league,
                     fantasyTeam,
                     userRequest,
+                    promptUUId
                 }),
             });
 

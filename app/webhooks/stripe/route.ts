@@ -14,10 +14,12 @@ export async function POST(req: Request) {
     const signature = headers().get('stripe-signature') as string;
 
     let event: Stripe.Event;
-
+    console.log("body webhook", body)
     try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+        console.log("event1", JSON.stringify(event, null, 2))
     } catch (err: any) {
+        console.log("err", err)
         return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
     }
 

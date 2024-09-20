@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Chat, Message } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown, { Components } from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Added chevron icons
+import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck } from 'react-icons/fa'; // Added FaCheck icon
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
@@ -22,27 +22,29 @@ const ChatsComponent: React.FC<Props> = ({
     chatUUId: chatUUIdProp,
     isFantasyTeam
 }) => {
-    const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
     // console.log("==> ChatsComponent:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [userInput, setUserInput] = useState<string>('');
+    const [userInput, setUserInput] = useState<string>(prompt || '');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false); // Add a ref to track if response has been set
-    const [chatUUId, setChatUUId] = useState<string>(chatUUIdProp || "");
+    const [chatUUId, setChatUUId] = useState<string>(prompt ? '_new' : (chatUUIdProp || ""));
     const [chatName, setChatName] = useState<string>('New Chat');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
+    const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     // const [chatSelected, setChatSelected] = useState<boolean>(false);
-    console.log("==> ChatsComponent:", league, teamid, athleteUUId, isFantasyTeam)
+    console.log("==> ChatsComponent:", league, teamid, athleteUUId, isFantasyTeam, prompt, chatUUId)
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
+    console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     useEffect(() => {
-        setChatUUId(chatUUIdProp || "");
+        setChatUUId(prompt ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
         setChatName('New Chat');
     }, [league])
@@ -70,6 +72,7 @@ const ChatsComponent: React.FC<Props> = ({
         console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
+            promptUUId: promptUUId,
             userRequest: provisionalUserInput || userInput,
             athleteUUId: athleteUUId,
             teamid: teamid,
@@ -126,6 +129,7 @@ const ChatsComponent: React.FC<Props> = ({
             console.log("CALLING userRequest:", "chatUUId", chatUUId, "provisionalChatUUId", provisionalChatUUId, "pendingUserRequest", pendingUserRequest)
             setPendingUserRequest(false);
             userRequest();
+
         }
     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 
@@ -269,6 +273,17 @@ const ChatsComponent: React.FC<Props> = ({
         </motion.span>
     );
 
+    const copyToClipboard = (content: string, index: number) => {
+        navigator.clipboard.writeText(content).then(() => {
+            setCopiedMessageIndex(index);
+            setTimeout(() => {
+                setCopiedMessageIndex(null);
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy content: ', err);
+        });
+    };
+
     return (
         <div className="flex flex-col h-screen bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 p-4">
@@ -325,13 +340,31 @@ const ChatsComponent: React.FC<Props> = ({
             </div>
 
             <div className="overflow-y-auto mb-32 p-4 pb-16">
+                {messages.length === 0 && (
+                    <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
+                        Please note that AI results may not always be reliable. It's recommended to ask follow-up questions for clarification and verify important information from trusted sources.
+                    </p>
+                )}
                 {messages.map((message, index) => (
                     <div key={index} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-3 rounded-2xl ${message.role === 'user'
                             ? 'bg-blue-100 dark:bg-teal-800'
                             : 'bg-gray-100 dark:bg-gray-700'
                             } text-gray-800 dark:text-gray-200`}>
-                            <p className="font-semibold mb-1">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
+                            <div className="flex justify-between items-center mb-1">
+                                <p className="font-semibold">{message.role === 'user' ? 'You' : 'QwiketAI'}</p>
+                                {message.role !== 'user' && (
+                                    <button
+                                        onClick={() => copyToClipboard(message.content, index)}
+                                        className={`${copiedMessageIndex === index
+                                            ? 'text-green-500 dark:text-green-400'
+                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                            } transition-colors duration-200`}
+                                    >
+                                        {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                    </button>
+                                )}
+                            </div>
                             <ReactMarkdown components={MarkdownComponents}>
                                 {message?.content?.replace(/<img/g, '<img width="64" height="64" ') || ''}
                             </ReactMarkdown>

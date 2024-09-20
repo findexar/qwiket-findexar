@@ -16,6 +16,7 @@ import { Roboto } from 'next/font/google';
 import { UserAccountKey } from '@/lib/keys';
 import useSWR from 'swr';
 import { actionUser } from '@/lib/fetchers/account';
+import Dashboard from './func-components/account/dashboard';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -33,7 +34,9 @@ interface LeagueLayoutProps {
   pagetype?: string,
   dark: number,
   teamName?: string,
-  userInfo?: any
+  userInfo?: any,
+  prompt?: string,
+  promptUUId?: string
 }
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
@@ -54,10 +57,14 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   pagetype: startPagetype = "league",
   dark,
   teamName: startTeamName = "",
-  userInfo
+  userInfo,
+  prompt: startPrompt = '',
+  promptUUId: startPromptUUId = ''
 }) => {
   const [tab, setTab] = useState(startTab || "");
   const [view, setView] = useState(startView || "mentions");
+  const [prompt, setPrompt] = useState(startPrompt);
+  const [promptUUId, setPromptUUId] = useState(startPromptUUId);
   const [league, setLeague] = useState(startLeague);
   const [teamid, setTeamid] = useState(startTeamid);
   const [player, setPlayer] = useState(startName);
@@ -136,56 +143,62 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     const ssr = query?.getAll('ssr') || [];
     const top = query?.get('top') || "";
     const story = query?.get('story');
+    const qprompt = query?.get('prompt') || '';
+    const qpromptUUId = query?.get('promptUUId') || '';
 
     if (story !== slug) {
-      setSlug(story || "");
-    }
-    if (findexarxid !== id) {
-      setFindexarxid(id);
-    }
-    if (top) {
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 0);
-    }
-    if (qtab !== tab) setTab(qtab);
-    if (qview !== view) setView(qview);
-    let parts = pathname?.split("/") || [];
-    let qpagetype = 'league';
-    let qleague = parts && parts.length > 1 ? parts[1] : '';
-    let isAccount = false;
-
-    let qteam = parts && parts.length > 2 ? parts[2] : '';
-    if (qleague === "account") {
-      isAccount = true;
-      qpagetype = `account-${qteam}`;
-    }
-    let qplayer = parts && parts.length > 3 ? parts[3] : '';
-    let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
-    qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');;
-    qleague = qleague.toUpperCase();
-    if (view === 'landing') qpagetype = "landing";
-
-    if (qteam && !isAccount) {
-      qpagetype = "team";
-      if (qplayer) {
-
-        qpagetype = "player";
+      if (story !== slug) {
+        setSlug(story || "");
       }
+      if (findexarxid !== id) {
+        setFindexarxid(id);
+      }
+      if (top) {
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 0);
+      }
+      if (qtab !== tab) setTab(qtab);
+      if (qview !== view) setView(qview);
+      if (qprompt !== prompt) setPrompt(qprompt);
+      if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
+      let parts = pathname?.split("/") || [];
+      let qpagetype = 'league';
+      let qleague = parts && parts.length > 1 ? parts[1] : '';
+      let isAccount = false;
+
+      let qteam = parts && parts.length > 2 ? parts[2] : '';
+      if (qleague === "account") {
+        isAccount = true;
+        qpagetype = `account-${qteam}`;
+      }
+      let qplayer = parts && parts.length > 3 ? parts[3] : '';
+      let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
+      qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');
+      qleague = qleague.toUpperCase();
+      if (view === 'landing') qpagetype = "landing";
+
+      if (qteam && !isAccount) {
+        qpagetype = "team";
+        if (qplayer) {
+          qpagetype = "player";
+        }
+      }
+      if (!isAccount) {
+        setLeague(qleague);
+        setTeamid(qteam);
+        console.log("spa setPlayer", qplayer);
+        setPlayer(qplayer);
+        setAthleteUUId(qathleteUUId);
+      }
+      setPagetype(qpagetype);
     }
-    if (!isAccount) {
-      setLeague(qleague);
-      setTeamid(qteam);
-      console.log("spa setPlayer", qplayer);
-      setPlayer(qplayer);
-      setAthleteUUId(qathleteUUId);
-    }
-    setPagetype(qpagetype);
   }, [query]);
+
   const user = userInfo || {};
   const userAccountKey: UserAccountKey = { type: "user-account", email: user.email || "" };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
-
+  console.log("==> userAccount", userAccount);
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   console.log("==> pagetype", pagetype);
   return (
@@ -225,7 +238,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         user={userInfo}
         userAccount={userAccount}
         userAccountMutate={userAccountMutate}
-
+        prompt={prompt}
+        promptUUId={promptUUId}
       >
 
         <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>
@@ -253,7 +267,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
             `,
           }} />
           <Header />
-          {pagetype === "account-upgrade" ? <AccountUpgrade /> :
+          {pagetype === "account-upgrade" ? <AccountUpgrade /> : pagetype === "account-dashboard" ? <Dashboard /> :
             <>
               <Desktop />
               <Mobile />
