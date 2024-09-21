@@ -1,11 +1,9 @@
 'use server';
 import { unstable_serialize as us } from 'swr/infinite';
 import { TeamMentionsKey } from '@/lib/keys';
-import { cookies } from "next/headers";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
-import { auth } from "@clerk/nextjs/server";
 
+import { auth } from "@clerk/nextjs/server";
+import fetchSession from './session';
 const lake_api = process.env.NEXT_PUBLIC_LAKEAPI
 const api_key = process.env.LAKE_API_KEY;;
 interface FetchMentionsProps {
@@ -39,7 +37,7 @@ const promiseTeamMentions = async ({ userId, sessionid, teamid, league }: FetchM
 }
 export const actionTeamMentions = async (key: TeamMentionsKey) => {
 
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
     return fetchMentions(key, userId || "", sessionid);

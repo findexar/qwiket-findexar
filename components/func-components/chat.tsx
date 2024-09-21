@@ -161,11 +161,17 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
 
     useEffect(() => {
-        if (chatUUId && chatUUId != '_new' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
+        if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
             console.log("CALLING userRequest:", "chatUUId", chatUUId, "provisionalChatUUId", provisionalChatUUId, "pendingUserRequest", pendingUserRequest)
             setPendingUserRequest(false);
             userRequest();
 
+        }
+        if (chatUUId && chatUUId == 'blocked') {
+            setIsLoading(false);
+            setPendingUserRequest(false);
+            setChatUUId('');
+            setUpdateMessage('Your request could not be processed due to browser settings blocking user sessions. Please adjust your settings to allow sessions (cookies) and try again.');
         }
     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 

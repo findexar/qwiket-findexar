@@ -2,10 +2,8 @@
 import { unstable_serialize } from 'swr'
 import { UserAccountKey, UserUsageAccountKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
 import { UserAccount, UserUsage, MonthlyUsage } from "@/lib/types/user";
-import { cookies } from "next/headers";
+import fetchSession from './session';
 
 const api_key = process.env.LAKE_API_KEY;
 
@@ -57,7 +55,8 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
 
 export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsage> => {
     'use server';
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
+
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
     console.log("===>actionUserUsage", key, userId, sessionid)
@@ -69,7 +68,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
 
 export const actionUser = async (key: UserAccountKey): Promise<UserAccount> => {
     'use server';
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
     console.log("===>actionUser", key, userId, sessionid)

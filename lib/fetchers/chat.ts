@@ -2,10 +2,9 @@
 import { unstable_serialize } from 'swr'
 import { ChatKey, CreateChatKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
-import { Chat, ContextInput } from "@/lib/types/chat";
-import { cookies } from "next/headers";
+import fetchSession from "@/lib/fetchers/session";
+import { Chat } from "@/lib/types/chat";
+
 
 const api_key = process.env.LAKE_API_KEY;
 export const fetchChat = async (key: ChatKey, userId: string, sessionid: string): Promise<Chat> => {
@@ -32,7 +31,8 @@ export const fetchChat = async (key: ChatKey, userId: string, sessionid: string)
 
 export const actionChat = async (key: ChatKey): Promise<Chat> => {
     'use server';
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
+
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
 
@@ -52,10 +52,10 @@ export interface CreateChatProps {
 const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<String> => {
     'use server';
     const { athleteUUId, teamid, league, fantasyTeam = false } = props;
-    console.log("****** createChat", props)
+    //  console.log("****** createChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
-    console.log("createChat", url);
+    // console.log("createChat", url);
 
     const res = await fetch(url, {
         method: 'POST',
@@ -74,15 +74,20 @@ const createChat = async (props: CreateChatProps, userId: string, sessionid: str
         throw new Error('Network response was not ok');
     }
     const data = await res.json();
-    console.log("RET create chat:", data.success)
-    return data.chatUUId as string;
+    //console.log("RET create chat:", JSON.stringify({ success: data.success, chatUUId: data.chatUUId, error: data.error }, null, 2))
+    return data.success ? data.chatUUId as string : 'blocked';
 }
 export const actionCreateChat = async (props: CreateChatProps) => {
     'use server';
     console.log("actionCreateChat", props)
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
+
+    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
+
     const sessionid = session.sessionid || "";
+
+    //console.log("=================>>>>>>actionCreateChat", { userId, sessionid, session })
     return createChat(props, userId || "", sessionid);
 }
 
@@ -93,7 +98,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         return { success: false, chat: {} as Chat, error: '' };
     }
 
-    console.log("****** loadLatestChat", props)
+    // console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
 
@@ -121,14 +126,14 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         console.log("NULL RET loadLatestChat:", data.error)
         return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
     }
-    console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
     return { success: true, chat: data.chat, error: '' };
 }
 
 
 export const actionLoadLatestChat = async (key: CreateChatKey) => {
     'use server';
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
     return await loadLatestChat(key, userId || "", sessionid);
@@ -139,17 +144,17 @@ interface ChatNameProps {
 const chatName = async (props: ChatNameProps, userId: string, sessionid: string) => {
     const { chatUUId } = props;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/chat-name?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&chatUUId=${chatUUId}`;
-    console.log("chatName url", url);
+    //  console.log("chatName url", url);
     const fetchResponse = await fetch(url);
     const data = await fetchResponse.json();
-    console.log("return chatName", url, data);
+    // console.log("return chatName", url, data);
     return data;
 }
 
 export const actionChatName = async (props: ChatNameProps) => {
     'use server';
-    console.log("actionChatName", props)
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    // console.log("actionChatName", props)
+    const session = await fetchSession();
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
     return chatName(props, userId || "", sessionid);

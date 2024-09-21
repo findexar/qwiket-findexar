@@ -1,9 +1,7 @@
 'use server';
 import { MyTeamKey } from "@/lib/keys";
 import { unstable_serialize } from 'swr'
-import { cookies } from "next/headers";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
+import fetchSession from "./session";
 import { auth } from "@clerk/nextjs/server";
 
 const api_key = process.env.LAKE_API_KEY;;
@@ -33,7 +31,7 @@ const promiseFetchMyTeam = async ({ league = "", userId = "", sessionid = "" }: 
     };
 }
 export const actionFetchMyTeam = async (key: MyTeamKey) => {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     // const userId=session.username?session.username:"";
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid || "";
@@ -67,14 +65,14 @@ const removeMyTeamMember = async ({ teamid, member, athleteUUId }: MyTeamMemberP
     return res.success;
 }
 export const actionAddMyTeamMember = async (props: MyTeamMemberProps) => {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
     return addMyTeamMember(props, userId || "", sessionid);
 }
 
 export const actionRemoveMyTeamMember = async (props: MyTeamMemberProps) => {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await fetchSession();
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
     return removeMyTeamMember(props, userId || "", sessionid);
