@@ -208,18 +208,20 @@ const ChatsComponent: React.FC<Props> = ({
         console.log("handleSubmit", userInput)
         e.preventDefault();
         if (!userInput.trim()) return;
+
+        update('Loading...');
+        const insider = userInput.indexOf("qw:") == 0;
+        const userInputCleaned = userInput.replace("qw:", "");
         const newMessage: Message = {
             role: 'user',
-            content: userInput
+            content: userInputCleaned
         };
-        update('Loading...');
-
         console.log("messages", messages);
-        setProvisionalUserInput(userInput);
+        setProvisionalUserInput(userInputCleaned);
         setUserInput('');
         setIsLoading(true);
         setResponse('');
-        console.log("handleSubmit2", userInput)
+        console.log("handleSubmit2", userInputCleaned)
         responseSetRef.current = false; // Reset the ref when a new request is made
 
         // Add a placeholder message for the assistant response
@@ -233,7 +235,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setIsLoading(true);
                 setPendingUserRequest(true);
                 //console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
-                actionCreateChat({ teamid, league, athleteUUId, fantasyTeam: isFantasyTeam || false }).then(
+                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false }).then(
                     (chatUUId) => {
                         //console.log("=============> chat createdchatUUId", chatUUId)
                         setProvisionalChatUUId((prev) => { // this will trigger useEffect to call userRequest
