@@ -374,8 +374,8 @@ const ChatsComponent: React.FC<Props> = ({
 
     return (
         <div className="flex flex-col  bg-white dark:bg-black w-full relative">
-            <div className="flex-shrink-0 p-4">
-                <div className="flex items-center justify-between h-4">
+            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px]"> {/* Added pt-6 for mobile, sm:pt-4 for larger screens */}
+                <div className="flex items-center justify-between md:h-8 h-16">
                     <div className="flex items-center">
                         <button
                             onClick={() => setOpenMyChats(!openMyChats)}
@@ -385,7 +385,7 @@ const ChatsComponent: React.FC<Props> = ({
                         </button>
                         <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className="flex flex-col items-end h-16 mt-4">
                         <button
                             onClick={() => {
                                 setChatUUId("_new");
