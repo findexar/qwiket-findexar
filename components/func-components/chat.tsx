@@ -346,7 +346,7 @@ const ChatsComponent: React.FC<Props> = ({
     );
 
     return (
-        <div className="flex flex-col h-screen bg-white dark:bg-black w-full relative">
+        <div className="flex flex-col  bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 p-4">
                 <div className="flex items-center justify-between h-4">
                     <div className="flex items-center">
@@ -408,7 +408,7 @@ const ChatsComponent: React.FC<Props> = ({
                 )}
                 {messages.map((message, index) => (
                     <div key={index} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] p-3 rounded-2xl ${message.role === 'user'
+                        <div className={`max-w-[95%] p-3 rounded-2xl ${message.role === 'user'
                             ? 'bg-blue-100 dark:bg-teal-800'
                             : 'bg-gray-100 dark:bg-gray-700'
                             } text-gray-800 dark:text-gray-200`}>
@@ -433,13 +433,10 @@ const ChatsComponent: React.FC<Props> = ({
                         </div>
                     </div>
                 ))}
-            </div>
-
-            <div className="flex-shrink-0  fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
                 <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                     {updateMessage || "***"}
                 </div>
-                <div className="p-4">
+                <div className="p-0 mt-4">
                     <form onSubmit={handleSubmit} className="relative">
                         <textarea
                             value={userInput}
@@ -466,6 +463,10 @@ const ChatsComponent: React.FC<Props> = ({
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <div className="flex-shrink-0  fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
+
             </div>
         </div >
     );
