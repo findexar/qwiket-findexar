@@ -210,7 +210,7 @@ const ChatsComponent: React.FC<Props> = ({
         if (!userInput.trim()) return;
 
         update('Loading...');
-        const insider = userInput.indexOf("qw:") == 0;
+        const insider = userInput.toLowerCase().indexOf("qw:") == 0;
         const userInputCleaned = userInput.replace("qw:", "");
         const newMessage: Message = {
             role: 'user',
