@@ -449,7 +449,7 @@ const ChatsComponent: React.FC<Props> = ({
                         />
                         <button
                             type="submit"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (
