@@ -344,14 +344,15 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
         }
     }, []);
 
-    const renderPrompts = () => {
+    const renderPrompts = (device: string) => {
         if (!prompts || prompts.length === 0) return null;
+        const param = device === "desktop" ? "?tab=chat" : "?view=ai%20chat";
         return (
             <PromptsContainer>
                 {prompts.map((p: any, index: number) => (
                     <PromptTag
                         key={`prompt-${index}`}
-                        href={`/${p.league}?tab=chat&view=ai%20chat&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
+                        href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
                     >
                         {p.prompt}
@@ -401,7 +402,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </Digest>
                     </Body>
                 </HorizontalContainer>
-                {renderPrompts()}
+                {renderPrompts("desktop")}
                 <ArticleMentions>
                     <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
                     {Mentions}
@@ -449,7 +450,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </Digest>
                     </Body>
                 </HorizontalContainer>
-                {renderPrompts()}
+                {renderPrompts("mobile")}
                 <ArticleMentions>
                     <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
                     {Mentions}</ArticleMentions>
