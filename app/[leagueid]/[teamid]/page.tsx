@@ -19,7 +19,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
-
+import fetchUserAccount from "@/lib/fetchers/account";
 type Props = {
   params: { leagueid: string, teamid: string },
   searchParams: { [key: string]: string | string[] | undefined }
@@ -160,10 +160,11 @@ export default async function Page({
   let calls: { key: any, call: Promise<any> }[] = [];
 
   calls.push(await fetchLeagueTeams({ league }));
+  let email = "";
   if (userId) {
     const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+    email = user?.emailAddresses[0]?.emailAddress || "";
+    // calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
   }
 
   if (findexarxid) {
@@ -183,9 +184,12 @@ export default async function Page({
   if (!story && !findexarxid) {
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
-  if (tab == 'chat') {
-    calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
+  console.log("tab,view", tab, view);
+  if (tab == 'chat' || view == 'ai chat') {
+    calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
+  calls.push(await fetchUserAccount({ type: "user-account", email }, userId, sessionid));
+
   await fetchData(t1, fallback, calls);
   console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };

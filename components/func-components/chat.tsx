@@ -13,6 +13,7 @@ import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
+import type { UserAccount } from '@lib/types/user';
 
 interface Props {
     chatUUId?: string;
@@ -25,7 +26,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate } = useAppContext();
     // console.log("==> ChatsComponent:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,11 +42,16 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
-    // const [chatSelected, setChatSelected] = useState<boolean>(false);
-    console.log("==> ChatsComponent: source", source, "league", league, "teamid", teamid, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam, "prompt", prompt, "chatUUId", chatUUId)
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
-    console.log("==> createChatKey", createChatKey)
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
+
+    let { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount;
+    let creditsString = creditsRemaining ? creditsRemaining.toString() : "0";
+    if (extraCreditsRemaining && +extraCreditsRemaining > 0) {
+        creditsString = creditsString + "/" + extraCreditsRemaining.toString();
+    }
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -97,14 +103,14 @@ const ChatsComponent: React.FC<Props> = ({
 
     const userRequest = useCallback(() => {
 
-
+        console.log("userRequest:provisionalUserInput", provisionalUserInput)
 
         setPendingUserRequest(false);
         console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
-            userRequest: provisionalUserInput || userInput,
+            userRequest: provisionalUserInput ||  textareaRef.current?.value.trim()||"",
             athleteUUId: athleteUUId,
             teamid: teamid,
             league: league,
@@ -115,7 +121,7 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        console.log("prevMessages", updatedMessages)
+                        // console.log("prevMessages", updatedMessages)
                         if (updatedMessages.length > 0) {
                             updatedMessages[updatedMessages.length - 1].content = updatedContent;
                         }
@@ -126,6 +132,7 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onDone: () => {
                 setUpdateMessage('');
+                userAccountMutate();
                 setIsLoading(false);
                 actionChatName({ chatUUId }).then(
                     (data) => {
@@ -158,7 +165,7 @@ const ChatsComponent: React.FC<Props> = ({
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
 
-    }, [chatUUId, provisionalChatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -205,24 +212,24 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatName])*/
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
-        console.log("handleSubmit", userInput)
         e.preventDefault();
-        if (!userInput.trim()) return;
-
+        const currentUserInput = textareaRef.current?.value.trim();
+        if (!currentUserInput) return;
+        console.log("currentUserInput", currentUserInput)
         update('Loading...');
-        const insider = userInput.toLowerCase().indexOf("qw:") == 0;
-        const userInputCleaned = userInput.replace("qw:", "");
+        const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
+        const userInputCleaned = currentUserInput.replace(/qw:/i, "");
         const newMessage: Message = {
             role: 'user',
             content: userInputCleaned
         };
-        console.log("messages", messages);
-        setProvisionalUserInput(userInputCleaned);
-        setUserInput('');
+        console.log("settin provisionalUserInput", userInputCleaned);
+        setProvisionalUserInput((prev) => {
+            return userInputCleaned;
+        });
         setIsLoading(true);
         setResponse('');
         console.log("handleSubmit2", userInputCleaned)
-        responseSetRef.current = false; // Reset the ref when a new request is made
 
         // Add a placeholder message for the assistant response
         const assistantMessage: Message = {
@@ -253,7 +260,15 @@ const ChatsComponent: React.FC<Props> = ({
             setIsLoading(false);
             // Optionally, update the UI to show an error message
         }
-    }, [chatUUId, userInput, athleteUUId, teamid, league, isFantasyTeam])
+        setTimeout(() => {
+            // Clear the textarea
+            if (textareaRef.current) {
+                textareaRef.current.value = '';
+                responseSetRef.current = false; // Reset the ref when a new request is made
+
+            }
+        }, 1000);
+    }, [chatUUId, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
         if (responseTextareaRef.current) {
@@ -358,20 +373,22 @@ const ChatsComponent: React.FC<Props> = ({
                         </button>
                         <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
                     </div>
-                    <button
-                        onClick={() => {
-                            setChatUUId("_new");
-                            setMessages([]);
-                            setChatName('New Chat');
-                            setOpenMyChats(false);
-                            setIsLoading(false);
-                        }}
-                        className={` text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''
-                            }`}
-                        disabled={chatName === 'New Chat'}
-                    >
-                        <HiOutlinePencilAlt size={24} />
-                    </button>
+                    <div className="flex flex-col items-end">
+                        <button
+                            onClick={() => {
+                                setChatUUId("_new");
+                                setMessages([]);
+                                setChatName('New Chat');
+                                setOpenMyChats(false);
+                                setIsLoading(false);
+                            }}
+                            className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={chatName === 'New Chat'}
+                        >
+                            <HiOutlinePencilAlt size={24} />
+                        </button>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">{creditsString} credits</span>
+                    </div>
                 </div>
                 {openMyChats && (
                     <MyChats
@@ -439,8 +456,8 @@ const ChatsComponent: React.FC<Props> = ({
                 <div className="p-0 mt-4">
                     <form onSubmit={handleSubmit} className="relative">
                         <textarea
-                            value={userInput}
-                            onChange={(e) => setUserInput(e.target.value)}
+                            ref={textareaRef}
+                            defaultValue={userInput}
                             onKeyDown={handleKeyDown}
                             placeholder="Message to QwiketAI"
                             className="w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"

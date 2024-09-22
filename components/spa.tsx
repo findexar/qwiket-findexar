@@ -198,7 +198,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const user = userInfo || {};
   const userAccountKey: UserAccountKey = { type: "user-account", email: user.email || "" };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
-  console.log("==> userAccount", userAccount);
+  console.log("==> userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   console.log("==> pagetype", pagetype);
   return (

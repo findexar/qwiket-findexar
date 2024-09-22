@@ -69,12 +69,15 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
 export const actionUser = async (key: UserAccountKey): Promise<UserAccount> => {
     'use server';
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    let { userId } = auth() || { userId: "" };
+    if (!userId || userId == "null") {
+        userId = "";
+    }
     const sessionid = session.sessionid;
     console.log("===>actionUser", key, userId, sessionid)
-    if (!userId) {
+    /*if (!userId) {
         return {} as UserAccount;
-    }
+    }*/
     return fetchUser(key, userId, sessionid);
 }
 

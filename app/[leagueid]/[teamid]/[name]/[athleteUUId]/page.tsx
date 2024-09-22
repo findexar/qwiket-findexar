@@ -21,6 +21,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
 import fetchChat from "@/lib/fetchers/chat";
+import fetchUserAccount from "@/lib/fetchers/account";
 //what conflicts?
 //testing push
 type Props = {
@@ -174,10 +175,10 @@ export default async function Page({
      * 
      */
     calls.push(await fetchLeagueTeams({ league }));
+    let email = "";
     if (userId) {
         const user = await currentUser();
-        const email = user?.emailAddresses[0]?.emailAddress;
-        calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+        email = user?.emailAddresses[0]?.emailAddress || "";
     }
 
     if (findexarxid) {  // if a mention story is opened
@@ -196,6 +197,11 @@ export default async function Page({
     /*if (tab == 'chat') {
         calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }*/
+    console.log("tab,view", tab, view);
+    if (tab == 'chat' || view == 'ai chat') {
+        calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
+    }
+    calls.push(await fetchUserAccount({ type: "user-account", email }, userId, sessionid));
 
     await fetchData(t1, fallback, calls);
 
