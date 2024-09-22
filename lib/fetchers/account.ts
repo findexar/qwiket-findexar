@@ -17,10 +17,10 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
-        console.log("fetching user usage", url);
+        console.log("fetching usage", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        console.log("return fetching user usage", url, data);
+        console.log("return fetching usage", url, JSON.stringify(data, null, 2));
         if (data.success) {
             return data.usage as UserUsage;
         }
@@ -57,12 +57,13 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    let { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
-    console.log("===>actionUserUsage", key, userId, sessionid)
     if (!userId) {
-        return [] as UserUsage;
+        userId = "";
     }
+    console.log("===>actionUserUsage", key, userId, sessionid)
+
     return fetchUserUsage(key, userId, sessionid);
 }
 

@@ -14,6 +14,7 @@ import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
+import Link from 'next/link'; // Add this import at the top of the file
 
 interface Props {
     chatUUId?: string;
@@ -47,10 +48,21 @@ const ChatsComponent: React.FC<Props> = ({
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
 
     let { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount;
+    const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
+
     let creditsString = creditsRemaining ? creditsRemaining.toString() : "0";
     if (extraCreditsRemaining && +extraCreditsRemaining > 0) {
         creditsString = creditsString + "/" + extraCreditsRemaining.toString();
     }
+    if (totalCredits < 10) {
+        creditsString += " Upgrade";
+    }
+
+    const creditColorClass = totalCredits === 0
+        ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+        : totalCredits < 5
+            ? "text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+            : "text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300";
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -110,7 +122,7 @@ const ChatsComponent: React.FC<Props> = ({
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
-            userRequest: provisionalUserInput ||  textareaRef.current?.value.trim()||"",
+            userRequest: provisionalUserInput || textareaRef.current?.value.trim() || "",
             athleteUUId: athleteUUId,
             teamid: teamid,
             league: league,
@@ -387,7 +399,12 @@ const ChatsComponent: React.FC<Props> = ({
                         >
                             <HiOutlinePencilAlt size={24} />
                         </button>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">{creditsString} credits</span>
+                        <Link
+                            href="./account/dashboard"
+                            className={`text-xs ${creditColorClass} hover:underline mt-1`}
+                        >
+                            {creditsString} credits
+                        </Link>
                     </div>
                 </div>
                 {openMyChats && (
