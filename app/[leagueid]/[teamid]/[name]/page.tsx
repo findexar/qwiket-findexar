@@ -74,7 +74,7 @@ export async function generateMetadata(
   else if (amention && amentionLeague && amentionTeam)
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
 
-  let ogDescription = amentionSummary || "Professional and Fantasy Sports AI News Monitor.";
+  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
   let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
 
@@ -196,7 +196,7 @@ export default async function Page({
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
   console.log("tab,view", tab, view);
   if (tab == 'chat' || view == 'ai chat') {
-    calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid)); 
+    calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
   calls.push(await fetchUserAccount({ type: "user-account", email }, userId, sessionid));
 
