@@ -141,6 +141,11 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Revised and entity-encoded explanation paragraph */}
+                <p className="text-gray-600 dark:text-gray-400 italic text-center mb-8">
+                    Monthly credits are renewed based on your subscription plan, except for free trials. Extra credits don&apos;t expire and are used after regular credits are depleted.
+                </p>
+
                 {/* Usage Graph Section */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                     <h2 className="text-2xl font-semibold mb-4">Daily Usage</h2>
