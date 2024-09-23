@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const signature = headers().get('stripe-signature') as string;
 
     let event: Stripe.Event;
-    console.log("body webhook", body)
+    console.log("==========  *** body webhook", body)
     try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
         console.log("event1", JSON.stringify(event, null, 2))
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
     }
 
-    console.log("event", JSON.stringify(event, null, 2))
+    console.log("=> event", JSON.stringify(event, null, 2))
 
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/stripe-event?api_key=${api_key}`;
     const fetchResponse = await fetch(url, {
@@ -80,6 +80,7 @@ export async function POST(req: Request) {
                     paid_at: paidInvoice.status === 'paid' ? new Date().toISOString() : null,
                 }),
             });
+            console.log("=> invoice.paid: success")
             break;
         case 'customer.subscription.deleted':
             const deletedSubscription = event.data.object as Stripe.Subscription;
@@ -96,9 +97,51 @@ export async function POST(req: Request) {
                 }),
             });
             break;
+        case 'customer.subscription.updated':
+            const updatedSubscription = event.data.object as Stripe.Subscription;
+            console.log('Subscription updated:', updatedSubscription.id);
+
+            // Add API POST for customer.subscription.updated using upsert-subscription
+            await fetch(`${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/upsert-subscription?api_key=${api_key}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subscription_id: updatedSubscription.id,
+                    customer_id: updatedSubscription.customer,
+                    status: updatedSubscription.status,
+                    current_period_start: new Date(updatedSubscription.current_period_start * 1000).toISOString(),
+                    current_period_end: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
+                    cancel_at_period_end: updatedSubscription.cancel_at_period_end,
+                    default_payment_method: updatedSubscription.default_payment_method,
+                }),
+            });
+            break;
+        case 'customer.subscription.created':
+            const createdSubscription = event.data.object as Stripe.Subscription;
+            console.log('Subscription created:', createdSubscription.id);
+
+            // Add API POST for customer.subscription.created using upsert-subscription
+            await fetch(`${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/upsert-subscription?api_key=${api_key}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subscription_id: createdSubscription.id,
+                    customer_id: createdSubscription.customer,
+                    status: createdSubscription.status,
+                    current_period_start: new Date(createdSubscription.current_period_start * 1000).toISOString(),
+                    current_period_end: new Date(createdSubscription.current_period_end * 1000).toISOString(),
+                    cancel_at_period_end: createdSubscription.cancel_at_period_end,
+                    default_payment_method: createdSubscription.default_payment_method,
+                }),
+            });
+            break;
         default:
             console.log(`Unhandled event type: ${event.type}`);
     }
-
+    console.log("=> received: true")
     return NextResponse.json({ received: true });
 }

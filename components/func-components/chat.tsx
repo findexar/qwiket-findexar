@@ -45,7 +45,7 @@ const ChatsComponent: React.FC<Props> = ({
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
 
-    let { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount;
+    const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
     let creditsString = creditsRemaining ? creditsRemaining.toString() : "0";
