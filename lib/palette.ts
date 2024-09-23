@@ -1,21 +1,21 @@
 //./lib/palette.ts
-export const palette = {  
-    light: { 
+export const palette = {
+    light: {
         colors: {
             text: "#222222",
             link: "#546E7A", // Tailwind blueGray-600
             highlight: "#B71C1C", // Tailwind red-900
             selected: "#FF6F00", // Tailwind amber-900
             myteam: "#283593", // Tailwind indigo-600
-            lowlight: "#f8f8f8",     
-            background: "#ffffff",  
+            lowlight: "#f8f8f8",
+            background: "#ffffff",
             highBackground: "#f0f0f0",
             myteamBackgound: "#E8F5E9", // Tailwind green-50
             mentionSummaryBackground: "#F5F5F5", // Tailwind gray-100
             mentionSummaryHighBackground: "#ECEFF1", // Tailwind blueGray-50
             mentionBorder: "#ffffff",
             mentionText: "#263238", // Tailwind blueGray-900
-            headerBackground: "#F5F5F5", // Tailwind gray-50
+            headerBackground: "#FFFFFF", // Tailwind gray-50
             headerTitleColor: "#263238", // Tailwind blueGray-900
             subheaderColor: "#455A64", // Tailwind blueGray-700
             mobileHeaderTitleColor: "#ECEFF1", // Tailwind blueGray-50

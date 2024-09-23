@@ -1,20 +1,19 @@
 'use client';
-import React, { useState, useRef, useEffect, startTransition, useCallback, ReactNode } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion } from 'framer-motion';
-
 import { Chat, Message } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown, { Components } from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck } from 'react-icons/fa'; // Added FaCheck icon
+import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
-import Link from 'next/link'; // Add this import at the top of the file
+import Link from 'next/link';
 
 interface Props {
     chatUUId?: string;
@@ -28,13 +27,12 @@ const ChatsComponent: React.FC<Props> = ({
     source
 }) => {
     const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate } = useAppContext();
-    // console.log("==> ChatsComponent:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
-    const responseSetRef = useRef(false); // Add a ref to track if response has been set
+    const responseSetRef = useRef(false);
     const [chatUUId, setChatUUId] = useState<string>(prompt ? '_new' : (chatUUIdProp || ""));
     const [chatName, setChatName] = useState<string>('New Chat');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
@@ -77,7 +75,6 @@ const ChatsComponent: React.FC<Props> = ({
         if (prompt) setInitialPrompt(prompt);
         if (promptUUId) setInitialPromptUUId(promptUUId);
 
-        // Remove params from URL
         if (prompt || promptUUId) {
             const url = new URL(window.location.href);
             url.searchParams.delete('prompt');
@@ -98,9 +95,7 @@ const ChatsComponent: React.FC<Props> = ({
         setChatName('New Chat');
     }, [league])
     useEffect(() => {
-        //if (isLoadingChat) {
         setIsLoading(isLoadingChat);
-        // }
     }, [isLoadingChat]);
 
     const update = useCallback((message: string) => {
@@ -114,11 +109,7 @@ const ChatsComponent: React.FC<Props> = ({
     }, []);
 
     const userRequest = useCallback(() => {
-
-        console.log("userRequest:provisionalUserInput", provisionalUserInput)
-
         setPendingUserRequest(false);
-        console.log("provisionalChatUUId", provisionalChatUUId, "chatUUId", chatUUId)
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -133,7 +124,6 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        // console.log("prevMessages", updatedMessages)
                         if (updatedMessages.length > 0) {
                             updatedMessages[updatedMessages.length - 1].content = updatedContent;
                         }
@@ -153,8 +143,6 @@ const ChatsComponent: React.FC<Props> = ({
                         }
                     }
                 );
-
-                // Clear the initial prompt and promptUUId
                 setInitialPrompt(null);
                 setInitialPromptUUId(null);
             },
@@ -166,25 +154,20 @@ const ChatsComponent: React.FC<Props> = ({
             onMetaUpdate: (content: string) => {
                 update(content);
             }
-
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
         }).finally(() => {
             setIsLoading(false);
-
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-
     }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
-            console.log("CALLING userRequest:", "chatUUId", chatUUId, "provisionalChatUUId", provisionalChatUUId, "pendingUserRequest", pendingUserRequest)
             setPendingUserRequest(false);
             userRequest();
-
         }
         if (chatUUId && chatUUId == 'blocked') {
             setIsLoading(false);
@@ -195,39 +178,24 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 
     useEffect(() => {
-        console.log("useEffectloadedChatData", loadedChat);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
-            console.log("GOT loadedChat.chat.chatUUId", loadedChat.chat.chatUUId)
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages) {
                 setMessages(loadedChat.chat.messages);
             }
-
-            console.log("loadedChat.chat.name", loadedChat.chat.name)
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "QwiketAI") || 'New Chat');
             } else {
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
             setIsLoading(false);
-
         }
     }, [loadedChat]);
-
-    /*useEffect(() => {
-        console.log("chatName", chatName)
-        if (chatName?.includes("ChatGPT")) {
-            setChatName(chatName?.replace("ChatGpt", "QwiketAI") || 'New Chat');
-        } else {
-            setChatName(chatName || '');
-        }
-    }, [chatName])*/
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         const currentUserInput = textareaRef.current?.value.trim();
         if (!currentUserInput) return;
-        console.log("currentUserInput", currentUserInput)
         update('Loading...');
         const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
         const userInputCleaned = currentUserInput.replace(/qw:/i, "");
@@ -235,15 +203,11 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'user',
             content: userInputCleaned
         };
-        console.log("settin provisionalUserInput", userInputCleaned);
         setProvisionalUserInput((prev) => {
             return userInputCleaned;
         });
         setIsLoading(true);
         setResponse('');
-        console.log("handleSubmit2", userInputCleaned)
-
-        // Add a placeholder message for the assistant response
         const assistantMessage: Message = {
             role: 'QwiketAI',
             content: ''
@@ -253,11 +217,9 @@ const ChatsComponent: React.FC<Props> = ({
             if (!chatUUId || chatUUId == '_new') {
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                //console.log("==> actionCreateChat:", "teamid", teamid, "league", league, "athleteUUId", athleteUUId, "isFantasyTeam", isFantasyTeam)
                 actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false }).then(
                     (chatUUId) => {
-                        //console.log("=============> chat createdchatUUId", chatUUId)
-                        setProvisionalChatUUId((prev) => { // this will trigger useEffect to call userRequest
+                        setProvisionalChatUUId((prev) => {
                             return chatUUId as string;
                         });
                     }
@@ -266,18 +228,14 @@ const ChatsComponent: React.FC<Props> = ({
             else {
                 userRequest();
             }
-
         } catch (error) {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
-            // Optionally, update the UI to show an error message
         }
         setTimeout(() => {
-            // Clear the textarea
             if (textareaRef.current) {
                 textareaRef.current.value = '';
-                responseSetRef.current = false; // Reset the ref when a new request is made
-
+                responseSetRef.current = false;
             }
         }, 1000);
     }, [chatUUId, athleteUUId, teamid, league, isFantasyTeam])
@@ -294,10 +252,11 @@ const ChatsComponent: React.FC<Props> = ({
             handleSubmit(e as unknown as React.FormEvent);
         }
     };
+
     if (!league) {
         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
     }
-    // Custom components for ReactMarkdown
+
     const MarkdownComponents: Partial<Components> = {
         h1: ({ node, ...props }) => <h1 className="text-2xl font-bold my-8" {...props} />,
         h2: ({ node, ...props }) => <h2 className="text-xl font-semibold my-4" {...props} />,
@@ -333,7 +292,6 @@ const ChatsComponent: React.FC<Props> = ({
         },
     };
 
-    console.log("messages", messages)
     const BlinkingDot = () => (
         <motion.span
             animate={{ opacity: [0, 1] }}
@@ -373,8 +331,8 @@ const ChatsComponent: React.FC<Props> = ({
     );
 
     return (
-        <div className="flex flex-col  bg-white dark:bg-black w-full relative">
-            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px]"> {/* Added pt-6 for mobile, sm:pt-4 for larger screens */}
+        <div className="flex flex-col bg-white dark:bg-black w-full relative">
+            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-20">
                 <div className="flex items-center justify-between md:h-8 h-16">
                     <div className="flex items-center">
                         <button
@@ -407,34 +365,29 @@ const ChatsComponent: React.FC<Props> = ({
                         </Link>
                     </div>
                 </div>
-                {openMyChats && (
+                <div
+                    className={`absolute top-full left-0 w-full bg-white dark:bg-black z-30 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-96' : 'max-h-0'}`}
+                >
                     <MyChats
                         onChatSelect={async (selectedChatUUId) => {
-
                             setChatUUId(selectedChatUUId);
                             setTimeout(() => {
-
                                 setOpenMyChats(false);
                             }, 200);
-
                         }}
                         onNewChat={async () => {
-                            console.log("onNewChat");
-                            // setNewChat(true);
-                            // Handle new chat creation
                             setChatUUId("_new");
                             setMessages([]);
                             setChatName('New Chat');
                             setOpenMyChats(false);
                         }}
                         onFirstChat={(firstChat) => {
-                            // Handle first chat selection if needed
                         }}
                     />
-                )}
+                </div>
             </div>
 
-            <div className="overflow-y-auto mb-32 p-4 pb-16">
+            <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {messages.length === 0 && (
                     <>
                         <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
@@ -458,7 +411,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         onClick={() => copyToClipboard(message.content, index)}
                                         className={`${copiedMessageIndex === index
                                             ? 'text-green-500 dark:text-green-400'
-                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                            : 'text-gray-500 hover:text-gray-700 dark:text-grayr:text-gray-700 dark:text-gray-200'
                                             } transition-colors duration-200`}
                                     >
                                         {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
@@ -482,7 +435,7 @@ const ChatsComponent: React.FC<Props> = ({
                             defaultValue={userInput}
                             onKeyDown={handleKeyDown}
                             placeholder="Message to QwiketAI"
-                            className="w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
+                            className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                             rows={3}
                             disabled={isLoading}
                         />
@@ -504,10 +457,9 @@ const ChatsComponent: React.FC<Props> = ({
                 </div>
             </div>
 
-            <div className="flex-shrink-0  fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
-
+            <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
             </div>
-        </div >
+        </div>
     );
 };
 
