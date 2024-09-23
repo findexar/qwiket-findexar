@@ -115,6 +115,7 @@ export async function POST(req: Request) {
                     current_period_end: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
                     cancel_at_period_end: updatedSubscription.cancel_at_period_end,
                     default_payment_method: updatedSubscription.default_payment_method,
+                    billing_cycle_anchor: updatedSubscription.billing_cycle_anchor,
                 }),
             });
             break;
@@ -136,6 +137,7 @@ export async function POST(req: Request) {
                     current_period_end: new Date(createdSubscription.current_period_end * 1000).toISOString(),
                     cancel_at_period_end: createdSubscription.cancel_at_period_end,
                     default_payment_method: createdSubscription.default_payment_method,
+                    billing_cycle_anchor: createdSubscription.billing_cycle_anchor,
                 }),
             });
             break;

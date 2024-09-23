@@ -13,7 +13,7 @@ export default function Success() {
     useEffect(() => {
         if (sessionId) {
             // Verify the session and update the user's subscription
-            fetch('/api/verify-session', {
+          /*  fetch('/api/verify-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,6 +31,7 @@ export default function Success() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+            */
         }
     }, [sessionId, updateUser, router]);
 

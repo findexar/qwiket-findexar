@@ -32,7 +32,9 @@ export default function Success() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+
         }
+
     }, [sessionId, router]);
 
     return (

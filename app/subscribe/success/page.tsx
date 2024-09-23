@@ -48,19 +48,20 @@ export default async function SuccessPage({
 
         try {
           console.log('Updating subscription:', updateSubscriptionData, updateSubscriptionUrl);
-          const response = await fetch(updateSubscriptionUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updateSubscriptionData)
-          });
-          const responseData = await response.json();
-          if (response.ok) {
-            console.log('Subscription updated successfully:', responseData);
-          } else {
-            console.error('Failed to update subscription:', responseData);
-          }
+          /* const response = await fetch(updateSubscriptionUrl, {
+             method: 'POST',
+             headers: {
+               'Content-Type': 'application/json'
+             },
+             body: JSON.stringify(updateSubscriptionData)
+           });
+           const responseData = await response.json();
+           if (response.ok) {
+             console.log('Subscription updated successfully:', responseData);
+           } else {
+             console.error('Failed to update subscription:', responseData);
+           }
+             */
         } catch (error) {
           console.error('Error updating subscription:', error);
         }
