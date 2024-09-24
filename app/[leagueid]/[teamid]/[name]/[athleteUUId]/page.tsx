@@ -22,6 +22,7 @@ import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
 import fetchChat from "@/lib/fetchers/chat";
 import fetchUserAccount from "@/lib/fetchers/account";
+import promiseUser from "@/lib/fetchers/account";
 //what conflicts?
 //testing push
 type Props = {
@@ -175,11 +176,14 @@ export default async function Page({
      * 
      */
     calls.push(await fetchLeagueTeams({ league }));
-    let email = "";
+    let userInfo: { email: string } = { email: "" };
     if (userId) {
         const user = await currentUser();
-        email = user?.emailAddresses[0]?.emailAddress || "";
+        const email = user?.emailAddresses[0]?.emailAddress;
+        userInfo.email = email || '';
     }
+    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+
 
     if (findexarxid) {  // if a mention story is opened
         calls.push(await fetchMention({ type: "AMention", findexarxid }));
@@ -199,10 +203,8 @@ export default async function Page({
     }*/
     console.log("tab,view", tab, view);
     if (tab == 'chat' || view == 'ai chat') {
-        calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
+        calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
-    calls.push(await fetchUserAccount({ type: "user-account", email: "" }, userId, sessionid));
-
     await fetchData(t1, fallback, calls);
 
     const key = { type: "league-teams", league };
@@ -213,7 +215,7 @@ export default async function Page({
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
-                <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} />
+                <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} />
             </main>
         </SWRProvider>
     );

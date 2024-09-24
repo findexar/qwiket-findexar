@@ -95,7 +95,8 @@ export const actionCreateChat = async (props: CreateChatProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
-    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false } = props;
+    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, email } = props;
+    // email is to break the SWR cache when the user switches accounts
     if (chatUUId == "_new") {
         return { success: false, chat: {} as Chat, error: '' };
     }

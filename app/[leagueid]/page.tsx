@@ -21,7 +21,7 @@ import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchChat from "@/lib/fetchers/chat";
-import fetchUserAccount from "@/lib/fetchers/account";
+import promiseUser from "@/lib/fetchers/account";
 type Props = {
   params: { leagueid: string };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -205,11 +205,15 @@ export default async function Page({
   if (!story && !findexarxid) {
     calls.push(await fetchLeagueTeams({ league }));
   }
-  let email = "";
+
+  let userInfo: { email: string } = { email: "" };
   if (userId) {
     const user = await currentUser();
-    email = user?.emailAddresses[0]?.emailAddress || "";
+    const email = user?.emailAddresses[0]?.emailAddress;
+    userInfo.email = email || '';
   }
+  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
@@ -243,18 +247,18 @@ export default async function Page({
   console.log("tab,view", tab, view);
   if (tab == 'chat' || view == 'ai chat') {
     console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
-    calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
+    //email is to break the SWR cache when the user switches accounts
+    calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  calls.push(await fetchUserAccount({ type: "user-account", email: "" }, userId, sessionid));
-  console.log("==> SSRfetchUserAccount", { type: "user-account", email: email || "" });
+  console.log("==> SSRfetchUserAccount", { type: "user-account", userInfo });
 
   await fetchData(t1, fallback, calls);
 
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
       </main>
     </SWRProvider>
   );

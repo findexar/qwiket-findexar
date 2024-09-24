@@ -26,7 +26,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
@@ -42,7 +42,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
+    const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
     console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));

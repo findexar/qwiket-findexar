@@ -195,8 +195,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     }
   }, [query]);
 
-  const user = userInfo || {};
-  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email || "" };
+  const user = userInfo || { email: "" };
+  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
@@ -235,7 +235,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setMode={setLocalMode}
         setFindexarxid={setFindexarxid}
         setSlug={setSlug}
-        user={userInfo}
+        user={user}
         userAccount={userAccount}
         userAccountMutate={userAccountMutate}
         prompt={prompt}

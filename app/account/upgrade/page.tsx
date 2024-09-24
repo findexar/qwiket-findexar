@@ -174,27 +174,21 @@ export default async function Page({ searchParams }: { params: { slug: string };
         view = 'mentions';
     }
     let calls: { key: any; call: Promise<any> }[] = [];
-    let userInfo: any;
+    let userInfo: { email: string } = { email: "" };
     if (userId) {
         const user = await currentUser();
-        const email = user?.emailAddresses[0]?.emailAddress || "";
-        userInfo = JSON.parse(JSON.stringify(user));
-       // calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+        const email = user?.emailAddresses[0]?.emailAddress;
+        userInfo.email = email || '';
+    }
 
-    }
-    if (!userInfo) {
-        userInfo = { email: "" };
-    }
-    if (userId) {
-        calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
-    }
-   
+    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+
     await fetchData(t1, fallback, calls);
 
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
+                <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
             </main>
         </SWRProvider>
     );

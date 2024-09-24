@@ -69,17 +69,13 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let fallback: { [key: string]: any } = {};
     let calls: { key: any; call: Promise<any> }[] = [];
-    let userInfo: any;
+    let userInfo: { email: string } = { email: "" };
     if (userId) {
         const user = await currentUser();
-        const email = user?.emailAddresses[0]?.emailAddress || "";
-        userInfo = JSON.parse(JSON.stringify(user));
-        calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+        const email = user?.emailAddresses[0]?.emailAddress;
+        userInfo.email = email || '';
     }
-
-    if (!userInfo) {
-        userInfo = { email: "" };
-    }
+    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
 
     await fetchData(t1, fallback, calls);
 
