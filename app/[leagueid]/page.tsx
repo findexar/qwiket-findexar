@@ -246,8 +246,8 @@ export default async function Page({
     calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  calls.push(await fetchUserAccount({ type: "user-account", email: email || "" }, userId, sessionid));
-  console.log("==> fetchUserAccount", { type: "user-account", email: email || "" });
+  calls.push(await fetchUserAccount({ type: "user-account", email: "" }, userId, sessionid));
+  console.log("==> SSRfetchUserAccount", { type: "user-account", email: email || "" });
 
   await fetchData(t1, fallback, calls);
 

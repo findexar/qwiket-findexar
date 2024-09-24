@@ -362,10 +362,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
 
-  // Ensure that 'subscriptionKey' and 'fetchSubscription' are defined and used correctly
-  const subscriptionKey: SubscriptionKey = { type: "subscription" };
-  const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
-  const subscrLevel = subscription?.subscrLevel || 0;
+
   // console.log("subscrLevel", subscrLevel);
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -468,13 +465,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           }}>
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
-            {false && <SignedIn>
-              <IconButton onClick={async () => {
-                await updateMode(mode == "light" ? "dark" : "light");
-              }}>
-                {subscrLevel == 0 ? <div className="text-white-100"><StarOutlineIcon fontSize="small" /></div> : subscrLevel == 1 ? <div className="text-white-500"><StarIcon fontSize="small" /></div> : subscrLevel == 2 ? <div className="text-amber-600"><StarIcon fontSize="small" /></div> : <div className="text-emerald-700"><StarIcon fontSize="small" /></div>}
-              </IconButton>
-            </SignedIn>}
+           
             <SignedIn><SUserButton><UserButton.MenuItems><UserButton.Link
               label="Usage"
               labelIcon={<FaChartBar />}

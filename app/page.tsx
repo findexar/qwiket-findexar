@@ -19,7 +19,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
-
+import fetchUserAccount from "@/lib/fetchers/account";
 type Props = {
   params: {};
   searchParams: { [key: string]: string | string[] | undefined };
@@ -175,8 +175,8 @@ export default async function Page({ searchParams }: { params: { slug: string };
   let calls: { key: any; call: Promise<any> }[] = [];
   if (userId) {
     const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
+    //  const email = user?.emailAddresses[0]?.emailAddress;
+    //  calls.push(await fetchUserSubscription({ type: "UserSubscription" }, userId, email || ""));
 
   }
   if (findexarxid) {
@@ -207,6 +207,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }
+  calls.push(await fetchUserAccount({ type: "user-account", email: "" }, userId, sessionid));
   await fetchData(t1, fallback, calls);
 
   return (

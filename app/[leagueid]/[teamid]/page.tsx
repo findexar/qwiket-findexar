@@ -188,7 +188,7 @@ export default async function Page({
   if (tab == 'chat' || view == 'ai chat') {
     calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
-  calls.push(await fetchUserAccount({ type: "user-account", email }, userId, sessionid));
+  calls.push(await fetchUserAccount({ type: "user-account", email: "" }, userId, sessionid));
 
   await fetchData(t1, fallback, calls);
   console.log("=======>TEAM FALLBACK:", fallback)
