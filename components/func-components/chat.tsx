@@ -42,9 +42,10 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
+    const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-    console.log(isLoadingChat);
+    console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
+    console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
     const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -95,9 +96,9 @@ const ChatsComponent: React.FC<Props> = ({
         setMessages([]);
         setChatName('New Chat');
     }, [league])
-    useEffect(() => {
-        setIsLoading(isLoadingChat);
-    }, [isLoadingChat]);
+    /* useEffect(() => {
+         setIsLoading(isLoadingChat);
+     }, [isLoadingChat]);*/
 
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
@@ -180,7 +181,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     useEffect(() => {
         setIsLoading(false);
-        if (loadedChat && !loadedChatError && !isLoadingChat) {
+        if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages) {
                 setMessages(loadedChat.chat.messages);
@@ -331,7 +332,8 @@ const ChatsComponent: React.FC<Props> = ({
             }}
         />
     );
-    const drawMessages = messages || loadedChat?.chat?.messages || [];
+    const drawMessages = (messages && messages.length > 0 || chatUUId == '_new') ? messages : loadedChat?.chat?.messages || [];
+    console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-20">
@@ -390,7 +392,7 @@ const ChatsComponent: React.FC<Props> = ({
             </div>
 
             <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
-                {messages.length === 0 && (
+                {drawMessages.length === 0 && (
                     <>
                         <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
                             Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
