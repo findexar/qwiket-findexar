@@ -34,7 +34,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false);
     const [chatUUId, setChatUUId] = useState<string>(prompt ? '_new' : (chatUUIdProp || ""));
-    const [chatName, setChatName] = useState<string>('New Chat');
+    const [chatName, setChatName] = useState<string>('');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         setChatUUId(prompt ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
-        setChatName('New Chat');
+        setChatName('');
     }, [league])
     /* useEffect(() => {
          setIsLoading(isLoadingChat);
@@ -332,8 +332,10 @@ const ChatsComponent: React.FC<Props> = ({
             }}
         />
     );
-    const drawMessages = (messages && messages.length > 0 || chatUUId == '_new') ? messages : loadedChat?.chat?.messages || [];
+    const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
+    const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
     console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
+    console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-20">
@@ -345,7 +347,7 @@ const ChatsComponent: React.FC<Props> = ({
                         >
                             {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
                         </button>
-                        <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{chatName}</h1>
+                        <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{drawChatName}</h1>
                     </div>
                     <div className="flex flex-col items-end h-16 mt-4">
                         <button
@@ -356,8 +358,8 @@ const ChatsComponent: React.FC<Props> = ({
                                 setOpenMyChats(false);
                                 setIsLoading(false);
                             }}
-                            className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${chatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            disabled={chatName === 'New Chat'}
+                            className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={drawChatName === 'New Chat'}
                         >
                             <HiOutlinePencilAlt size={24} />
                         </button>
