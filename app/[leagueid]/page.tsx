@@ -94,10 +94,9 @@ export async function generateMetadata(
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
 
-  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
   let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
-
+  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
     ogTitle = astoryTitle;
@@ -243,6 +242,7 @@ export default async function Page({
   }
   console.log("tab,view", tab, view);
   if (tab == 'chat' || view == 'ai chat') {
+    console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
     calls.push(await fetchChat({ type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }

@@ -44,7 +44,7 @@ const ChatsComponent: React.FC<Props> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { type: "create-chat", chatUUId: chatUUId, league, teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-
+    console.log(isLoadingChat);
     const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -52,6 +52,7 @@ const ChatsComponent: React.FC<Props> = ({
     if (extraCreditsRemaining && +extraCreditsRemaining > 0) {
         creditsString = creditsString + "/" + extraCreditsRemaining.toString();
     }
+    creditsString += ' credits.'
     if (totalCredits < 10) {
         creditsString += " Upgrade";
     }
@@ -178,7 +179,8 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 
     useEffect(() => {
-        if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
+        setIsLoading(false);
+        if (loadedChat && !loadedChatError && !isLoadingChat) {
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages) {
                 setMessages(loadedChat.chat.messages);
@@ -188,7 +190,7 @@ const ChatsComponent: React.FC<Props> = ({
             } else {
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
-            setIsLoading(false);
+
         }
     }, [loadedChat]);
 
@@ -329,7 +331,7 @@ const ChatsComponent: React.FC<Props> = ({
             }}
         />
     );
-
+    const drawMessages = messages || loadedChat?.chat?.messages || [];
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-20">
@@ -358,10 +360,10 @@ const ChatsComponent: React.FC<Props> = ({
                             <HiOutlinePencilAlt size={24} />
                         </button>
                         <Link
-                            href="./account/dashboard"
+                            href="/account/dashboard"
                             className={`text-xs ${creditColorClass} hover:underline mt-1`}
                         >
-                            {creditsString} credits
+                            {creditsString}
                         </Link>
                     </div>
                 </div>
@@ -398,7 +400,7 @@ const ChatsComponent: React.FC<Props> = ({
                         </p>
                     </>
                 )}
-                {messages.map((message, index) => (
+                {drawMessages.map((message, index) => (
                     <div key={index} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[95%] p-3 rounded-2xl ${message.role === 'user'
                             ? 'bg-blue-100 dark:bg-teal-800'

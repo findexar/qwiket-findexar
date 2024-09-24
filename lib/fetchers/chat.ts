@@ -100,7 +100,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         return { success: false, chat: {} as Chat, error: '' };
     }
 
-    // console.log("****** loadLatestChat", props)
+    console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
 
@@ -128,7 +128,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         console.log("NULL RET loadLatestChat:", data.error)
         return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
     }
-    // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
     return { success: true, chat: data.chat, error: '' };
 }
 
@@ -138,6 +138,7 @@ export const actionLoadLatestChat = async (key: CreateChatKey) => {
     const session = await fetchSession();
     const { userId = "" } = auth() || {};
     const sessionid = session.sessionid || "";
+    console.log("!!!! actionLoadLatestChat", key, userId, sessionid)
     return await loadLatestChat(key, userId || "", sessionid);
 }
 interface ChatNameProps {
