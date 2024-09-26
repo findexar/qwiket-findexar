@@ -207,7 +207,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }
-  calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid));
+  calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
   await fetchData(t1, fallback, calls);
 
   return (

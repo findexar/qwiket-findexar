@@ -165,7 +165,7 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
 
 
   if (findexarxid) {

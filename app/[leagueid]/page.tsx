@@ -185,6 +185,7 @@ export default async function Page({
   let league = params.leagueid.toUpperCase();
   console.log("league->", league);
   utm_content = utm_content || '';
+  console.log("utm_content->", utm_content);
   fbclid = fbclid || '';
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
@@ -212,7 +213,7 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
 
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
