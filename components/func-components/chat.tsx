@@ -334,8 +334,8 @@ const ChatsComponent: React.FC<Props> = ({
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-    console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
-    console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
+    // console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
+    // console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-1">
