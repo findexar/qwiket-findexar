@@ -39,6 +39,9 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
         if (!utm_content) {
             utm_content = "";
         }
+        if (!sessionid) {
+            throw new Error("Failed to fetchUser");
+        }
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${utm_content}`;
         console.log("fetching user", url);
         const fetchResponse = await fetch(url);
