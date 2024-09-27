@@ -256,6 +256,12 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
 
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.focus();
+        }
+    }, []);
+
     if (!league) {
         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
     }
