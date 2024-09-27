@@ -90,6 +90,13 @@ const Mobile: React.FC<Props> = () => {
         setLocalFindexarxid(findexarxid);
     }, [findexarxid]);
 
+    // Add this new useEffect to handle the URL update
+    useEffect(() => {
+        if (view === 'ai chat' && tab === 'chat') {
+            setTab('');
+        }
+    }, [view, tab]);
+
     const onTabNav = useCallback(async (option: any) => {
         const tab = option.tab;
         setTab(tab);

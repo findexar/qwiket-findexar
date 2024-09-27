@@ -14,6 +14,31 @@ import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
 import Link from 'next/link';
+import { actionFetchPrompts } from "@lib/actions/fetch-prompts";
+import { styled } from "styled-components";
+
+const PromptsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
+  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'}; // More muted brown in dark mode, lighter peach in light mode
+  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'}; // Light gray text in dark mode, dark brown in light mode
+  padding: 2px 10px;
+  border-radius: 16px; // Slightly reduced for smaller size
+  font-size: 14px; // Smaller font size
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  &:hover {
+    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'}; // Slightly lighter in dark mode, slightly darker in light mode
+    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'}; // White in dark mode, darker text in light mode
+  }
+`;
+
 
 interface Props {
     chatUUId?: string;
@@ -26,7 +51,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
@@ -41,6 +66,8 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
+    const [prompts, setPrompts] = useState<string[]>([]);
+
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
@@ -83,7 +110,14 @@ const ChatsComponent: React.FC<Props> = ({
             url.searchParams.delete('promptUUId');
             router.replace(url.toString());
         }
-    }, []);
+    }, [searchParams]);
+
+
+    useEffect(() => {
+        if (utm_content == "xad") {
+            actionFetchPrompts({ league }).then(setPrompts);
+        }
+    }, [league, utm_content]);
 
     useEffect(() => {
         if (initialPrompt) {
@@ -300,6 +334,28 @@ const ChatsComponent: React.FC<Props> = ({
             );
         },
     };
+    const isDarkMode = mode === 'dark';
+    const renderPrompts = (device: "desktop" | "mobile") => {
+        if (!prompts || prompts.length === 0) return null;
+        const param = device === "desktop" ? "?tab=chat" : "?view=ai%20chat";
+        return (
+            <>
+                <h3 className="text-sm mt-4 font-semibold text-gray-700 dark:text-gray-300 mb-2">Suggested first time chat prompts:</h3>
+
+                <PromptsContainer>
+                    {prompts.map((p: any, index: number) => (
+                        <PromptTag
+                            key={`prompt-${index}`}
+                            href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.uuid}`}
+                            $isDarkMode={isDarkMode}
+                        >
+                            {p.prompt}
+                        </PromptTag>
+                    ))}
+                </PromptsContainer>
+            </>
+        );
+    };
 
     const BlinkingDot = () => (
         <motion.span
@@ -402,12 +458,14 @@ const ChatsComponent: React.FC<Props> = ({
             <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {drawMessages.length === 0 && (
                     <>
-                        <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
-                            Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
-                        </p>
-                        <p className="text-gray-600 dark:text-gray-400 italic text-center mt-4">
-                            Regular credits are reset every month depending on the subscription, except for the free trial. Extra credits never expire and will be applied when the regular credits run out.
-                        </p>
+                        {!prompts || prompts.length === 0 ? <>
+                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
+                                Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-4">
+                                Regular credits are reset every month depending on the subscription, except for the free trial. Extra credits never expire and will be applied when the regular credits run out.
+                            </p>
+                        </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                     </>
                 )}
                 {drawMessages.map((message, index) => (
