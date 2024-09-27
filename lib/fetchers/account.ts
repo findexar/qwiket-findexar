@@ -39,6 +39,7 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
         if (!utm_content) {
             utm_content = "";
         }
+        console.log("fetchUser", key, userId, sessionid, utm_content)
         if (!sessionid) {
             throw new Error("Failed to fetchUser");
         }
