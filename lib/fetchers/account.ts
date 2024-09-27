@@ -41,7 +41,9 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
         }
         console.log("fetchUser", key, userId, sessionid, utm_content)
         if (!sessionid) {
-            throw new Error("Failed to fetchUser");
+            console.log("===>FAILED TO GET USER, NO SESSIONID", sessionid);
+            return {} as UserAccount;
+            // throw new Error("Failed to fetchUser");
         }
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${utm_content}`;
         console.log("fetching user", url);
@@ -52,7 +54,9 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
             console.log("===>GET USER", data.account);
             return data.account as UserAccount;
         }
-        throw new Error("Failed to fetchUser");
+        console.log("===>FAILED TO GET USER", data);
+        return {} as UserAccount;
+        // throw new Error("Failed to fetchUser");
     }
     catch (e) {
         console.log("fetchUser", e);
