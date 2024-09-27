@@ -92,13 +92,13 @@ const ChatsComponent: React.FC<Props> = ({
     }, {} as Record<string, ChatItem[]>);
 
     const ChatGroups = Object.entries(groupedChats).map(([groupName, groupChats]) => (
-        <div key={groupName} className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-500 mb-2">{groupName}</h3>
+        <div key={groupName} className="mb-2">
+            <h3 className="text-sm font-semibold text-gray-500 mb-2 ">{groupName}</h3>
             {groupChats.map((chat) => (
                 <div
                     key={chat.chatUUId}
                     onClick={() => onChatSelect(chat.chatUUId)}
-                    className="w-full p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-lg transition-colors duration-200"
+                    className="w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-lg transition-colors duration-200"
                 >
                     <div className="text-sm font-medium">{chat.name}</div>
                 </div>
@@ -107,11 +107,11 @@ const ChatsComponent: React.FC<Props> = ({
     ));
 
     return (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col mb-4 pb-8">
 
             {!ChatGroups.length && <div className="text-sm text-gray-500">No chat history yet...</div>}
 
-            <div className="flex-grow p-4">
+            <div className="flex-grow p-4 mb-4 pb-8">
                 {ChatGroups}
             </div>
             {false && <div className="p-4">
