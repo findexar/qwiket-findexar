@@ -252,7 +252,7 @@ export default async function Page({
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  console.log("==> SSRfetchUserAccount", { type: "user-account", userInfo });
+  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content }));
 
   await fetchData(t1, fallback, calls);
 

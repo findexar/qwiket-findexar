@@ -1,15 +1,15 @@
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
-import { sessionOptions,SessionData } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-const fetchSession=async ()=>{
+const fetchSession = async () => {
     "use server";
     let session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    if(!session.sessionid){
+    if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
-        session.dark=-1;
-        console.log("********** action: NEW SESSION",session)
+        session.dark = -1;
+        console.log("********** action: NEW SESSION", session)
         await session.save();
         console.log("after save")
     }
@@ -24,6 +24,7 @@ const fetchSession=async ()=>{
         const respJson=await resp.json();
         session=respJson.session;
      }*/
-   return session;
+    // console.log("===>FETCH SESSION", session);
+    return session;
 }
 export default fetchSession;
