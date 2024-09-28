@@ -67,7 +67,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const [prompts, setPrompts] = useState<string[]>([]);
-    const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
+    // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
@@ -147,7 +147,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
-        setStreamingMessageIndex(messages.length);
+        // setStreamingMessageIndex(messages.length + 1);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -162,6 +162,7 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
+                        //setStreamingMessageIndex(updatedMessages.length - 1);
                         if (updatedMessages.length > 0) {
                             updatedMessages[updatedMessages.length - 1].content = updatedContent;
                         }
@@ -183,7 +184,7 @@ const ChatsComponent: React.FC<Props> = ({
                 );
                 setInitialPrompt(null);
                 setInitialPromptUUId(null);
-                setStreamingMessageIndex(null);
+                //setStreamingMessageIndex(null);
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -196,10 +197,10 @@ const ChatsComponent: React.FC<Props> = ({
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
-            setStreamingMessageIndex(null);
+            // setStreamingMessageIndex(null);
         }).finally(() => {
             setIsLoading(false);
-            setStreamingMessageIndex(null);
+            // setStreamingMessageIndex(null);
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
@@ -320,17 +321,20 @@ const ChatsComponent: React.FC<Props> = ({
             </a>
         ),
         img: ({ node, ...props }) => {
-            const isStreaming = streamingMessageIndex === messages.length - 1;
-            if (isStreaming) {
-                return null;
-            }
+            // console.log("==> CHAT.TSX img", streamingMessageIndex, messages.length);
+            /*  const isStreaming = streamingMessageIndex === messages.length - 1;
+              if (isStreaming) {
+                  return null;
+              }*/
             return (
-                <img
-                    {...props}
-                    width="256"
-                    height="256"
-                    style={{ width: '256px', height: '256px', objectFit: 'cover' }}
-                />
+                <div className="flex justify-center">
+                    <img
+                        {...props}
+                        width="256"
+                        height="256"
+                        style={{ width: '256px', height: '256px', objectFit: 'cover' }}
+                    />
+                </div>
             );
         },
         code: ({ node, className, children, ...props }) => {
