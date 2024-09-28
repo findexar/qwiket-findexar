@@ -81,7 +81,7 @@ const ChatsComponent: React.FC<Props> = ({
     if (extraCreditsRemaining && +extraCreditsRemaining > 0) {
         creditsString = creditsString + "/" + extraCreditsRemaining.toString();
     }
-    creditsString += ' credits.'
+    creditsString += ' credits'
     if (totalCredits < 10) {
         creditsString += " Upgrade";
     }
