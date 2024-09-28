@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useMemo, useState } from "react";
 import { useRouter } from 'next/navigation'
 import { styled } from "styled-components";
 
@@ -27,6 +27,15 @@ import FavMentions from "@/components/func-components/fav-mentions";
 import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
 import Chat from "@/components/func-components/chat";
+
+const FadeTransition = styled.div<{ $isVisible: boolean }>`
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transition: opacity 0.3s ease-in-out;
+`;
+
+const LoadingSpinner = styled.div`
+  // Add your loading spinner styles here
+`;
 
 const MobileContainerWrap = styled.div`
     display: flex;
@@ -82,25 +91,26 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    let { tab, view, setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
+    const { tab, view, setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
-    tab = tab || "all";
-    console.log("Mobile, teamid:", teamid)
-    useEffect(() => {
-        setLocalFindexarxid(findexarxid);
-    }, [findexarxid]);
-    console.log("Mobile, view:", { view, tab })
-    // Add this new useEffect to handle the URL update
-    /* useEffect(() => {
-         if (view === 'ai chat' && tab === 'chat') {
-             setTab('');
-         }
-     }, [view, tab]);*/
+    const [isLoading, setIsLoading] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
-    const onTabNav = useCallback(async (option: any) => {
+    // Use useMemo to memoize complex calculations or derived values
+    const currentTab = React.useMemo(() => tab || "all", [tab]);
+    const currentView = React.useMemo(() => view == 'main' ? 'mentions' : view || 'mentions', [view]);
+
+    // Use useCallback for event handlers
+    const onTabNav = React.useCallback(async (option: any) => {
+        setIsVisible(false);
+        setIsLoading(true);
+
+        // Wait for fade out
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         const tab = option.tab;
         setTab(tab);
-        setView("main");
+        // setView("main");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
@@ -109,12 +119,22 @@ const Mobile: React.FC<Props> = () => {
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
         );
-    }, [fbclid, utm_content, league, params, tab, fbclid, utm_content, league, params, tab, fbclid, utm_content, league, params, tab]);
 
-    const onViewNav = useCallback(async (option: { name: string, access: string }) => {
+        // Simulate content loading
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        setIsLoading(false);
+        setIsVisible(true);
+    }, [fbclid, utm_content, league, params, setTab, setView, router]);
+
+    const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
-        if (name == 'main' || name == 'feed' || name == 'home')
+        if (name == 'main' || name == 'feed' || name == 'home') {
             name = 'mentions';
+            if (currentView != 'mentions') {
+                setView('mentions');
+            }
+        }
         setView(name);
         if (!teamid) {
             window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
@@ -126,31 +146,37 @@ const Mobile: React.FC<Props> = () => {
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );
-    }, [teamid, league, params2, tp2, fbclid, utm_content, setView, recordEvent]);
+    }, [teamid, league, params2, tp2, fbclid, utm_content, setView]);
 
+    // Preload content
+    /*  useEffect(() => {
+          // Preload components or data here
+      }, [tab, view]);*/
+    console.log("==> pagetype", pagetype);
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
-                {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
-                }
                 {pagetype == "league" && league &&
                     <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Main", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
+
+                {pagetype == "landing" && <Landing />}
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
 
-                {view == 'mentions' && pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                {pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
-                {view == 'teams' &&
+                {currentView == 'teams' &&
                     <LeftMobilePanel>
-                        VIEW=={view} TAB={tab}
+                        VIEW=={currentView} TAB={tab}
                         <Teams />
                     </LeftMobilePanel>
                 }
-                {view == 'mentions' && <CenterPanel>
+                {currentView == 'mentions' && <CenterPanel>
                     {pagetype == "team" && tab != "chat" ? <TeamMentions /> : null}
                     {pagetype == "player" && tab != "chat" && <PlayerMentions />}
-                    {pagetype == "league" && tab == "all" ? <Stories /> : null}
+                    {pagetype == "league" && currentTab == "all" ? <Stories /> : null}
                     {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
                     {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                     {tab == 'chat' && <Chat source="mobile" />}
