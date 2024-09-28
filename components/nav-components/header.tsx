@@ -54,12 +54,12 @@ const Header = styled.header<HeaderProps>`
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 30;
     padding-bottom: 6px;
   }
   position: sticky;
   top: 0px;
-  z-index: 10;
+  z-index: 30;
 `;
 
 const ContainerWrap = styled.div`
@@ -465,7 +465,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           }}>
             {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
           </IconButton>
-           
+
             <SignedIn><SUserButton><UserButton.MenuItems><UserButton.Link
               label="Usage"
               labelIcon={<FaChartBar />}

@@ -400,7 +400,7 @@ const ChatsComponent: React.FC<Props> = ({
     // console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
-            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-1">
+            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-2">
                 <div className="flex items-center justify-between md:h-8 h-16">
                     <div className="flex items-center">
                         <button
@@ -434,7 +434,7 @@ const ChatsComponent: React.FC<Props> = ({
                     </div>
                 </div>
                 <div
-                    className={`absolute top-full left-0 w-full bg-white dark:bg-black z-30 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-96' : 'max-h-0'}`}
+                    className={`absolute top-full mt-4 left-0 w-full bg-white dark:bg-black z-20 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-128' : 'max-h-0'}`}
                 >
                     <MyChats
                         onChatSelect={async (selectedChatUUId) => {
