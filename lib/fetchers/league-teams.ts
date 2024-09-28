@@ -10,7 +10,7 @@ interface FetchLeagueTeamsProps {
 const fetchLeagueTeams = async (key: LeagueTeamsKey) => {
     const { league } = key;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-league-teams?api_key=${api_key}&league=${league}`;
-    console.log("fetching league teams:",url)
+    // console.log("fetching league teams:",url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
     //console.log("RET:",res.teams)
@@ -21,6 +21,6 @@ const promiseFetchLeagueTeams = async ({ league = "" }: FetchLeagueTeamsProps) =
     return { key: unstable_serialize(key), call: fetchLeagueTeams(key) };
 }
 export const actionFetchLeagueTeams = async (key: LeagueTeamsKey) => {
-     return fetchLeagueTeams(key);
+    return fetchLeagueTeams(key);
 }
 export default promiseFetchLeagueTeams;

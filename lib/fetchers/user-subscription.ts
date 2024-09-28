@@ -30,7 +30,7 @@ export const getUserSubscription = async (userId: string, email: string): Promis
         const data = await fetchResponse.json();
         console.log("fetching user subscription", url, data);
         if (data.success) {
-            console.log("===>GET USER SUBSCRIPTION", data.subscription);
+            // console.log("===>GET USER SUBSCRIPTION", data.subscription);
             return data.subscription;
         }
         throw new Error("Failed to get user subscription");

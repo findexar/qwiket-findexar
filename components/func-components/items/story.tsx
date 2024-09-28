@@ -175,12 +175,12 @@ const ShareIcon = styled.div`
 `;
 
 const DesktopWrap = styled.div`
-    border-radius:5px;
+   // border-radius:5px;
     display:flex;
     flex-direction:column;
     max-width:100%;
-    margin-top:20px;
-    margin-bottom:20px;
+   // margin-top:20px;
+   // margin-bottom:20px;
    // background-color:var(--mention-bg);
     background-color:var(--background);
    
@@ -198,7 +198,7 @@ const MobileWrap = styled.div`
     flex-direction:column;
     width:100%;
     padding:30px;
-    margin-bottom:20px;
+   // margin-bottom:20px;
     background-color:var(--background);
     padding:10px;
     a{
@@ -254,7 +254,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     //console.log("STORY CREATED TIME", createdTime,title,site_name);
-    console.log("==> story prompts", prompts);
+    // console.log("==> story prompts", prompts);
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
@@ -424,7 +424,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
-                <hr />
+                <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
             </DesktopWrap>
             <MobileWrap>
                 <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>

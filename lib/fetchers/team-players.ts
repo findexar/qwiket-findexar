@@ -16,7 +16,7 @@ const fetchTeamPlayers = async (key: TeamPlayersKey, userId: string, sessionid: 
     // const url = `${process.env.NEXT_PUBLIC_SERVER}/api/user/get-team-players?league=${encodeURIComponent(league)}&teamid=${encodeURIComponent(teamid)}`;
 
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-team-roster?api_key=${api_key}&teamid=${teamid}&userid=${userId}`;
-    console.log("fetching team players:", url)
+    // console.log("fetching team players:", url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
     return res.players;

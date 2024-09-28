@@ -18,7 +18,7 @@ const fetchFavorites = async (key: FavoritesKey, userId: string, sessionid: stri
     console.log("fetchFavorites", url);
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    console.log("RET fetchFavorites", res.mentions);
+    // console.log("RET fetchFavorites", res.mentions);
     return res.mentions;
 }
 const promiseFavoites = async ({ userId, sessionid, league = "", page }: FetchFavoritesProps) => {

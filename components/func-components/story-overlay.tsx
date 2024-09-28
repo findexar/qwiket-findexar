@@ -128,7 +128,7 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 16px 0;
+  padding: 0px 8px 0;
 `;
 
 const QwiketText = styled.div`
@@ -210,16 +210,16 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     return <>{open &&
         <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
             <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex min-h-full items-center justify-center md:p-4 text-left ">
-                    <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-2 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full ">
+                <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
+                    <div className="relative dark:bg-slate-900 bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all py-0 my-2 max-w-lg  md:max-w-2xl w-full ">
                         <HeaderContainer>
-                            <QwiketText>QWIKET</QwiketText>
+                            <QwiketText>QWIKET DIGEST</QwiketText>
                             <XElement onClick={() => handleClose()}>&#x2715;</XElement>
                         </HeaderContainer>
-                        <div className="bg-transparent md:px-8 md:pt-12 pt-4 pb-4 sm:p-4 sm:pb-4">
-                            <div className="sm:flex sm:items-start">
-                                <div className="mt-3 text-center sm:mt-0 sm:ml-0 sm:text-left">
-                                    <div className="mt-2">
+                        <div className="bg-transparent  p-0 pb-0 ">
+                            <div className="flex items-start">
+                                <div className=" text-center mt-0 ml-0 text-left">
+                                    <div className="mt-0 mb-0 pb-0 h-full">
                                         <ContentWrap>
                                             <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
