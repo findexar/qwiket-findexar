@@ -142,8 +142,16 @@ const Desktop: React.FC<Props> = () => {
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
-  const tab = initialTab || "";
-  const view = initialView || "mentions";
+  let tab = initialTab || "";
+  let view = initialView || "mentions";
+  if (view == "ai chat") {
+    view = "mentions";
+    tab = "chat";
+  }
+  console.log("==> view", view, tab);
+  if (tab === 'chat') {
+    view = 'mentions';
+  }
   //console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
     setLocalFindexarxid(findexarxid);
