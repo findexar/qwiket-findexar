@@ -183,7 +183,7 @@ export default async function Page({
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
   console.log("tab,view", tab, view);
-  if (tab == 'chat' || view == 'ai chat') {
+  if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
 

@@ -195,7 +195,7 @@ export default async function Page({
   if (!story && !findexarxid)
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
   console.log("tab,view", tab, view);
-  if (tab == 'chat' || view == 'ai chat') {
+  if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
 

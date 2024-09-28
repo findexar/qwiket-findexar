@@ -144,10 +144,7 @@ const Desktop: React.FC<Props> = () => {
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
   let tab = initialTab || "";
   let view = initialView || "mentions";
-  if (view == "ai chat") {
-    view = "mentions";
-    tab = "chat";
-  }
+
   console.log("==> view", view, tab);
   if (tab === 'chat') {
     view = 'mentions';

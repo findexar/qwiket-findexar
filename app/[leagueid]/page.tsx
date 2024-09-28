@@ -243,7 +243,7 @@ export default async function Page({
     }
   }
   console.log("tab,view", tab, view);
-  if (tab == 'chat' || view == 'ai chat') {
+  if (tab == 'chat') {
     console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
     //email is to break the SWR cache when the user switches accounts
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));

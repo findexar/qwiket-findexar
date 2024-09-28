@@ -200,7 +200,7 @@ export default async function Page({
         calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }*/
     console.log("tab,view", tab, view);
-    if (tab == 'chat' || view == 'ai chat') {
+    if (tab == 'chat') {
         calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
     await fetchData(t1, fallback, calls);

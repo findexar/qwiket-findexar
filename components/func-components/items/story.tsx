@@ -346,7 +346,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const renderPrompts = (device: string) => {
         if (!prompts || prompts.length === 0) return null;
-        const param = device === "desktop" ? "?tab=chat" : "?view=ai%20chat";
+        const param = "?tab=chat";
         return (
             <PromptsContainer>
                 {prompts.map((p: any, index: number) => (
