@@ -67,6 +67,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const [prompts, setPrompts] = useState<string[]>([]);
+    const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
@@ -146,6 +147,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
+        setStreamingMessageIndex(messages.length);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -181,6 +183,7 @@ const ChatsComponent: React.FC<Props> = ({
                 );
                 setInitialPrompt(null);
                 setInitialPromptUUId(null);
+                setStreamingMessageIndex(null);
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -193,12 +196,14 @@ const ChatsComponent: React.FC<Props> = ({
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
+            setStreamingMessageIndex(null);
         }).finally(() => {
             setIsLoading(false);
+            setStreamingMessageIndex(null);
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId])
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, messages.length])
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -314,14 +319,20 @@ const ChatsComponent: React.FC<Props> = ({
                 {children}
             </a>
         ),
-        img: ({ node, ...props }) => (
-            <img
-                {...props}
-                width="64"
-                height="64"
-                style={{ width: '64px', height: '64px', objectFit: 'cover' }}
-            />
-        ),
+        img: ({ node, ...props }) => {
+            const isStreaming = streamingMessageIndex === messages.length - 1;
+            if (isStreaming) {
+                return null;
+            }
+            return (
+                <img
+                    {...props}
+                    width="256"
+                    height="256"
+                    style={{ width: '256px', height: '256px', objectFit: 'cover' }}
+                />
+            );
+        },
         code: ({ node, className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className || '');
             return (
@@ -489,7 +500,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 )}
                             </div>
                             <ReactMarkdown components={MarkdownComponents}>
-                                {message?.content?.replace(/<img/g, '<img width="64" height="64" ') || ''}
+                                {message?.content || ''}
                             </ReactMarkdown>
                             {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
                         </div>
