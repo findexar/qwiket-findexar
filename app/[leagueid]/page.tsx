@@ -193,13 +193,10 @@ export default async function Page({
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
   ));
   view = view.toLowerCase();
-  if (view == 'feed') {
+  if (view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
   console.log("VIEW:", view, isMobile);
-  if (view == 'home') {
-    view = 'mentions';
-  }
   let calls: { key: any, call: Promise<any> }[] = [];
 
   console.log("***> view,tab", view, tab);

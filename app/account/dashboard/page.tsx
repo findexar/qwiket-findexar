@@ -41,13 +41,10 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
     view = view.toLowerCase();
-    if (view == 'feed') {
+    if (view == 'main' || view == 'feed' || view == 'home') {
         view = 'mentions';
     }
     console.log("VIEW:", view, isMobile);
-    if (view == 'home') {
-        view = 'mentions';
-    }
 
     let sessionid = "";
     let dark = 0;

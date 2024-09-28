@@ -164,9 +164,7 @@ export default async function Page({
         /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
     ))
     view = view.toLowerCase();
-    if (view == 'feed')
-        view = 'mentions';
-    if (view == 'home')
+    if (view == 'main' || view == 'feed' || view == 'home')
         view = 'mentions';
     let calls: { key: any, call: Promise<any> }[] = [];
 

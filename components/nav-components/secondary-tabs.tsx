@@ -46,7 +46,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
   let selectedValue = 0;
   const IconTabs = options.map((option: Option, i: number) => {
     let name = option.name.toLowerCase();
-    if (name == 'feed')
+    if (name == 'main' || name == 'feed' || name == 'home')
       name = 'mentions';
     //console.log("options.map", option.name, selectedOptionName)
     let selected = false;

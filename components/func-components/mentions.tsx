@@ -65,8 +65,14 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
 
     if (!view)
         view = "mentions";
+    console.log("mentions", mentions)
 
-    const Mentions = mentions && mentions.map((m: any, i: number) => {
+    // Check if mentions is not just an array of undefined
+    const hasValidMentions = mentions && mentions.some((m: any) => m !== undefined);
+
+    const Mentions = hasValidMentions ? mentions.map((m: any, i: number) => {
+        if (!m)
+            return null;
         return (
             <Mention
                 mention={m}
@@ -75,22 +81,22 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
                 handleClose={() => { }}
                 mutatePlayers={mutatePlayers}
             />)
-    });
+    }) : null;
+
     return (
         <div>
             <MentionsOuterContainer className="hidden lg:block">
                 <MentionsBody>
-                    {Mentions}
+                    {hasValidMentions ? Mentions : <p>No valid mentions available.</p>}
                 </MentionsBody>
                 <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
             </MentionsOuterContainer>
             <div className="h-full lg:hidden"><MobileMentionsOuterContainer>
                 <MentionsBody>
-                    {Mentions}
+                    {hasValidMentions ? Mentions : <p>No valid mentions available.</p>}
                 </MentionsBody>
                 <LoadMore items={mentions} name="mentions" setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
             </MobileMentionsOuterContainer></div>
-
         </div>
     )
 }

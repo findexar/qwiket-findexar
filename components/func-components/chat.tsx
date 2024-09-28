@@ -115,7 +115,7 @@ const ChatsComponent: React.FC<Props> = ({
 
 
     useEffect(() => {
-        if (utm_content == "xad") {
+        if (utm_content && utm_content.includes("xad")) {
             actionFetchPrompts({ league }).then(setPrompts);
         }
     }, [league, utm_content]);
@@ -348,7 +348,7 @@ const ChatsComponent: React.FC<Props> = ({
     const isDarkMode = mode === 'dark';
     const renderPrompts = (device: "desktop" | "mobile") => {
         if (!prompts || prompts.length === 0) return null;
-        const param = device === "desktop" ? "?tab=chat" : "?view=ai%20chat";
+        const param = "?tab=chat";
         return (
             <>
                 <h3 className="text-sm mt-4 font-semibold text-gray-700 dark:text-gray-300 mb-2">Suggested first time chat prompts:</h3>

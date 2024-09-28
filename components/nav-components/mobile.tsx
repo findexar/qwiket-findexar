@@ -72,7 +72,7 @@ const CenterPanel = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding-top: 18px;
+    padding-top: 0px;
     height: auto;
     flex-grow: 1;
     padding-bottom: 200px;
@@ -89,18 +89,18 @@ const Mobile: React.FC<Props> = () => {
     useEffect(() => {
         setLocalFindexarxid(findexarxid);
     }, [findexarxid]);
-
+    console.log("Mobile, view:", { view, tab })
     // Add this new useEffect to handle the URL update
-    useEffect(() => {
-        if (view === 'ai chat' && tab === 'chat') {
-            setTab('');
-        }
-    }, [view, tab]);
+    /* useEffect(() => {
+         if (view === 'ai chat' && tab === 'chat') {
+             setTab('');
+         }
+     }, [view, tab]);*/
 
     const onTabNav = useCallback(async (option: any) => {
         const tab = option.tab;
         setTab(tab);
-        setView("mentions");
+        setView("main");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
@@ -113,7 +113,7 @@ const Mobile: React.FC<Props> = () => {
 
     const onViewNav = useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
-        if (name == 'feed')
+        if (name == 'main' || name == 'feed' || name == 'home')
             name = 'mentions';
         setView(name);
         if (!teamid) {
@@ -132,33 +132,33 @@ const Mobile: React.FC<Props> = () => {
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
                 {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Feed", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "AI Chat", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
                 {pagetype == "league" && league &&
-                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Feed", icon: <MentionIcon fontSize="small" /> }, { name: "AI Chat", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
+                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Main", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
-                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Feed", icon: <MentionIcon /> }, { name: "AI Chat", icon: <ListIcon fontSize="small" /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
+                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
 
-                {view == 'mentions' && pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                {view == 'mentions' && pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
                 {view == 'teams' &&
                     <LeftMobilePanel>
+                        VIEW=={view} TAB={tab}
                         <Teams />
                     </LeftMobilePanel>
                 }
                 {view == 'mentions' && <CenterPanel>
-                    {pagetype == "team" ? <TeamMentions /> : null}
-                    {(pagetype == "player") && <PlayerMentions />}
+                    {pagetype == "team" && tab != "chat" ? <TeamMentions /> : null}
+                    {pagetype == "player" && tab != "chat" && <PlayerMentions />}
                     {pagetype == "league" && tab == "all" ? <Stories /> : null}
                     {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
                     {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
+                    {tab == 'chat' && <Chat source="mobile" />}
+
                 </CenterPanel>}
                 {view == 'faq' && <Readme />}
                 {view == 'my team' && <MyTeam />}
-                {view == 'ai chat' && <Chat source="mobile" />}
                 {view == 'players' && <Players />}
-                {(pagetype === 'league' && tab === 'chat' && view !== 'ai chat') && <Chat source="mobile" />}
-                {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat' || tab === '') && <Chat />}
 
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
                 {slug && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
