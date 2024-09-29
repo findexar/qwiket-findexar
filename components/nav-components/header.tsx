@@ -16,7 +16,7 @@ import ModeNightTwoToneIcon from '@/components/icons/moon';
 import LightModeTwoToneIcon from '@/components/icons/sun';
 import StarOutlineIcon from '@/components/icons/star-outline';
 import StarIcon from '@/components/icons/star';
-import { UserButton, SignInButton, SignedOut, SignedIn } from "@clerk/nextjs";
+import { UserButton, SignInButton, SignedOut, SignedIn, useAuth } from "@clerk/nextjs";
 import { useAppContext } from '@/lib/context';
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import PlayerPhoto from "@/components/util-components/player-photo";
@@ -361,6 +361,23 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      try {
+        await getToken({ template: 'integration_jwt' });
+      } catch (error) {
+        console.error('Failed to refresh token:', error);
+        // Optionally, you can force a page reload here
+        // window.location.reload();
+      }
+    };
+
+    const intervalId = setInterval(refreshToken, 5 * 60 * 1000); // Refresh every 5 minutes
+
+    return () => clearInterval(intervalId);
+  }, [getToken]);
 
 
   // console.log("subscrLevel", subscrLevel);
