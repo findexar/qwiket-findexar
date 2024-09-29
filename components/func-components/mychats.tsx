@@ -111,7 +111,7 @@ const ChatsComponent: React.FC<Props> = ({
 
             {!ChatGroups.length && <div className="text-sm text-gray-500">No chat history yet...</div>}
 
-            <div className="flex-grow p-4 mb-4 pb-8">
+            <div className="flex-grow pl-4 mb-4 pb-8">
                 {ChatGroups}
             </div>
             {false && <div className="p-4">

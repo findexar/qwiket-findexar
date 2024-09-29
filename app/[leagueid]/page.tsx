@@ -142,7 +142,10 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const t1 = new Date().getTime();
-  let { userId } = auth();
+  let headerslist = headers();
+  const ua = headerslist.get('user-agent') || "";
+  const bot = isbot({ ua });
+  let { userId } = !bot ? auth() : { userId: "" };
   userId = userId || "";
   let sessionid = "";
   let dark = 0;
@@ -159,7 +162,7 @@ export default async function Page({
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-  let headerslist = headers();
+
   let {
     tab,
     fbclid,
@@ -187,8 +190,7 @@ export default async function Page({
   utm_content = utm_content || '';
   console.log("utm_content->", utm_content);
   fbclid = fbclid || '';
-  const ua = headerslist.get('user-agent') || "";
-  const botInfo = isbot({ ua });
+
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
   ));
@@ -210,7 +212,9 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  if (!bot) {
+    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  }
 
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));

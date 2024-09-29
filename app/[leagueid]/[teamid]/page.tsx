@@ -13,7 +13,7 @@ import fetchTeamMentions from '@/lib/fetchers/team-mentions';
 import fetchTeamPlayers from '@/lib/fetchers/team-players';
 import fetchChat from "@/lib/fetchers/chat";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
-
+import { isbot } from '@/lib/is-bot';
 import { getAMention } from '@/lib/fetchers/mention';
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
@@ -113,8 +113,10 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const t1 = new Date().getTime();
-
-  let { userId } = auth();
+  let headerslist = headers();
+  const ua = headerslist.get('user-agent') || "";
+  let bot = isbot({ ua });
+  let { userId } = !bot ? auth() : { userId: "" };
   if (!userId) {
     userId = "";
   }
@@ -133,7 +135,7 @@ export default async function Page({
 
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let headerslist = headers();
+
   let { tab, fbclid, utm_content, view = "mentions", id, story }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
   let findexarxid = id || "";
@@ -143,7 +145,7 @@ export default async function Page({
   console.log("league->", league);
   utm_content = utm_content || '';
   fbclid = fbclid || '';
-  const ua = headerslist.get('user-agent') || "";
+
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -162,7 +164,9 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  if (!bot) {
+    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  }
 
 
   if (findexarxid) {

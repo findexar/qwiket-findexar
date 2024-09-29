@@ -15,7 +15,8 @@ import fetchStories from '@/lib/fetchers/stories';
 import fetchUserSubscription from "@/lib/fetchers/user-subscription";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { getAMention } from '@/lib/fetchers/mention';
-
+//@ts-ignore
+import isbot from 'isbot-fast';
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
@@ -130,10 +131,12 @@ export default async function Page({ searchParams }: { params: { slug: string };
   };
 
   const t1 = new Date().getTime();
-
+  let headerslist = headers();
+  const ua = headerslist.get('user-agent') || "";
+  let bot = isbot(ua);
   let sessionid = "";
   let dark = 0;
-  let { userId } = auth();
+  let { userId } = !bot ? auth() : { userId: "" };
 
   if (!userId) {
     userId = "";
@@ -153,7 +156,6 @@ export default async function Page({ searchParams }: { params: { slug: string };
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let headerslist = headers();
   let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
 
   let findexarxid = id || "";
@@ -161,7 +163,6 @@ export default async function Page({ searchParams }: { params: { slug: string };
   let league = "";
   utm_content = utm_content || '';
   fbclid = fbclid || '';
-  const ua = headerslist.get('user-agent') || "";
 
   let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
   view = view.toLowerCase();
@@ -204,7 +205,9 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }
-  calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  if (!bot) {
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  }
   await fetchData(t1, fallback, calls);
 
   return (
