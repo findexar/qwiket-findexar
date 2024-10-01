@@ -146,6 +146,7 @@ export default async function Page({
   const ua = headerslist.get('user-agent') || "";
 
   const botInfo = isbot({ ua });
+  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
   let { userId } = !botInfo.bot ? auth() : { userId: "" };
   userId = userId || "";
   let sessionid = "";
@@ -213,9 +214,9 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  console.log("==> isBot", botInfo.bot);
+  console.log("==> isBot", bot);
   console.log("==> ua", ua);
-  if (!botInfo.bot) {
+  if (!bot) {
     console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua);
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
   }
@@ -257,7 +258,7 @@ export default async function Page({
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot: botInfo.bot }));
+  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
 
   await fetchData(t1, fallback, calls);
 
