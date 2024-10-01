@@ -206,7 +206,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     }
   }
   if (!bot) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
   }
   await fetchData(t1, fallback, calls);
 

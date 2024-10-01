@@ -18,7 +18,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
-import promiseUser from "@/lib/fetchers/account";
+import fetchUserAccount from "@/lib/fetchers/account";
 type Props = {
   params: { leagueid: string, teamid: string },
   searchParams: { [key: string]: string | string[] | undefined }
@@ -165,7 +165,7 @@ export default async function Page({
     userInfo.email = email || '';
   }
   if (!bot) {
-    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
   }
 
 

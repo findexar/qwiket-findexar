@@ -32,21 +32,24 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
     }
 }
 
-export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string): Promise<UserAccount> => {
+export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string): Promise<UserAccount> => {
     'use server';
     try {
         const { email = '' } = key;
         if (!utm_content) {
             utm_content = "";
         }
-       // console.log("fetchUser", key, userId, sessionid, utm_content)
+        if (!ua) {
+            ua = "";
+        }
+        // console.log("fetchUser", key, userId, sessionid, utm_content)
         if (!sessionid) {
             console.log("===>FAILED TO GET USER, NO SESSIONID", sessionid);
             return {} as UserAccount;
             // throw new Error("Failed to fetchUser");
         }
-        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${utm_content}`;
-        // console.log("fetching user", url);
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${encodeURIComponent(utm_content)}&ua=${encodeURIComponent(ua)}`;
+        console.log("fetching user", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
         //  console.log("return fetching user", url, data);
@@ -93,10 +96,10 @@ export const actionUser = async (key: UserAccountKey, utm_content?: string): Pro
     return fetchUser(key, userId, sessionid, utm_content);
 }
 
-const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string) => {
+const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string) => {
     'use server';
-    console.log("promiseUser", key, userId, sessionid, utm_content)
-    let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content) };
+    console.log("promiseUser", key, userId, sessionid, utm_content, ua)
+    let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content, ua) };
     console.log("AFTER promiseUser", key, userId, sessionid)
     return ret;
 }

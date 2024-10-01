@@ -13,7 +13,7 @@ import fetchMention from '@/lib/fetchers/mention';
 import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
-import fetchUserSubscription from "@/lib/fetchers/user-subscription";
+import fetchUserAccount from "@/lib/fetchers/account";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { isbot } from '@/lib/is-bot';
 import { getAMention } from '@/lib/fetchers/mention';
@@ -144,8 +144,9 @@ export default async function Page({
   const t1 = new Date().getTime();
   let headerslist = headers();
   const ua = headerslist.get('user-agent') || "";
-  const bot = isbot({ ua });
-  let { userId } = !bot ? auth() : { userId: "" };
+
+  const botInfo = isbot({ ua });
+  let { userId } = !botInfo.bot ? auth() : { userId: "" };
   userId = userId || "";
   let sessionid = "";
   let dark = 0;
@@ -212,8 +213,11 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  if (!bot) {
-    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+  console.log("==> isBot", botInfo.bot);
+  console.log("==> ua", ua);
+  if (!botInfo.bot) {
+    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua);
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
   }
 
   if (findexarxid) {
@@ -253,7 +257,7 @@ export default async function Page({
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content }));
+  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot: botInfo.bot }));
 
   await fetchData(t1, fallback, calls);
 

@@ -20,7 +20,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
 import fetchChat from "@/lib/fetchers/chat";
-import promiseUser from "@/lib/fetchers/account";
+import fetchUserAccount from "@/lib/fetchers/account";
 
 type Props = {
   params: { leagueid: string, teamid: string }
@@ -182,7 +182,7 @@ export default async function Page({
     userInfo.email = email || '';
   }
   if (!bot) {
-    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
   }
 
 
