@@ -35,12 +35,25 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
 export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string): Promise<UserAccount> => {
     'use server';
     try {
-        const { email = '' } = key;
+        const { email = '', bot = false } = key;
         if (!utm_content) {
             utm_content = "";
         }
         if (!ua) {
             ua = "";
+        }
+        if (bot) {
+            return {
+                email: "",
+                billingDay: 0,
+                type: "bot",
+                creditsTotal: 0,
+                creditsRemaining: 0,
+                extraCreditsTotal:0,
+                extraCreditsRemaining: 0,
+                subscriptionType: "",
+                subscriptionActive: false,
+            }
         }
         // console.log("fetchUser", key, userId, sessionid, utm_content)
         if (!sessionid) {

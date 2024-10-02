@@ -23,6 +23,7 @@ interface LeagueLayoutProps {
   isMobile: boolean,
   fbclid: string,
   utm_content: string,
+  bot: boolean,
   story: string,
   findexarxid: string,
   league?: string,
@@ -48,6 +49,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   isMobile,
   fbclid,
   utm_content,
+  bot,
   story,
   findexarxid: startFindexarxid,
   league: startLeague,
@@ -113,7 +115,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     if (!params2) tp2 = tp.replace(/&/g, '?');
     if (!params) tp = tp.replace(/&/g, '?');
     console.log("==> view", view);
-   
+
     setParams(params);
     setParams2(params2);
     setTp(tp);
@@ -193,7 +195,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   }, [query]);
 
   const user = userInfo || { email: "" };
-  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email };
+  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email,bot };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
@@ -215,6 +217,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         isMobile={isMobile}
         fbclid={fbclid}
         utm_content={utm_content}
+        bot={bot}
         slug={slug}
         findexarxid={findexarxid}
         league={league}

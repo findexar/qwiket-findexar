@@ -9,6 +9,7 @@ import promiseUser from "@/lib/fetchers/account";
 import Dashboard from '@/components/func-components/account/dashboard';
 import SPALayout from '@/components/spa';
 import type { Metadata } from 'next';
+import { isbot } from '@/lib/is-bot';
 
 export const metadata: Metadata = {
     title: 'Account Dashboard',
@@ -39,6 +40,9 @@ export default async function Page({ searchParams }: { params: { slug: string };
     fbclid = fbclid || '';
     const ua = headerslist.get('user-agent') || "";
 
+    const botInfo = isbot({ ua });
+    let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
+
     let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
     view = view.toLowerCase();
     if (view == 'main' || view == 'feed' || view == 'home') {
@@ -48,7 +52,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let sessionid = "";
     let dark = 0;
-    let { userId } = auth();
+    let { userId } = !botInfo.bot ? auth() : { userId: "" };
 
     if (!userId) {
         userId = "";
@@ -72,14 +76,16 @@ export default async function Page({ searchParams }: { params: { slug: string };
         const email = user?.emailAddresses[0]?.emailAddress;
         userInfo.email = email || '';
     }
-    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+    if (!bot) {
+        calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid));
+    }
 
     await fetchData(t1, fallback, calls);
 
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout dark={dark || 0} view={view} tab={tab} fbclid={fbclid} utm_content={utm_content} fallback={fallback} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
+                <SPALayout dark={dark || 0} view={view} tab={tab} fbclid={fbclid} utm_content={utm_content} fallback={fallback} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
             </main>
         </SWRProvider>
     );

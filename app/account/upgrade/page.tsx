@@ -19,6 +19,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import { UserAccountKey } from "@/lib/keys";
 import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
+import { isbot } from '@/lib/is-bot';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
@@ -134,7 +135,19 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let sessionid = "";
     let dark = 0;
-    let { userId } = auth();
+
+    let headerslist = headers();
+    let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
+
+    let findexarxid = id || "";
+    let pagetype = "account-upgrade";
+    let league = "";
+    utm_content = utm_content || '';
+    fbclid = fbclid || '';
+    const ua = headerslist.get('user-agent') || "";
+    const botInfo = isbot({ ua });
+
+    let { userId } = !botInfo.bot ? auth() : { userId: "" };
 
     if (!userId) {
         userId = "";
@@ -154,15 +167,8 @@ export default async function Page({ searchParams }: { params: { slug: string };
     const leaguesKey = { type: "leagues" };
     fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-    let headerslist = headers();
-    let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
 
-    let findexarxid = id || "";
-    let pagetype = "account-upgrade";
-    let league = "";
-    utm_content = utm_content || '';
-    fbclid = fbclid || '';
-    const ua = headerslist.get('user-agent') || "";
+    let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
 
     let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
     view = view.toLowerCase();
@@ -177,15 +183,16 @@ export default async function Page({ searchParams }: { params: { slug: string };
         const email = user?.emailAddresses[0]?.emailAddress;
         userInfo.email = email || '';
     }
-
-    calls.push(await promiseUser({ type: "user-account", email: userInfo.email }, userId, sessionid));
+    if (!bot) {
+        calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid));
+    }
 
     await fetchData(t1, fallback, calls);
 
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
+                <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
             </main>
         </SWRProvider>
     );

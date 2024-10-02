@@ -217,8 +217,8 @@ export default async function Page({
   console.log("==> isBot", bot);
   console.log("==> ua", ua);
   if (!bot) {
-    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua);
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email }, userId, sessionid, utm_content, ua));
+    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua);
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua));
   }
 
   if (findexarxid) {
@@ -265,7 +265,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
       </main>
     </SWRProvider>
   );
