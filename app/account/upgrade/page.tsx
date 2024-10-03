@@ -168,7 +168,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
 
-    let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
+    let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
     if (!ua) {
         bot = true;
     }

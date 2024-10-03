@@ -116,7 +116,7 @@ export default async function Page({
   let headerslist = headers();
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
-  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
+  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
   if (!ua) {
     bot = true;
   }
