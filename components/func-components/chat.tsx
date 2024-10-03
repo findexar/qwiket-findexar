@@ -83,7 +83,7 @@ const ChatsComponent: React.FC<Props> = ({
     }
     creditsString += ' credits'
     if (totalCredits < 10) {
-        creditsString += " Upgrade";
+        creditsString += " remaining. Upgrade.";
     }
 
     const creditColorClass = totalCredits === 0
