@@ -20,7 +20,7 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
         //  console.log("fetching usage", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        // console.log("return fetching usage", url, JSON.stringify(data, null, 2));
+        console.log("return fetching usage", url, JSON.stringify(data, null, 2));
         if (data.success) {
             return data.usage as UserUsage;
         }
@@ -49,7 +49,7 @@ export const fetchUser = async (key: UserAccountKey, userId: string, sessionid: 
                 type: "bot",
                 creditsTotal: 0,
                 creditsRemaining: 0,
-                extraCreditsTotal:0,
+                extraCreditsTotal: 0,
                 extraCreditsRemaining: 0,
                 subscriptionType: "",
                 subscriptionActive: false,

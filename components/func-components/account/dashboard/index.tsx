@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '@lib/context';
 import useSWR from 'swr';
 import { UserUsageAccountKey } from '@lib/keys';
@@ -18,13 +18,21 @@ const Dashboard: React.FC = () => {
 
     // Determine if we need to show the previous month
     const today = new Date();
-    const isFirstWeekOfMonth = today.getDate() <= 7;
+    const isFirstWeekOfMonth = useMemo(() => {
+        const currentYear = today.getFullYear().toString();
+        const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
+        return selectedYear === currentYear &&
+            selectedMonth === currentMonth &&
+            today.getDate() <= 7;
+    }, [selectedYear, selectedMonth]);
+
     const [periods, setPeriods] = useState<{ year: string; month: string }[]>([]);
 
     useEffect(() => {
         let newPeriods = [];
         if (isFirstWeekOfMonth) {
-            const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            console.log(`Dashboard==>isFirstWeekOfMonth: ${isFirstWeekOfMonth}`);
+            const prevMonth = new Date(parseInt(selectedYear), parseInt(selectedMonth) - 2, 1);
             newPeriods.push({
                 year: prevMonth.getFullYear().toString(),
                 month: (prevMonth.getMonth() + 1).toString().padStart(2, '0')
