@@ -42,7 +42,9 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     const botInfo = isbot({ ua });
     let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
-
+    if (!ua) {
+        bot = true;
+    }
     let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
     view = view.toLowerCase();
     if (view == 'main' || view == 'feed' || view == 'home') {

@@ -135,6 +135,9 @@ export default async function Page({ searchParams }: { params: { slug: string };
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
+  if (!ua) {
+    bot = true;
+  }
   let sessionid = "";
   let dark = 0;
   let { userId } = !bot ? auth() : { userId: "" };

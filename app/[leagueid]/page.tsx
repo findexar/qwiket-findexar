@@ -147,7 +147,10 @@ export default async function Page({
 
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
-  let { userId } = !botInfo.bot ? auth() : { userId: "" };
+  if (!ua) {
+    bot = true;
+  }
+  let { userId } = !bot ? auth() : { userId: "" };
   userId = userId || "";
   let sessionid = "";
   let dark = 0;

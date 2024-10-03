@@ -117,6 +117,9 @@ export default async function Page({
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl/i);
+  if (!ua) {
+    bot = true;
+  }
   let { userId } = !bot ? auth() : { userId: "" };
   if (!userId) {
     userId = "";
