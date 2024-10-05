@@ -19,5 +19,5 @@ export type ChatKey = { type: string, chatUUId: string };
 export type CreateChatKey = { email?: string, type: string, chatUUId?: string, league?: string, teamid?: string, athleteUUId?: string, fantasyTeam?: boolean };
 export type UserAccountKey = { type: string, email: string, bot?: boolean };
 export type UserUsageAccountKey = { type: string, periods: { year: string, month: string }[] };
-
+export type FetchUserDocumentsKey = { type: string, chatUUId?: string };
 

@@ -1,12 +1,91 @@
 'use server';
 import { unstable_serialize } from 'swr'
-import { ChatKey, CreateChatKey } from '@/lib/keys';
+import { ChatKey, CreateChatKey, FetchUserDocumentsKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import fetchSession from "@/lib/fetchers/session";
-import { Chat } from "@/lib/types/chat";
+import { Chat, UserDocument, UserDocuments } from "@/lib/types/chat";
 
 
 const api_key = process.env.LAKE_API_KEY;
+export const deleteUploadedDocument = async (uuid: string, userid: string, sessionid: string): Promise<boolean> => {
+    'use server';
+    try {
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/delete-uploaded-document?api_key=${api_key}&userid=${userid}&sessionid=${sessionid}&uuid=${uuid}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        return data.success;
+    }
+    catch (e) {
+        console.log("deleteUploadedDocument", e);
+        throw new Error("Failed to deleteUploadedDocument");
+    }
+}
+export const saveUploadedDocument = async (document: UserDocument, userid: string, sessionid: string, chatUUId: string): Promise<boolean> => {
+    'use server';
+    try {
+        const { uuid, title, name, description, type: document_type } = document;
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/save-uploaded-document?api_key=${api_key}&userid=${userid}&sessionid=${sessionid}&uuid=${uuid}&title=${title}&name=${name}&description=${description}&document_type=${document_type}&chatUUId=${chatUUId}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        return data.success;
+    }
+    catch (e) {
+        console.log("saveUploadedDocument", e);
+        throw new Error("Failed to saveUploadedDocument");
+    }
+}
+export const saveChatDocuments = async (documentUUIds: string, chatUUId: string): Promise<boolean> => {
+    'use server';
+    try {
+        if (!documentUUIds || !chatUUId) {
+            return false;
+        }
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/save-chat-documents?api_key=${api_key}&chatUUId=${chatUUId}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        return data.success;
+    }
+    catch (e) {
+        console.log("saveChatDocuments", e);
+        throw new Error("Failed to saveChatDocuments");
+    }
+}
+export const flipCreatorMode = async (creator: boolean, chatUUId: string, userId: string, sessionid: string): Promise<boolean> => {
+    'use server';
+    try {
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/flip-creator-chat?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&creator=${creator}&chatUUId=${chatUUId}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        return data.success;
+    }
+    catch (e) {
+        console.log("flipCreatorMode", e);
+        throw new Error("Failed to flipCreatorMode");
+    }
+}
+
+
+
+export const fetchUserDocuments = async (key: FetchUserDocumentsKey, userId: string, sessionid: string): Promise<UserDocuments> => {
+    'use server';
+    try {
+        const { chatUUId = '' } = key;
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/fetch-user-documents?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&chatUUId=${chatUUId}`;
+        console.log("fetchUserDocuments", url);
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+        console.log("fetchUserDocuments return:", JSON.stringify(data, null, 2));
+        if (data.success) {
+            // console.log("===>GET CHAT", data.chat);
+            return data.documents as UserDocuments;
+        }
+        throw new Error("Failed to fetchUserDocuments");
+    }
+    catch (e) {
+        console.log("fetchUserDocuments", e);
+        throw new Error("Failed to fetchUserDocuments");
+    }
+}
 export const fetchChat = async (key: ChatKey, userId: string, sessionid: string): Promise<Chat> => {
     'use server';
     try {
@@ -41,7 +120,33 @@ export const actionChat = async (key: ChatKey): Promise<Chat> => {
     }
     return fetchChat(key, userId, sessionid);
 }
+export const actionUserDocuments = async (key: FetchUserDocumentsKey): Promise<UserDocuments> => {
+    'use server';
+    const session = await fetchSession();
 
+    const { userId } = auth();
+    const sessionid = session.sessionid || "";
+    return fetchUserDocuments(key, userId || "", sessionid);
+}
+export const actionFlipCreatorMode = async (creator: boolean, chatUUId: string): Promise<boolean> => {
+    'use server';
+    if (!chatUUId) {
+        return false;
+    }
+    const session = await fetchSession();
+
+    const { userId } = auth();
+    const sessionid = session.sessionid || "";
+    return flipCreatorMode(creator, chatUUId, userId || "", sessionid);
+}
+export const actionSaveUploadedDocument = async (document: UserDocument, chatUUId: string): Promise<boolean> => {
+    'use server';
+    const session = await fetchSession();
+
+    const { userId } = auth();
+    const sessionid = session.sessionid || "";
+    return saveUploadedDocument(document, userId || "", sessionid, chatUUId);
+}
 export interface CreateChatProps {
     league?: string;
     teamid?: string;
@@ -133,7 +238,6 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     return { success: true, chat: data.chat, error: '' };
 }
 
-
 export const actionLoadLatestChat = async (key: CreateChatKey) => {
     'use server';
     const session = await fetchSession();
@@ -169,6 +273,12 @@ const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: 
     //  console.log("promiseCreateChat", key, userId, sessionid)
     let ret = { key: unstable_serialize(key), call: loadLatestChat(key, userId, sessionid) };
     // console.log("AFTER promiseCreateChat", key, userId, sessionid)
+    return ret;
+}
+
+export const promiseUserDocuments = async (key: FetchUserDocumentsKey, userId: string, sessionid: string) => {
+    'use server';
+    let ret = { key: unstable_serialize(key), call: fetchUserDocuments(key, userId, sessionid) };
     return ret;
 }
 
