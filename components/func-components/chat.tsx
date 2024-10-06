@@ -484,7 +484,10 @@ const ChatsComponent: React.FC<Props> = ({
                                     Creator Mode supports creative sports content producers, allows to attach documents to the chat and more.
                                 </div>
                             )}
-                            {creator && <CreatorMode chatUUId={chatUUId} selectedDocuments={selectedDocuments} onSelectedDocumentsChange={setSelectedDocuments} />}
+                            {creator && <CreatorMode chatUUId={chatUUId} selectedDocuments={selectedDocuments} onSelectedDocumentsChange={(documents: UserDocument[]) => {
+                                console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
+                                setSelectedDocuments(documents)
+                            }} />}
                         </>
                     )}
                 </div>
@@ -513,7 +516,7 @@ const ChatsComponent: React.FC<Props> = ({
             <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {drawMessages.length === 0 && (
                     <>
-                        {!prompts || prompts.length === 0 ? <>
+                        {(!prompts || prompts.length === 0) && !creator ? <>
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>

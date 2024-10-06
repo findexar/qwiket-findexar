@@ -56,7 +56,7 @@ export type UserDocument = {
     name: string;
     title: string;
     description: string;
-    selected: boolean;
+    selected: number;
     type: 'STYLE' | 'DATA';
 }
 

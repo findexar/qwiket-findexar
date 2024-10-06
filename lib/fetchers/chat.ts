@@ -34,13 +34,13 @@ export const saveUploadedDocument = async (document: UserDocument, userid: strin
         throw new Error("Failed to saveUploadedDocument");
     }
 }
-export const saveChatDocuments = async (documentUUIds: string, chatUUId: string): Promise<boolean> => {
+export const saveChatDocuments = async (uuids: string, chatUUId: string): Promise<boolean> => {
     'use server';
     try {
-        if (!documentUUIds || !chatUUId) {
+        if (!uuids || !chatUUId) {
             return false;
         }
-        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/save-chat-documents?api_key=${api_key}&chatUUId=${chatUUId}`;
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/save-chat-documents?api_key=${api_key}&chatUUId=${chatUUId}&uuidsString=${uuids}`;
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
         return data.success;
@@ -127,6 +127,14 @@ export const actionUserDocuments = async (key: FetchUserDocumentsKey): Promise<U
     const { userId } = auth();
     const sessionid = session.sessionid || "";
     return fetchUserDocuments(key, userId || "", sessionid);
+}
+export const actionDeleteUploadedDocument = async (uuid: string): Promise<boolean> => {
+    'use server';
+    const session = await fetchSession();
+
+    const { userId } = auth();
+    const sessionid = session.sessionid || "";
+    return deleteUploadedDocument(uuid, userId || "", sessionid);
 }
 export const actionFlipCreatorMode = async (creator: boolean, chatUUId: string): Promise<boolean> => {
     'use server';
