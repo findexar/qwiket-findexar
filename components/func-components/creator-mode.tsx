@@ -13,6 +13,38 @@ interface CreatorModeProps {
     selectedDocuments: UserDocument[];
 }
 
+interface WarningModalProps {
+    isOpen: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+}
+
+const WarningModal: React.FC<WarningModalProps> = ({ isOpen, onConfirm, onCancel }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-sm w-full">
+                <p className="mb-4 text-gray-800 dark:text-gray-200">You have unsaved changes. Do you want to save them before switching?</p>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={onCancel}
+                        className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500"
+                    >
+                        Continue Editing
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                    >
+                        Switch Without Saving
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocumentsChange, selectedDocuments }) => {
     const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content } = useAppContext();
 
@@ -23,6 +55,31 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
     const [editingDocument, setEditingDocument] = useState<{ [key: string]: UserDocument }>({});
     const [hasChanges, setHasChanges] = useState<{ [key: string]: boolean }>({});
     const editingRef = useRef<HTMLDivElement>(null);
+
+    const [activeEditingUuid, setActiveEditingUuid] = useState<string | null>(null);
+    const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+    const [pendingEditUuid, setPendingEditUuid] = useState<string | null>(null);
+
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (hasUnsavedChanges) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [hasUnsavedChanges]);
+
+    useEffect(() => {
+        setHasUnsavedChanges(Object.values(hasChanges).some(Boolean));
+    }, [hasChanges]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -53,63 +110,83 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
 
     console.log(`selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
 
-    const handleEdit = (uuid: string, field: keyof UserDocument, value: string) => {
-        setEditingDocument(prev => ({
-            ...prev,
-            [uuid]: {
-                ...prev[uuid],
-                [field]: value
+    useEffect(() => {
+        if (userDocuments) {
+            console.log("Updating documents from userDocuments:", userDocuments);
+            setStyleDocuments(userDocuments.filter(doc => doc.type === 'STYLE'));
+            setDataDocuments(userDocuments.filter(doc => doc.type === 'DATA'));
+        }
+    }, [userDocuments]);
+
+    const startEditing = (uuid: string) => {
+        console.log("startEditing called with uuid:", uuid);
+        if (activeEditingUuid && activeEditingUuid !== uuid && hasChanges[activeEditingUuid]) {
+            console.log("Showing warning modal for unsaved changes");
+            setPendingEditUuid(uuid);
+            setIsWarningModalOpen(true);
+        } else {
+            console.log("Setting active editing uuid:", uuid);
+            setActiveEditingUuid(uuid);
+            if (!editingDocument[uuid]) {
+                const docToEdit = findDocumentByUuid(uuid);
+                console.log("Initializing editing document:", docToEdit);
+                setEditingDocument(prev => ({
+                    ...prev,
+                    [uuid]: { ...docToEdit }
+                }));
             }
-        }));
-        setHasChanges(prev => ({ ...prev, [uuid]: true }));
+        }
     };
 
     const handleStopEditing = () => {
-        setTimeout(() => {
-            setEditingDocument(prevEditing => {
-                const newEditing = { ...prevEditing };
-                Object.keys(newEditing).forEach(uuid => {
-                    if (hasChanges[uuid]) {
-                        if (window.confirm("You have unsaved changes. Are you sure you want to discard them?")) {
-                            delete newEditing[uuid];
-                            setHasChanges(prev => {
-                                const newHasChanges = { ...prev };
-                                delete newHasChanges[uuid];
-                                return newHasChanges;
-                            });
-                        }
-                    } else {
-                        delete newEditing[uuid];
-                    }
-                });
-                return newEditing;
-            });
-        }, 100);
+        console.log("handleStopEditing called");
+        if (activeEditingUuid && hasChanges[activeEditingUuid]) {
+            setIsWarningModalOpen(true);
+        } else {
+            setActiveEditingUuid(null);
+        }
     };
 
-    const discardChanges = (uuid: string) => {
-        setEditingDocument(prev => {
-            const { [uuid]: _, ...rest } = prev;
-            return rest;
-        });
-        setHasChanges(prev => {
-            const { [uuid]: _, ...rest } = prev;
-            return rest;
-        });
+    const handleWarningConfirm = () => {
+        console.log("handleWarningConfirm called");
+        if (pendingEditUuid) {
+            discardChanges(activeEditingUuid!);
+            startEditing(pendingEditUuid);
+        }
+        setIsWarningModalOpen(false);
+        setPendingEditUuid(null);
+    };
+
+    const handleWarningCancel = () => {
+        console.log("handleWarningCancel called");
+        setIsWarningModalOpen(false);
+        setPendingEditUuid(null);
     };
 
     const handleUpdate = async (uuid: string) => {
+        console.log("handleUpdate called with uuid:", uuid);
         if (editingDocument[uuid]) {
             const updatedDocument = editingDocument[uuid];
+            console.log("Updating document:", updatedDocument);
 
             // Update local state
-            const updateLocalDocuments = (documents: UserDocument[]) =>
-                documents.map(doc => doc.uuid === uuid ? { ...doc, ...updatedDocument } : doc);
+            const updateDocuments = (docs: UserDocument[]) =>
+                docs.map(doc => doc.uuid === uuid ? { ...doc, ...updatedDocument } : doc);
 
-            setStyleDocuments(prev => updateLocalDocuments(prev));
-            setDataDocuments(prev => updateLocalDocuments(prev));
+            setStyleDocuments(prev => updateDocuments(prev));
+            setDataDocuments(prev => updateDocuments(prev));
 
-            // Clear the editing state and hasChanges flag for this document
+            // Update selectedDocuments
+            let updatedSelectedDocuments: UserDocument[];
+            if (selectedDocuments.some(doc => doc.uuid === uuid)) {
+                updatedSelectedDocuments = updateDocuments(selectedDocuments);
+            } else {
+                updatedSelectedDocuments = [...selectedDocuments, updatedDocument];
+            }
+            console.log("Updating selectedDocuments:", updatedSelectedDocuments);
+            onSelectedDocumentsChange(updatedSelectedDocuments);
+
+            // Clear editing state
             setEditingDocument(prev => {
                 const { [uuid]: _, ...rest } = prev;
                 return rest;
@@ -118,22 +195,73 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
                 const { [uuid]: _, ...rest } = prev;
                 return rest;
             });
+            setActiveEditingUuid(null);
 
+            // Update hasUnsavedChanges
+            setHasUnsavedChanges(prevHasUnsavedChanges => {
+                const updatedHasChanges = { ...hasChanges };
+                delete updatedHasChanges[uuid];
+                return Object.values(updatedHasChanges).some(Boolean);
+            });
+            console.log(`actionSaveUploadedDocument uuid: ${updatedDocument.uuid}`);
+            await actionSaveUploadedDocument(updatedDocument, chatUUId || "");
+
+            // Update on server if chatUUId is available
             if (chatUUId && chatUUId !== "_new") {
-                try {
-                    await actionSaveUploadedDocument(updatedDocument, chatUUId);
-                    mutate();
-                } catch (error) {
-                    console.error("Error updating document:", error);
-                }
+                console.log("Saving document to server");
+                mutate();
             } else {
-                // Update locally when chatUUId is not set
-                const updatedDocuments = selectedDocuments.map(doc =>
-                    doc.uuid === uuid ? { ...doc, ...updatedDocument } : doc
-                );
-                onSelectedDocumentsChange(updatedDocuments);
+                console.log("No chatUUId available, changes saved locally in selectedDocuments");
             }
+        } else {
+            console.log("No editing document found for uuid:", uuid);
         }
+    };
+
+    const handleEdit = (uuid: string, field: keyof UserDocument, value: string) => {
+        console.log("handleEdit called:", uuid, field, value);
+        setEditingDocument(prev => ({
+            ...prev,
+            [uuid]: {
+                ...prev[uuid],
+                [field]: value
+            }
+        }));
+        setHasChanges(prev => ({ ...prev, [uuid]: true }));
+        setHasUnsavedChanges(true);
+    };
+
+    const discardChanges = (uuid: string) => {
+        console.log("discardChanges called for uuid:", uuid);
+        setEditingDocument(prev => {
+            const { [uuid]: _, ...rest } = prev;
+            return rest;
+        });
+        setHasChanges(prev => {
+            const { [uuid]: _, ...rest } = prev;
+            return rest;
+        });
+        setActiveEditingUuid(null);
+
+        // Update hasUnsavedChanges after discarding changes
+        setHasUnsavedChanges(prevHasUnsavedChanges => {
+            const updatedHasChanges = { ...hasChanges };
+            delete updatedHasChanges[uuid];
+            return Object.values(updatedHasChanges).some(Boolean);
+        });
+    };
+
+    const findDocumentByUuid = (uuid: string): UserDocument => {
+        const doc = [...styleDocuments, ...dataDocuments].find(doc => doc.uuid === uuid);
+        console.log("findDocumentByUuid:", uuid, doc);
+        return doc || {
+            uuid,
+            type: 'STYLE',
+            name: '',
+            title: '',
+            description: '',
+            selected: 0
+        };
     };
 
     const toggleSelectDocument = async (uuid: string, type: 'STYLE' | 'DATA') => {
@@ -196,11 +324,11 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
 
     const renderDocumentList = (documents: UserDocument[], type: 'STYLE' | 'DATA') => (
         documents.map(doc => {
-            const isEditing = !!editingDocument[doc.uuid];
-            const currentDoc = isEditing ? editingDocument[doc.uuid] : doc;
+            const isEditing = activeEditingUuid === doc.uuid;
+            const currentDoc = isEditing ? editingDocument[doc.uuid] || doc : doc;
 
             return (
-                <div key={doc.uuid} className={`mb-4 p-4 border rounded ${isEditing ? 'bg-blue-50 dark:bg-blue-900' : 'bg-white dark:bg-gray-800'} dark:border-gray-700`} ref={isEditing ? editingRef : null}>
+                <div key={doc.uuid} className={`mb-4 p-4 border rounded ${isEditing ? 'bg-blue-50 dark:bg-blue-900' : 'bg-white dark:bg-gray-800'} dark:border-gray-700`}>
                     <div className="flex items-center justify-between mb-2">
                         <input
                             type="checkbox"
@@ -220,21 +348,17 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
                         type="text"
                         value={currentDoc.title}
                         onChange={(e) => handleEdit(doc.uuid, 'title', e.target.value)}
-                        onFocus={() => !isEditing && setEditingDocument(prev => ({ ...prev, [doc.uuid]: { ...doc } }))}
-                        onBlur={() => setTimeout(handleStopEditing, 100)}
+                        onFocus={() => startEditing(doc.uuid)}
                         className={`w-full mb-2 p-2 border rounded ${isEditing ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:border-gray-600`}
                         placeholder="Title"
-                        readOnly={!isEditing}
                     />
                     <textarea
                         value={currentDoc.description}
                         onChange={(e) => handleEdit(doc.uuid, 'description', e.target.value)}
-                        onFocus={() => !isEditing && setEditingDocument(prev => ({ ...prev, [doc.uuid]: { ...doc } }))}
-                        onBlur={() => setTimeout(handleStopEditing, 100)}
+                        onFocus={() => startEditing(doc.uuid)}
                         className={`w-full mb-2 p-2 border rounded ${isEditing ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:border-gray-600`}
                         placeholder="Description"
                         rows={3}
-                        readOnly={!isEditing}
                     />
                     {isEditing && hasChanges[doc.uuid] && (
                         <div className="flex justify-end space-x-2 mt-2">
@@ -308,6 +432,11 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
                 </div>
             </section>
 
+            <WarningModal
+                isOpen={isWarningModalOpen}
+                onConfirm={handleWarningConfirm}
+                onCancel={handleWarningCancel}
+            />
         </div>
     );
 };

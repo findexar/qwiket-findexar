@@ -201,7 +201,10 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onMetaUpdate: (content: string) => {
                 update(content);
-            }
+            },
+            styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE')?.uuid || "",
+            dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA').map(doc => doc.uuid).join(','),
+            creator
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
@@ -268,7 +271,9 @@ const ChatsComponent: React.FC<Props> = ({
             if (!chatUUId || chatUUId == '_new') {
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false }).then(
+                //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
+                //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
+                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE')?.uuid || "", dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA').map(doc => doc.uuid).join(','), creator }).then(
                     (chatUUId) => {
                         setProvisionalChatUUId((prev) => {
                             return chatUUId as string;

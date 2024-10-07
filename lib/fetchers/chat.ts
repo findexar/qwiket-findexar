@@ -161,15 +161,17 @@ export interface CreateChatProps {
     athleteUUId?: string;
     insider?: boolean;
     fantasyTeam?: boolean;
-    //@TODO add multi-athlete
+    styleDocument?: string;
+    dataDocumentsString?: string;
+    creator?: boolean;
 }
 const createChat = async (props: CreateChatProps, userId: string, sessionid: string): Promise<String> => {
     'use server';
-    const { athleteUUId, teamid, league, fantasyTeam = false, insider = false } = props;
+    const { athleteUUId, teamid, league, fantasyTeam = false, insider = false, styleDocument = "", dataDocumentsString = "", creator = false } = props;
     //  console.log("****** createChat", props)
     userId = userId || sessionid;
     const insiderParam = insider ? '1' : '0';
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}`;
     // console.log("createChat", url);
 
     const res = await fetch(url, {

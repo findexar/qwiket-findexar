@@ -10,12 +10,15 @@ export interface UserRequestProps {
     onDone: () => void;
     onChatUUId: (chatUUId: string) => void;
     onMetaUpdate: (content: string) => void;
+    creator?: boolean;
+    styleDocument?: string;
+    dataDocumentsString?: string;
 }
 
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate } = props;
+        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
@@ -33,7 +36,10 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                     league,
                     fantasyTeam,
                     userRequest,
-                    promptUUId
+                    promptUUId,
+                    creator,
+                    styleDocument,
+                    dataDocumentsString
                 }),
             });
 
