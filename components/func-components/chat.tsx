@@ -71,6 +71,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [creator, setCreator] = useState<boolean>(false);
     const [showCreatorInfo, setShowCreatorInfo] = useState<boolean>(false);
     const [selectedDocuments, setSelectedDocuments] = useState<UserDocument[]>([]);
+    const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
     // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -489,16 +490,31 @@ const ChatsComponent: React.FC<Props> = ({
                                         <FaInfoCircle size={14} />
                                     </button>
                                 </div>
-                                <Link
-                                    href="/account/dashboard"
-                                    className={`text-xs ${creditColorClass} hover:underline`}
-                                >
-                                    {creditsString}
-                                </Link>
+                                <div className="flex items-center">
+                                    <Link
+                                        href="/account/dashboard"
+                                        className={`text-xs ${creditColorClass} hover:underline mr-2`}
+                                    >
+                                        {creditsString}
+                                    </Link>
+                                    <button
+                                        onClick={() => setShowCreditsInfo(!showCreditsInfo)}
+                                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                    >
+                                        <FaInfoCircle size={14} />
+                                    </button>
+                                </div>
                             </div>
                             {showCreatorInfo && (
                                 <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                                    Creator Mode supports creative sports content producers, allows to attach documents to the chat and more.
+                                    Creator Mode supports creative sports content producers, allows to attach documents to the chat and more. Note: each document attached to chat costs extra 5 credits per request.
+                                </div>
+                            )}
+                            {showCreditsInfo && (
+                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                    Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
+                                        Dashboard
+                                    </Link> for more details on your credit usage and subscription options.
                                 </div>
                             )}
                             {creator && <CreatorMode chatUUId={chatUUId} selectedDocuments={selectedDocuments} onSelectedDocumentsChange={(documents: UserDocument[]) => {
