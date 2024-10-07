@@ -115,6 +115,21 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
             console.log("Updating documents from userDocuments:", userDocuments);
             setStyleDocuments(userDocuments.filter(doc => doc.type === 'STYLE'));
             setDataDocuments(userDocuments.filter(doc => doc.type === 'DATA'));
+
+            // Create a map of existing selectedDocuments for quick lookup
+            const selectedDocsMap = new Map(selectedDocuments.map(doc => [doc.uuid, doc]));
+
+            // Update selectedDocuments based on userDocuments
+            const updatedSelectedDocs = userDocuments.filter(doc => doc.selected === 1).map(doc => {
+                // If the document already exists in selectedDocuments, use that version
+                return selectedDocsMap.get(doc.uuid) || doc;
+            });
+
+            console.log(`==>updatedSelectedDocs: ${JSON.stringify(updatedSelectedDocs)}`);
+            if (JSON.stringify(updatedSelectedDocs) !== JSON.stringify(selectedDocuments)) {
+                console.log(`Updating selectedDocuments from userDocuments: ${JSON.stringify(updatedSelectedDocs)}`);
+                onSelectedDocumentsChange(updatedSelectedDocs);
+            }
         }
     }, [userDocuments]);
 
@@ -267,24 +282,33 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
     const toggleSelectDocument = async (uuid: string, type: 'STYLE' | 'DATA') => {
         console.log(`toggleSelectDocument uuid: ${uuid}, type: ${type}`);
         const documents = type === 'STYLE' ? styleDocuments : dataDocuments;
+        console.log(`==>documents: ${JSON.stringify(documents)}`);
         const updatedDocuments = documents.map(doc =>
             doc.uuid === uuid ? { ...doc, selected: doc.selected === 1 ? 0 : 1 } : doc
         );
+        console.log(`==>updatedDocuments: ${JSON.stringify(updatedDocuments)}`);
 
+        let newStyleDocuments, newDataDocuments;
         if (type === 'STYLE') {
+            newStyleDocuments = updatedDocuments;
+            newDataDocuments = dataDocuments;
+            console.log(`==>newStyleDocuments: ${JSON.stringify(newStyleDocuments)}`);
             setStyleDocuments(updatedDocuments);
         } else {
+            newStyleDocuments = styleDocuments;
+            newDataDocuments = updatedDocuments;
             setDataDocuments(updatedDocuments);
         }
 
-        const allSelectedDocuments = [...updatedDocuments.filter(doc => doc.selected === 1),
-        ...(type === 'STYLE' ? dataDocuments : styleDocuments).filter(doc => doc.selected === 1)];
-        console.log(`allSelectedDocuments: ${JSON.stringify(allSelectedDocuments)}`);
-        onSelectedDocumentsChange(allSelectedDocuments);
+        const allDocuments = [...newStyleDocuments, ...newDataDocuments];
+        console.log(`==>allDocuments: ${JSON.stringify(allDocuments)}`);
+        const newSelectedDocuments = allDocuments.filter(doc => doc.selected === 1);
+        console.log(`==>newSelectedDocuments: ${JSON.stringify(newSelectedDocuments)}`);
+        onSelectedDocumentsChange(newSelectedDocuments);
 
-        if (chatUUId && chatUUId !== "_new") {
-            await saveChatDocuments(chatUUId, allSelectedDocuments.map(doc => doc.uuid).join(','));
-            mutate();
+        if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
+            await saveChatDocuments(newSelectedDocuments.map(doc => doc.uuid).join(','), chatUUId);
+            // mutate();
         }
     };
 
@@ -314,11 +338,8 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
             if (chatUUId && chatUUId !== "_new") {
                 mutate();
             }
-            if (!chatUUId || chatUUId === "_new") {
-                const updatedSelectedDocuments = [...selectedDocuments, document];
-                console.log(`handleFileUploadSuccess=>updatedSelectedDocuments: ${JSON.stringify(updatedSelectedDocuments)}`);
-                onSelectedDocumentsChange(updatedSelectedDocuments);
-            }
+            const updatedSelectedDocuments = [...selectedDocuments, document];
+            onSelectedDocumentsChange(updatedSelectedDocuments);
         });
     }, [mutate, selectedDocuments, onSelectedDocumentsChange, chatUUId]);
 
@@ -383,7 +404,6 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
 
     useEffect(() => {
         console.log(`useEffect=>userDocuments: ${JSON.stringify(userDocuments)}`);
-        console.log(`useEffect=>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
 
         const updateDocuments = (type: 'STYLE' | 'DATA') => {
             // Start with all selectedDocuments of the given type

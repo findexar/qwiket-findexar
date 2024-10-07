@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
+import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown, { Components } from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
@@ -76,8 +76,8 @@ const ChatsComponent: React.FC<Props> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-    console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
-    console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
+    //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
+    //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
     const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -101,9 +101,11 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
     const [initialPromptUUId, setInitialPromptUUId] = useState<string | null>(null);
+    console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
         if (loadedChat) {
             setCreator(loadedChat.chat.creator || false);
+
         }
     }, [loadedChat]);
     useEffect(() => {
@@ -156,6 +158,11 @@ const ChatsComponent: React.FC<Props> = ({
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
         // setStreamingMessageIndex(messages.length + 1);
+        const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
+        const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
+        console.log(`==>styleDocument: ${styleDocument}`);
+        console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
+        console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -202,8 +209,8 @@ const ChatsComponent: React.FC<Props> = ({
             onMetaUpdate: (content: string) => {
                 update(content);
             },
-            styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE')?.uuid || "",
-            dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA').map(doc => doc.uuid).join(','),
+            styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
+            dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
             creator
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
@@ -215,7 +222,7 @@ const ChatsComponent: React.FC<Props> = ({
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, messages.length])
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments]);
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -273,7 +280,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setPendingUserRequest(true);
                 //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
                 //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
-                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE')?.uuid || "", dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA').map(doc => doc.uuid).join(','), creator }).then(
+                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
                     (chatUUId) => {
                         setProvisionalChatUUId((prev) => {
                             return chatUUId as string;
@@ -466,7 +473,12 @@ const ChatsComponent: React.FC<Props> = ({
                                             type="checkbox"
                                             className="sr-only peer"
                                             checked={creator}
-                                            onChange={() => setCreator(!creator)}
+                                            onChange={() => {
+                                                setCreator(!creator);
+                                                if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
+                                                    actionFlipCreatorMode(!creator, chatUUId);
+                                                }
+                                            }}
                                         />
                                         <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[0px] after:start-[0px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                     </label>
