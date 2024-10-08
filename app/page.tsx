@@ -160,7 +160,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
+  let { tab = "", fbclid, utm_content, view = "mentions", id, story,cid,aid } = searchParams as any;
 
   let findexarxid = id || "";
   let pagetype = "league";
@@ -210,7 +210,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     }
   }
   if (!bot) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua,cid,aid));
   }
   await fetchData(t1, fallback, calls);
 
