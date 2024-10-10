@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -80,7 +80,13 @@ const ChatsComponent: React.FC<Props> = ({
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
     //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
-    const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
+    let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
+
+    const level = useMemo(() => {
+        return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
+    }, [subscriptionType]);
+    console.log("==> CHATS.TSX level", JSON.stringify(level));
+
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
     let creditsString = creditsRemaining ? creditsRemaining.toString() : "0";
@@ -473,6 +479,7 @@ const ChatsComponent: React.FC<Props> = ({
                                     <label className="inline-flex items-center cursor-pointer">
                                         <input
                                             type="checkbox"
+                                            disabled={level !== "creator" && level !== "trial"}
                                             className="sr-only peer"
                                             checked={creator}
                                             onChange={() => {
@@ -493,7 +500,7 @@ const ChatsComponent: React.FC<Props> = ({
                                     <button
                                         onClick={() => setShowAttachments(!showAttachments)}
                                         className={`ml-4 flex items-center text-sm ${creator ? 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                                                : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
                                             }`}
                                         disabled={!creator}
                                     >
@@ -522,10 +529,15 @@ const ChatsComponent: React.FC<Props> = ({
                                 </div>
                             </div>
                             {showCreatorInfo && (
-                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                <><div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
                                     Creator Mode supports creative sports content producers, allows to attach documents to the chat and more. Note: each document attached to chat costs extra 5 credits per request.
                                 </div>
-                            )}
+                                    {(level !== "creator" && level !== "trial") && (
+                                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                            Creator Mode is not available for your subscription level. <Link href="/account/dashboard" className="text-blue-500 hover:underline">Upgrade to creator level</Link> to use this feature.
+                                        </div>
+                                    )}
+                                </>)}
                             {showCreditsInfo && (
                                 <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
                                     Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
@@ -585,7 +597,7 @@ const ChatsComponent: React.FC<Props> = ({
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>
-                         
+
                         </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                     </>
                 )}

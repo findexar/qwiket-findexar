@@ -20,7 +20,7 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
         //  console.log("fetching usage", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        console.log("return fetching usage", url, JSON.stringify(data, null, 2));
+        //console.log("return fetching usage", url, JSON.stringify(data, null, 2));
         if (data.success) {
             return data.usage as UserUsage;
         }
@@ -91,7 +91,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     if (!userId) {
         userId = "";
     }
-    console.log("===>actionUserUsage", key, userId, sessionid)
+    // console.log("===>actionUserUsage", key, userId, sessionid)
 
     return fetchUserUsage(key, userId, sessionid);
 }
