@@ -585,9 +585,7 @@ const ChatsComponent: React.FC<Props> = ({
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>
-                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-4">
-                                Regular credits are reset every month depending on the subscription, except for the free trial. Extra credits never expire and will be applied when the regular credits run out.
-                            </p>
+                         
                         </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                     </>
                 )}
