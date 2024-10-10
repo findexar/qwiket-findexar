@@ -140,16 +140,13 @@ export default async function Page({
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
 
-  let { tab, fbclid, utm_content, view = "mentions", id, story }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
+  let { tab, fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" }:
+    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, cid: string, aid: string } = searchParams as any;
   let findexarxid = id || "";
   let pagetype = "team";
   let league = params.leagueid.toUpperCase();
   let teamid = params.teamid;
   console.log("league->", league);
-  utm_content = utm_content || '';
-  fbclid = fbclid || '';
-
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -169,7 +166,7 @@ export default async function Page({
     userInfo.email = email || '';
   }
   if (!bot) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
 
 

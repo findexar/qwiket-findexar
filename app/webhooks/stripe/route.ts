@@ -50,6 +50,10 @@ export async function POST(req: Request) {
                     customer_id: checkoutSession.customer,
                     status: 'active',
                     plan_id: checkoutSession.metadata?.plan_id,
+                    client_reference_id: checkoutSession.client_reference_id,
+                    level: checkoutSession.metadata?.level,
+                    email: checkoutSession.customer_email,
+                    payment_status: checkoutSession.payment_status,
                     current_period_start: new Date().toISOString(),
                     current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
                     cancel_at_period_end: false,
@@ -99,8 +103,11 @@ export async function POST(req: Request) {
             break;
         case 'customer.subscription.updated':
             const updatedSubscription = event.data.object as Stripe.Subscription;
-            console.log('Subscription updated:', updatedSubscription.id);
+            console.log('Subscription updated:', JSON.stringify(updatedSubscription, null, 2));
+            const plan = updatedSubscription.items.data[0].plan;
+            //subscription_id,customer_id,client_reference_id,level,email,name,payment_status,status,plan_id
 
+            const plan_id = plan.id;
             // Add API POST for customer.subscription.updated using upsert-subscription
             await fetch(`${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/upsert-subscription?api_key=${api_key}`, {
                 method: 'POST',
@@ -116,13 +123,17 @@ export async function POST(req: Request) {
                     cancel_at_period_end: updatedSubscription.cancel_at_period_end,
                     default_payment_method: updatedSubscription.default_payment_method,
                     billing_cycle_anchor: updatedSubscription.billing_cycle_anchor,
+                    plan_id: plan_id,
                 }),
             });
             break;
-        case 'customer.subscription.created':
+        case 'customer.subscription.created': {
             const createdSubscription = event.data.object as Stripe.Subscription;
             console.log('Subscription created:', createdSubscription.id);
+            const plan = createdSubscription.items.data[0].plan;
+            //subscription_id,customer_id,client_reference_id,level,email,name,payment_status,status,plan_id
 
+            const plan_id = plan.id;
             // Add API POST for customer.subscription.created using upsert-subscription
             await fetch(`${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/upsert-subscription?api_key=${api_key}`, {
                 method: 'POST',
@@ -138,9 +149,11 @@ export async function POST(req: Request) {
                     cancel_at_period_end: createdSubscription.cancel_at_period_end,
                     default_payment_method: createdSubscription.default_payment_method,
                     billing_cycle_anchor: createdSubscription.billing_cycle_anchor,
+                    plan_id: plan_id,
                 }),
             });
             break;
+        }
         default:
             console.log(`Unhandled event type: ${event.type}`);
     }

@@ -31,12 +31,12 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     const t1 = new Date().getTime();
     let headerslist = headers();
-    let { tab = "", fbclid, utm_content, view = "mentions", id, story } = searchParams as any;
+    let { tab = "", fbclid, utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = searchParams as any;
 
     let findexarxid = id || "";
     let pagetype = "account-dashboard";
     let league = "";
-    utm_content = utm_content || '';
+
     fbclid = fbclid || '';
     const ua = headerslist.get('user-agent') || "";
 
@@ -79,7 +79,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
         userInfo.email = email || '';
     }
     if (!bot) {
-        calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid));
+        calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
     }
 
     await fetchData(t1, fallback, calls);

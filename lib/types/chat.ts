@@ -12,6 +12,7 @@ export type Chat = {
     messages?: ChatMessage[],
     name?: string,
     position?: number,
+    creator?: boolean,
 }
 
 export type ChatItem = {
@@ -49,3 +50,14 @@ export type Message = {
     role: string;
     content: string;
 }
+
+export type UserDocument = {
+    uuid: string;
+    name: string;
+    title: string;
+    description: string;
+    selected: number;
+    type: 'STYLE' | 'DATA';
+}
+
+export type UserDocuments = UserDocument[];

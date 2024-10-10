@@ -1,12 +1,12 @@
 'use client';
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
-import { motion } from 'framer-motion';
-import { Chat, Message } from "@lib/types/chat";
-import { actionChat, actionChatName, actionCreateChat, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Chat, Message, UserDocument } from "@lib/types/chat";
+import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown, { Components } from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck } from 'react-icons/fa';
+import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
@@ -16,6 +16,7 @@ import type { UserAccount } from '@lib/types/user';
 import Link from 'next/link';
 import { actionFetchPrompts } from "@lib/actions/fetch-prompts";
 import { styled } from "styled-components";
+import CreatorMode from "@components/func-components/creator-mode";
 
 const PromptsContainer = styled.div`
   display: flex;
@@ -67,14 +68,25 @@ const ChatsComponent: React.FC<Props> = ({
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const [prompts, setPrompts] = useState<string[]>([]);
+    const [creator, setCreator] = useState<boolean>(false);
+    const [showCreatorInfo, setShowCreatorInfo] = useState<boolean>(false);
+    const [selectedDocuments, setSelectedDocuments] = useState<UserDocument[]>([]);
+    const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
+    const [showAttachments, setShowAttachments] = useState<boolean>(false);
     // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-    console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
-    console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
-    const { extraCreditsRemaining, creditsRemaining } = userAccount as UserAccount || {};
+    //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
+    //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
+    let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
+
+    const level = useMemo(() => {
+        return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
+    }, [subscriptionType]);
+    console.log("==> CHATS.TSX level", JSON.stringify(level));
+
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
     let creditsString = creditsRemaining ? creditsRemaining.toString() : "0";
@@ -97,7 +109,13 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
     const [initialPromptUUId, setInitialPromptUUId] = useState<string | null>(null);
+    console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
+    useEffect(() => {
+        if (loadedChat) {
+            setCreator(loadedChat.chat.creator || false);
 
+        }
+    }, [loadedChat]);
     useEffect(() => {
         const prompt = searchParams?.get('prompt') || "";
         const promptUUId = searchParams?.get('promptUUId') || "";
@@ -148,6 +166,11 @@ const ChatsComponent: React.FC<Props> = ({
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
         // setStreamingMessageIndex(messages.length + 1);
+        const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
+        const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
+        console.log(`==>styleDocument: ${styleDocument}`);
+        console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
+        console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -193,7 +216,10 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onMetaUpdate: (content: string) => {
                 update(content);
-            }
+            },
+            styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
+            dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
+            creator
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
@@ -204,7 +230,7 @@ const ChatsComponent: React.FC<Props> = ({
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, messages.length])
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments]);
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -260,7 +286,9 @@ const ChatsComponent: React.FC<Props> = ({
             if (!chatUUId || chatUUId == '_new') {
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false }).then(
+                //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
+                //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
+                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
                     (chatUUId) => {
                         setProvisionalChatUUId((prev) => {
                             return chatUUId as string;
@@ -415,38 +443,130 @@ const ChatsComponent: React.FC<Props> = ({
     // console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
-            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 h-[80px] relative z-2">
-                <div className="flex items-center justify-between md:h-8 h-16">
-                    <div className="flex items-center">
-                        <button
-                            onClick={() => setOpenMyChats(!openMyChats)}
-                            className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                        >
-                            {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
-                        </button>
-                        <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{drawChatName}</h1>
+            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
+                <div className="flex flex-col">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <button
+                                onClick={() => setOpenMyChats(!openMyChats)}
+                                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                            >
+                                {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
+                            </button>
+                            <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{drawChatName}</h1>
+                        </div>
+                        <div className="flex items-center">
+                            <button
+                                onClick={() => {
+                                    setChatUUId("_new");
+                                    setMessages([]);
+                                    setChatName('New Chat');
+                                    setOpenMyChats(false);
+                                    setIsLoading(false);
+                                }}
+                                className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={drawChatName === 'New Chat'}
+                            >
+                                <HiOutlinePencilAlt size={24} />
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex flex-col items-end h-16 mt-4">
-                        <button
-                            onClick={() => {
-                                setChatUUId("_new");
-                                setMessages([]);
-                                setChatName('New Chat');
-                                setOpenMyChats(false);
-                                setIsLoading(false);
-                            }}
-                            className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            disabled={drawChatName === 'New Chat'}
-                        >
-                            <HiOutlinePencilAlt size={24} />
-                        </button>
-                        <Link
-                            href="/account/dashboard"
-                            className={`text-xs ${creditColorClass} hover:underline mt-1`}
-                        >
-                            {creditsString}
-                        </Link>
-                    </div>
+                    {!openMyChats && (
+                        <>
+                            <div className="flex items-center justify-between mt-2 mb-2">
+                                <div className="flex items-center">
+                                    <span className="mr-2 text-sm text-gray-600 dark:text-gray-400">Creator Mode</span>
+                                    <label className="inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            disabled={level !== "creator" && level !== "trial"}
+                                            className="sr-only peer"
+                                            checked={creator}
+                                            onChange={() => {
+                                                setCreator(!creator);
+                                                if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
+                                                    actionFlipCreatorMode(!creator, chatUUId);
+                                                }
+                                            }}
+                                        />
+                                        <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[0px] after:start-[0px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    </label>
+                                    <button
+                                        onClick={() => setShowCreatorInfo(!showCreatorInfo)}
+                                        className="ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                    >
+                                        <FaInfoCircle size={14} />
+                                    </button>
+                                    <button
+                                        onClick={() => setShowAttachments(!showAttachments)}
+                                        className={`ml-4 flex items-center text-sm ${creator ? 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                            }`}
+                                        disabled={!creator}
+                                    >
+                                        <FaPaperclip className="mr-1" size={14} />
+                                        Attachments
+                                        {creator && (
+                                            showAttachments ?
+                                                <FaChevronUp className="ml-1" size={12} /> :
+                                                <FaChevronDown className="ml-1" size={12} />
+                                        )}
+                                    </button>
+                                </div>
+                                <div className="flex items-center">
+                                    <Link
+                                        href="/account/dashboard"
+                                        className={`text-xs ${creditColorClass} hover:underline mr-2`}
+                                    >
+                                        {creditsString}
+                                    </Link>
+                                    <button
+                                        onClick={() => setShowCreditsInfo(!showCreditsInfo)}
+                                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                    >
+                                        <FaInfoCircle size={14} />
+                                    </button>
+                                </div>
+                            </div>
+                            {showCreatorInfo && (
+                                <><div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                    Creator Mode supports creative sports content producers, allows to attach documents to the chat and more. Note: each document attached to chat costs extra 5 credits per request.
+                                </div>
+                                    {(level !== "creator" && level !== "trial") && (
+                                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                            Creator Mode is not available for your subscription level. <Link href="/account/dashboard" className="text-blue-500 hover:underline">Upgrade to creator level</Link> to use this feature.
+                                        </div>
+                                    )}
+                                </>)}
+                            {showCreditsInfo && (
+                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                    Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
+                                        Dashboard
+                                    </Link> for more details on your credit usage and subscription options.
+                                </div>
+                            )}
+                            <AnimatePresence>
+                                {creator && showAttachments && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <CreatorMode
+                                            chatUUId={chatUUId}
+                                            selectedDocuments={selectedDocuments}
+                                            onSelectedDocumentsChange={(documents: UserDocument[]) => {
+                                                console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
+                                                setSelectedDocuments(documents)
+                                            }}
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </>
+                    )}
                 </div>
                 <div
                     className={`absolute top-full mt-4 left-0 w-full bg-white dark:bg-black z-20 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-128' : 'max-h-0'}`}
@@ -473,13 +593,11 @@ const ChatsComponent: React.FC<Props> = ({
             <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {drawMessages.length === 0 && (
                     <>
-                        {!prompts || prompts.length === 0 ? <>
+                        {(!prompts || prompts.length === 0) && !creator ? <>
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>
-                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-4">
-                                Regular credits are reset every month depending on the subscription, except for the free trial. Extra credits never expire and will be applied when the regular credits run out.
-                            </p>
+
                         </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                     </>
                 )}

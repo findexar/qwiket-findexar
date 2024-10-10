@@ -170,13 +170,15 @@ export default async function Page({
 
   let {
     tab,
-    fbclid,
-    utm_content,
+    fbclid = "",
+    utm_content = "",
     view = "mentions",
     id,
     story,
     prompt = '',
-    promptUUId = ''
+    promptUUId = '',
+    cid = '',
+    aid = ''
   }: {
     fbclid: string,
     utm_content: string,
@@ -185,16 +187,16 @@ export default async function Page({
     id: string,
     story: string,
     prompt: string,
-    promptUUId: string
+    promptUUId: string,
+    cid: string,
+    aid: string
   } = searchParams as any;
 
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
   console.log("league->", league);
-  utm_content = utm_content || '';
   console.log("utm_content->", utm_content);
-  fbclid = fbclid || '';
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -220,8 +222,8 @@ export default async function Page({
   console.log("==> isBot", bot);
   console.log("==> ua", ua);
   if (!bot) {
-    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua);
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua));
+    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid);
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
 
   if (findexarxid) {

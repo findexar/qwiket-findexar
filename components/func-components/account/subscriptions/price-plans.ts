@@ -25,10 +25,10 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
         {
             planLevel: "trial",
             title: "Trial",
-            description: "100 free credits to try Qwiket Chat AI.",
+            description: "25 free credits to try Qwiket Chat AI.",
             price: 0,
             features: [
-                "100 free Qwiket AI Chat credits. Not refillable.",
+                "25 free Qwiket AI Chat credits. Not refillable.",
                 "Fully-featured Qwiket AI Chat."
             ],
             isDisabled: true,
@@ -90,8 +90,8 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
                 "Additional credits available in blocks of 1000 credits per $20",
                 "Customization options and document upload features"
             ],
-            buttonText: isCurrentPlan("creator") ? "Current Plan" : "Coming Soon",
-            isDisabled: true,
+            buttonText: isCurrentPlan("creator") ? "Current Plan" : "Subscribe",
+            isDisabled: isCurrentPlan("creator"),
             featureCards: [
                 {
                     title: "Advanced Customization",
