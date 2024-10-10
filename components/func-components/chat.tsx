@@ -2,11 +2,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown, { Components } from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle } from 'react-icons/fa';
+import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
@@ -72,6 +72,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [showCreatorInfo, setShowCreatorInfo] = useState<boolean>(false);
     const [selectedDocuments, setSelectedDocuments] = useState<UserDocument[]>([]);
     const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
+    const [showAttachments, setShowAttachments] = useState<boolean>(false);
     // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -489,6 +490,21 @@ const ChatsComponent: React.FC<Props> = ({
                                     >
                                         <FaInfoCircle size={14} />
                                     </button>
+                                    <button
+                                        onClick={() => setShowAttachments(!showAttachments)}
+                                        className={`ml-4 flex items-center text-sm ${creator ? 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                                : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                            }`}
+                                        disabled={!creator}
+                                    >
+                                        <FaPaperclip className="mr-1" size={14} />
+                                        Attachments
+                                        {creator && (
+                                            showAttachments ?
+                                                <FaChevronUp className="ml-1" size={12} /> :
+                                                <FaChevronDown className="ml-1" size={12} />
+                                        )}
+                                    </button>
                                 </div>
                                 <div className="flex items-center">
                                     <Link
@@ -517,10 +533,26 @@ const ChatsComponent: React.FC<Props> = ({
                                     </Link> for more details on your credit usage and subscription options.
                                 </div>
                             )}
-                            {creator && <CreatorMode chatUUId={chatUUId} selectedDocuments={selectedDocuments} onSelectedDocumentsChange={(documents: UserDocument[]) => {
-                                console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
-                                setSelectedDocuments(documents)
-                            }} />}
+                            <AnimatePresence>
+                                {creator && showAttachments && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <CreatorMode
+                                            chatUUId={chatUUId}
+                                            selectedDocuments={selectedDocuments}
+                                            onSelectedDocumentsChange={(documents: UserDocument[]) => {
+                                                console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
+                                                setSelectedDocuments(documents)
+                                            }}
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </>
                     )}
                 </div>
