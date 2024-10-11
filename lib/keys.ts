@@ -10,6 +10,7 @@ export type MetaLinkKey = { func: string, findexarxid: string, long?: number };
 export type LeagueTeamsKey = { type: string, league: string };
 export type LeaguesKey = { type: string };
 export type StoriesKey = { type: string, league?: string, page: number, firstXid?: string };
+export type InvitesKey = { type: string, page: number };
 export type TeamMentionsKey = { type: string, league?: string, teamid: string, page: number };
 export type PlayerMentionsKey = { type: string, league?: string, teamid: string, name: string, athleteUUId: string, page: number };
 export type MyTeamKey = { type: string, league: string };

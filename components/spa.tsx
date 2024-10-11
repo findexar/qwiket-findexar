@@ -17,6 +17,7 @@ import { UserAccountKey } from '@/lib/keys';
 import useSWR from 'swr';
 import { actionUser } from '@/lib/fetchers/account';
 import Dashboard from './func-components/account/dashboard';
+import Invites from './func-components/invites';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -80,6 +81,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
+  console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
@@ -168,8 +170,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
 
       let qteam = parts && parts.length > 2 ? parts[2] : '';
       if (qleague === "account") {
+
         isAccount = true;
-        qpagetype = `account-${qteam}`;
+        if (startPagetype === 'admin-invite') {
+          qpagetype = 'admin-invite';
+        } else {
+          qpagetype = `account-${qteam}`;
+        }
       }
       let qplayer = parts && parts.length > 3 ? parts[3] : '';
       let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
@@ -195,7 +202,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   }, [query]);
 
   const user = userInfo || { email: "" };
-  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email,bot };
+  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email, bot };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
@@ -267,11 +274,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
             `,
           }} />
           <Header />
-          {pagetype === "account-upgrade" ? <AccountUpgrade /> : pagetype === "account-dashboard" ? <Dashboard /> :
-            <>
-              <Desktop />
-              <Mobile />
-            </>}
+          {pagetype === "account-upgrade" ? <AccountUpgrade /> :
+            pagetype === "admin-invite" ? <Invites /> :
+              pagetype === "account-dashboard" ? <Dashboard /> :
+                <>
+                  <Desktop />
+                  <Mobile />
+                </>}
         </main>
       </AppWrapper>
     </StyledThemeProvider>
