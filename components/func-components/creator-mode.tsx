@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { FileUploaderRegular } from "@uploadcare/react-uploader";
 import "@uploadcare/react-uploader/core.css";
 import { FetchUserDocumentsKey } from "@/lib/keys";
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 
 interface CreatorModeProps {
     chatUUId: string | null;
@@ -305,6 +306,10 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
         const newSelectedDocuments = allDocuments.filter(doc => doc.selected === 1);
         console.log(`==>newSelectedDocuments: ${JSON.stringify(newSelectedDocuments)}`);
         onSelectedDocumentsChange(newSelectedDocuments);
+        recordEvent(`select-document`, `{"uuid":"${uuid}","type":"${type}","params":"${JSON.stringify(params)}"}`)
+            .then((r: any) => {
+                //console.log("recordEvent", r);
+            });
 
         if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
             await saveChatDocuments(newSelectedDocuments.map(doc => doc.uuid).join(','), chatUUId);
@@ -323,6 +328,10 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
                 const updatedSelectedDocuments = selectedDocuments.filter(doc => doc.uuid !== uuid);
                 onSelectedDocumentsChange(updatedSelectedDocuments);
             }
+            recordEvent(`delete-document`, `{"uuid":"${uuid}","params":"${JSON.stringify(params)}"}`)
+                .then((r: any) => {
+                    //console.log("recordEvent", r);
+                });
             await actionDeleteUploadedDocument(uuid);
 
         } catch (error) {
@@ -341,6 +350,10 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
             const updatedSelectedDocuments = [...selectedDocuments, document];
             onSelectedDocumentsChange(updatedSelectedDocuments);
         });
+        recordEvent(`file-upload`, `{"name":"${event.name}","type":"${type}","event":"${JSON.stringify(event)}","params":"${JSON.stringify(params)}"}`)
+            .then((r: any) => {
+                //console.log("recordEvent", r);
+            });
     }, [mutate, selectedDocuments, onSelectedDocumentsChange, chatUUId]);
 
     const renderDocumentList = (documents: UserDocument[], type: 'STYLE' | 'DATA') => (

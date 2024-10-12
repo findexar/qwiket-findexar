@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { actionFetchPrompts } from "@lib/actions/fetch-prompts";
 import { styled } from "styled-components";
 import CreatorMode from "@components/func-components/creator-mode";
+import { actionRecordEvent as recordEvent } from "@/lib/actions";
 
 const PromptsContainer = styled.div`
   display: flex;
@@ -487,6 +488,10 @@ const ChatsComponent: React.FC<Props> = ({
                                                 if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
                                                     actionFlipCreatorMode(!creator, chatUUId);
                                                 }
+                                                recordEvent(`flip-creator`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                                    .then((r: any) => {
+                                                        //console.log("recordEvent", r);
+                                                    });
                                             }}
                                         />
                                         <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[0px] after:start-[0px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
