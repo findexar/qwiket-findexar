@@ -37,6 +37,24 @@ const nextConfig = {
       },
     ]
   },
+  // Add this new configuration
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+        ],
+      },
+    ];
+  },
+  // Add this new middleware configuration
+  experimental: {
+    middleware: true,
+  },
 };
 
 export default nextConfig;
