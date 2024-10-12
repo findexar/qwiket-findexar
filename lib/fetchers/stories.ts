@@ -41,20 +41,20 @@ export const actionStories = async (key: StoriesKey) => {
     const { userId } = auth() || { userId: "" };
 
     const sessionid = session.sessionid;
-    setTimeout(async () => {
-        try {
-            const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
-            const cacheResponse = await fetch(cacheInitUrl);
-            const cacheResult = await cacheResponse.json();
-            if (cacheResult.success) {
-                console.log("Cache initialization for rosters started in background");
-            } else {
-                console.error("Failed to initialize cache:", cacheResult.message);
-            }
-        } catch (error) {
-            console.error("Error making API call to initialize rosters cache:", error);
-        }
-    }, 0);
+    /* setTimeout(async () => {
+         try {
+             const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
+             const cacheResponse = await fetch(cacheInitUrl);
+             const cacheResult = await cacheResponse.json();
+             if (cacheResult.success) {
+                 console.log("Cache initialization for rosters started in background");
+             } else {
+                 console.error("Failed to initialize cache:", cacheResult.message);
+             }
+         } catch (error) {
+             console.error("Error making API call to initialize rosters cache:", error);
+         }
+     }, 0);*/
     return fetchStories(key, userId || "", sessionid);
 }
 
