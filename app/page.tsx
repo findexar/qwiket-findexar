@@ -145,22 +145,22 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (!userId) {
     userId = "";
   }
-  console.log("*** *** *** userId", userId);
+  // console.log("*** *** *** userId", userId);
   try {
     const session = await fetchSession();
-    console.log("*** *** *** session", session);
+    //    console.log("*** *** *** session", session);
     sessionid = session.sessionid;
     dark = session.dark;
   } catch (x) {
     console.log("error fetching sessionid", x);
   }
-  console.log("sessionid", sessionid);
+  // console.log("sessionid", sessionid);
 
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let { tab = "", fbclid, utm_content, view = "mentions", id, story,cid,aid } = searchParams as any;
+  let { tab = "", fbclid, utm_content, view = "mentions", id, story, cid, aid } = searchParams as any;
 
   let findexarxid = id || "";
   let pagetype = "league";
@@ -173,7 +173,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
-  console.log("VIEW:", view, isMobile);
+  // console.log("VIEW:", view, isMobile);
   let calls: { key: any; call: Promise<any> }[] = [];
   let userInfo = { email: '' };
   if (userId) {
@@ -210,7 +210,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     }
   }
   if (!bot) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua,cid,aid));
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
   await fetchData(t1, fallback, calls);
 

@@ -195,8 +195,8 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
-  console.log("league->", league);
-  console.log("utm_content->", utm_content);
+  /// console.log("league->", league);
+  // console.log("utm_content->", utm_content);
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -205,10 +205,10 @@ export default async function Page({
   if (view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
-  console.log("VIEW:", view, isMobile);
+  //console.log("VIEW:", view, isMobile);
   let calls: { key: any, call: Promise<any> }[] = [];
 
-  console.log("***> view,tab", view, tab);
+  //console.log("***> view,tab", view, tab);
   if (!story && !findexarxid) {
     calls.push(await fetchLeagueTeams({ league }));
   }
@@ -219,10 +219,10 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  console.log("==> isBot", bot);
-  console.log("==> ua", ua);
+  //console.log("==> isBot", bot);
+  //console.log("==> ua", ua);
   if (!bot) {
-    console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid);
+    // console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid);
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
 
@@ -240,13 +240,13 @@ export default async function Page({
     }
   }
   if (view == 'my team' || view == 'mentions') {
-    console.log("GET MY TEAM");
+    //console.log("GET MY TEAM");
     if (!story && !findexarxid) {
       calls.push(await fetchMyTeam({ userId, sessionid, league }));
     }
   }
   if (tab == 'myfeed' || view == 'mentions') {
-    console.log("TAB=myfeed");
+    //  console.log("TAB=myfeed");
     if (!story && !findexarxid) {
       calls.push(await fetchMyFeed({ userId, sessionid, league }));
     }
@@ -256,14 +256,14 @@ export default async function Page({
       calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }
-  console.log("tab,view", tab, view);
+  //  console.log("tab,view", tab, view);
   if (tab == 'chat') {
-    console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
+    // console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
     //email is to break the SWR cache when the user switches accounts
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
+  // console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
 
   await fetchData(t1, fallback, calls);
 

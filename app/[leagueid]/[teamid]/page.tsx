@@ -146,7 +146,7 @@ export default async function Page({
   let pagetype = "team";
   let league = params.leagueid.toUpperCase();
   let teamid = params.teamid;
-  console.log("league->", league);
+  //console.log("league->", league);
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -155,7 +155,7 @@ export default async function Page({
   if (view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
-  console.log("VIEW:", view, isMobile);
+  // console.log("VIEW:", view, isMobile);
   let calls: { key: any, call: Promise<any> }[] = [];
 
   calls.push(await fetchLeagueTeams({ league }));
@@ -187,13 +187,13 @@ export default async function Page({
   if (!story && !findexarxid) {
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
-  console.log("tab,view", tab, view);
+  //console.log("tab,view", tab, view);
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
 
   await fetchData(t1, fallback, calls);
-  console.log("=======>TEAM FALLBACK:", fallback)
+  // console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
   let teamName = teams?.find((x: any) => x.id == teamid)?.name;

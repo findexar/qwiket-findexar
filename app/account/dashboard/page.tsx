@@ -50,7 +50,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     if (view == 'main' || view == 'feed' || view == 'home') {
         view = 'mentions';
     }
-    console.log("VIEW:", view, isMobile);
+    //console.log("VIEW:", view, isMobile);
 
     let sessionid = "";
     let dark = 0;
@@ -59,16 +59,16 @@ export default async function Page({ searchParams }: { params: { slug: string };
     if (!userId) {
         userId = "";
     }
-    console.log("*** *** *** userId", userId);
+    // console.log("*** *** *** userId", userId);
     try {
         const session = await fetchSession();
-        console.log("*** *** *** session", session);
+        // console.log("*** *** *** session", session);
         sessionid = session.sessionid;
         dark = session.dark;
     } catch (x) {
         console.log("error fetching sessionid", x);
     }
-    console.log("sessionid", sessionid);
+    // console.log("sessionid", sessionid);
 
     let fallback: { [key: string]: any } = {};
     let calls: { key: any; call: Promise<any> }[] = [];

@@ -85,7 +85,7 @@ export async function generateMetadata(
     ogImage = astoryImageOgUrl;
   }
   const noindex = 1;
-  console.log("ogImage:", ogImage)
+  //console.log("ogImage:", ogImage)
   return {
     title: ogTitle,
     openGraph: {
@@ -200,7 +200,7 @@ export default async function Page({
 
   if (!story && !findexarxid)
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
-  console.log("tab,view", tab, view);
+  //console.log("tab,view", tab, view);
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
