@@ -24,5 +24,16 @@ const middleware = clerkMiddleware((auth, request) => {
 export default middleware;
 
 export const config = {
-    matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next
+         * - static (static files)
+         * - favicon.ico (favicon file)
+         * - public folder
+         */
+        '/((?!static|.*\\..*|_next|favicon.ico).*)',
+        '/',
+        '/(api|trpc)(.*)'
+    ],
 };
