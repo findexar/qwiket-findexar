@@ -14,6 +14,10 @@ import { isbot } from '@/lib/is-bot';
 export const metadata: Metadata = {
     title: 'Account Dashboard',
     description: 'View your account usage and information',
+    icons: {
+        icon: "/QLogo.png",
+        shortcut: "/QLogo.png",
+    },
 };
 
 export default async function Page({ searchParams }: { params: { slug: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
