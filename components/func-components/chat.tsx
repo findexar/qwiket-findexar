@@ -86,7 +86,7 @@ const ChatsComponent: React.FC<Props> = ({
     const level = useMemo(() => {
         return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
     }, [subscriptionType]);
-    console.log("==> CHATS.TSX level", JSON.stringify(level));
+    // console.log("==> CHATS.TSX level", JSON.stringify(level));
 
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -98,7 +98,10 @@ const ChatsComponent: React.FC<Props> = ({
     if (totalCredits < 10) {
         creditsString += " remaining. Upgrade.";
     }
-
+    const isCid = useMemo(() => {
+        return userAccount?.cid && userAccount?.cid.length > 0;
+    }, [userAccount]);
+    console.log("==> CHATS.TSX isCid", isCid);
     const creditColorClass = totalCredits === 0
         ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
         : totalCredits < 5
@@ -110,7 +113,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
     const [initialPromptUUId, setInitialPromptUUId] = useState<string | null>(null);
-    console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
+    //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
         if (loadedChat) {
             setCreator(loadedChat.chat.creator || false);
@@ -169,9 +172,9 @@ const ChatsComponent: React.FC<Props> = ({
         // setStreamingMessageIndex(messages.length + 1);
         const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
         const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
-        console.log(`==>styleDocument: ${styleDocument}`);
-        console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
-        console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
+        //console.log(`==>styleDocument: ${styleDocument}`);
+        //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
+        //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -548,6 +551,13 @@ const ChatsComponent: React.FC<Props> = ({
                                     Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
                                         Dashboard
                                     </Link> for more details on your credit usage and subscription options.
+                                </div>
+                            )}
+                            {!isCid && creator && !showCreatorInfo && (
+                                <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
+                                    <Link href="/account/rsp">
+                                        Learn about the Revenue-Sharing Program for Creators
+                                    </Link>
                                 </div>
                             )}
                             <AnimatePresence>
