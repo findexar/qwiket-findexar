@@ -22,3 +22,17 @@ export type MonthlyUsage = {
 }
 
 export type UserUsage = MonthlyUsage[];
+export type Payment = {
+    billingYear: number;
+    billingMonth: number;
+    value: number;
+};
+
+export type CidUsage = {
+    usage: { year: string; month: string; usage: { date: string; visitors: number; subscribers: number }[] }[];
+    totals: { date: string; visitors: number; subscribers: number }[];
+    currentTotalVisitors: number;
+    currentTotalSubscribers: number;
+    payments: Payment[];
+    totalPayments: number;
+};

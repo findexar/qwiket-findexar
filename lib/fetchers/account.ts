@@ -1,8 +1,8 @@
 'use server';
 import { unstable_serialize } from 'swr'
-import { UserAccountKey, UserUsageAccountKey } from '@/lib/keys';
+import { UserAccountKey, UserUsageAccountKey, CidUsageAccountKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { UserAccount, UserUsage, MonthlyUsage } from "@/lib/types/user";
+import { UserAccount, UserUsage, MonthlyUsage, CidUsage } from "@/lib/types/user";
 import fetchSession from './session';
 
 const api_key = process.env.LAKE_API_KEY;
@@ -119,6 +119,60 @@ const promiseUser = async (key: UserAccountKey, userId: string, sessionid: strin
     return ret;
 }
 
+export const fetchCidUsage = async (key: CidUsageAccountKey, userId: string, sessionid: string): Promise<CidUsage> => {
+    'use server';
+    try {
+        const { cid, periods = [] } = key;
+
+        if (!cid || !Array.isArray(periods) || periods.length === 0) {
+            throw new Error("Invalid CID or periods");
+        }
+
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-cid-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&cid=${cid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
+        const fetchResponse = await fetch(url);
+        const data = await fetchResponse.json();
+
+        if (data.success) {
+            return {
+                usage: data.usage,
+                totals: data.totals,
+                currentTotalVisitors: data.currentTotalVisitors,
+                currentTotalSubscribers: data.currentTotalSubscribers,
+                payments: data.payments,
+                totalPayments: data.totalPayments
+            } as CidUsage;
+        }
+        throw new Error("Failed to fetchCidUsage");
+    }
+    catch (e) {
+        console.log("fetchCidUsage", e);
+        throw new Error("Failed to fetchCidUsage");
+    }
+}
+
+export const actionCidUsage = async (key: CidUsageAccountKey): Promise<CidUsage> => {
+    'use server';
+    const session = await fetchSession();
+
+    let { userId } = auth() || { userId: "" };
+    const sessionid = session.sessionid;
+    if (!userId) {
+        userId = "";
+    }
+
+    return fetchCidUsage(key, userId, sessionid);
+}
+
+const promiseCidUsage = async (key: CidUsageAccountKey, userId: string, sessionid: string) => {
+    'use server';
+    console.log("promiseCidUsage", key, userId, sessionid)
+    let ret = { key: unstable_serialize(key), call: fetchCidUsage(key, userId, sessionid) };
+    console.log("AFTER promiseCidUsage", key, userId, sessionid)
+    return ret;
+}
+
 export default promiseUser;
 
-
+export {
+    promiseCidUsage
+};
