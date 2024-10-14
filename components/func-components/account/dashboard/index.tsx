@@ -8,6 +8,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartData, ChartOptions } from 'chart.js';
 import { UserAccount, UserUsage, CidUsage } from '@/lib/types/user';
 import Link from 'next/link';
+import { FaCopy, FaCheck } from 'react-icons/fa';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -115,6 +116,7 @@ const Dashboard: React.FC = () => {
     const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
 
     const [activeTab, setActiveTab] = useState('usage');
+    const [copiedUrl, setCopiedUrl] = useState(false);
 
     const cidUsageAccountKey: CidUsageAccountKey = { cid: userAccount?.cid || '', periods };
     const { data: cidUsageAccount, error: cidError, isLoading: cidIsLoading } = useSWR<CidUsage>(cidUsageAccountKey, actionCidUsage, { fallback });
@@ -222,6 +224,17 @@ const Dashboard: React.FC = () => {
         },
     };
 
+    const sharingUrl = `https://www.qwiket.com?aid=${userAccount?.cid}`;
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopiedUrl(true);
+            setTimeout(() => setCopiedUrl(false), 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <div className="container mx-auto px-4 py-8">
@@ -266,7 +279,7 @@ const Dashboard: React.FC = () => {
 
                 {/* Tabs and Usage Graph Section */}
                 {isCid && (
-                    <div className="flex mb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-wrap mb-4 border-b border-gray-200 dark:border-gray-700">
                         <button
                             className={`py-2 px-4 text-sm font-medium ${activeTab === 'usage'
                                 ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
@@ -327,6 +340,27 @@ const Dashboard: React.FC = () => {
                     {isCid && activeTab === 'revenue' && (
                         <>
                             <h2 className="text-2xl font-semibold mb-6">Revenue Sharing</h2>
+
+                            <div className="mb-6 text-sm">
+                                <div className="font-medium text-green-600 dark:text-green-400 mb-2">
+                                    Affiliate ID: {userAccount?.cid}
+                                </div>
+                                <div className="text-gray-500 dark:text-gray-400 break-all flex items-center">
+                                    <span className="mr-2">Example Sharing URL:</span>
+                                    <Link href={sharingUrl} className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+                                        {sharingUrl}
+                                    </Link>
+                                    <button
+                                        onClick={() => copyToClipboard(sharingUrl)}
+                                        className={`ml-2 transition-colors duration-200 ${copiedUrl
+                                            ? 'text-green-500 dark:text-green-400'
+                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                            }`}
+                                    >
+                                        {copiedUrl ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                    </button>
+                                </div>
+                            </div>
 
                             {/* Date range selector */}
                             <div className="mb-6">
