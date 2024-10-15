@@ -4,25 +4,26 @@ import Link from 'next/link';
 
 import useSWR from "swr";
 import { LeaguesKey, UserSubscriptionKey as SubscriptionKey } from '@/lib/keys';
-import fetchLeagues from '@/lib/fetchers/leagues';
+import fetchLeagues from '@lib/fetchers/leagues';
 
 import { styled } from "styled-components";
-import { Tabs, Tab } from '@/components/nav-components/tabs';
-import Avatar from '@/components/util-components/avatar';
-import IconButton from '@/components/util-components/icon-button';
-import HomeIcon from '@/components/icons/home';
-import LoginIcon from '@/components/icons/login';
-import ModeNightTwoToneIcon from '@/components/icons/moon';
-import LightModeTwoToneIcon from '@/components/icons/sun';
+import { Tabs, Tab } from '@components/nav-components/tabs';
+import Avatar from '@components/util-components/avatar';
+import IconButton from '@components/util-components/icon-button';
+import HomeIcon from '@components/icons/home';
+import LoginIcon from '@components/icons/login';
+import ModeNightTwoToneIcon from '@components/icons/moon';
+import LightModeTwoToneIcon from '@components/icons/sun';
 import StarOutlineIcon from '@/components/icons/star-outline';
 import StarIcon from '@/components/icons/star';
 import { UserButton, SignInButton, SignedOut, SignedIn, useAuth } from "@clerk/nextjs";
-import { useAppContext } from '@/lib/context';
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
-import PlayerPhoto from "@/components/util-components/player-photo";
-import saveSession from '@/lib/fetchers/save-session';
+import { useAppContext } from '@lib/context';
+import { actionRecordEvent as recordEvent } from "@lib/actions";
+import PlayerPhoto from "@components/util-components/player-photo";
+import saveSession from '@lib/fetchers/save-session';
 import { actionUserSubscription } from '@/lib/fetchers/user-subscription';
 import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
+import Notifications from '@components/func-components/notifications'; // Import the Notifications component
 
 interface HeaderProps {
   $scrolled: boolean;
@@ -270,15 +271,12 @@ const HeaderCenter = styled.div`
 
 const HeaderRight = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  margin-right: 30px;
-  width: 80px;
-  @media screen and (max-width: 1024px) {
-    margin-left: 0px;
-    margin-right: 16px;
-    width: 80px;   
+  justify-content: flex-end;
+  flex-shrink: 0;
+  margin-right: 24px;
+  @media (max-width: 768px) {
+    margin-right: 12px; // Reduced right margin for mobile
   }
 `;
 
@@ -308,7 +306,12 @@ const FLogoMobile = styled.div`
   }
 `;
 
-const SUserButton = styled(UserButton)``;
+const SUserButton = styled.div`
+  margin-left: 8px;
+  @media (max-width: 768px) {
+    margin-left: 4px; // Reduced left margin for mobile
+  }
+`;
 
 const PlayerNameGroup = styled.div`
   display: flex;
@@ -374,15 +377,9 @@ const StyledIconButton = styled(IconButton)`
 `;
 
 const StyledSignInButton = styled(SignInButton)`
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: 40px;
-  width: 40px;
-  margin: 0 4px;
-  &:hover {
-    color: var(--highlight);
-    background-color: rgba(255, 255, 255, 0.1);
+  margin-left: 8px;
+  @media (max-width: 768px) {
+    margin-left: 4px; // Reduced left margin for mobile
   }
 `;
 
@@ -395,6 +392,18 @@ const IconWrapper = styled.div`
   &:hover {
     color: var(--highlight);
     background-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  @media (max-width: 768px) {
+    margin-left: 4px; // Reduced left margin for mobile
+  }
+  &:first-child {
+    margin-left: 0;
   }
 `;
 
@@ -521,68 +530,42 @@ const HeaderNav: React.FC<Props> = ({ }) => {
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
           </LeftContainer>
-          {(pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player" || pagetype.includes("account")) && <Wiggly className="hidden md:block">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" strokeWidth="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" strokeLinecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stopColor="hsl(37, 99%, 67%)" offset="0"></stop><stop stopColor="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
-          </Wiggly>}
           <HeaderRight>
-
-
-
-            <StyledIconButton onClick={async () => {
-              await updateMode(mode == "light" ? "dark" : "light");
-            }}>
-              <IconWrapper>
-                {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
-              </IconWrapper>
-            </StyledIconButton>
+            <IconContainer>
+              <Notifications />
+            </IconContainer>
+            <IconContainer>
+              <StyledIconButton onClick={async () => {
+                await updateMode(mode == "light" ? "dark" : "light");
+              }}>
+                <IconWrapper>
+                  {mode == "dark" ? <LightModeTwoToneIcon fontSize="small" /> : <ModeNightTwoToneIcon fontSize="small" />}
+                </IconWrapper>
+              </StyledIconButton>
+            </IconContainer>
 
             <SignedIn>
               <SUserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label="Dashboard"
-                    labelIcon={<FaChartBar />}
-                    href="/account/dashboard"
-                  />
-                  <UserButton.Link
-                    label="Upgrade"
-                    labelIcon={<FaArrowUp />}
-                    href="/account/upgrade"
-                  />
-                  {false && <UserButton.Link
-                    label="Admin"
-                    labelIcon={<FaUserCog />}
-                    href="/account/admin"
-                  />}
-                  {false && <UserButton.Link
-                    label="Billing"
-                    labelIcon={<FaCreditCard />}
-                    href="/create-organization"
-                  />}
-                  {false && <UserButton.Link
-                    label="Developer Portal"
-                    labelIcon={<FaCode />}
-                    href="/account/developer"
-                  />}
-                </UserButton.MenuItems>
+                <UserButton afterSignOutUrl="/" />
               </SUserButton>
             </SignedIn>
             <SignedOut>
-              <StyledIconButton>
-                <IconWrapper>
-                  <Link href="/account/dashboard">
-                    <DashboardIcon />
-                  </Link>
-                </IconWrapper>
-              </StyledIconButton>
-
-              <IconWrapper>
-                <StyledSignInButton>
-                  <StyledIconButton>
+              <IconContainer>
+                <StyledIconButton>
+                  <IconWrapper>
+                    <Link href="/account/dashboard">
+                      <DashboardIcon />
+                    </Link>
+                  </IconWrapper>
+                </StyledIconButton>
+              </IconContainer>
+              <StyledSignInButton>
+                <StyledIconButton>
+                  <IconWrapper>
                     <LoginIcon fontSize="small" />
-                  </StyledIconButton>
-                </StyledSignInButton>
-              </IconWrapper>
+                  </IconWrapper>
+                </StyledIconButton>
+              </StyledSignInButton>
             </SignedOut>
           </HeaderRight>
         </HeaderTopline>

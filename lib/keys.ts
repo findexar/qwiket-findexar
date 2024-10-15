@@ -25,4 +25,8 @@ export type CidUsageAccountKey = {
     cid: string;
     periods: { year: string; month: string }[];
 };
-
+export type NotificationsKey = {
+    type: "fetch-notifications";
+    page: number;
+    limit: number;
+};
