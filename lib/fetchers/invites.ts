@@ -15,13 +15,9 @@ const fetchInvites = async (key: InvitesKey, userId: string, sessionid: string) 
     const { page } = key;
     const url = `${lake_api}/api/v50/findexar/get-invites?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&page=${page}`;
     const t1 = Date.now();
-    console.log("fetchInvites", url);
     const fetchResponse = await fetch(url);
     const t2 = Date.now();
-
-    console.log("fetchInvites fetchResponse", t2 - t1);
     const res = await fetchResponse.json();
-    console.log("==>>fetchInvites fetchInvites res", res);
     return res.invites;
 }
 export interface UpdateInviteProps {
@@ -33,7 +29,6 @@ export interface UpdateInviteProps {
 }
 const updateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateInviteProps, userId: string, sessionid: string) => {
     const url = `${lake_api}/api/v50/findexar/update-invite?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}`;
-    console.log("===>>updateInvite", JSON.stringify({ url, cid, email, full_name, nickname, notes }));
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -50,12 +45,12 @@ const updateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateIn
     return res.json();
 }
 const promiseInvites = async ({ userId, sessionid }: FetchInvitesProps) => {
-    console.log("promiseInvites", userId, sessionid);
+
     let keyInvites = (page: any) => {
         const keyFetchedInvites: InvitesKey = { type: "fetch-invites", page: page }
         return keyFetchedInvites;
     };
-    console.log("InvitesKey:", keyInvites);
+
     return { key: us(keyInvites), call: fetchInvites(keyInvites(0), userId, sessionid) };
 }
 export const actionInvites = async (key: InvitesKey) => {
@@ -68,7 +63,6 @@ export const actionInvites = async (key: InvitesKey) => {
     return fetchInvites(key, userId || "", sessionid);
 }
 export const actionUpdateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateInviteProps) => {
-    console.log("*** *** ===>>actionUpdateInvite", JSON.stringify({ cid, email, full_name, nickname, notes }));
     const session = await fetchSession();
 
     const { userId } = auth() || { userId: "" };

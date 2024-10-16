@@ -42,46 +42,9 @@ const Invites: React.FC<Props> = () => {
         return key;
     };
 
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchInvitesKey, actionInvites, { initialSize: 1, revalidateAll: true, parallel: true, fallback });
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchInvitesKey, actionInvites, { revalidateAll: true, fallback });
 
     let invites = data ? [].concat(...data) : [];
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {
-                lastMutate = Date.now();
-                mutate();
-            }
-        }, 20 * 1000); // Check every 20 secs
-
-        return () => clearInterval(intervalId);
-    }, [mutate]);
-
-    useEffect(() => {
-        const listener = () => {
-            if (window.scrollY === 0) {
-                if (lastMutate < Date.now() - 1000) {
-                    mutate();
-                }
-                lastMutate = Date.now();
-            }
-        };
-
-        function debounce(callbackFn: any, delay: number) {
-            let timeoutId: NodeJS.Timeout | null = null;
-            return function () {
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-                timeoutId = setTimeout(() => {
-                    callbackFn.call();
-                }, delay);
-            };
-        }
-
-        window.addEventListener("scroll", debounce(listener, 100));
-        return () => window.removeEventListener("scroll", listener);
-    }, [scrollY]);
 
     const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
     let isEmpty = data?.[0]?.length === 0;
@@ -123,8 +86,6 @@ const Invites: React.FC<Props> = () => {
             canceled: null,
         };
 
-        // TODO: Implement API call to save new invite
-        console.log('Saving new invite:', newInviteWithCid);
         await actionUpdateInvite({ cid: newInviteWithCid.cid, email: newInviteWithCid.email || '', full_name: newInviteWithCid.full_name || '', nickname: newInviteWithCid.nickname || '', notes: newInviteWithCid.notes || '' });
         setIsAddingInvite(false);
         setNewInvite({
@@ -133,17 +94,14 @@ const Invites: React.FC<Props> = () => {
             nickname: '',
             notes: '',
         });
-        await mutate();
+        await mutate(); // Fetch again
     }, [newInvite, mutate]);
 
     const handleUpdateInvite = useCallback(async (updatedData: Pick<InviteData, 'cid'> & Partial<InviteData>) => {
-        console.log("===>>handleUpdateInvite", updatedData);
         if (!updatedData.cid) {
             console.error('Cannot update invite: cid is missing');
             return;
         }
-
-        console.log('Updating invite:', updatedData);
         await actionUpdateInvite(updatedData);
         await mutate();
     }, [mutate]);
@@ -161,9 +119,6 @@ const Invites: React.FC<Props> = () => {
         />
     ));
 
-    if (!invites || invites.length === 0) {
-        return null;
-    }
 
     return (
         <>

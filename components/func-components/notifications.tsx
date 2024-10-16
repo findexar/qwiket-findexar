@@ -166,7 +166,14 @@ const Notifications: React.FC = () => {
                 <NotificationIcon count={activeNotifications.length} highestType={highestType} />
             </button>
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto" onScroll={handleScroll}>
+                <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto overflow-x-hidden"
+                    style={{
+                        left: 'auto',
+                        right: '0',
+                        maxWidth: 'calc(100vw - 2rem)',
+                        transform: 'translateX(0)',
+                    }}
+                    onScroll={handleScroll}>
                     {notifications.map(notification => (
                         <NotificationItem
                             key={notification.xid}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { FaCopy } from 'react-icons/fa';
 
 //invite data:
@@ -46,6 +46,17 @@ const Invite: React.FC<InviteProps> = ({
     });
     const [isEditing, setIsEditing] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
+
+    // Add this useEffect hook
+    useEffect(() => {
+        setEditedData({
+            cid,
+            email,
+            full_name,
+            nickname,
+            notes
+        });
+    }, [cid, email, full_name, nickname, notes]);
 
     const getBgColor = () => {
         if (canceled) return 'bg-red-100 dark:bg-red-900';
