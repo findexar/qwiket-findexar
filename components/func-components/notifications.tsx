@@ -21,7 +21,7 @@ const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ co
 
     return (
         <div className="relative">
-            <FaBell className={`text-lg ${getColorClass()} ${count === 0 ? 'opacity-50' : ''}`} />
+            <FaBell className={`text-sm ${getColorClass()} ${count === 0 ? 'opacity-70' : ''}`} />
             {count > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {count}
