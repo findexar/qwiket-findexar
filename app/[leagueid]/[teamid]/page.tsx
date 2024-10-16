@@ -120,7 +120,13 @@ export default async function Page({
   if (!ua) {
     bot = true;
   }
-  let { userId } = !bot ? auth() : { userId: "" };
+  let userId = "";
+  try {
+    let { userId: authId } = !bot ? auth() : { userId: "" };
+    userId = authId || "";
+  } catch (x) {
+    console.log("error fetching userId", x);
+  }
   if (!userId) {
     userId = "";
   }

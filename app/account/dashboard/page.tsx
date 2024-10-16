@@ -58,7 +58,13 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let sessionid = "";
     let dark = 0;
-    let { userId } = !botInfo.bot ? auth() : { userId: "" };
+    let userId = "";
+    try {
+        let { userId: authId } = !bot ? auth() : { userId: "" };
+        userId = authId || "";
+    } catch (x) {
+        console.log("error fetching userId", x);
+    }
 
     if (!userId) {
         userId = "";

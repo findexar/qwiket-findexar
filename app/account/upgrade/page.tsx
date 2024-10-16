@@ -145,7 +145,13 @@ export default async function Page({ searchParams }: { params: { slug: string };
     const ua = headerslist.get('user-agent') || "";
     const botInfo = isbot({ ua });
 
-    let { userId } = !botInfo.bot ? auth() : { userId: "" };
+    let userId = "";
+    try {
+        let { userId: authId } = !botInfo.bot ? auth() : { userId: "" };
+        userId = authId || "";
+    } catch (x) {
+        console.log("error fetching userId", x);
+    }
 
     if (!userId) {
         userId = "";
