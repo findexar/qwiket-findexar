@@ -3,6 +3,8 @@ import { FaBell } from 'react-icons/fa';
 import { useNotifications } from '@lib/hooks/use-notifications';
 import { Notification } from '@lib/fetchers/notifications';
 import { useTheme } from 'next-themes';
+import ReactMarkdown from 'react-markdown';
+import { MarkdownComponents } from '@components/shared/markdown-components';
 
 const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ count, highestType }) => {
     const { theme } = useTheme();
@@ -35,9 +37,9 @@ const NotificationItem: React.FC<{ notification: Notification; onRemove: () => v
     return (
         <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
             <div onClick={onDismiss} className="cursor-pointer flex-grow mr-2">
-                <p className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">
+                <ReactMarkdown components={MarkdownComponents} className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">
                     {notification.text}
-                </p>
+                </ReactMarkdown>
             </div>
             <button
                 onClick={onRemove}
@@ -77,8 +79,10 @@ const NotificationPopup: React.FC<{ notification: Notification; onDismiss: () =>
     return (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
             <div ref={popupRef} className="bg-white dark:bg-gray-800 rounded-md shadow-lg max-w-sm w-full mx-4">
-                <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                    <p className="text-sm text-gray-800 dark:text-gray-200">{notification.text}</p>
+                <div className="p-3 border-b border-gray-200 dark:border-gray-700 min-h-[4.5em] flex flex-col justify-start">
+                    <ReactMarkdown components={MarkdownComponents} className="text-sm text-gray-800 dark:text-gray-200">
+                        {notification.text}
+                    </ReactMarkdown>
                 </div>
                 <div className="flex justify-end p-2 bg-gray-50 dark:bg-gray-700 rounded-b-md">
                     <button

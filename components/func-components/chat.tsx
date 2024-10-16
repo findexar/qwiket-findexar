@@ -5,7 +5,7 @@ import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
-import ReactMarkdown, { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
@@ -18,6 +18,7 @@ import { actionFetchPrompts } from "@lib/actions/fetch-prompts";
 import { styled } from "styled-components";
 import CreatorMode from "@components/func-components/creator-mode";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { MarkdownComponents } from '@components/shared/markdown-components';
 
 const PromptsContainer = styled.div`
   display: flex;
@@ -338,49 +339,6 @@ const ChatsComponent: React.FC<Props> = ({
         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
     }
 
-    const MarkdownComponents: Partial<Components> = {
-        h1: ({ node, ...props }) => <h1 className="text-2xl font-bold my-8" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-xl font-semibold my-4" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-lg font-medium my-2 mt-8" {...props} />,
-        p: ({ node, ...props }) => <p className="my-2" {...props} />,
-        ul: ({ node, ...props }) => <ul className="list-disc list-inside my-2" {...props} />,
-        ol: ({ node, ...props }) => <ol className="list-inside my-2 mt-4" {...props} />,
-        li: ({ node, ...props }) => <li className="my-1" {...props} />,
-        strong: ({ node, ...props }) => <strong className="font-bold mt-4" {...props} />,
-        a: ({ node, href, children, ...props }) => (
-            <a href={href} className="text-blue-500 hover:underline" {...props}>
-                {children}
-            </a>
-        ),
-        img: ({ node, ...props }) => {
-            // console.log("==> CHAT.TSX img", streamingMessageIndex, messages.length);
-            /*  const isStreaming = streamingMessageIndex === messages.length - 1;
-              if (isStreaming) {
-                  return null;
-              }*/
-            return (
-                <div className="flex justify-center">
-                    <img
-                        {...props}
-                        width="256"
-                        height="256"
-                        style={{ width: '256px', height: '256px', objectFit: 'cover' }}
-                    />
-                </div>
-            );
-        },
-        code: ({ node, className, children, ...props }) => {
-            const match = /language-(\w+)/.exec(className || '');
-            return (
-                <code
-                    className={`${match ? 'block bg-gray-100 dark:bg-gray-800 rounded p-2 my-2' : 'bg-gray-200 dark:bg-gray-700 rounded px-1'}`}
-                    {...props}
-                >
-                    {children}
-                </code>
-            );
-        },
-    };
     const isDarkMode = mode === 'dark';
     const renderPrompts = (device: "desktop" | "mobile") => {
         if (!prompts || prompts.length === 0) return null;
