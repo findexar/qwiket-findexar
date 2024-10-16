@@ -544,11 +544,40 @@ const HeaderNav: React.FC<Props> = ({ }) => {
               </StyledIconButton>
             </IconContainer>
 
+
             <SignedIn>
-              <SUserButton>
-                <UserButton afterSignOutUrl="/" />
+              <SUserButton><UserButton>
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    label="Dashboard"
+                    labelIcon={<FaChartBar />}
+                    href="/account/dashboard"
+                  />
+                  <UserButton.Link
+                    label="Upgrade"
+                    labelIcon={<FaArrowUp />}
+                    href="/account/upgrade"
+                  />
+                  {false && <UserButton.Link
+                    label="Admin"
+                    labelIcon={<FaUserCog />}
+                    href="/account/admin"
+                  />}
+                  {false && <UserButton.Link
+                    label="Billing"
+                    labelIcon={<FaCreditCard />}
+                    href="/create-organization"
+                  />}
+                  {false && <UserButton.Link
+                    label="Developer Portal"
+                    labelIcon={<FaCode />}
+                    href="/account/developer"
+                  />}
+                </UserButton.MenuItems>
+              </UserButton>
               </SUserButton>
             </SignedIn>
+
             <SignedOut>
               <IconContainer>
                 <StyledIconButton>
