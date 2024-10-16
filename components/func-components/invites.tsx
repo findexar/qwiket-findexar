@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite';
 import { useAppContext } from '@/lib/context';
 import Invite from "@/components/func-components/items/invite";
 import LoadMore from "@/components/func-components/load-more";
-import { actionInvites, actionUpdateInvite } from '@/lib/fetchers/invites';
+import { actionInvites, actionUpdateInvite, UpdateInviteProps } from '@/lib/fetchers/invites';
 import { InvitesKey } from '@/lib/keys';
 
 interface InviteData {
@@ -125,7 +125,7 @@ const Invites: React.FC<Props> = () => {
 
         // TODO: Implement API call to save new invite
         console.log('Saving new invite:', newInviteWithCid);
-        await actionUpdateInvite(newInviteWithCid.cid, newInviteWithCid.email || '', newInviteWithCid.full_name || '', newInviteWithCid.notes || '');
+        await actionUpdateInvite({ cid: newInviteWithCid.cid, email: newInviteWithCid.email || '', full_name: newInviteWithCid.full_name || '', nickname: newInviteWithCid.nickname || '', notes: newInviteWithCid.notes || '' });
         setIsAddingInvite(false);
         setNewInvite({
             email: '',
@@ -137,13 +137,14 @@ const Invites: React.FC<Props> = () => {
     }, [newInvite, mutate]);
 
     const handleUpdateInvite = useCallback(async (updatedData: Pick<InviteData, 'cid'> & Partial<InviteData>) => {
+        console.log("===>>handleUpdateInvite", updatedData);
         if (!updatedData.cid) {
             console.error('Cannot update invite: cid is missing');
             return;
         }
-        // TODO: Implement API call to update invite
+
         console.log('Updating invite:', updatedData);
-        await actionUpdateInvite(updatedData.cid, updatedData.email || '', updatedData.full_name || '', updatedData.notes || '');
+        await actionUpdateInvite(updatedData);
         await mutate();
     }, [mutate]);
 
