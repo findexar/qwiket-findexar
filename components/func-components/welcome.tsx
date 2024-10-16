@@ -64,7 +64,7 @@ const Welcome: React.FC<Props> = () => {
         Featuring sports-savvy AI Chat and a real-time, annotated,
         indexed sports media feed.<br /><br />
         As new stories are published in the media, they are digested, sliced and diced
-        into mentions of individual athletes and teams and fed back into Qwiket AI's knowledge base.<br /><br />
+        into mentions of individual athletes and teams and fed back into Qwiket AI knowledge base.<br /><br />
 
         Track the media mentions across <br />your fantasy teams effortlessly<br />
         using the My Team feature.<br /><br />
