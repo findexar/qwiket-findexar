@@ -169,7 +169,6 @@ const Mobile: React.FC<Props> = () => {
 
                 {currentView == 'teams' &&
                     <LeftMobilePanel>
-                        VIEW=={currentView} TAB={tab}
                         <Teams />
                     </LeftMobilePanel>
                 }
