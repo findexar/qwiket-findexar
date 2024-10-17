@@ -173,7 +173,7 @@ const Players: React.FC<Props> = () => {
         setPagetype("player");
         setPlayer(name);
         setView("mentions");
-        setTab("all");
+        setTab("");
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
         //  console.log("replaceState", url)
         //  window.history.replaceState({}, "", url);
