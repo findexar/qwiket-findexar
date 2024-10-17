@@ -427,14 +427,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
 
     let localUrl = "";
-    localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
+    localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}` : `/${league}/${team}?id=${findexarxid}`
     if (mini)
-        localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}` : `/${league}/${team}${params}${tp}`
+        localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`
 
     //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
-    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}${params}${tp}` : `/${league}/${team}${params}${tp}`;
+    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`;
     if (linkType == 'final')
         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
+    localUrl = localUrl.replace('&tab=all', '');
+    bottomLink = bottomLink.replace('&tab=all', '');
+    localUrl = localUrl.replace('&tab=myfeed', '');
+    bottomLink = bottomLink.replace('&tab=myfeed', '');
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     summary = summary || "";
     // Normalize summary to ensure it's safe for URI encoding

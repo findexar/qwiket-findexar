@@ -15,9 +15,10 @@ interface FetchMyFeedProps {
 const fetchMyFeed = async (key: FetchMyFeedKey, userId: string, sessionid: string) => {
     const { league, page } = key;
     const url = `${lake_api}/api/v50/findexar/get-my-feed?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
-   // console.log("fetching my feed:", url)
+    // console.log("fetching my feed:", url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
+    console.log("fetchMyFeed", res);
     return res.mentions;
 }
 
