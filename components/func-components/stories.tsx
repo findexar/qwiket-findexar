@@ -58,13 +58,13 @@ const MobileMentionsOuterContainer = styled.div`
     }
 `;
 
-interface Props {}
+interface Props { }
 
 let lastMutate = 0;
 let scrollY = 0;
 
 const Stories: React.FC<Props> = () => {
-    const { fallback,league } = useAppContext();
+    const { fallback, league } = useAppContext();
 
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
         let key: StoriesKey = { type: "fetch-stories", page: pageIndex, league };
@@ -74,7 +74,7 @@ const Stories: React.FC<Props> = () => {
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: true, parallel: true, fallback, /*revalidateFirstPage: true*/ });
 
     let stories = data ? [].concat(...data) : [];
-
+    console.log("stories", stories);
     useEffect(() => {
         const intervalId = setInterval(() => {
             if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {
@@ -119,7 +119,7 @@ const Stories: React.FC<Props> = () => {
     const Stories = stories && stories.filter((s: any, i: number) => s).map((s: any, i: number) => (
         <Story
             story={s}
-            handleClose={() => {}}
+            handleClose={() => { }}
             key={`story-${i}`}
         />
     ));

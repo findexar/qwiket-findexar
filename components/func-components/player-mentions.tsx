@@ -25,6 +25,7 @@ const PlayerMentions: React.FC<Props> = () => {
          setMentions(data ? [].concat(...data) : []);
      },[data])*/
     let mentions = data ? [].concat(...data) : [];
+    console.log("mentions", mentions);
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
     // console.log("team-mentions teamPlayersKey",teamPlayersKey)
