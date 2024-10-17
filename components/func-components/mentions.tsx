@@ -65,7 +65,7 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
 
     if (!view)
         view = "mentions";
-    console.log("mention Mentions", mentions)
+    //   console.log("mention Mentions", mentions)
 
     // Check if mentions is not just an array of undefined
     const hasValidMentions = mentions && mentions.some((m: any) => m !== undefined);
@@ -82,7 +82,7 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
                 mutatePlayers={mutatePlayers}
             />)
     }) : null;
-    console.log("REACT Mentions", Mentions, hasValidMentions);
+    //  console.log("REACT Mentions", Mentions, hasValidMentions);
     return (
         <div>
             <MentionsOuterContainer className="hidden lg:block">

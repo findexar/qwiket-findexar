@@ -439,7 +439,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     summary = summary || "";
     // Normalize summary to ensure it's safe for URI encoding
     summary = summary.normalize("NFKC");
-    console.log("******** SUMMARY", summary, fbShareUrl, { quote: summary.substring(0, 140) + '...' })
+    // console.log("******** SUMMARY", summary, fbShareUrl, { quote: summary.substring(0, 140) + '...' })
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
@@ -448,7 +448,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
     const [openLimitSubscriptionModal, setOpenLimitSubscriptionModal] = useState(false);
-    console.log("isLoaded", isLoaded, isSignedIn, user);
+    // console.log("isLoaded", isLoaded, isSignedIn, user);
 
 
     useEffect(() => {
