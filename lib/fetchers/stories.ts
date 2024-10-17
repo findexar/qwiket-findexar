@@ -20,18 +20,19 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     const fetchResponse = await fetch(url);
     const t2 = Date.now();
 
-    console.log("fetchResponse", t2 - t1);
     const res = await fetchResponse.json();
+    // console.log("fetchStories fetchResponse", { stories: res.stories, time: t2 - t1 });
+
     return res.stories;
 }
 
 const promiseStories = async ({ userId, sessionid, league }: FetchStoriesProps) => {
-    console.log("promiseStories", userId, sessionid, league);
+    //  console.log("promiseStories", userId, sessionid, league);
     let keyStories = (page: any) => {
         const keyFetchedStories: StoriesKey = { type: "fetch-stories", page: page, league }
         return keyFetchedStories;
     };
-    console.log("StoriesKey:", keyStories);
+    //console.log("StoriesKey:", keyStories);
     return { key: us(keyStories), call: fetchStories(keyStories(0), userId, sessionid) };
 }
 export const actionStories = async (key: StoriesKey) => {

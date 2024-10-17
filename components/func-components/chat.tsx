@@ -102,6 +102,11 @@ const ChatsComponent: React.FC<Props> = ({
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
+    useEffect(() => {
+        if (isCid) {
+            setCreator(true);
+        }
+    }, [isCid]);
     console.log("==> CHATS.TSX isCid", isCid);
     const creditColorClass = totalCredits === 0
         ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
@@ -117,7 +122,7 @@ const ChatsComponent: React.FC<Props> = ({
     //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
         if (loadedChat) {
-            setCreator(loadedChat.chat.creator || false);
+            setCreator(loadedChat.chat.creator || isCid);
 
         }
     }, [loadedChat]);

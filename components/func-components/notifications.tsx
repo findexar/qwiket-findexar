@@ -4,6 +4,8 @@ import { useNotifications } from '@lib/hooks/use-notifications';
 import { Notification } from '@lib/fetchers/notifications';
 import { useTheme } from 'next-themes';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { MarkdownComponents } from '@components/shared/markdown-components';
 
 const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ count, highestType }) => {
@@ -34,11 +36,17 @@ const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ co
 };
 
 const NotificationItem: React.FC<{ notification: Notification; onRemove: () => void; onDismiss: () => void }> = ({ notification, onRemove, onDismiss }) => {
+    const trimmedText = notification.text.trim();
+    const displayText = trimmedText || 'Empty notification';
+
     return (
         <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
             <div onClick={onDismiss} className="cursor-pointer flex-grow mr-2">
-                <ReactMarkdown components={MarkdownComponents} className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">
-                    {notification.text}
+                <ReactMarkdown
+                    components={MarkdownComponents}
+                    className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2 overflow-hidden"
+                >
+                    {displayText}
                 </ReactMarkdown>
             </div>
             <button
@@ -76,13 +84,32 @@ const NotificationPopup: React.FC<{ notification: Notification; onDismiss: () =>
         };
     }, [onClose]);
 
+    console.log('Notification text:', notification.text); // Debugging line
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-            <div ref={popupRef} className="bg-white dark:bg-gray-800 rounded-md shadow-lg max-w-sm w-full mx-4">
-                <div className="p-3 border-b border-gray-200 dark:border-gray-700 min-h-[4.5em] flex flex-col justify-start">
-                    <ReactMarkdown components={MarkdownComponents} className="text-sm text-gray-800 dark:text-gray-200">
+            <div ref={popupRef} className="bg-white dark:bg-gray-800 rounded-md shadow-lg w-full max-w-md mx-4">
+                <div className="p-3 border-b border-gray-200 dark:border-gray-700 max-h-[60vh] overflow-y-auto">
+                    <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                            h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-8" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-4" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-2" {...props} />,
+                            p: ({ node, ...props }) => <p className="mb-4" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-4" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+                            li: ({ node, ...props }) => <li className="mb-2" {...props} />,
+                            small: ({ node, ...props }) => <small className="text-sm block mt-4 text-gray-600 dark:text-gray-400" {...props} />,
+                            i: ({ node, ...props }) => <i className="italic" {...props} />,
+                            strong: ({ node, ...props }) => <strong className="font-bold" {...props} />,
+                        }}
+                        className="text-sm text-gray-800 dark:text-gray-200 text-left prose prose-sm dark:prose-invert max-w-none notification-content"
+                    >
                         {notification.text}
                     </ReactMarkdown>
+
                 </div>
                 <div className="flex justify-end p-2 bg-gray-50 dark:bg-gray-700 rounded-b-md">
                     <button

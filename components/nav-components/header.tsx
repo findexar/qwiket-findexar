@@ -602,11 +602,11 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             </SignedOut>
           </HeaderRight>
         </HeaderTopline>
-        {!pagetype.includes("account") && <div className="hidden lg:block ">
+        <div className="hidden lg:block ">
           <ContainerWrap> <Leagues $scrolled={scrollY != 0}>
             {LeaguesNav}
           </Leagues>
-          </ContainerWrap></div>}
+          </ContainerWrap></div>
       </Header >
       <div className="block lg:hidden"><MobileContainerWrap>
         <MuiTabs
