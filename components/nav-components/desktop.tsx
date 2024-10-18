@@ -145,7 +145,7 @@ const Desktop: React.FC<Props> = () => {
   let tab = initialTab || "";
   let view = initialView || "mentions";
 
-  console.log("==> view", view, tab);
+  //  console.log("==> view", view, tab);
   if (tab === 'chat') {
     view = 'mentions';
   }

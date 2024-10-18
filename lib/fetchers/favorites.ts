@@ -15,10 +15,10 @@ interface FetchFavoritesProps {
 const fetchFavorites = async (key: FavoritesKey, userId: string, sessionid: string) => {
     const { league, page } = key;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-favorites?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&league=${league}&page=${page}`;
-    console.log("fetchFavorites", url);
+    //  console.log("fetchFavorites", url);
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    // console.log("RET fetchFavorites", res.mentions);
+    //  console.log("RET fetchFavorites", res.mentions);
     return res.mentions;
 }
 const promiseFavoites = async ({ userId, sessionid, league = "", page }: FetchFavoritesProps) => {
@@ -32,15 +32,15 @@ export const actionFavorites = async (key: FavoritesKey) => {
     const { userId } = auth() || { userId: "" };
 
     const sessionid = session.sessionid;
-    console.log("actionFavorites", key, userId, sessionid);
+    //  console.log("actionFavorites", key, userId, sessionid);
     return fetchFavorites(key, userId || "", sessionid);
 }
 export type FavoriteParams = { findexarxid: string };
 const addFavorite = async ({ findexarxid }: FavoriteParams, userId: string, sessionid: string) => {
-
+    'use server';
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/favorites/add?api_key=${api_key}&userid=${userId}&findexarxid=${encodeURIComponent(findexarxid as string || "")}`;
-    console.log("add favorite:", url)
+    //  console.log("===> add favorite:", url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
     return res.success;
@@ -57,6 +57,7 @@ const removeFavorite = async ({ findexarxid }: FavoriteParams, userId: string, s
 }
 export const actionAddFavorite = async (props: FavoriteParams) => {
     'use server';
+    // console.log("actionAddFavorite")
     const session = await fetchSession();
     const { userId } = auth() || { userId: "" };
 

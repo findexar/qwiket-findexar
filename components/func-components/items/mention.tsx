@@ -16,7 +16,7 @@ import ContentCopyIcon from '@/components/icons/content-copy';
 import IconChevronUp from '@/components/icons/chevron-up';
 import IconChevronDown from '@/components/icons/chevron-down';
 
-import { MetaLinkKey, getMetaLink, addFavorite, removeFavorite } from '@/lib/api';
+import { MetaLinkKey, getMetaLink } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
@@ -646,6 +646,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             onClick={async () => {
                                 if (noUser) return;
                                 setLocalFav(1);
+                                console.log("actionAddFavorite", { findexarxid })
                                 await actionAddFavorite({ findexarxid });
                                 if (mutate) mutate();
                                 setToastMessage("Added to Favorites.");
@@ -748,7 +749,29 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             <MobileMentionWrap $hideit={hide} onMouseEnter={() => onHover('mobile')}>
                 <MentionSummary>
                     <div>
-                        <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>{!localFav ? noUser ? <SignInButton><StarOutlineIcon onClick={() => { if (noUser) return; enableRedirect(); setLocalFav(1); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /></SignInButton> : <StarOutlineIcon onClick={() => { if (noUser) return; setLocalFav(1); enableRedirect(); addFavorite({ findexarxid }); mutate(); }} style={{ color: "#888" }} /> : <StarIcon onClick={() => { if (noUser) return; setLocalFav(0); removeFavorite({ findexarxid }); mutate(); }} style={{ color: "FFA000" }} />}</Topline>
+                        <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>
+                            {!localFav ? <StarOutlineIcon className="h-4 w-4"
+                                onClick={async () => {
+                                    if (noUser) return;
+                                    setLocalFav(1);
+                                    console.log("actionAddFavorite", { findexarxid })
+                                    await actionAddFavorite({ findexarxid });
+                                    if (mutate) mutate();
+                                    setToastMessage("Added to Favorites.");
+                                    setToastIcon(<StarIcon className="h-4 w-4" />);
+
+
+
+                                }} style={{ color: "#888" }} /> :
+                                <StarIcon className="h-4 w-4" onClick={async () => {
+                                    if (noUser) return;
+                                    setLocalFav(0);
+                                    await actionRemoveFavorite({ findexarxid }); mutate();
+                                    setToastMessage("Removed from Favorites.");
+                                    setToastIcon(<StarOutlineIcon className="h-4 w-4" />);
+
+                                }} style={{ color: "FFA000" }} />}
+                        </Topline>
 
                         <SummaryWrap>
                             <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>

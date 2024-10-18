@@ -82,7 +82,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
-  console.log("==>==> pagetype", startPagetype);
+  //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
@@ -117,7 +117,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     let tp2 = tp;
     if (!params2) tp2 = tp.replace(/&/g, '?');
     if (!params) tp = tp.replace(/&/g, '?');
-    console.log("==> view", view);
+    //console.log("==> view", view);
 
     setParams(params);
     setParams2(params2);
@@ -205,9 +205,9 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const user = userInfo || { email: "" };
   const userAccountKey: UserAccountKey = { type: "user-account", email: user.email, bot };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
-  console.log("==> SPA userAccount", { userAccountKey, userAccount });
+  // console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
-  console.log("==> pagetype", pagetype);
+  //console.log("==> pagetype", pagetype);
   return (
     <StyledThemeProvider theme={palette}>
       <GlobalStyle $light={localMode === "light"} />

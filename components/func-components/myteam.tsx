@@ -162,7 +162,7 @@ const MyTeam: React.FC<Props> = () => {
         let key: FetchMyFeedKey = { type: "fetch-my-feed", page: pageIndex, league };
         return key;
     }
-    // now swrInfinite code:
+    // now swrInfinite code, only for mutateMyFeed:
     const { data, error, mutate: mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
 
 
@@ -172,75 +172,76 @@ const MyTeam: React.FC<Props> = () => {
 
     //const palette = theme[mode||'dark'].colors;
     return (
-        <>{!isMobile ? <RightScroll>
-            <TeamName>My Team{league ? ` for ${league}` : ``}: </TeamName>
-            {(!trackerListMembers || trackerListMembers.length == 0) && <><RightExplanation>
-                <b>My Team</b> is a feature designed for Fantasy Sports fans who need to track media
-                mentions of their&apos;s fantasy team players or prospects.<br /><br />    <hr />
-            </RightExplanation>
-                <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
-                </RightExplanation></>}
-            {trackerListMembers && trackerListMembers.map(({ member, athleteUUId, teamid, league }: { member: string, athleteUUId: string, teamid: string, league: string }, i: number) => {
-                return <SideGroup key={`3fdsdvb-${member}`}>
-                    <SidePlayer>
-                        <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}/${athleteUUId}}${params}`}>
-                            {member}
-                        </Link>
-                    </SidePlayer>
-                    {false && <SideButton>
-                        <div
-                            onClick={async () => {
-                                const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
-                                trackerListMutate(newTrackerListMembers, true);
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
-                            }} aria-label="Add new list">
-                            <SideIcon>
-                                <TeamRemoveIcon className="text-amber-400 hover:text-green-400" />
-                            </SideIcon>
-                        </div>
-                    </SideButton>}
-                    <SideButton>
-                        <div className="mt-2"
-                            onClick={async () => {
-                                console.log("TRACKED", member)
-                                setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
+        <>{!isMobile ?
+            <RightScroll>
+                <TeamName>My Team{league ? ` for ${league}` : ``}: </TeamName>
+                {(!trackerListMembers || trackerListMembers.length == 0) && <><RightExplanation>
+                    <b>My Team</b> is a feature designed for Fantasy Sports fans who need to track media
+                    mentions of their&apos;s fantasy team players or prospects.<br /><br />    <hr />
+                </RightExplanation>
+                    <RightExplanation>Use  &nbsp;<TeamAddIcon className="text-2xl inline" />&nbsp;  icon to the right of the<br /> player&apos;s name wherever available,<br />to add an athlete to the &ldquo;Fantasy Team&ldquo; tracking list.<br /><br />
+                    </RightExplanation></>}
+                {trackerListMembers && trackerListMembers.map(({ member, athleteUUId, teamid, league }: { member: string, athleteUUId: string, teamid: string, league: string }, i: number) => {
+                    return <SideGroup key={`3fdsdvb-${member}`}>
+                        <SidePlayer>
+                            <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}/${athleteUUId}}${params}`}>
+                                {member}
+                            </Link>
+                        </SidePlayer>
+                        {false && <SideButton>
+                            <div
+                                onClick={async () => {
+                                    const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                    trackerListMutate(newTrackerListMembers, true);
+                                    await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                }} aria-label="Add new list">
+                                <SideIcon>
+                                    <TeamRemoveIcon className="text-amber-400 hover:text-green-400" />
+                                </SideIcon>
+                            </div>
+                        </SideButton>}
+                        <SideButton>
+                            <div className="mt-2"
+                                onClick={async () => {
+                                    console.log("TRACKED", member)
+                                    setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
 
-                                setToastMessage("Player removed from the Your Team");
+                                    setToastMessage("Player removed from the Your Team");
 
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
-                                //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
-                                trackerListMutate();
-                                /*mutatePlayers(async (players: any) => {
-                                    return players.map((player: any) => {
-                                        if (player.name == p.name) {
-                                            player.tracked = false;
-                                        }
-                                        return player;
-                                    })
-                                }, {revalidate:true});*/
-                                await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                    await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
+                                    //const newTrackerListMembers = trackerListMembers.filter((p: any) => p.member != member);
+                                    trackerListMutate();
+                                    /*mutatePlayers(async (players: any) => {
+                                        return players.map((player: any) => {
+                                            if (player.name == p.name) {
+                                                player.tracked = false;
+                                            }
+                                            return player;
+                                        })
+                                    }, {revalidate:true});*/
+                                    await actionRemoveMyTeamMember({ member, teamid, athleteUUId });
 
-                                // mutateMentions();
-                                mutateMyFeed();
-                                //mutatePlayerMentions();
-                                await actionRecordEvent(
-                                    'player-remove-myteam',
-                                    `{"params":"${params}","team":"${teamid}","player":"$member}"}`
-                                );
+                                    // mutateMentions();
+                                    mutateMyFeed();
+                                    //mutatePlayerMentions();
+                                    await actionRecordEvent(
+                                        'player-remove-myteam',
+                                        `{"params":"${params}","team":"${teamid}","player":"$member}"}`
+                                    );
 
 
-                            }} aria-label="Add new list">
-                            <SideIcon $highlight={false}>
-                                {<TeamRemoveIcon className="h-6 w-6 opacity-70  hover:opacity-100 text-amber-800 dark:text-amber-200" />}
+                                }} aria-label="Add new list">
+                                <SideIcon $highlight={false}>
+                                    {<TeamRemoveIcon className="h-6 w-6 opacity-70  hover:opacity-100 text-amber-800 dark:text-amber-200" />}
 
-                            </SideIcon>
-                        </div>
-                    </SideButton>
+                                </SideIcon>
+                            </div>
+                        </SideButton>
 
-                </SideGroup>
-            })}
-            {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
-        </RightScroll> :
+                    </SideGroup>
+                })}
+                {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
+            </RightScroll> :
             <MobilePlayersPanel>
                 <MobileTeamName>My Team: </MobileTeamName>
                 {(!trackerListMembers || trackerListMembers.length == 0) &&

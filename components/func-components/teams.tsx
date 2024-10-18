@@ -41,7 +41,7 @@ const Teams: React.FC<Props> = () => {
 
     const leagueTeamsKey: LeagueTeamsKey = { type: "league-teams", league };
     const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
-    console.log("RENDER teams:", teamid, teamName)
+    // console.log("RENDER teams:", teamid, teamName)
     const onTeamNav = useCallback(async (id: string, name: string) => {
         setPagetype("team");
         setPlayer("");

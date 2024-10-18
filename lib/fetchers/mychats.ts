@@ -16,7 +16,7 @@ export const fetchMyChats = async (key: MyChatsKey, userId: string, sessionid: s
         const data = await fetchResponse.json();
         // console.log("return fetching my chats", url, data);
         if (data.success) {
-            console.log("===>GET MY CHATS", data.chats);
+            // console.log("===>GET MY CHATS", data.chats);
             return data.chats as ChatItem[];
         }
         throw new Error("Failed to fetchMyChats");

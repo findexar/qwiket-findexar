@@ -107,7 +107,7 @@ const ChatsComponent: React.FC<Props> = ({
             setCreator(true);
         }
     }, [isCid]);
-    console.log("==> CHATS.TSX isCid", isCid);
+    // console.log("==> CHATS.TSX isCid", isCid);
     const creditColorClass = totalCredits === 0
         ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
         : totalCredits < 5
@@ -543,7 +543,7 @@ const ChatsComponent: React.FC<Props> = ({
                                             chatUUId={chatUUId}
                                             selectedDocuments={selectedDocuments}
                                             onSelectedDocumentsChange={(documents: UserDocument[]) => {
-                                                console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
+                                                //console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
                                                 setSelectedDocuments(documents)
                                             }}
                                         />

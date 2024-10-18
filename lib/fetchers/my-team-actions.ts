@@ -17,7 +17,7 @@ const fetchMyTeam = async (key: MyTeamKey, userId: string, sessionid: string) =>
     // console.log("====> fetchMyTeam", JSON.stringify({ userId, sessionid, league }))
 
     const fetchResponse = await fetch(url);
-    //  console.log("fetchResponse", fetchResponse.json)
+    // console.log("fetchResponse", fetchResponse.json)
     const res = await fetchResponse.json();
     //console.log("RET fetch my team:",res.members)
     return res.members;

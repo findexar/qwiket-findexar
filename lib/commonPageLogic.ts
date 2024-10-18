@@ -10,6 +10,7 @@ import { getAMention } from '@/lib/fetchers/mention';
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 
 export async function commonPageLogic(params: any, searchParams: any) {
+    console.log("commonPageLogic")
     const t1 = new Date().getTime();
     let headerslist = headers();
     const ua = headerslist.get('user-agent') || "";

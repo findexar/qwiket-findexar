@@ -59,7 +59,7 @@ export const fetchUser = async (
         }
         // console.log("fetchUser", key, userId, sessionid, utm_content)
         if (!sessionid) {
-            console.log("===>FAILED TO GET USER, NO SESSIONID", sessionid);
+            console.log("FAILED TO GET USER, NO SESSIONID", sessionid);
             return {} as UserAccount;
             // throw new Error("Failed to fetchUser");
         }
@@ -72,7 +72,7 @@ export const fetchUser = async (
             // console.log("===>GET USER", data.account);
             return data.account as UserAccount;
         }
-        console.log("===>FAILED TO GET USER", data);
+        console.log("FAILED TO GET USER", data);
         return {} as UserAccount;
         // throw new Error("Failed to fetchUser");
     }
@@ -104,7 +104,7 @@ export const actionUser = async (key: UserAccountKey, utm_content?: string): Pro
         userId = "";
     }
     const sessionid = session.sessionid;
-    console.log("===>actionUser", key, userId, sessionid)
+    //  console.log("===>actionUser", key, userId, sessionid)
     /*if (!userId) {
         return {} as UserAccount;
     }*/
@@ -113,9 +113,9 @@ export const actionUser = async (key: UserAccountKey, utm_content?: string): Pro
 
 const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string, cid?: string, aid?: string) => {
     'use server';
-    console.log("promiseUser", key, userId, sessionid, utm_content, ua, cid, aid)
+    // console.log("promiseUser", key, userId, sessionid, utm_content, ua, cid, aid)
     let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content, ua, cid, aid) };
-    console.log("AFTER promiseUser", key, userId, sessionid)
+    //console.log("AFTER promiseUser", key, userId, sessionid)
     return ret;
 }
 

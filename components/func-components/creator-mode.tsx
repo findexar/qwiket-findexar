@@ -126,7 +126,7 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
                 return selectedDocsMap.get(doc.uuid) || doc;
             });
 
-            console.log(`==>updatedSelectedDocs: ${JSON.stringify(updatedSelectedDocs)}`);
+            //console.log(`==>updatedSelectedDocs: ${JSON.stringify(updatedSelectedDocs)}`);
             if (JSON.stringify(updatedSelectedDocs) !== JSON.stringify(selectedDocuments)) {
                 console.log(`Updating selectedDocuments from userDocuments: ${JSON.stringify(updatedSelectedDocs)}`);
                 onSelectedDocumentsChange(updatedSelectedDocs);
@@ -283,17 +283,17 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
     const toggleSelectDocument = async (uuid: string, type: 'STYLE' | 'DATA') => {
         console.log(`toggleSelectDocument uuid: ${uuid}, type: ${type}`);
         const documents = type === 'STYLE' ? styleDocuments : dataDocuments;
-        console.log(`==>documents: ${JSON.stringify(documents)}`);
+        //console.log(`==>documents: ${JSON.stringify(documents)}`);
         const updatedDocuments = documents.map(doc =>
             doc.uuid === uuid ? { ...doc, selected: doc.selected === 1 ? 0 : 1 } : doc
         );
-        console.log(`==>updatedDocuments: ${JSON.stringify(updatedDocuments)}`);
+        //console.log(`==>updatedDocuments: ${JSON.stringify(updatedDocuments)}`);
 
         let newStyleDocuments, newDataDocuments;
         if (type === 'STYLE') {
             newStyleDocuments = updatedDocuments;
             newDataDocuments = dataDocuments;
-            console.log(`==>newStyleDocuments: ${JSON.stringify(newStyleDocuments)}`);
+            //console.log(`==>newStyleDocuments: ${JSON.stringify(newStyleDocuments)}`);
             setStyleDocuments(updatedDocuments);
         } else {
             newStyleDocuments = styleDocuments;
@@ -302,9 +302,9 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
         }
 
         const allDocuments = [...newStyleDocuments, ...newDataDocuments];
-        console.log(`==>allDocuments: ${JSON.stringify(allDocuments)}`);
+        //console.log(`==>allDocuments: ${JSON.stringify(allDocuments)}`);
         const newSelectedDocuments = allDocuments.filter(doc => doc.selected === 1);
-        console.log(`==>newSelectedDocuments: ${JSON.stringify(newSelectedDocuments)}`);
+        //console.log(`==>newSelectedDocuments: ${JSON.stringify(newSelectedDocuments)}`);
         onSelectedDocumentsChange(newSelectedDocuments);
         recordEvent(`select-document`, `{"uuid":"${uuid}","type":"${type}","params":"${JSON.stringify(params)}"}`)
             .then((r: any) => {
@@ -319,7 +319,7 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
 
     const deleteDocument = async (uuid: string, type: 'STYLE' | 'DATA') => {
         try {
-            console.log(`deleteDocument uuid: ${uuid}`);
+            //console.log(`deleteDocument uuid: ${uuid}`);
             const updatedDocuments = userDocuments?.filter(doc => doc.uuid !== uuid);
             if (updatedDocuments && chatUUId && chatUUId !== "_new") {
                 mutate(updatedDocuments, false);
@@ -340,7 +340,7 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
     };
 
     const handleFileUploadSuccess = useCallback((type: 'STYLE' | 'DATA', event: any) => {
-        console.log(` handleFileUploadSuccess event: ${JSON.stringify(event)}`);
+        //console.log(` handleFileUploadSuccess event: ${JSON.stringify(event)}`);
         const uuid = event.uuid;
         let document: UserDocument = { uuid, type, name: event.name, title: '', description: '', selected: 1 };
         actionSaveUploadedDocument(document, chatUUId && chatUUId !== "_new" ? chatUUId : "").then(() => {

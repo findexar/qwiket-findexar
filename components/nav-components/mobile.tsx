@@ -152,7 +152,7 @@ const Mobile: React.FC<Props> = () => {
     /*  useEffect(() => {
           // Preload components or data here
       }, [tab, view]);*/
-    console.log("==> pagetype", pagetype);
+  //  console.log("==> pagetype", pagetype);
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
@@ -165,7 +165,7 @@ const Mobile: React.FC<Props> = () => {
                 }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
 
-                {pagetype == "league" && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                {pagetype == "league" && (view == "mentions" || view == '') && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
 
                 {currentView == 'teams' &&
                     <LeftMobilePanel>

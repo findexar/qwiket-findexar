@@ -9,7 +9,7 @@ export const actionFetchAthleteUUId = async (props: FetchAthleteUUIdProps) => {
         const { athleteName, teamAbv } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/get-athleteuuid?athleteName=${encodeURIComponent(athleteName)}&teamAbv=${encodeURIComponent(teamAbv)}`;
-        console.log('==> FETCH-ATHLETEUUID.TS athleteName', athleteName, 'teamAbv', teamAbv);
+       // console.log('==> FETCH-ATHLETEUUID.TS athleteName', athleteName, 'teamAbv', teamAbv);
         try {
             const res = await fetch(url);
             const data = await res.json();

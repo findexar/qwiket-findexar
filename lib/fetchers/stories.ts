@@ -16,7 +16,7 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     const { league, page } = key;
     const url = `${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
     const t1 = Date.now();
-    console.log("fetchStories", url);
+    //console.log("fetchStories", url);
     const fetchResponse = await fetch(url);
     const t2 = Date.now();
 

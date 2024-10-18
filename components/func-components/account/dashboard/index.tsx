@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         let newPeriods = [];
         if (isFirstWeekOfMonth) {
-            console.log(`Dashboard==>isFirstWeekOfMonth: ${isFirstWeekOfMonth}`);
+           // console.log(`Dashboard==>isFirstWeekOfMonth: ${isFirstWeekOfMonth}`);
             const prevMonth = new Date(parseInt(selectedYear), parseInt(selectedMonth) - 2, 1);
             newPeriods.push({
                 year: prevMonth.getFullYear().toString(),
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
 
     const dailyUsageAccountKey: UserUsageAccountKey = { type: "daily-usage", periods };
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
-    console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
+   // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
     const chartData: ChartData<'bar'> = {
         labels: dailyUsageAccount?.flatMap(monthData =>
