@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, useMemo } from "react";
 import useSWR from 'swr';
 import Link from 'next/link';
 import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
@@ -353,7 +353,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
-    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName } = useAppContext();
+    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked } = mention;
@@ -371,6 +371,48 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league: ll };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, fallback);
+
+    const isCid = useMemo(() => {
+        return userAccount?.cid && userAccount?.cid.length > 0;
+    }, [userAccount]);
+
+    const shareUrls = useMemo(() => {
+        const prepName = encodeURIComponent(name);
+        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}/`;
+        const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
+        const typeSpecificPath = type == 'person'
+            ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}`
+            : `${league}/${encodeURIComponent(team)}/${athleteUUId}`;
+
+        return {
+            share: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=sharelink${cidParam}`,
+            twitter: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=xlink${cidParam}`,
+            facebook: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=fblink${cidParam}`,
+        };
+    }, [type, league, team, name, athleteUUId, findexarxid, isCid, userAccount]);
+
+    const socialLinks = useMemo(() => {
+        return {
+            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${shareUrls.twitter}&via=findexar`,
+            facebook: `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(shareUrls.facebook)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`,
+        };
+    }, [summary, shareUrls]);
+
+    const localUrl = useMemo(() => {
+        const prepName = encodeURIComponent(name);
+        return type == 'person'
+            ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}`
+            : `/${league}/${team}?id=${findexarxid}`;
+    }, [type, league, team, name, athleteUUId, findexarxid]);
+
+    const bottomLink = useMemo(() => {
+        let link = type == 'person'
+            ? `/${league}/${team}/${encodeURIComponent(name)}/${athleteUUId}`
+            : `/${league}/${team}`;
+        if (linkType == 'final')
+            link += `${params.includes('?') ? '&' : '?'}top=1`;
+        return link.replace('&tab=all', '').replace('&tab=myfeed', '');
+    }, [type, league, team, name, athleteUUId, linkType, params]);
 
     useEffect(() => {
         setLocalTracked(tracked);
@@ -426,19 +468,19 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink`);
     // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
 
-    let localUrl = "";
-    localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}` : `/${league}/${team}?id=${findexarxid}`
-    if (mini)
-        localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`
-
-    //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
-    let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`;
-    if (linkType == 'final')
-        bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
-    localUrl = localUrl.replace('&tab=all', '');
-    bottomLink = bottomLink.replace('&tab=all', '');
-    localUrl = localUrl.replace('&tab=myfeed', '');
-    bottomLink = bottomLink.replace('&tab=myfeed', '');
+    /* let localUrl = "";
+     localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}` : `/${league}/${team}?id=${findexarxid}`
+     if (mini)
+         localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`
+ 
+     //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
+     let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`;
+     if (linkType == 'final')
+         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
+     localUrl = localUrl.replace('&tab=all', '');
+     bottomLink = bottomLink.replace('&tab=all', '');
+     localUrl = localUrl.replace('&tab=myfeed', '');
+     bottomLink = bottomLink.replace('&tab=myfeed', '');*/
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     summary = summary || "";
     // Normalize summary to ensure it's safe for URI encoding
@@ -465,20 +507,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string, athleteUUId: string, url: string) => {
-
-        console.log("onMentionNav", name, athleteUUId, url)
-
-        let pgt = "";
-        if (type == 'person')
-            pgt = 'player';
-        else
-            pgt = 'team';
-
+        console.log("onMentionNav", name, athleteUUId, url);
+        let pgt = type == 'person' ? 'player' : 'team';
         await actionRecordEvent(
             'mention-nav',
             `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
         );
-
     }, [league, team, type, params]);
 
     const enableRedirect = useCallback(() => {
@@ -685,18 +719,23 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </div>}
                     </Atmention>
                     <BottomLine>
-                        <ShareGroup><RWebShare
-                            data={{
-                                text: summary,
-                                url: shareUrl,
-                                title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
-                            }}
-                            onClick={async () => await onShare(url)}
-                        >
-                            <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
-                        </RWebShare>
-                            <Link href={twitterLink} target="_blank"><ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer></Link>
-                            <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer></Link>
+                        <ShareGroup>
+                            <RWebShare
+                                data={{
+                                    text: summary,
+                                    url: shareUrls.share,
+                                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                                }}
+                                onClick={async () => await onShare(url)}
+                            >
+                                <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </RWebShare>
+                            <Link href={socialLinks.twitter} target="_blank">
+                                <ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </Link>
+                            <Link href={socialLinks.facebook} target="_blank">
+                                <ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </Link>
                         </ShareGroup>
                         <div className=" flex flex-row justify-between">
                             <Atmention2 className="mr-2">{meta?.site_name}</Atmention2>
@@ -794,18 +833,23 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
                     <BottomLine>
-                        <ShareGroup><RWebShare
-                            data={{
-                                text: summary,
-                                url: shareUrl,
-                                title: "Findexar",
-                            }}
-                            onClick={async () => onShare(url)}
-                        >
-                            <ShareContainer><IosShareIcon /></ShareContainer>
-                        </RWebShare>
-                            <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                            <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                        <ShareGroup>
+                            <RWebShare
+                                data={{
+                                    text: summary,
+                                    url: shareUrls.share,
+                                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                                }}
+                                onClick={async () => await onShare(url)}
+                            >
+                                <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </RWebShare>
+                            <Link href={socialLinks.twitter} target="_blank">
+                                <ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </Link>
+                            <Link href={socialLinks.facebook} target="_blank">
+                                <ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                            </Link>
                         </ShareGroup>
                         <Icon onClick={
                             async (e) => {

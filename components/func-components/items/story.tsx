@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useMemo } from "react";
 import Link from 'next/link';
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
@@ -249,30 +249,50 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     //console.log("STORY CREATED TIME", createdTime,title,site_name);
     // console.log("==> story prompts", prompts);
     url = url || "";
+
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [selectedXid, setSelectedXid] = React.useState("");
     const [value, copy] = useCopyToClipboard();
     const [visible, setVisible] = React.useState(false);
 
-    let prepDigest = digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "";
+    const isCid = useMemo(() => {
+        return userAccount?.cid && userAccount?.cid.length > 0;
+    }, [userAccount]);
 
-    const shareUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?story=${slug}&utm_content=shareslink` : `${process.env.NEXT_PUBLIC_SERVER}/?story=${slug}&utm_content=shareslink`;
-    const twitterShareUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?story=${slug}&utm_content=xslink` : `${process.env.NEXT_PUBLIC_SERVER}/?story=${slug}&utm_content=xslink`;
-    const fbShareUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?story=${slug}&utm_content=fbslink` : `${process.env.NEXT_PUBLIC_SERVER}/?story=${slug}&utm_content=fbslink`;
-    const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(prepDigest.substring(0, 230) + '...')}&url=${twitterShareUrl}&via=findexar`;
-    const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(prepDigest.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
+    const prepDigest = useMemo(() => {
+        return digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "";
+    }, [digest]);
+
+    const shareUrls = useMemo(() => {
+        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}${league ? `/${league}` : ''}?story=${slug}`;
+        const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
+        return {
+            share: `${baseUrl}&utm_content=shareslink${cidParam}`,
+            twitter: `${baseUrl}&utm_content=xslink${cidParam}`,
+            facebook: `${baseUrl}&utm_content=fbslink${cidParam}`,
+        };
+    }, [league, slug, isCid, userAccount]);
+
+    const socialLinks = useMemo(() => {
+        return {
+            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(prepDigest.substring(0, 230) + '...')}&url=${shareUrls.twitter}&via=findexar`,
+            facebook: `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(shareUrls.facebook)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(prepDigest.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`,
+        };
+    }, [prepDigest, shareUrls]);
+
     const { ref, inView, entry } = useInView({
         /* Optional options */
         threshold: 0,
     });
+
     useEffect(() => {
         if (inView && !visible) {
             setVisible(true);
@@ -285,7 +305,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     useEffect(() => {
         if (!site_name) {
-            recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${shareUrl}"}`).then((r: any) => {
+            recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${shareUrls.share}"}`).then((r: any) => {
                 //console.log("recordEvent", r);
             });;
         }
@@ -362,11 +382,23 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
         );
     };
 
-    const Mentions = <MentionsWrap>{mentions && mentions.map((mention: any, i: number) => {
-        return (
-            <MiniMention handleClose={handleClose} onClick={() => onMentionClick(mention)} key={`mention-${mention.findexarxid}`} {...mention} params={params} tp={tp} selectedXid={selectedXid} setSelectedXid={setSelectedXid} mutate={() => { }} />
-        )
-    })}</MentionsWrap>;
+    const Mentions = useMemo(() => (
+        <MentionsWrap>
+            {mentions && mentions.map((mention: any, i: number) => (
+                <MiniMention
+                    handleClose={handleClose}
+                    onClick={() => onMentionClick(mention)}
+                    key={`mention-${mention.findexarxid}`}
+                    {...mention}
+                    params={params}
+                    tp={tp}
+                    selectedXid={selectedXid}
+                    setSelectedXid={setSelectedXid}
+                    mutate={() => { }}
+                />
+            ))}
+        </MentionsWrap>
+    ), [mentions, handleClose, onMentionClick, params, tp, selectedXid]);
 
     if (image && image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0)
         return null;
@@ -413,15 +445,15 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <ShareGroup><RWebShare
                         data={{
                             text: prepDigest,
-                            url: shareUrl,
+                            url: shareUrls.share,
                             title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
                         }}
-                        onClick={async () => await onShare(shareUrl)}
+                        onClick={async () => await onShare(shareUrls.share)}
                     >
                         <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
                     </RWebShare>
-                        <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                        <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                        <Link href={socialLinks.twitter} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
+                        <Link href={socialLinks.facebook} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
                 <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
@@ -460,15 +492,15 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <ShareGroup><RWebShare
                         data={{
                             text: prepDigest,
-                            url: shareUrl,
+                            url: shareUrls.share,
                             title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
                         }}
-                        onClick={async () => await onShare(shareUrl)}
+                        onClick={async () => await onShare(shareUrls.share)}
                     >
                         <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
                     </RWebShare>
-                        <Link href={twitterLink} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                        <Link href={fbLink} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                        <Link href={socialLinks.twitter} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
+                        <Link href={socialLinks.facebook} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
                     </ShareGroup>
                 </BottomLine>
                 <hr />
