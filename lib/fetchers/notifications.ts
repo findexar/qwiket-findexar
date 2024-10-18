@@ -27,7 +27,7 @@ export const fetchNotifications = async (key: NotificationsKey, userId: string, 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-notifications?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&includeRemoved=${includeRemoved}&page=${page}&limit=${limit}`;
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        console.log("fetchNotifications", data);
+        // console.log("fetchNotifications", data);
         if (data.success) {
             return {
                 notifications: data.notifications as Notification[],
