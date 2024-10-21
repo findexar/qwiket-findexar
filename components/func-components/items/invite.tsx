@@ -10,7 +10,7 @@ import { FaCopy } from 'react-icons/fa';
 
 interface InviteProps {
     cid: string;
-    email: string;
+    email?: string; // Make email optional
     full_name: string;
     nickname: string;
     notes: string;
@@ -20,6 +20,7 @@ interface InviteProps {
     account_created: string | null;
     subscribed: string | null;
     canceled: string | null;
+    tag: string; // Add tag field
     onUpdate: (updatedData: Partial<InviteProps>) => void;
 }
 
@@ -35,6 +36,7 @@ const Invite: React.FC<InviteProps> = ({
     account_created,
     subscribed,
     canceled,
+    tag, // Add tag to destructuring
     onUpdate
 }) => {
     const [editedData, setEditedData] = useState({
@@ -42,9 +44,10 @@ const Invite: React.FC<InviteProps> = ({
         email,
         full_name,
         nickname,
-        notes
+        notes,
+        tag // Add tag to editedData
     });
-    const [isEditing, setIsEditing] = useState(false);
+    const [editingField, setEditingField] = useState<string | null>(null);
     const [copySuccess, setCopySuccess] = useState(false);
 
     // Add this useEffect hook
@@ -54,9 +57,10 @@ const Invite: React.FC<InviteProps> = ({
             email,
             full_name,
             nickname,
-            notes
+            notes,
+            tag // Add tag to useEffect
         });
-    }, [cid, email, full_name, nickname, notes]);
+    }, [cid, email, full_name, nickname, notes, tag]);
 
     const getBgColor = () => {
         if (canceled) return 'bg-red-100 dark:bg-red-900';
@@ -87,19 +91,18 @@ const Invite: React.FC<InviteProps> = ({
 
     const handleUpdate = useCallback(() => {
         onUpdate(editedData);
-        setIsEditing(false);
+        setEditingField(null);
     }, [editedData, onUpdate]);
 
     const handleCancel = useCallback(() => {
-        setEditedData({ cid, email, full_name, nickname, notes });
-        setIsEditing(false);
-    }, [email, full_name, nickname, notes]);
+        setEditedData({ cid, email, full_name, nickname, notes, tag });
+        setEditingField(null);
+    }, [cid, email, full_name, nickname, notes, tag]);
 
-    const handleComponentClick = useCallback(() => {
-        if (!isEditing) {
-            setIsEditing(true);
-        }
-    }, [isEditing]);
+    const handleFieldClick = useCallback((e: React.MouseEvent, fieldName: string) => {
+        e.stopPropagation();
+        setEditingField(fieldName);
+    }, []);
 
     const copyToClipboard = async () => {
         try {
@@ -112,36 +115,52 @@ const Invite: React.FC<InviteProps> = ({
     };
 
     const renderEditableField = (name: string, value: string, type: string = 'text') => {
-        return isEditing ? (
+        return editingField === name ? (
             <input
                 type={type}
                 name={name}
                 value={value}
                 onChange={handleInputChange}
-                className="ml-2 bg-transparent border-b border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500"
+                onBlur={() => setEditingField(null)}
+                autoFocus
+                className="bg-transparent border border-blue-500 rounded px-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                onClick={(e) => e.stopPropagation()}
             />
         ) : (
-            <span className="ml-2">{value}</span>
+            <span
+                className="cursor-pointer hover:text-blue-500"
+                onClick={(e) => handleFieldClick(e, name)}
+            >
+                {value}
+            </span>
         );
     };
 
     return (
         <div
-            className={`p-4 mb-4 rounded-lg shadow-md ${getBgColor()} text-gray-800 dark:text-gray-200 cursor-pointer`}
-            onClick={handleComponentClick}
+            className={`p-4 mb-4 rounded-lg shadow-md ${getBgColor()} text-gray-800 dark:text-gray-200 cursor-pointer w-full max-w-sm md:max-w-3xl mx-auto`}
+            onClick={() => setEditingField(null)}
         >
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">
-                    {isEditing ? (
+                    {editingField === 'full_name' ? (
                         <input
                             type="text"
                             name="full_name"
                             value={editedData.full_name}
                             onChange={handleInputChange}
-                            className="bg-transparent border-b border-gray-300 dark:border-gray-700 focus:outline-none focus:border-blue-500"
+                            onBlur={() => setEditingField(null)}
+                            autoFocus
+                            className="bg-transparent border border-blue-500 rounded px-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onClick={(e) => e.stopPropagation()}
                         />
                     ) : (
-                        editedData.full_name
+                        <span
+                            className="cursor-pointer hover:text-blue-500"
+                            onClick={(e) => handleFieldClick(e, 'full_name')}
+                        >
+                            {editedData.full_name}
+                        </span>
                     )}
                 </h3>
                 <div className="flex items-center">
@@ -156,50 +175,43 @@ const Invite: React.FC<InviteProps> = ({
                     {copySuccess && <span className="text-green-500 ml-2">Copied!</span>}
                 </div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 <div>
-                    <p><strong>Email:</strong> {renderEditableField('email', editedData.email, 'email')}</p>
-                    <p><strong>Nickname:</strong> {renderEditableField('nickname', editedData.nickname)}</p>
-                    <p><strong>Self Invited:</strong> {self_invited ? 'Yes' : 'No'}</p>
+                    <p className="flex items-center mb-2"><strong className="w-28">Email:</strong> <span className="flex-grow">{renderEditableField('email', editedData.email || '', 'email')}</span></p>
+                    <p className="flex items-center mb-2"><strong className="w-28">Nickname:</strong> <span className="flex-grow">{renderEditableField('nickname', editedData.nickname)}</span></p>
+                    <p className="flex items-center mb-2"><strong className="w-28">Self Invited:</strong> <span className="flex-grow">{self_invited ? 'Yes' : 'No'}</span></p>
+                    <p className="flex items-center mb-2"><strong className="w-28">Tag:</strong> <span className="flex-grow">{renderEditableField('tag', editedData.tag)}</span></p>
                 </div>
                 <div>
-                    <p><strong>Created:</strong> {formatDate(created)}</p>
-                    <p><strong>Visited:</strong> {formatDate(visited)}</p>
-                    <p><strong>Account Created:</strong> {formatDate(account_created)}</p>
-                    <p><strong>Subscribed:</strong> {formatDate(subscribed)}</p>
-                    <p><strong>Canceled:</strong> {formatDate(canceled)}</p>
+                    <p className="mb-2"><strong className="w-28 inline-block">Created:</strong> {formatDate(created)}</p>
+                    <p className="mb-2"><strong className="w-28 inline-block">Visited:</strong> {formatDate(visited)}</p>
+                    <p className="mb-2"><strong className="w-28 inline-block">Account Created:</strong> {formatDate(account_created)}</p>
+                    <p className="mb-2"><strong className="w-28 inline-block">Subscribed:</strong> {formatDate(subscribed)}</p>
+                    <p className="mb-2"><strong className="w-28 inline-block">Canceled:</strong> {formatDate(canceled)}</p>
                 </div>
             </div>
-            <div className="mt-2">
-                <strong>Notes:</strong>
-                {isEditing ? (
+            <div className="mt-4">
+                <strong className="block mb-2">Notes:</strong>
+                {editingField === 'notes' ? (
                     <textarea
                         name="notes"
                         value={editedData.notes}
                         onChange={handleInputChange}
-                        className="w-full mt-1 p-2 text-sm text-gray-700 dark:text-gray-300 bg-transparent border rounded focus:outline-none focus:border-blue-500"
+                        onBlur={() => setEditingField(null)}
+                        autoFocus
+                        className="w-full p-2 text-sm text-gray-700 dark:text-gray-300 bg-transparent border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         rows={3}
+                        onClick={(e) => e.stopPropagation()}
                     />
                 ) : (
-                    <p className="text-sm text-gray-700 dark:text-gray-300">{editedData.notes}</p>
+                    <p
+                        className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-500"
+                        onClick={(e) => handleFieldClick(e, 'notes')}
+                    >
+                        {editedData.notes}
+                    </p>
                 )}
             </div>
-            {isEditing && (
-                <div className="mt-4 flex space-x-2">
-                    <button
-                        onClick={handleUpdate}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    >
-                        Update
-                    </button>
-                    <button
-                        onClick={handleCancel}
-                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

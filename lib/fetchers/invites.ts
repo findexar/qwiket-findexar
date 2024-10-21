@@ -26,9 +26,11 @@ export interface UpdateInviteProps {
     full_name?: string;
     nickname?: string;
     notes?: string;
+    tag?: string;
 }
-const updateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateInviteProps, userId: string, sessionid: string) => {
-    const url = `${lake_api}/api/v50/findexar/update-invite?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}`;
+const updateInvite = async ({ cid, email, full_name, nickname, notes, tag }: UpdateInviteProps, userId: string, sessionid: string) => {
+    tag = tag || "base";
+    const url = `${lake_api}/api/v50/findexar/update-invite?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&tag=${tag}`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -40,6 +42,7 @@ const updateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateIn
             full_name,
             nickname,
             notes,
+            tag
         }),
     });
     return res.json();
@@ -62,13 +65,13 @@ export const actionInvites = async (key: InvitesKey) => {
     const sessionid = session.sessionid;
     return fetchInvites(key, userId || "", sessionid);
 }
-export const actionUpdateInvite = async ({ cid, email, full_name, nickname, notes }: UpdateInviteProps) => {
+export const actionUpdateInvite = async ({ cid, email, full_name, nickname, notes, tag }: UpdateInviteProps) => {
     const session = await fetchSession();
 
     const { userId } = auth() || { userId: "" };
 
     const sessionid = session.sessionid;
-    return updateInvite({ cid, email, full_name, nickname, notes }, userId || "", sessionid);
+    return updateInvite({ cid, email, full_name, nickname, notes, tag }, userId || "", sessionid);
 }
 
 export default promiseInvites;

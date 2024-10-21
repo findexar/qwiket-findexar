@@ -36,22 +36,32 @@ const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ co
 };
 
 const NotificationItem: React.FC<{ notification: Notification; onRemove: () => void; onDismiss: () => void }> = ({ notification, onRemove, onDismiss }) => {
-    const trimmedText = notification.text.trim();
-    const displayText = trimmedText || 'Empty notification';
+    const [templateContent, setTemplateContent] = useState<string | null>(null);
+    console.log('Notification:', notification);
+    useEffect(() => {
+        if (notification.templateUrl) {
+            fetch(notification.templateUrl)
+                .then(res => res.json())
+                .then(data => setTemplateContent(data.content))
+                .catch(error => console.error('Error fetching template:', error));
+        }
+    }, [notification.templateUrl]);
+
+    const displayText = templateContent || notification?.text?.trim() || 'Loading...';
 
     return (
-        <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
+        <div className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
             <div onClick={onDismiss} className="cursor-pointer flex-grow mr-2">
                 <ReactMarkdown
                     components={MarkdownComponents}
-                    className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2 overflow-hidden"
+                    className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2 overflow-hidden mb-1"
                 >
                     {displayText}
                 </ReactMarkdown>
             </div>
             <button
                 onClick={onRemove}
-                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-xs flex-shrink-0"
+                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-xs flex-shrink-0 ml-2"
             >
                 ×
             </button>
@@ -60,31 +70,19 @@ const NotificationItem: React.FC<{ notification: Notification; onRemove: () => v
 };
 
 const NotificationPopup: React.FC<{ notification: Notification; onDismiss: () => void; onClose: () => void }> = ({ notification, onDismiss, onClose }) => {
+    const [templateContent, setTemplateContent] = useState<string | null>(null);
     const popupRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const handleEscKey = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        };
+        if (notification.templateUrl) {
+            fetch(notification.templateUrl)
+                .then(res => res.json())
+                .then(data => setTemplateContent(data.content))
+                .catch(error => console.error('Error fetching template:', error));
+        }
+    }, [notification.templateUrl]);
 
-        const handleClickOutside = (event: MouseEvent) => {
-            if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-                onClose();
-            }
-        };
-
-        document.addEventListener('keydown', handleEscKey);
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('keydown', handleEscKey);
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [onClose]);
-
-    console.log('Notification text:', notification.text); // Debugging line
+    console.log('Notification text:', notification.text); // Keeping this console.log
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
@@ -107,7 +105,7 @@ const NotificationPopup: React.FC<{ notification: Notification; onDismiss: () =>
                         }}
                         className="text-sm text-gray-800 dark:text-gray-200 text-left prose prose-sm dark:prose-invert max-w-none notification-content"
                     >
-                        {notification.text}
+                        {templateContent || notification.text}
                     </ReactMarkdown>
 
                 </div>
@@ -205,13 +203,14 @@ const Notifications: React.FC = () => {
                         transform: 'translateX(0)',
                     }}
                     onScroll={handleScroll}>
-                    {notifications.map(notification => (
-                        <NotificationItem
-                            key={notification.xid}
-                            notification={notification}
-                            onRemove={() => removeNotification(notification.xid)}
-                            onDismiss={() => setSelectedNotification(notification)}
-                        />
+                    {notifications.map((notification, index) => (
+                        <div key={notification.xid} className={index !== 0 ? 'mt-2' : ''}>
+                            <NotificationItem
+                                notification={notification}
+                                onRemove={() => removeNotification(notification.xid)}
+                                onDismiss={() => setSelectedNotification(notification)}
+                            />
+                        </div>
                     ))}
                 </div>
             )}

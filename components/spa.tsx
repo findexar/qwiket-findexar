@@ -19,6 +19,7 @@ import { actionUser } from '@/lib/fetchers/account';
 import Dashboard from './func-components/account/dashboard';
 import Invites from './func-components/invites';
 import RevenueSharingProgram from './func-components/revenue-sharing-program';
+import RevenueSharingProgramCreator from './func-components/revenue-sharing-program-creator';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -277,12 +278,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
           <Header />
           {pagetype === "account-upgrade" ? <AccountUpgrade /> :
             pagetype === "account-rsp" ? <RevenueSharingProgram /> :
-              pagetype === "admin-invite" ? <Invites /> :
-                pagetype === "account-dashboard" ? <Dashboard /> :
-                  <>
-                    <Desktop />
-                    <Mobile />
-                  </>}
+              pagetype === "account-rsp-creator" ? <RevenueSharingProgramCreator /> :
+                pagetype === "admin-invite" ? <Invites /> :
+                  pagetype === "account-dashboard" ? <Dashboard /> :
+                    <>
+                      <Desktop />
+                      <Mobile />
+                    </>}
         </main>
       </AppWrapper>
     </StyledThemeProvider>

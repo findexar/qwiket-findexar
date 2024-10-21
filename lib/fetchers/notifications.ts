@@ -11,6 +11,11 @@ export type Notification = {
     type: string;
     dismissed: boolean;
     removed: boolean;
+    templateName?: string;
+    tag?: string;
+    data?: string;
+    template?: boolean;
+    templateUrl?: string; // New field for template URL
 };
 
 export type NotificationsKey = {
@@ -27,11 +32,21 @@ export const fetchNotifications = async (key: NotificationsKey, userId: string, 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-notifications?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&includeRemoved=${includeRemoved}&page=${page}&limit=${limit}`;
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        // console.log("fetchNotifications", data);
+
         if (data.success) {
+            const notifications = data.notifications.map((notification: Notification) => {
+                if (notification.template && notification.tag && notification.templateName) {
+                    return {
+                        ...notification,
+                        templateUrl: `/api/templates/${notification.tag}/${notification.templateName}`
+                    };
+                }
+                return notification;
+            });
+
             return {
-                notifications: data.notifications as Notification[],
-                hasMore: data.notifications.length === limit
+                notifications,
+                hasMore: notifications.length === limit
             };
         }
         throw new Error("Failed to fetchNotifications");

@@ -9,7 +9,7 @@ import { InvitesKey } from '@/lib/keys';
 
 interface InviteData {
     cid: string;
-    email: string;
+    email?: string; // Make email optional
     full_name: string;
     nickname: string;
     notes: string;
@@ -19,6 +19,7 @@ interface InviteData {
     account_created: string | null;
     subscribed: string | null;
     canceled: string | null;
+    tag: string;
 }
 
 interface Props { }
@@ -34,6 +35,7 @@ const Invites: React.FC<Props> = () => {
         full_name: '',
         nickname: '',
         notes: '',
+        tag: '', // Add tag field
     });
 
     const fetchInvitesKey = (pageIndex: number, previousPageData: any): InvitesKey | null => {
@@ -61,6 +63,7 @@ const Invites: React.FC<Props> = () => {
             full_name: '',
             nickname: '',
             notes: '',
+            tag: '', // Reset tag field
         });
     }, []);
 
@@ -84,15 +87,24 @@ const Invites: React.FC<Props> = () => {
             account_created: null,
             subscribed: null,
             canceled: null,
+            tag: newInvite.tag || '', // Include tag in the new invite
         };
 
-        await actionUpdateInvite({ cid: newInviteWithCid.cid, email: newInviteWithCid.email || '', full_name: newInviteWithCid.full_name || '', nickname: newInviteWithCid.nickname || '', notes: newInviteWithCid.notes || '' });
+        await actionUpdateInvite({
+            cid: newInviteWithCid.cid,
+            email: newInviteWithCid.email || '',
+            full_name: newInviteWithCid.full_name || '',
+            nickname: newInviteWithCid.nickname || '',
+            notes: newInviteWithCid.notes || '',
+            tag: newInviteWithCid.tag || '' // Include tag in the update
+        });
         setIsAddingInvite(false);
         setNewInvite({
             email: '',
             full_name: '',
             nickname: '',
             notes: '',
+            tag: '', // Reset tag field
         });
         await mutate(); // Fetch again
     }, [newInvite, mutate]);
@@ -145,7 +157,7 @@ const Invites: React.FC<Props> = () => {
                                 name="email"
                                 value={newInvite.email}
                                 onChange={handleInputChange}
-                                placeholder="Email"
+                                placeholder="Email (optional)"
                                 className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                             />
                             <input
@@ -171,6 +183,14 @@ const Invites: React.FC<Props> = () => {
                                 placeholder="Notes"
                                 className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 rows={3}
+                            />
+                            <input
+                                type="text"
+                                name="tag"
+                                value={newInvite.tag}
+                                onChange={handleInputChange}
+                                placeholder="Tag"
+                                className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                             />
                             <div className="flex justify-end space-x-2">
                                 <button
@@ -212,7 +232,7 @@ const Invites: React.FC<Props> = () => {
                             name="email"
                             value={newInvite.email}
                             onChange={handleInputChange}
-                            placeholder="Email"
+                            placeholder="Email (optional)"
                             className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         />
                         <input
@@ -238,6 +258,14 @@ const Invites: React.FC<Props> = () => {
                             placeholder="Notes"
                             className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                             rows={3}
+                        />
+                        <input
+                            type="text"
+                            name="tag"
+                            value={newInvite.tag}
+                            onChange={handleInputChange}
+                            placeholder="Tag"
+                            className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         />
                         <div className="flex justify-end space-x-2">
                             <button

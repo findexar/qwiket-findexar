@@ -12,3 +12,7 @@ Imagine converting 1000 of your readers into Qwiket subscribers. That's $1000 in
 ### Getting Paid: Quick and Easy
 
 Cashing out your subscription earnings is simple. Fill out our invoice form, and we'll transfer your earnings via Stripe. No complicated processes, just straightforward payments. Note that the minimum payout is $20.
+
+### Learn More About the Revenue Sharing Program
+
+If you want to learn more about our Revenue Sharing Program, [click here](/account/rsp-creator) for detailed information and additional resources.
