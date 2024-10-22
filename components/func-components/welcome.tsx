@@ -57,7 +57,7 @@ const Welcome: React.FC<Props> = () => {
     const router = useRouter();
     const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     return <> <WelcomeWrap className="text-left">
-        Welcome to QWIKET AI!<br /><br /><hr />
+        Welcome to QwiketAI!<br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
         <br />Sports News Monitor and  <br />AI Chat. <br /><br />
 
