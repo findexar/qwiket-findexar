@@ -1,4 +1,4 @@
-BLAH Welcome to Qwiket AI! You have been enrolled into a creator revenue-sharing program. You have been granted ${creditsTotal} credits to start with.
+Welcome to Qwiket AI! You have been enrolled into a creator revenue-sharing program. You have been granted ${creditsTotal} credits to start with.
 ### How It Works: Simple Steps to Revenue
 
 1. **Share Your Links**: Use your personalized links (with your Affiliate ID {{cid}}), for example:: https://www.qwiket.com?aid={{cid}} when sharing Qwiket content. The visitors from your links will be started with 100 free credits, which is 400% over the default user.
