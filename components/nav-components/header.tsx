@@ -24,6 +24,8 @@ import saveSession from '@lib/fetchers/save-session';
 import { actionUserSubscription } from '@/lib/fetchers/user-subscription';
 import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
+import Image, { ImageProps } from 'next/image';
+import Head from 'next/head';
 
 interface HeaderProps {
   $scrolled: boolean;
@@ -241,8 +243,7 @@ const LeftContainer = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
   margin-left: 20px;
   @media screen and (max-width: 1024px) {
@@ -252,22 +253,17 @@ const HeaderLeft = styled.div`
 `;
 
 const ContainerCenter = styled.div`
-  margin-left: 20px;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   align-items: center;
+  margin-left: 28px; // Reduced margin
 `;
 
 const HeaderCenter = styled.div`
-  margin-left: 60px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  @media screen and (max-width: 1024px) {
-    margin-left: 0px;
-  }
 `;
 
 const HeaderRight = styled.div`
@@ -408,6 +404,23 @@ const IconContainer = styled.div`
   }
 `;
 
+const LogoContainer = styled.div`
+  display: none; // Hidden by default
+  @media screen and (min-width: 1025px) {
+    display: flex; // Show only on desktop
+    align-items: center;
+    margin-right: 2px;
+    margin-left:10px;
+  }
+`;
+
+const LogoImg = styled.img<{ $scrolled: boolean }>`
+  height: auto;
+  width: ${props => props.$scrolled ? '32px' : '42px'}; // Half of 64 or 128
+  opacity: 0.6;
+  transition: width 0.2s ease;
+`;
+
 interface Props {
 }
 
@@ -514,13 +527,41 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   if (!leagues) return <div>loading leagues...</div>
   return (
     <>
+      <Head>
+        <link
+          rel="preload"
+          href="/q-logo-light-128.png"
+          as="image"
+          type="image/png"
+        />
+        <link
+          rel="preload"
+          href="/q-logo-dark-128.png"
+          as="image"
+          type="image/png"
+        />
+      </Head>
       <Header $scrolled={scrollY != 0}>
         <HeaderTopline>
           <LeftContainer>
-            {false && <HeaderLeft>
-              <FLogo><Link href={`/${params}`}><Avatar size={scrollY != 0 ? "medium" : "large"} className={scrollY != 0 ? "text-white bg-cyan-800 text-4xl" : "text-white  text-6xl"}>{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogo>
-              <FLogoMobile ><Link href={`/${params}`}><Avatar className="text-white bg-cyan-800">{process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}</Avatar></Link></FLogoMobile>
-            </HeaderLeft>}
+            <HeaderLeft>
+              <LogoContainer>
+                <Link href={`/${params}`}>
+                  <LogoImg
+                    src={mode === 'dark' ? '/q-logo-dark-128.png' : '/q-logo-light-128.png'}
+                    alt="Qwiket Logo"
+                    $scrolled={scrollY !== 0}
+                  />
+                </Link>
+              </LogoContainer>
+              <FLogoMobile>
+                <Link href={`/${params}`}>
+                  <Avatar className="text-white bg-cyan-800">
+                    {process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}
+                  </Avatar>
+                </Link>
+              </FLogoMobile>
+            </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
                 <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{`QWIKET AI` + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
@@ -625,3 +666,4 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   )
 }
 export default HeaderNav;
+

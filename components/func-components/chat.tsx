@@ -42,6 +42,23 @@ const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
   }
 `;
 
+const AIMessageHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const AILogo = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  opacity: 0.6;
+`;
+
+const AIName = styled.span`
+  font-weight: bold;
+  margin-left: 4px;
+`;
 
 interface Props {
     chatUUId?: string;
@@ -593,13 +610,29 @@ const ChatsComponent: React.FC<Props> = ({
                             : 'bg-gray-100 dark:bg-gray-700'
                             } text-gray-800 dark:text-gray-200`}>
                             <div className="flex justify-between items-center mb-1">
-                                <p className="font-semibold">{message.role === 'user' ? 'You     ' : 'QwiketAI     '}</p>
+                                {message.role === 'user' ? (
+                                    <p className="font-semibold">You</p>
+                                ) : (
+                                    <div className="flex items-center">
+                                        <img
+                                            src="/q-logo-light-128.png"
+                                            alt="QwiketAI Logo"
+                                            className="w-5 h-5 mr-1.5 opacity-60 dark:hidden" // Reduced size and margin
+                                        />
+                                        <img
+                                            src="/q-logo-dark-128.png"
+                                            alt="QwiketAI Logo"
+                                            className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline" // Reduced size and margin
+                                        />
+                                        <span className="font-bold ml-0.5">QwiketAI</span> // Slightly reduced left margin
+                                    </div>
+                                )}
                                 {message.role !== 'user' && message.content.length >= 20 && (
                                     <button
                                         onClick={() => copyToClipboard(message.content, index)}
                                         className={`${copiedMessageIndex === index
                                             ? 'text-green-500 dark:text-green-400'
-                                            : 'text-gray-500 hover:text-gray-700 dark:text-grayr:text-gray-700 dark:text-gray-200'
+                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                             } transition-colors duration-200`}
                                     >
                                         {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
