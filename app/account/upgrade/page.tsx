@@ -114,12 +114,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         },
         icons: {
             icon: [
-                { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
-                { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+                { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+                { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
             ],
             shortcut: [
-                { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
-                { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+                { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+                { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
             ],
         },
     };

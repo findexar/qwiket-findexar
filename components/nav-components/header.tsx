@@ -530,13 +530,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
       <Head>
         <link
           rel="preload"
-          href="/q-logo-light-128.png"
+          href="/q-logo-light-42.png"
           as="image"
           type="image/png"
         />
         <link
           rel="preload"
-          href="/q-logo-dark-128.png"
+          href="/q-logo-dark-42.png"
           as="image"
           type="image/png"
         />

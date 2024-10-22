@@ -615,16 +615,16 @@ const ChatsComponent: React.FC<Props> = ({
                                 ) : (
                                     <div className="flex items-center">
                                         <img
-                                            src="/q-logo-light-128.png"
+                                            src="/q-logo-light-42.png"
                                             alt="QwiketAI Logo"
                                             className="w-5 h-5 mr-1.5 opacity-60 dark:hidden" // Reduced size and margin
                                         />
                                         <img
-                                            src="/q-logo-dark-128.png"
+                                            src="/q-logo-dark-42.png"
                                             alt="QwiketAI Logo"
                                             className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline" // Reduced size and margin
                                         />
-                                        <span className="font-bold ml-0.5">QwiketAI</span> // Slightly reduced left margin
+                                        <span className="font-bold ml-0.5">QwiketAI</span>
                                     </div>
                                 )}
                                 {message.role !== 'user' && message.content.length >= 20 && (
