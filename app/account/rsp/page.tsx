@@ -14,9 +14,18 @@ import { isbot } from '@/lib/is-bot';
 export const metadata: Metadata = {
     title: 'Account Dashboard',
     description: 'View your account usage and information',
+    openGraph: {
+        images: ['/q-logo-og-1200.png'],
+    },
     icons: {
-        icon: "/QLogo.png",
-        shortcut: "/QLogo.png",
+        icon: [
+            { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+            { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
+        ],
+        shortcut: [
+            { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+            { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
+        ],
     },
 };
 

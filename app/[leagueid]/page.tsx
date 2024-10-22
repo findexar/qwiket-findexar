@@ -93,8 +93,7 @@ export async function generateMetadata(
   } else if (amention) {
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
-
-  let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
+  let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
   let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   if (astory) {

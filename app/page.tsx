@@ -79,7 +79,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
-  let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
+  let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
   let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
 
   if (astory) {
@@ -100,12 +100,18 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       images: [
         {
           url: ogImage,
-          width: image_width,
-          height: image_height,
+          width: 1200,
+          height: 1200,
           alt: ogTitle,
         }
       ],
       type: 'website'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImage],
     },
     robots: noindex === 1 ? 'noindex, nofollow' : 'index, follow',
     alternates: {

@@ -63,7 +63,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         image_height = 0
     } = astory || {};
 
-    const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
+    const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : '/q-logo-og-1200.png';
 
     let ogUrl = '';
     if (amention) {
@@ -80,7 +80,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     }
 
     let ogDescription = amentionSummary || "Professional and Fantasy Sports AI News Monitor.";
-    let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
+    let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
 
     if (astory) {

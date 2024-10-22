@@ -68,7 +68,7 @@ export async function generateMetadata(
   }
 
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
-  let ogImage = astoryImageOgUrl || "https://www.qwiket.com/QLogo.png";
+  let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
   let ogTitle = ogTarget || `${process.env.NEXT_PUBLIC_APP_NAME} Sports AI`;
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
