@@ -247,7 +247,7 @@ const HeaderLeft = styled.div`
   align-items: center;
   margin-left: 20px;
   @media screen and (max-width: 1024px) {
-    margin-left: 0px;
+    margin-left: -10px;
     margin-right: 0px;
   }
 `;
