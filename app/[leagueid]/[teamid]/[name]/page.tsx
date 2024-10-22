@@ -107,9 +107,14 @@ export async function generateMetadata(
       canonical: ogUrl,
     },
     icons: {
-      icon: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
-      shortcut: process.env.NEXT_PUBLIC_APP_NAME == "Findexar" ? "/FiLogo.png" : "/QLogo.png",
-
+      icon: [
+        { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
+        { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+      ],
+      shortcut: [
+        { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
+        { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+      ],
     },
 
   }

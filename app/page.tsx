@@ -112,8 +112,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       canonical: ogUrl,
     },
     icons: {
-      icon: "/QLogo.png",
-      shortcut: "/QLogo.png",
+      icon: [
+        { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
+        { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+      ],
+      shortcut: [
+        { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
+        { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
+      ],
     },
   };
 }
