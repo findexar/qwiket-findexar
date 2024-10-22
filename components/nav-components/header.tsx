@@ -554,13 +554,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                   />
                 </Link>
               </LogoContainer>
-              <FLogoMobile>
+              {false && <FLogoMobile>
                 <Link href={`/${params}`}>
                   <Avatar className="text-white bg-cyan-800">
                     {process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}
                   </Avatar>
                 </Link>
-              </FLogoMobile>
+              </FLogoMobile>}
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
