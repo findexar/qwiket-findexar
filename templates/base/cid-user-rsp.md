@@ -1,4 +1,4 @@
-lear# Monetize Your Sports Content with Qwiket's Revenue-Sharing Program
+# Monetize Your Sports Content with Qwiket AI's Revenue-Sharing Program
 
 ## Turn Your Audience into Substantial Income
 
@@ -6,7 +6,7 @@ Are you a sports or fantasy sports content creator looking to earn from your exp
 
 ### How It Works: Simple Steps to Revenue
 
-1. **Join the Program**: Once accepted, you'll receive a unique Affiliate ID (AID).
+1. **Join the Program**: Go do Dashboard to view your unique Affiliate ID (AID).
 2. **Start with 200 Credits**: We'll kickstart your account with 200 credits for Qwiket AI use.
 3. **Share Your Links**: Use your personalized links (with your AID) when sharing Qwiket content. The visitors from your links will be started with 100 free credits, which is 400% over the default user.
 4. **Get Credits for Traffic**: For every 100 visitors through your links, we'll top up your Qwiket AI credits to 2000.
@@ -20,11 +20,6 @@ Imagine converting 1000 of your readers into Qwiket subscribers. That's $1000 in
 
 Cashing out your subscription earnings is simple. Fill out our invoice form, and we'll transfer your earnings via Stripe. No complicated processes, just straightforward payments. Note that the minimum payout is $20.
 
-## Are You Eligible?
-
-To qualify for our RSP, you need:
-- A blog or content platform with over 10,000 unique monthly visitors
-- Original sports or fantasy sports content
 
 ## The Qwiket Advantage: Why Choose Our Program?
 
@@ -34,13 +29,6 @@ To qualify for our RSP, you need:
 - **Low Maintenance**: No need to change your content strategy - just add links
 - **Reliable Payments**: Get paid via Stripe, a trusted payment platform
 
-## How to Get Started
-
-1. Click the "Apply" button below
-2. Complete the short application form
-3. Once approved, start sharing links to earn and get credits!
-
-Don't miss out on this lucrative opportunity. Join Qwiket's Revenue-Sharing Program today and start monetizing your sports content effectively!
 
 ## Terms and Conditions
 
@@ -56,5 +44,5 @@ Don't miss out on this lucrative opportunity. Join Qwiket's Revenue-Sharing Prog
 8. Termination: Either party can end the partnership with 30 days' written notice.
 9. Liability: Qwiket is not responsible for any losses or damages resulting from your participation.
 
-By clicking 'Apply', you confirm that you've read and agree to these terms.</i></small>
+</i></small>
   

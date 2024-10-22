@@ -18,8 +18,7 @@ import useSWR from 'swr';
 import { actionUser } from '@/lib/fetchers/account';
 import Dashboard from './func-components/account/dashboard';
 import Invites from './func-components/invites';
-import RevenueSharingProgram from './func-components/revenue-sharing-program';
-import RevenueSharingProgramCreator from './func-components/revenue-sharing-program-creator';
+import RevenueSharedContent from './func-components/revenue-sharing-content';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -277,8 +276,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
           }} />
           <Header />
           {pagetype === "account-upgrade" ? <AccountUpgrade /> :
-            pagetype === "account-rsp" ? <RevenueSharingProgram /> :
-              pagetype === "account-rsp-creator" ? <RevenueSharingProgramCreator /> :
+            pagetype === "account-rsp" ? <RevenueSharedContent isCreator={false} /> :
+              pagetype === "account-rsp-creator" ? <RevenueSharedContent isCreator={true} /> :
                 pagetype === "admin-invite" ? <Invites /> :
                   pagetype === "account-dashboard" ? <Dashboard /> :
                     <>

@@ -3,21 +3,28 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import ApplicationForm from './application-form';
 import { useAppContext } from '@lib/context';
-import { MarkdownComponents } from '@components/shared/markdown-components';
+import Link from 'next/link';
+import ApplicationForm from './application-form';
 
-const RevenueSharing: React.FC = () => {
+interface RevenueSharedContentProps {
+    isCreator: boolean;
+    onApply?: () => void;
+    onCancel?: () => void;
+    onSuccess?: () => void;
+}
+
+const RevenueSharedContent: React.FC<RevenueSharedContentProps> = ({ isCreator, onApply, onCancel, onSuccess }) => {
+    const [templateContent, setTemplateContent] = useState<string | null>(null);
     const [showForm, setShowForm] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
-    const [templateContent, setTemplateContent] = useState<string | null>(null);
     const { userAccount } = useAppContext();
 
     useEffect(() => {
         const fetchTemplate = async () => {
             try {
                 const tag = userAccount?.tag || 'base';
-                const templateName = 'trial-user-rsp';
+                const templateName = isCreator ? 'cid-user-rsp' : 'trial-user-rsp';
                 const response = await fetch(`/api/templates/${tag}/${templateName}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch template');
@@ -31,20 +38,23 @@ const RevenueSharing: React.FC = () => {
         };
 
         fetchTemplate();
-    }, [userAccount]);
+    }, [userAccount, isCreator]);
 
     const handleApply = () => {
         setShowForm(true);
         setSubmitSuccess(false);
+        onApply && onApply();
     };
 
     const handleCancel = () => {
         setShowForm(false);
+        onCancel && onCancel();
     };
 
     const handleSuccess = () => {
         setShowForm(false);
         setSubmitSuccess(true);
+        onSuccess && onSuccess();
     };
 
     return (
@@ -78,12 +88,21 @@ const RevenueSharing: React.FC = () => {
                                 </div>
                             )}
                             <div className="flex justify-center mt-8 mb-6">
-                                <button
-                                    onClick={handleApply}
-                                    className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded"
-                                >
-                                    Apply Now and Start Earning!
-                                </button>
+                                {isCreator ? (
+                                    <Link
+                                        href="/account/dashboard"
+                                        className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded inline-block text-center"
+                                    >
+                                        Go to Creator Dashboard
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={handleApply}
+                                        className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded"
+                                    >
+                                        Apply Now and Start Earning!
+                                    </button>
+                                )}
                             </div>
                         </>
                     ) : (
@@ -95,4 +114,4 @@ const RevenueSharing: React.FC = () => {
     );
 };
 
-export default RevenueSharing;
+export default RevenueSharedContent;
