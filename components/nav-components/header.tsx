@@ -410,7 +410,7 @@ const LogoContainer = styled.div`
     display: flex; // Show only on desktop
     align-items: center;
     margin-right: 2px;
-    margin-left:10px;
+    margin-left:8px;
   }
 `;
 
