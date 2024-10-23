@@ -171,7 +171,7 @@ export default async function Page({
     let pagetype = "player";
     let league = params.leagueid.toUpperCase();
     let teamid = params.teamid;
-    let name = params.name.replaceAll('_', ' ').replaceAll('%20', ' ');;
+    let name = params.name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;
     let athleteUUId = params.athleteUUId;
 
     let isMobile = Boolean(ua.match(

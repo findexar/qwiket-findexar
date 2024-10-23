@@ -207,6 +207,9 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
+  if (league == 'FAVICON.ICO') {
+    return new Response('Not Found', { status: 404 });
+  }
   /// console.log("league->", league);
   // console.log("utm_content->", utm_content);
 

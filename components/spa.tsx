@@ -181,7 +181,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       }
       let qplayer = parts && parts.length > 3 ? parts[3] : '';
       let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
-      qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ');
+      qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ').replace('!', '.');
       qleague = qleague.toUpperCase();
       if (view === 'landing') qpagetype = "landing";
 

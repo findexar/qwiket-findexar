@@ -377,7 +377,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [userAccount]);
 
     const shareUrls = useMemo(() => {
-        const prepName = encodeURIComponent(name);
+        const prepName = encodeURIComponent(name.replace(/\./g, '!'));
         const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}/`;
         const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
         const typeSpecificPath = type == 'person'
@@ -461,7 +461,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     //    const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
     //const subscrLevel = subscription?.subscrLevel || 0;
     //prepare urls:
-    const prepName = encodeURIComponent(name);//name?.replaceAll(' ', '_') || "";
+    const prepName = encodeURIComponent(name.replace(/\./g, '!'));//name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink`);
 
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink`);

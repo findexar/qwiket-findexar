@@ -131,7 +131,7 @@ interface Props {
 }
 const Players: React.FC<Props> = () => {
 
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
@@ -168,12 +168,15 @@ const Players: React.FC<Props> = () => {
     //const mode = theme.palette.mode;
     const palette = theme[mode].colors;
     // console.log("PLAYERS:",players,"key:",teamPlayersKey)
-    const onPlayerNav = async (name: string) => {
+    const onPlayerNav = async (name: string, athleteUUId: string) => {
         // console.log("onPlayerNav", name)
         setPagetype("player");
         setPlayer(name);
+        setAthleteUUId(athleteUUId);
         setView("mentions");
         setTab("");
+        name = name.replace(/\./g, '');
+        console.log("onPlayerNav", name)
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
         //  console.log("replaceState", url)
         //  window.history.replaceState({}, "", url);
@@ -184,15 +187,19 @@ const Players: React.FC<Props> = () => {
     }
 
     const PlayersNav = players && players?.map((p: { name: string, athleteUUId: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
-        return <SideGroup className="h-6" key={`ewfggvfn-${p.name}`}>{p.name == player ?
+        let name = p.name.replace(/\./g, '!');
+        console.log("PlayersNav", p, name)
+        console.log("athleteUUId", athleteUUId)
+        console.log("Name=", name)
+        return <SideGroup className="h-6" key={`ewfggvfn-${p.athleteUUId}`}>{p.athleteUUId == athleteUUId ?
             <SelectedSidePlayer $highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}/${p.athleteUUId}${params}`} >
+                <Link onClick={async () => { await onPlayerNav(p.name, p.athleteUUId) }} href={`/${league}/${teamid}/${encodeURIComponent(name)}/${p.athleteUUId}${params}`} >
                     {p.name} ({`${p.mentions ? p.mentions : 0}`})
                 </Link>
             </SelectedSidePlayer>
             :
             <SidePlayer $highlight={p.tracked}>
-                <Link onClick={async () => { await onPlayerNav(p.name) }} href={`/${league}/${teamid}/${encodeURIComponent(p.name)}/${p.athleteUUId}${params}`} >
+                <Link onClick={async () => { await onPlayerNav(p.name, p.athleteUUId) }} href={`/${league}/${teamid}/${encodeURIComponent(name)}/${p.athleteUUId}${params}`} >
                     {p.name} ({`${p.mentions || 0}`})
                 </Link>
             </SidePlayer>}
