@@ -33,14 +33,14 @@ export default function ChatPage() {
 
         // Add a placeholder message for the assistant response
         const assistantMessage: Message = {
-            role: 'QwiketAI',
+            role: 'Qwiket AI',
             content: ''
         };
         setMessages(prevMessages => [...prevMessages, assistantMessage]);
 
         try {
-            const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create`;   
-   
+            const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/create`;
+
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -132,7 +132,7 @@ export default function ChatPage() {
             <div className="flex-grow mb-4 h-96 overflow-auto border p-4 rounded">
                 {messages.map((message, index) => (
                     <div key={index} className={`mb-2 p-2 rounded ${message.role === 'user' ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'}`}>
-                        <strong>{message.role === 'user' ? 'You' : 'QwiketAI'}:</strong> <ReactMarkdown>{message.content}</ReactMarkdown>
+                        <strong>{message.role === 'user' ? 'You' : 'Qwiket AI'}:</strong> <ReactMarkdown>{message.content}</ReactMarkdown>
                     </div>
                 ))}
                 {isLoading && (
@@ -145,7 +145,7 @@ export default function ChatPage() {
                         value={userInput}
                         onChange={(e) => setUserInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Message to QwiketAI"
+                        placeholder="Message to Qwiket AI"
                         className="flex-grow p-2 border rounded mr-2"
                         rows={3}
                         disabled={isLoading}

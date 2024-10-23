@@ -81,7 +81,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
     let ogDescription = amentionSummary || "Sports News Monitor and AI Chat.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-    let ogTitle = ogTarget || `QwiketAI`;
+    let ogTitle = ogTarget || `Qwiket AI`;
 
     if (astory) {
         ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;

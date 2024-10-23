@@ -280,7 +280,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setMessages(loadedChat.chat.messages);
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
-                setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "QwiketAI") || 'New Chat');
+                setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
@@ -305,7 +305,7 @@ const ChatsComponent: React.FC<Props> = ({
         setIsLoading(true);
         setResponse('');
         const assistantMessage: Message = {
-            role: 'QwiketAI',
+            role: 'Qwiket AI',
             content: ''
         };
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
@@ -616,15 +616,15 @@ const ChatsComponent: React.FC<Props> = ({
                                     <div className="flex items-center">
                                         <img
                                             src="/q-logo-light-42.png"
-                                            alt="QwiketAI Logo"
+                                            alt="Qwiket AI Logo"
                                             className="w-5 h-5 mr-1.5 opacity-60 dark:hidden" // Reduced size and margin
                                         />
                                         <img
                                             src="/q-logo-dark-42.png"
-                                            alt="QwiketAI Logo"
+                                            alt="Qwiket AI Logo"
                                             className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline" // Reduced size and margin
                                         />
-                                        <span className="font-bold ml-0.5">QwiketAI</span>
+                                        <span className="font-bold ml-0.5">Qwiket AI</span>
                                     </div>
                                 )}
                                 {message.role !== 'user' && message.content.length >= 20 && (
@@ -642,7 +642,7 @@ const ChatsComponent: React.FC<Props> = ({
                             <ReactMarkdown components={MarkdownComponents}>
                                 {message?.content || ''}
                             </ReactMarkdown>
-                            {isLoading && index === messages.length - 1 && message.role === 'QwiketAI' && <BlinkingDot />}
+                            {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && <BlinkingDot />}
                         </div>
                     </div>
                 ))}
@@ -655,7 +655,7 @@ const ChatsComponent: React.FC<Props> = ({
                             ref={textareaRef}
                             defaultValue={userInput}
                             onKeyDown={handleKeyDown}
-                            placeholder="Message to QwiketAI"
+                            placeholder="Message to Qwiket AI"
                             className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                             rows={3}
                             disabled={isLoading}

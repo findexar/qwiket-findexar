@@ -135,7 +135,7 @@ export async function generateCommonMetadata(params: any, searchParams: any) {
 
     let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-    let ogTitle = ogTarget || `QwiketAI`;
+    let ogTitle = ogTarget || `Qwiket AI`;
     if (astory) {
         ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`
             : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;

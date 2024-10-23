@@ -94,7 +94,7 @@ export async function generateMetadata(
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-  let ogTitle = ogTarget || `QwiketAI`;
+  let ogTitle = ogTarget || `Qwiket AI`;
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
