@@ -4,6 +4,8 @@ export type ChatMessage = {
     messageUUId?: string,
     role: "user" | "assistant" | "system",
     content: string,
+    mentions?: { athleteUUId: string; teamid: string }[],
+    prompts?: string[],
 }
 
 export type Chat = {
@@ -49,6 +51,8 @@ export type Mention = {
 export type Message = {
     role: string;
     content: string;
+    mentions?: { athleteUUId: string; teamid: string }[],
+    prompts?: string[],
 }
 
 export type UserDocument = {

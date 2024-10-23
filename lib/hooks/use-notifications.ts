@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { useAppContext } from '@/lib/context';
 import { actionNotifications, dismissNotification as apiDismissNotification, removeNotification as apiRemoveNotification, Notification } from '@/lib/fetchers/notifications';
@@ -27,6 +28,11 @@ export const useNotifications = () => {
             revalidateFirstPage: false
         }
     );
+
+    // Effect to reload notifications after client-side mount
+    useEffect(() => {
+        mutate();
+    }, [mutate]);
 
     let notifications = data ? ([] as Notification[]).concat(...data) : [];
     notifications = notifications.map(notif => ({

@@ -50,7 +50,7 @@ const NotificationItem: React.FC<{ notification: Notification; onRemove: () => v
     const displayText = templateContent || notification?.text?.trim() || 'Loading...';
 
     return (
-        <div className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
+        <div className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div onClick={onDismiss} className="cursor-pointer flex-grow mr-2">
                 <ReactMarkdown
                     components={MarkdownComponents}
@@ -61,7 +61,7 @@ const NotificationItem: React.FC<{ notification: Notification; onRemove: () => v
             </div>
             <button
                 onClick={onRemove}
-                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-xs flex-shrink-0 ml-2"
+                className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-lg font-bold flex-shrink-0 ml-2 w-6 h-6 flex items-center justify-center"
             >
                 ×
             </button>

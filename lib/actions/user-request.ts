@@ -10,6 +10,7 @@ export interface UserRequestProps {
     onDone: () => void;
     onChatUUId: (chatUUId: string) => void;
     onMetaUpdate: (content: string) => void;
+    onFollowupPromptsUpdate: (content: string[]) => void;
     creator?: boolean;
     styleDocument?: string;
     dataDocumentsString?: string;
@@ -18,7 +19,7 @@ export interface UserRequestProps {
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
+        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, onFollowupPromptsUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
@@ -88,6 +89,18 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                         console.log('*********************** meta: content received', line);
                         const jsonData = JSON.parse(line.slice(5));
                         onMetaUpdate(jsonData.content);
+                    }
+                    if (line.startsWith('followupPrompts: ')) {
+                        console.log('*********************** followupPrompts: content received', line);
+                        const jsonData = JSON.parse(line.slice(16));
+                        let content = jsonData.content || [];
+                        if (content.length > 0) {
+                            const firstPrompt = content[0];
+                            if (typeof firstPrompt === "object") {
+                                content = content.map((prompt: any) => prompt.prompt);
+                            }
+                            onFollowupPromptsUpdate(content);
+                        }
                     }
                 }
             }

@@ -19,6 +19,7 @@ import { styled } from "styled-components";
 import CreatorMode from "@components/func-components/creator-mode";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import { MarkdownComponents } from '@components/shared/markdown-components';
+import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 
 const PromptsContainer = styled.div`
   display: flex;
@@ -93,6 +94,9 @@ const ChatsComponent: React.FC<Props> = ({
     const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
     // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
+    const [followupPrompts, setFollowupPrompts] = useState<string[]>([]);
+    const [isPromptSelected, setIsPromptSelected] = useState(false);
+    const [isMessageSubmitted, setIsMessageSubmitted] = useState(false);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
@@ -182,13 +186,17 @@ const ChatsComponent: React.FC<Props> = ({
 
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
-        setTimeout(() => {
-            setUpdateMessage('waiting for response...');
+        if (message.length > 0) {
             setTimeout(() => {
-                setUpdateMessage('');
-            }, 6000);
-        }, 2000);
+                setUpdateMessage('waiting for response...');
+                setTimeout(() => {
+                    setUpdateMessage('');
+                }, 6000);
+            }, 2000);
+        }
     }, []);
+
+
 
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
@@ -242,7 +250,23 @@ const ChatsComponent: React.FC<Props> = ({
                 });
             },
             onMetaUpdate: (content: string) => {
-                update(content);
+                setUpdateMessage(content);
+            },
+            onFollowupPromptsUpdate: (content: string[]) => {
+                // setIsUpdatingPrompts(true);
+                setUpdateMessage('');
+                const newPrompts = content;
+                console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
+                /*  setMessages(prevMessages => {
+                      const updatedMessages = [...prevMessages];
+                      const lastMessage = updatedMessages[updatedMessages.length - 1];
+                      if (lastMessage && lastMessage.role === 'assistant') {
+                          lastMessage.prompts = newPrompts;
+                      }
+                      return updatedMessages;
+                  });*/
+                setFollowupPrompts(newPrompts);
+                // setIsUpdatingPrompts(false);
             },
             styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
             dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
@@ -257,7 +281,7 @@ const ChatsComponent: React.FC<Props> = ({
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments]);
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts]);
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -276,15 +300,17 @@ const ChatsComponent: React.FC<Props> = ({
         setIsLoading(false);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
             setChatUUId(loadedChat.chat.chatUUId);
-            if (loadedChat.chat.messages) {
+            if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
+                setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
+                console.log('==> CHAT.TSX loadedChat.chat.messages', loadedChat.chat.messages);
                 setMessages(loadedChat.chat.messages);
+
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
-
         }
     }, [loadedChat]);
 
@@ -292,6 +318,8 @@ const ChatsComponent: React.FC<Props> = ({
         e.preventDefault();
         const currentUserInput = textareaRef.current?.value.trim();
         if (!currentUserInput) return;
+        setIsMessageSubmitted(true);
+        setIsPromptSelected(false);  // Reset prompt selection on submit
         update('Loading...');
         const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
         const userInputCleaned = currentUserInput.replace(/qw:/i, "");
@@ -304,6 +332,7 @@ const ChatsComponent: React.FC<Props> = ({
         });
         setIsLoading(true);
         setResponse('');
+        setFollowupPrompts([]); // Clear follow-up prompts
         const assistantMessage: Message = {
             role: 'Qwiket AI',
             content: ''
@@ -356,6 +385,21 @@ const ChatsComponent: React.FC<Props> = ({
             textareaRef.current.focus();
         }
     }, []);
+
+    const handlePromptClick = (prompt: string) => {
+        if (textareaRef.current) {
+            textareaRef.current.value = prompt;
+            setIsPromptSelected(true);
+            setIsMessageSubmitted(false);  // Reset this when a prompt is clicked
+        }
+    };
+
+    /*useEffect(() => {
+        if (followupPrompts.length > 0) {
+            // Force a re-render of the message list
+            setMessages([...messages]);
+        }
+    }, [followupPrompts, messages]);*/
 
     if (!league) {
         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
@@ -447,6 +491,7 @@ const ChatsComponent: React.FC<Props> = ({
                                     setChatName('New Chat');
                                     setOpenMyChats(false);
                                     setIsLoading(false);
+                                    setFollowupPrompts([]);
                                 }}
                                 className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 disabled={drawChatName === 'New Chat'}
@@ -604,11 +649,11 @@ const ChatsComponent: React.FC<Props> = ({
                     </>
                 )}
                 {drawMessages.map((message, index) => (
-                    <div key={index} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[95%] p-3 rounded-2xl ${message.role === 'user'
                             ? 'bg-blue-100 dark:bg-teal-800'
                             : 'bg-gray-100 dark:bg-gray-700'
-                            } text-gray-800 dark:text-gray-200`}>
+                            } text-gray-800 dark:text-gray-200 ${isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' ? 'w-full' : ''}`}>
                             <div className="flex justify-between items-center mb-1">
                                 {message.role === 'user' ? (
                                     <p className="font-semibold">You</p>
@@ -649,12 +694,35 @@ const ChatsComponent: React.FC<Props> = ({
                 <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                     {updateMessage || "***"}
                 </div>
+                {followupPrompts.length > 0 && (
+                    <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
+                        {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
+                        <div className="flex flex-wrap gap-2">
+                            {followupPrompts.map((prompt, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handlePromptClick(prompt)}
+                                    className={`text-xs px-2 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
+                                        ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
+                                        : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
+                                        }`}
+                                >
+                                    {prompt}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
                 <div className="p-0 mt-4">
                     <form onSubmit={handleSubmit} className="relative">
                         <textarea
                             ref={textareaRef}
                             defaultValue={userInput}
                             onKeyDown={handleKeyDown}
+                            onChange={() => {
+                                setIsPromptSelected(false);
+                                setIsMessageSubmitted(false);  // Reset on manual input
+                            }}
                             placeholder="Message to Qwiket AI"
                             className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                             rows={3}
@@ -669,7 +737,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
                             ) : (
                                 <div className="relative p-1.5">
-                                    {messages.length === 0 && userInput.trim() !== '' && <FlashingCircle />}
+                                    {(messages.length === 0 && textareaRef.current?.value.trim() !== '' && !isMessageSubmitted) || (isPromptSelected && !isMessageSubmitted) ? <FlashingCircle /> : null}
                                     <FaPaperPlane size={18} />
                                 </div>
                             )}
