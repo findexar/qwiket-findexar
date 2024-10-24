@@ -93,10 +93,11 @@ const ChatsComponent: React.FC<Props> = ({
     const [selectedDocuments, setSelectedDocuments] = useState<UserDocument[]>([]);
     const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
-    // const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
+    const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
     const [followupPrompts, setFollowupPrompts] = useState<string[]>([]);
     const [isPromptSelected, setIsPromptSelected] = useState(false);
     const [isMessageSubmitted, setIsMessageSubmitted] = useState(false);
+    const [isStreaming, setIsStreaming] = useState<boolean>(false);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
@@ -200,12 +201,13 @@ const ChatsComponent: React.FC<Props> = ({
 
     const userRequest = useCallback(() => {
         setPendingUserRequest(false);
-        // setStreamingMessageIndex(messages.length + 1);
+        setStreamingMessageIndex(messages.length);
         const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
         const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
         //console.log(`==>styleDocument: ${styleDocument}`);
         //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
         //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
+        setIsStreaming(true);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -233,6 +235,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setUpdateMessage('');
                 userAccountMutate();
                 setIsLoading(false);
+                setStreamingMessageIndex(null);
                 actionChatName({ chatUUId }).then(
                     (data) => {
                         if (data.success) {
@@ -242,7 +245,6 @@ const ChatsComponent: React.FC<Props> = ({
                 );
                 setInitialPrompt(null);
                 setInitialPromptUUId(null);
-                //setStreamingMessageIndex(null);
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -274,14 +276,14 @@ const ChatsComponent: React.FC<Props> = ({
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
             setIsLoading(false);
-            // setStreamingMessageIndex(null);
+            setStreamingMessageIndex(null);
         }).finally(() => {
             setIsLoading(false);
-            // setStreamingMessageIndex(null);
+            setIsStreaming(false);
         });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts]);
+    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts, setIsStreaming]);
 
     useEffect(() => {
         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
@@ -659,16 +661,20 @@ const ChatsComponent: React.FC<Props> = ({
                                     <p className="font-semibold">You</p>
                                 ) : (
                                     <div className="flex items-center">
-                                        <img
-                                            src="/q-logo-light-42.png"
-                                            alt="Qwiket AI Logo"
-                                            className="w-5 h-5 mr-1.5 opacity-60 dark:hidden" // Reduced size and margin
-                                        />
-                                        <img
-                                            src="/q-logo-dark-42.png"
-                                            alt="Qwiket AI Logo"
-                                            className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline" // Reduced size and margin
-                                        />
+                                        {streamingMessageIndex !== index && (
+                                            <>
+                                                <img
+                                                    src="/q-logo-light-42.png"
+                                                    alt="Qwiket AI Logo"
+                                                    className="w-5 h-5 mr-1.5 opacity-60 dark:hidden"
+                                                />
+                                                <img
+                                                    src="/q-logo-dark-42.png"
+                                                    alt="Qwiket AI Logo"
+                                                    className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline"
+                                                />
+                                            </>
+                                        )}
                                         <span className="font-bold ml-0.5">Qwiket AI</span>
                                     </div>
                                 )}
