@@ -93,15 +93,16 @@ const ChatsComponent: React.FC<Props> = ({
 
     // Sort groups
     const sortedGroups = Object.entries(groupedChats).sort(([a], [b]) => {
-        const order = ['Today', 'Yesterday', 'Previous 30 days'];
+        const order = ['Today', 'Yesterday', 'Previous 7 Days', 'Previous 30 Days'];
         const aIndex = order.indexOf(a);
         const bIndex = order.indexOf(b);
-        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-        if (aIndex !== -1) return -1;
-        if (bIndex !== -1) return 1;
-        if (a === 'Previous 30 days') return -1;
-        if (b === 'Previous 30 days') return 1;
-        return parseInt(b) - parseInt(a); // Sort years in descending order
+
+        if (aIndex !== -1 || bIndex !== -1) {
+            return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex);
+        }
+
+        // Both are years, sort in descending order
+        return parseInt(b) - parseInt(a);
     });
 
     const ChatGroups = sortedGroups.map(([groupName, groupChats]) => (
