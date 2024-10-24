@@ -2,3 +2,4 @@ User-agent: *
 User-agent: AdsBot-Google
 Disallow: /league/
 Disallow: /account/
+Disallow: /api/

@@ -91,7 +91,18 @@ const ChatsComponent: React.FC<Props> = ({
         return acc;
     }, {} as Record<string, ChatItem[]>);
 
-    const ChatGroups = Object.entries(groupedChats).map(([groupName, groupChats]) => (
+    // Sort groups
+    const sortedGroups = Object.entries(groupedChats).sort(([a], [b]) => {
+        const order = ['Today', 'Yesterday', 'Previous 30 days'];
+        const aIndex = order.indexOf(a);
+        const bIndex = order.indexOf(b);
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return parseInt(b) - parseInt(a); // Sort years in descending order
+    });
+
+    const ChatGroups = sortedGroups.map(([groupName, groupChats]) => (
         <div key={groupName} className="mb-2">
             <h3 className="text-sm font-semibold text-gray-500 mb-2 ">{groupName}</h3>
             {groupChats.map((chat) => (
