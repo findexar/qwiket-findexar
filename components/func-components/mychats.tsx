@@ -99,6 +99,8 @@ const ChatsComponent: React.FC<Props> = ({
         if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
         if (aIndex !== -1) return -1;
         if (bIndex !== -1) return 1;
+        if (a === 'Previous 30 days') return -1;
+        if (b === 'Previous 30 days') return 1;
         return parseInt(b) - parseInt(a); // Sort years in descending order
     });
 
