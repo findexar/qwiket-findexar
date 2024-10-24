@@ -270,6 +270,9 @@ const ChatsComponent: React.FC<Props> = ({
                 setFollowupPrompts(newPrompts);
                 // setIsUpdatingPrompts(false);
             },
+            onChatNameUpdate: (content: string) => {
+                setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
+            },
             styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
             dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
             creator
@@ -708,7 +711,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 <button
                                     key={index}
                                     onClick={() => handlePromptClick(prompt)}
-                                    className={`text-xs px-2 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
+                                    className={`text-sm px-2 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
                                         ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
                                         : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
                                         }`}
