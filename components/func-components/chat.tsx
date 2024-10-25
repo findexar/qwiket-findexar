@@ -187,14 +187,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
-        if (message.length > 0) {
-            setTimeout(() => {
-                setUpdateMessage('waiting for response...');
-                setTimeout(() => {
-                    setUpdateMessage('');
-                }, 6000);
-            }, 2000);
-        }
+
     }, []);
 
 
