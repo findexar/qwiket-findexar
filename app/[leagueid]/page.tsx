@@ -45,6 +45,15 @@ export async function generateMetadata(
 
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
+  if (league == 'FAVICON.ICO') {
+    return {
+      title: "Qwiket AI",
+      openGraph: {
+        title: "Qwiket AI",
+      },
+      robots: 'noindex, nofollow'
+    }
+  }
   let amention, astory;
 
   if (findexarxid) {
@@ -52,6 +61,7 @@ export async function generateMetadata(
   }
 
   if (story) {
+    console.log("==>*** *** ***story param:", story);
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
   }
 
@@ -72,13 +82,14 @@ export async function generateMetadata(
     authors: astoryAuthors = "",
     digest: astoryDigest = "",
     image: astoryImage = "",
+    ogimage: astoryOgImage = "",
     createdTime: astoryDate = "",
     mentions: mentions = [],
-    image_width = 0,
-    image_height = 0
+    image_width = 1200,
+    image_height = 1200
   } = astory || {};
-
-  const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
+  console.log("*** *** ***astory:", astory);
+  const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
 
   let ogUrl = '';
   if (amention) {

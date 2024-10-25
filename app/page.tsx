@@ -56,13 +56,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     authors: astoryAuthors = "",
     digest: astoryDigest = "",
     image: astoryImage = "",
+    ogimage: astoryOgImage = "",
     createdTime: astoryDate = "",
-    mentions = [],
-    image_width = 0,
-    image_height = 0
+    mentions: mentions = [],
+    image_width = 1200,
+    image_height = 1200
   } = astory || {};
 
-  const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
+  const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
 
   let ogUrl = '';
   if (amention) {
@@ -88,7 +89,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
     ogImage = astoryImageOgUrl;
   }
-
+  console.log("ogUrl", ogUrl);
+  console.log("ogTitle", ogTitle);
+  console.log("ogDescription", ogDescription);
+  console.log("ogImage", ogImage);
   let noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
 
   return {
@@ -100,8 +104,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       images: [
         {
           url: ogImage,
-          width: 1200,
-          height: 1200,
+          width: image_width,
+          height: image_height,
           alt: ogTitle,
         }
       ],

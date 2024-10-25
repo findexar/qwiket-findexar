@@ -53,9 +53,20 @@ export async function generateMetadata(
     }
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", athleteUUId: amentionAthleteUUId = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
-    //@ts-ignore
-    const { title: astoryTitle = "", site_name: astorySite_Name = "", authors: astoryAuthors = "", digest: astoryDigest = "", image: astoryImage = "", createdTime: astoryDate = "", mentions: mentions = [], image_width = 0, image_height = 0 } = astory ? astory : {};
-    const astoryImageOgUrl = astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
+    const {
+        title: astoryTitle = "",
+        site_name: astorySite_Name = "",
+        authors: astoryAuthors = "",
+        digest: astoryDigest = "",
+        image: astoryImage = "",
+        ogimage: astoryOgImage = "",
+        createdTime: astoryDate = "",
+        mentions: mentions = [],
+        image_width = 1200,
+        image_height = 1200
+    } = astory || {};
+
+    const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
 
     //prep meta data for amention
     let ogUrl = '';
