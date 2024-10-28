@@ -648,10 +648,10 @@ const ChatsComponent: React.FC<Props> = ({
                 )}
                 {drawMessages.map((message, index) => (
                     <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[95%] p-3 rounded-2xl ${message.role === 'user'
+                        <div className={`w-full min-w-[200px] max-w-[95%] p-3 rounded-2xl ${message.role === 'user'
                             ? 'bg-blue-100 dark:bg-teal-800'
                             : 'bg-gray-100 dark:bg-gray-700'
-                            } text-gray-800 dark:text-gray-200 ${isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' ? 'w-full' : ''}`}>
+                            } text-gray-800 dark:text-gray-200`}>
                             <div className="flex justify-between items-center mb-1">
                                 {message.role === 'user' ? (
                                     <p className="font-semibold">You</p>
