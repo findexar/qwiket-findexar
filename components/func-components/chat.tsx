@@ -470,7 +470,7 @@ const ChatsComponent: React.FC<Props> = ({
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
-                <div className="flex justify-end">
+                <div className="flex items-center">
                     <Link
                         href="/account/dashboard"
                         className={`text-xs ${creditColorClass} hover:underline mr-2`}
@@ -706,7 +706,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 <button
                                     key={index}
                                     onClick={() => handlePromptClick(prompt)}
-                                    className={`text-sm px-2 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
+                                    className={`text-sm px-6 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
                                         ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
                                         : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
                                         }`}
