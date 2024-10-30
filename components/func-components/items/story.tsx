@@ -230,16 +230,23 @@ const PromptsContainer = styled.div`
 `;
 
 const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
-  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'}; // More muted brown in dark mode, lighter peach in light mode
-  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'}; // Light gray text in dark mode, dark brown in light mode
+  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'};
+  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'};
   padding: 2px 10px;
-  border-radius: 16px; // Slightly reduced for smaller size
-  font-size: 10px; // Smaller font size
+  border-radius: 16px;
+  font-size: 10px;
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
+  
   &:hover {
-    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'}; // Slightly lighter in dark mode, slightly darker in light mode
-    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'}; // White in dark mode, darker text in light mode
+    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'};
+    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'};
+  }
+
+  .ask-ai {
+    opacity: 0.6;
+    font-size: 9px;
+    margin-left: 4px;
   }
 `;
 
@@ -375,7 +382,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
                     >
-                        {p.prompt}
+                        {p.prompt} <span className="ask-ai">• Ask AI</span>
                     </PromptTag>
                 ))}
             </PromptsContainer>
