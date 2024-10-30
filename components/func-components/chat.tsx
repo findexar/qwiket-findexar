@@ -470,7 +470,22 @@ const ChatsComponent: React.FC<Props> = ({
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
+                <div className="flex justify-end">
+                    <Link
+                        href="/account/dashboard"
+                        className={`text-xs ${creditColorClass} hover:underline mr-2`}
+                    >
+                        {creditsString}
+                    </Link>
+                    <button
+                        onClick={() => setShowCreditsInfo(!showCreditsInfo)}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                        <FaInfoCircle size={14} />
+                    </button>
+                </div>
                 <div className="flex flex-col">
+
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <button
@@ -500,7 +515,7 @@ const ChatsComponent: React.FC<Props> = ({
                     </div>
                     {!openMyChats && (
                         <>
-                            <div className="flex items-center justify-between mt-2 mb-2">
+                            <div className="flex items-center justify-center mt-2 mb-2">
                                 <div className="flex items-center">
                                     <span className="mr-2 text-sm text-gray-600 dark:text-gray-400">Creator Mode</span>
                                     <label className="inline-flex items-center cursor-pointer">
@@ -544,20 +559,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         )}
                                     </button>
                                 </div>
-                                <div className="flex items-center">
-                                    <Link
-                                        href="/account/dashboard"
-                                        className={`text-xs ${creditColorClass} hover:underline mr-2`}
-                                    >
-                                        {creditsString}
-                                    </Link>
-                                    <button
-                                        onClick={() => setShowCreditsInfo(!showCreditsInfo)}
-                                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                                    >
-                                        <FaInfoCircle size={14} />
-                                    </button>
-                                </div>
+
                             </div>
                             {showCreatorInfo && (
                                 <><div className="text-xs text-gray-600 dark:text-gray-400 mb-4">

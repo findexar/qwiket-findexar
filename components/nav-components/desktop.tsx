@@ -40,7 +40,7 @@ const ContainerWrap = styled.div`
   font-size: 14px;
   margin-top: 12px;
   color: var(--text);
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 1023px) {
     display: none;
   }
   @media screen and (min-width: 1600px) {
