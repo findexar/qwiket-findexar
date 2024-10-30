@@ -642,6 +642,9 @@ const ChatsComponent: React.FC<Props> = ({
                     <>
                         {(!prompts || prompts.length === 0) && !creator ? <>
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-6 mb-8">
+                                Ask Qwiket AI anything about major league and fantasy sports and more...
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-6 mb-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>
 
