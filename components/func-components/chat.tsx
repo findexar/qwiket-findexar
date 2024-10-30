@@ -177,7 +177,7 @@ const ChatsComponent: React.FC<Props> = ({
     }, [initialPrompt]);
 
     useEffect(() => {
-        setChatUUId(prompt ? "_new" : (chatUUIdProp || ""));
+        setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
         setChatName('');
     }, [league])
