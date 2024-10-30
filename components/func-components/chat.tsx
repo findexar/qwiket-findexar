@@ -640,7 +640,7 @@ const ChatsComponent: React.FC<Props> = ({
             <div className={`overflow-y-auto mb-32 p-0 pb-8 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {drawMessages.length === 0 && (
                     <>
-                        {(!prompts || prompts.length === 0) && !creator ? <>
+                        {(!prompts || prompts.length === 0) ? <>
                             <p className="text-gray-600 dark:text-gray-400 italic text-center mt-0 mb-8">
                                 Ask Qwiket AI anything about major league and fantasy sports and more...
                             </p>
@@ -655,8 +655,8 @@ const ChatsComponent: React.FC<Props> = ({
                     <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`w-full min-w-[200px] max-w-[95%] p-3 rounded-2xl 
                         ${message.role === 'user'
-                            ? 'bg-gray-100 dark:bg-gray-800'
-                            : ''
+                                ? 'bg-gray-100 dark:bg-gray-800'
+                                : ''
                             } text-gray-800 dark:text-gray-200`}>
                             <div className="flex justify-between items-center mb-1">
                                 {message.role !== 'user' && (
