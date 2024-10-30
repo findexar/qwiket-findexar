@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import useSWR from 'swr';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'; // Corrected import for useRouter
+import Link from 'next/link';  // Add this import at the top
 
 import { ASlugStoryKey } from '@/lib/keys';
 import { actionRecordEvent } from "@/lib/actions";
@@ -137,6 +138,22 @@ const QwiketText = styled.div`
   font-weight: bold;
 `;
 
+const AskAIButton = styled.button`
+  background-color: #4a5568;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2d3748;
+  }
+`;
+
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
@@ -144,6 +161,7 @@ interface Props {
 }
 
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
+    const [promptUUId, setPromptUUId] = useState('');
     let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, setSlug } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
@@ -151,9 +169,16 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);
     //console.log("DIALOG open:", open)
-    const { title, url, digest, site_name, image, authors, createdTime, mentions } = astory || {};
+    const { title, url, digest, site_name, image, authors, createdTime, mentions, prompts } = astory || {};
     const router = useRouter(); // Correctly initialized useRouter
     const admin = params && params.includes('x17nz') ? true : false;
+
+    useEffect(() => {
+        if (prompts && prompts.length > 0) {
+            setPromptUUId(prompts[0].promptUUId);
+        }
+    }, [prompts]);
+
     // console.log("StoryOverlay:slug", idx, slug)
     useEffect(() => {
         if (astory) {
@@ -214,6 +239,9 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
                     <div className="relative dark:bg-slate-900 bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all py-0 my-2 max-w-lg  md:max-w-2xl w-full ">
                         <HeaderContainer>
                             <QwiketText>QWIKET DIGEST</QwiketText>
+                            <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
+                                <AskAIButton>Ask AI</AskAIButton>
+                            </Link>
                             <XElement onClick={() => handleClose()}>&#x2715;</XElement>
                         </HeaderContainer>
                         <div className="bg-transparent  p-0 pb-0 ">

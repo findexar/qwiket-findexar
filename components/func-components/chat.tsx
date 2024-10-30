@@ -79,7 +79,7 @@ const ChatsComponent: React.FC<Props> = ({
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false);
-    const [chatUUId, setChatUUId] = useState<string>(prompt ? '_new' : (chatUUIdProp || ""));
+    const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '_new' : (chatUUIdProp || ""));
     const [chatName, setChatName] = useState<string>('');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
@@ -470,7 +470,7 @@ const ChatsComponent: React.FC<Props> = ({
     return (
         <div className="flex flex-col bg-white dark:bg-black w-full relative">
             <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
-                <div className="flex items-center">
+                <div className="flex items-center justify-end">
                     <Link
                         href="/account/dashboard"
                         className={`text-xs ${creditColorClass} hover:underline mr-2`}
