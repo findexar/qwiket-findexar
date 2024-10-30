@@ -727,7 +727,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 setIsPromptSelected(false);
                                 setIsMessageSubmitted(false);  // Reset on manual input
                             }}
-                            placeholder="Message to Qwiket AI"
+                            placeholder={messages.length ? "Ask again..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
                             className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                             rows={3}
                             disabled={isLoading}
