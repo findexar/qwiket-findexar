@@ -578,11 +578,13 @@ const ChatsComponent: React.FC<Props> = ({
                                     </Link> for more details on your credit usage and subscription options.
                                 </div>
                             )}
-                            {!isCid && creator && !showCreatorInfo && (
+                            {creator && !showCreatorInfo && (
                                 <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
-                                    <Link href="/account/rsp">
+                                    {isCid ? <Link href="/account/rsp-creator">
+                                        Revenue-Sharing Program
+                                    </Link> : <Link href="/account/rsp">
                                         Learn about the Revenue-Sharing Program for Creators
-                                    </Link>
+                                    </Link>}
                                 </div>
                             )}
                             {isCid && creator && !showCreatorInfo && (
