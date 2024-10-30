@@ -637,7 +637,7 @@ const ChatsComponent: React.FC<Props> = ({
                 </div>
             </div>
 
-            <div className={`overflow-y-auto mb-32 p-4 pb-16 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
+            <div className={`overflow-y-auto mb-32 p-2 pb-8 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
                 {drawMessages.length === 0 && (
                     <>
                         {(!prompts || prompts.length === 0) && !creator ? <>
