@@ -641,7 +641,7 @@ const ChatsComponent: React.FC<Props> = ({
                 {drawMessages.length === 0 && (
                     <>
                         {(!prompts || prompts.length === 0) && !creator ? <>
-                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-8">
+                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-6 mb-8">
                                 Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
                             </p>
 
