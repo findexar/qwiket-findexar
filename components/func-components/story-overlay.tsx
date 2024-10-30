@@ -154,6 +154,20 @@ const AskAIButton = styled.button`
   }
 `;
 
+const LogoContainer = styled.div`
+  display: flex;
+  color: white;
+  align-items: center;
+  margin-right: 12px;
+`;
+
+const LogoImg = styled.img`
+  height: auto;
+  color: white;
+  width: 32px;
+  opacity: 0.6;
+`;
+
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
@@ -238,7 +252,18 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
                 <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
                     <div className="relative dark:bg-slate-900 bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all py-0 my-2 max-w-lg  md:max-w-2xl w-full ">
                         <HeaderContainer>
-                            <QwiketText>QWIKET DIGEST</QwiketText>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <LogoContainer>
+                                    <Link href={`/${league}${params ? `?${params}` : ''}`}>
+                                        <LogoImg
+                                            src={'/q-logo-dark-128.png'}
+                                            alt="Qwiket Logo"
+                                        />
+
+                                    </Link>
+                                </LogoContainer>
+                                <QwiketText>QWIKET AI</QwiketText>
+                            </div>
                             <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
                                 <AskAIButton>Ask AI</AskAIButton>
                             </Link>
