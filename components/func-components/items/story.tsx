@@ -382,7 +382,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
                     >
-                        {p.prompt} <span className="ask-ai">• Ask AI</span>
+                        {p.prompt} <span className="ask-ai"></span>
                     </PromptTag>
                 ))}
             </PromptsContainer>

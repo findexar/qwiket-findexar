@@ -181,7 +181,6 @@ export default async function Page({
   try {
     const session = await fetchSession();
     sessionid = session.sessionid;
-
     dark = session.dark;
   } catch (x) {
     console.log("error fetching sessionid", x);
