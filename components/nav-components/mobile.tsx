@@ -152,7 +152,7 @@ const Mobile: React.FC<Props> = () => {
     /*  useEffect(() => {
           // Preload components or data here
       }, [tab, view]);*/
-  //  console.log("==> pagetype", pagetype);
+    //  console.log("==> pagetype", pagetype);
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>

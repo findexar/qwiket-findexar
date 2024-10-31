@@ -50,7 +50,14 @@ const MentionWrap = styled.div<MentionsProps>`
 const InnerMention = styled.div`
     margin-left:20px;
     margin-top:20px;
+    margin-right:20px;
     margin-bottom:20px;
+    @media screen and (max-width: 1024px) {
+       margin-left:0px;
+       margin-right:0px;
+       margin-top:0px;
+       margin-bottom:0px;
+    }
 `;
 
 const MobileMentionWrap = styled.div<MentionsProps>` 
