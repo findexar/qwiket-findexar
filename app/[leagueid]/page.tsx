@@ -61,7 +61,7 @@ export async function generateMetadata(
   }
 
   if (story) {
-    console.log("==>*** *** ***story param:", story);
+    //console.log("==>*** *** ***story param:", story);
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
   }
 

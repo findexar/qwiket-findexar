@@ -21,7 +21,7 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     const t2 = Date.now();
 
     const res = await fetchResponse.json();
-    // console.log("fetchStories fetchResponse", { stories: res.stories, time: t2 - t1 });
+    console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
 
     return res.stories;
 }

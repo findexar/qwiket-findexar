@@ -420,19 +420,31 @@ const LogoImg = styled.img<{ $scrolled: boolean }>`
   opacity: 0.6;
   transition: width 0.2s ease;
 `;
-
+const TeamNameGroup = styled.div<HeaderProps>`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  
+    img {
+        height: ${props => props.$scrolled ? '64px' : '76px'};
+        width: auto;
+        margin-left: 12px;
+        transition: height 0.2s ease;
+    }
+`;
 interface Props {
 }
 
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName } = useAppContext();
+  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
   const { getToken } = useAuth();
-
+  // console.log("===>teamLogo", teamLogo);
   useEffect(() => {
     const refreshToken = async () => {
       try {
@@ -525,6 +537,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
+  console.log("teamLogo", teamLogo);
   return (
     <>
       <Head>
@@ -564,7 +577,19 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</Superhead>
+                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
+                  <Link href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
+                  !teamid ? `${league}` : player ?
+                    <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>
+                      <TeamNameGroup $scrolled={scrollY != 0}>
+                        <div>{teamName}</div>
+                        {teamLogo && <img src={teamLogo} alt={teamName} />}
+                      </TeamNameGroup></Link></PlayerName> </PlayerNameGroup> :
+                    <TeamNameGroup $scrolled={scrollY != 0}>
+                      <div>{`${league} : ${teamName}`}</div>
+                      {teamLogo && <img src={teamLogo} alt={teamName} />}
+                    </TeamNameGroup>
+                }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket AI : ${league}` : `Qwiket AI`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Sports News Monitor and AI Chat</Subhead><SubheadMobile>Sports News Monitor and AI Chat</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
@@ -572,7 +597,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
             </ContainerCenter>
           </LeftContainer>
-          {(pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player" || pagetype.includes("account")) && <Wiggly className="hidden md:block">
+          {false && (pagetype == "league" || pagetype == "landing" || pagetype == "team" || pagetype == "player" || pagetype.includes("account")) && <Wiggly className="hidden md:block">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 400"><path d="M80.53811645507812,226.90582275390625C107.14499155680339,211.95814005533853,186.8161366780599,134.23018900553384,240.1793670654297,137.2197265625C293.5425974527995,140.20926411946616,353.1838658650716,243.64723205566406,400.7174987792969,244.84304809570312C448.25113169352215,246.0388641357422,490.5530649820964,150.07474263509116,525.3811645507812,144.39462280273438C560.2092641194662,138.7145029703776,580.9865417480469,206.5769780476888,609.6860961914062,210.7623291015625C638.3856506347656,214.9476801554362,673.6622009277344,172.49626668294272,697.5784912109375,169.50672912597656C721.4947814941406,166.5171915690104,743.9162801106771,188.93870798746744,753.183837890625,192.82510375976562" fill="none" strokeWidth="9" stroke="url(&quot;#SvgjsLinearGradient1005&quot;)" strokeLinecap="round"></path><defs><linearGradient id="SvgjsLinearGradient1005"><stop stopColor="hsl(37, 99%, 67%)" offset="0"></stop><stop stopColor="hsl(316, 73%, 52%)" offset="1"></stop></linearGradient></defs></svg>
           </Wiggly>}
           <HeaderRight>

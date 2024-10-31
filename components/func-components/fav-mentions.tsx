@@ -55,6 +55,7 @@ const Fav: React.FC<Props> = () => {
                 isLoadingMore={isLoadingMore}
                 mutate={mutate}
                 mutatePlayers={mutatePlayers}
+                showImage={true}
             />
         </>
     )

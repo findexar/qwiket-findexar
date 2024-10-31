@@ -14,8 +14,9 @@ const Photo = styled.div`
     }
 `;
 const MobilePhoto = styled.div`
-    height:40px;
-    width:40px;
+    height:60px;
+    width:auto;
+    //width:40px;
     @media screen and (min-width: 1200px ){
         display:none;
     }
@@ -35,7 +36,7 @@ const PlayerPhoto: React.FC<Props> = (props) => {
     )*/
     return (<>
         {!isLoading && photo && <Photo className="text-xs"><Avatar size="large" alt={name}><img src={photo} alt={name} /></Avatar></Photo>}
-        {!isLoading && photo && <MobilePhoto className="text-xs"><Avatar size="small" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>}
+        {!isLoading && photo && <MobilePhoto className="text-xs"><Avatar size="medium" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>}
     </>
     );
 };

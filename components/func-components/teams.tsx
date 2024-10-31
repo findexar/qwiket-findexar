@@ -37,16 +37,17 @@ const SelectedSideTeam = styled.div`
 interface Props {
 }
 const Teams: React.FC<Props> = () => {
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, setTeamName, setTeamLogo } = useAppContext();
 
     const leagueTeamsKey: LeagueTeamsKey = { type: "league-teams", league };
     const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
     // console.log("RENDER teams:", teamid, teamName)
-    const onTeamNav = useCallback(async (id: string, name: string) => {
+    const onTeamNav = useCallback(async (id: string, name: string, logo: string) => {
         setPagetype("team");
         setPlayer("");
         setTeamid(id);
         setTeamName(name);
+        setTeamLogo(logo);
         setView("mentions");
         setTab("");
         //  const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
@@ -72,11 +73,11 @@ const Teams: React.FC<Props> = () => {
 
     let TeamsNav = null;
     if (teams && teams.length > 0)
-        TeamsNav = teams?.map((t: { id: string, name: string }, i: number) => {
+        TeamsNav = teams?.map((t: { id: string, name: string, logo: string }, i: number) => {
             /*  if (t.id == teamid)
                   setTeamName(t.name);*/
             return t.id == teamid ? <SelectedSideTeam key={`sideteam-${i}`}>
-                <Link onClick={async () => { await onTeamNav(t.id, t.name); }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id, t.name) }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SideTeam>
+                <Link onClick={async () => { await onTeamNav(t.id, t.name, t.logo); }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SelectedSideTeam> : <SideTeam key={`sideteam-${i}`}><Link onClick={async () => { onTeamNav(t.id, t.name, t.logo) }} href={`/${league}/${t.id}${params}`} >{t.name}</Link></SideTeam>
         });
     return (
         <><SideLeagueName>{league}:</SideLeagueName> {TeamsNav}</>

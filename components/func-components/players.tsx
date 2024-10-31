@@ -131,7 +131,7 @@ interface Props {
 }
 const Players: React.FC<Props> = () => {
 
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName } = useAppContext();
+    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName, setTeamLogo } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
@@ -173,6 +173,7 @@ const Players: React.FC<Props> = () => {
         setPagetype("player");
         setPlayer(name);
         setAthleteUUId(athleteUUId);
+        setTeamLogo('');
         setView("mentions");
         setTab("");
         name = name.replace(/\./g, '');

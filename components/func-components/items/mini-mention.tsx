@@ -106,6 +106,7 @@ interface Props {
     team: string;
     teamName: string;
     name: string;
+    image: string;
     athleteUUId: string;
     date: string;
     url: string;
@@ -130,7 +131,7 @@ interface Props {
     handleClose: () => void;
 }
 
-const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate }) => {
+const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, image, date, url, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate }) => {
     const [expanded, setExpanded] = React.useState(startExtended);
     const [hide, setHide] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
@@ -172,6 +173,7 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
     //prepare url:
     const prepName = name.replaceAll(' ', '_');
     let localUrl = "";
+    // console.log("mini-mention image", image);
     localUrl = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}id=${findexarxid}`
 
     const onHover = useCallback((label: string) => {
@@ -201,7 +203,7 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
                     <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                 </MentionSummary>
             </MobileMentionWrap>
-            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="final" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, athleteUUId, date, url, summary, findexarxid, fav }} mutate={mutate} /></InnerMention>}
+            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="final" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, athleteUUId, date, url, summary, findexarxid, fav, image }} mutate={mutate} showImage={true} /></InnerMention>}
         </>
     );
 };

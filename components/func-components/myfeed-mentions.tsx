@@ -43,7 +43,7 @@ const MyFeed: React.FC<Props> = ({ league }) => {
                 <p className="text-sm">Empty My Team Feed - perhaps your team is not yet created.</p>
             </div>
         )}
-        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} />
+        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} showImage={true} />
 
     </>
 }

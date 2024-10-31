@@ -300,7 +300,7 @@ const ChatsComponent: React.FC<Props> = ({
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
-                console.log('==> CHAT.TSX loadedChat.chat.messages', loadedChat.chat.messages);
+                // console.log('==> CHAT.TSX loadedChat.chat.messages', loadedChat.chat.messages);
                 setMessages(loadedChat.chat.messages);
 
             }

@@ -342,6 +342,17 @@ const SummaryWrap = styled.div`
 const LocalLink = styled.a`
     cursor:pointer;
 `;
+const ImageTextWrapper = styled.div`
+    img {
+        float: left;
+        margin-right: 12px;
+        margin-bottom: 8px;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+`;
 interface Props {
     mention: any,
     linkType?: string;
@@ -350,13 +361,14 @@ interface Props {
     mini?: boolean;
     handleClose: () => void;
     mutatePlayers?: any;
+    showImage?: boolean;
 }
 
-const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers }) => {
+const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
     const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked } = mention;
+    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -699,10 +711,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
                         <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
-                            {summary}
+                            <ImageTextWrapper>
+                                {showImage && <img src={image} alt={name} />}
+                                {summary}
+                            </ImageTextWrapper>
+                            <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </Link>
-                        <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
-
                     </SummaryWrap>
                     <br />
 
@@ -814,9 +828,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                         <SummaryWrap>
                             <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
-                                {summary}
+                                <ImageTextWrapper>
+                                    {showImage && <img src={image} alt={name} />}
+                                    {summary}
+                                </ImageTextWrapper>
+                                <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                             </Link>
-                            <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </SummaryWrap>
 
                         <hr />

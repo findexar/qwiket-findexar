@@ -37,6 +37,7 @@ interface LeagueLayoutProps {
   pagetype?: string,
   dark: number,
   teamName?: string,
+  teamLogo?: string,
   userInfo?: any,
   prompt?: string,
   promptUUId?: string
@@ -61,6 +62,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   pagetype: startPagetype = "league",
   dark,
   teamName: startTeamName = "",
+  teamLogo: startTeamLogo = "",
   userInfo,
   prompt: startPrompt = '',
   promptUUId: startPromptUUId = ''
@@ -75,6 +77,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [athleteUUId, setAthleteUUId] = useState(startAthleteUUId);
   const [pagetype, setPagetype] = useState(startPagetype);
   const [teamName, setTeamName] = useState(startTeamName);
+  const [teamLogo, setTeamLogo] = useState(startTeamLogo);
   const [findexarxid, setFindexarxid] = useState(startFindexarxid);
   const [slug, setSlug] = useState(story);
   const [localMode, setLocalMode] = useState(dark === -1 ? 'unknown' : dark === 1 ? 'dark' : 'light');
@@ -84,6 +87,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [tp2, setTp2] = useState("");
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
+  // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
   }, [localMode]);
@@ -213,7 +217,9 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       <GlobalStyle $light={localMode === "light"} />
       <AppWrapper
         teamName={teamName}
+        teamLogo={teamLogo}
         setTeamName={setTeamName}
+        setTeamLogo={setTeamLogo}
         setLeague={setLeague}
         setTab={setTab}
         setView={setView}

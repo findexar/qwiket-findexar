@@ -262,6 +262,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     //console.log("STORY CREATED TIME", createdTime,title,site_name);
     // console.log("==> story prompts", prompts);
+    //console.log("==> story mentions", mentions);
     url = url || "";
 
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));

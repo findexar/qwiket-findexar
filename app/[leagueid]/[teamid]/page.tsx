@@ -220,11 +220,12 @@ export default async function Page({
   // console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
-  let teamName = teams?.find((x: any) => x.id == teamid)?.name;
+  let { teamName, teamLogo } = { teamName: teams?.find((x: any) => x.id == teamid)?.name, teamLogo: teams?.find((x: any) => x.id == teamid)?.logo };
+  console.log("teamLogo", teamLogo);
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} teamLogo={teamLogo} />
       </main>
     </SWRProvider>
   );

@@ -59,8 +59,9 @@ interface Props {
     isLoadingMore: boolean;
     mutate: any;
     mutatePlayers?: any;
+    showImage: boolean;
 }
-const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidating, isEmpty, isReachingEnd, isLoadingMore, mutate, mutatePlayers }) => {
+const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidating, isEmpty, isReachingEnd, isLoadingMore, mutate, mutatePlayers, showImage }) => {
     let { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
 
     if (!view)
@@ -80,10 +81,11 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
                 mutate={() => { mutate() }}
                 handleClose={() => { }}
                 mutatePlayers={mutatePlayers}
+                showImage={showImage}
             />)
     }) : null;
     //  console.log("REACT Mentions", Mentions, hasValidMentions);
-   // console.log("isEmpty", isEmpty, "isLoadingMore", isLoadingMore, "isReachingEnd", isReachingEnd)
+    // console.log("isEmpty", isEmpty, "isLoadingMore", isLoadingMore, "isReachingEnd", isReachingEnd)
     return (
         <div>
             <MentionsOuterContainer className="hidden lg:block">
