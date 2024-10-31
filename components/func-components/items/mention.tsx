@@ -897,7 +897,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 <Digest>
                                     <Link href={url} onClick={() => onClick(url)}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                                     <ShareContainerInline>
-                                        <ContentCopyIcon style={{ color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
+                                        <ContentCopyIcon style={{marginBottom:10, color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
                                 </Digest>
                             </Body>
