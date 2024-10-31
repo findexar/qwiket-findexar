@@ -83,7 +83,7 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
             />)
     }) : null;
     //  console.log("REACT Mentions", Mentions, hasValidMentions);
-    console.log("isEmpty", isEmpty, "isLoadingMore", isLoadingMore, "isReachingEnd", isReachingEnd)
+   // console.log("isEmpty", isEmpty, "isLoadingMore", isLoadingMore, "isReachingEnd", isReachingEnd)
     return (
         <div>
             <MentionsOuterContainer className="hidden lg:block">

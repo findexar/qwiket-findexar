@@ -9,36 +9,44 @@ interface Props {
     isReachingEnd: boolean;
     size: number;
     setSize: any;
-    name?:string;
-    items?:any[];
+    name?: string;
+    items?: any[];
 }
 
-const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size,name,items=[] }) => {
+const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size, name, items = [] }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef<HTMLDivElement | null>(null)
-    const entry = useIntersectionObserver(ref, {});
-    const isVisible = !!entry?.isIntersecting || false;
-    name=name||"stories";
+    const entry = useIntersectionObserver(ref, {
+        rootMargin: '50px',
+        threshold: 0
+    });
+    const isVisible = !!entry?.isIntersecting;
+   // console.log("load-more isVisible", isVisible)
+    name = name || "stories";
+
+   /* useEffect(() => {
+        console.log("Intersection state:", {
+            entry,
+            isVisible,
+            ref: ref.current
+        });
+    }, [entry, isVisible]);*/
 
     useEffect(() => {
-        if (isVisible) {
-            if (!visible) {
-                setVisible(true);
-                setSize(size + 1);
-            }
+        if (isVisible && !isLoadingMore && !isReachingEnd) {
+            setVisible(true);
+            setSize(size + 1);
+        } else {
+            setVisible(false);
         }
-        else {
-            if (visible)
-                setVisible(false);
-        }
-    }, [isVisible, entry, ref]);
+    }, [isVisible, isLoadingMore, isReachingEnd]);
 
     return <div ref={ref} >
         <Button className="m-1" onClick={() => setSize(size + 1)}>
             {isLoadingMore
                 ? "loading..."
                 : isReachingEnd
-                    ? (items.length>0?`no more ${name}`:<IconReload />)
+                    ? (items.length > 0 ? `no more ${name}` : <IconReload />)
                     : "load more"}
         </Button></div>
 }

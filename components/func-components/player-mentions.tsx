@@ -25,7 +25,7 @@ const PlayerMentions: React.FC<Props> = () => {
          setMentions(data ? [].concat(...data) : []);
      },[data])*/
     let mentions = data ? [].concat(...data) : [];
-  //  console.log("mentions", mentions);
+    //  console.log("mentions", mentions);
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
     // console.log("team-mentions teamPlayersKey",teamPlayersKey)
@@ -35,7 +35,7 @@ const PlayerMentions: React.FC<Props> = () => {
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined") || false;
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
-        isEmpty || (data && data[data.length - 1]?.length < 25) || false;
+        isEmpty || (data && data[data.length - 1]?.length < 5) || false;
     //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
     //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
 
