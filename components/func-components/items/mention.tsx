@@ -829,7 +829,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <SummaryWrap>
                             <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
                                 <ImageTextWrapper>
-                                    {showImage && <img src={image} alt={name} />}
+                                    {showImage && image && <img src={image} alt={name} />}
                                     {summary}
                                 </ImageTextWrapper>
                                 <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
