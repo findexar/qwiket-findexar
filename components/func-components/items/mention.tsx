@@ -288,10 +288,11 @@ const ShareContainer = styled.div`
 
 const ShareContainerInline = styled.span`
     font-size: 28x;  
-    height:38px;
+    height:4\38px;
     opacity:0.6;
     cursor:pointer;
     margin-left:10px;
+   
     color:var(--mention-text);
     :hover{
         opacity:1;
@@ -338,6 +339,10 @@ const SummaryWrap = styled.div`
         font-size:15px !important;
       
     }
+    @media screen and (max-width: 1199px) {
+        padding-bottom:10px;
+  }
+    
 `;
 const LocalLink = styled.a`
     cursor:pointer;
@@ -897,7 +902,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 <Digest>
                                     <Link href={url} onClick={() => onClick(url)}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                                     <ShareContainerInline>
-                                        <ContentCopyIcon style={{marginBottom:10, color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
+                                        <ContentCopyIcon style={{ marginBottom: 10, color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
                                 </Digest>
                             </Body>
