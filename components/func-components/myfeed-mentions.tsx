@@ -34,7 +34,7 @@ const MyFeed: React.FC<Props> = ({ league }) => {
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined") || false;
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
-        isEmpty || (data && data[data.length - 1]?.length < 25) || false;
+        isEmpty || (data && data[data.length - 1]?.length < 5) || false;
 
     return <>
         {isEmpty && !isLoadingMore && (

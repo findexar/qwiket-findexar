@@ -28,14 +28,14 @@ const Stories: React.FC<Props> = () => {
     //console.log("team-mentions teamPlayersKey",teamPlayersKey)
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
-     if(playersError){
-        console.log("playersError",playersError)
-     }
+    if (playersError) {
+        console.log("playersError", playersError)
+    }
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined") || false;
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
-        isEmpty || (data && data[data.length - 1]?.length < 25) || false;
+        isEmpty || (data && data[data.length - 1]?.length < 5) || false;
     //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
     //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
 
@@ -50,8 +50,8 @@ const Stories: React.FC<Props> = () => {
          view = "mentions";
  
     */
-        return <>
-            <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} />
-            </>
+    return <>
+        <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} />
+    </>
 }
 export default Stories;
