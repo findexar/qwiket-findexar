@@ -12,10 +12,21 @@ function useCopyToClipboard(): [CopiedValue, CopyFn] {
       return false
     }
 
+    // Replace paragraph tags with newlines before stripping HTML
+    const processedText = text
+      .replace(/<p>/gi, '')
+      .replace(/<\/p>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+
+    // Strip remaining HTML tags and decode HTML entities
+    const tempElement = document.createElement('div')
+    tempElement.innerHTML = processedText
+    const plainText = tempElement.textContent || tempElement.innerText || ''
+
     // Try to save to clipboard then save it in the state if worked
     try {
-      await navigator.clipboard.writeText(text)
-      setCopiedText(text)
+      await navigator.clipboard.writeText(plainText.trim())
+      setCopiedText(plainText.trim())
       return true
     } catch (error) {
       console.warn('Copy failed', error)
