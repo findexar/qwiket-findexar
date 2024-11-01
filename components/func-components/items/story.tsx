@@ -38,6 +38,7 @@ const Title = styled.div`
 
 const Digest = styled.div`
     display:flex;
+    flex-direction:column;
     font-size: 15px;
 `;
 
@@ -438,7 +439,8 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                             <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
                                 <div dangerouslySetInnerHTML={{ __html: digest }} />
                             </Link>
-                            <ContentCopyIcon style={{ paddingTop: 6, marginTop: -10, cursor: 'pointer', color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+                            <ContentCopyIcon style={{ cursor: 'pointer', color: digestCopied ? 'green' : '' }} onClick={() => onDigestCopyClick()} />
+
                         </Digest>
                     </Body>
                 </HorizontalContainer>
