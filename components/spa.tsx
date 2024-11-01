@@ -34,6 +34,7 @@ interface LeagueLayoutProps {
   athleteUUId?: string,
   view: string,
   tab: string,
+  rtab?: string,
   pagetype?: string,
   dark: number,
   teamName?: string,
@@ -48,6 +49,7 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   view: startView,
   tab: startTab,
+  rtab: startRtab,
   fallback,
   isMobile,
   fbclid,
@@ -68,6 +70,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   promptUUId: startPromptUUId = ''
 }) => {
   const [tab, setTab] = useState(startTab || "");
+  const [rtab, setRtab] = useState(startRtab || "");
   const [view, setView] = useState(startView || "mentions");
   const [prompt, setPrompt] = useState(startPrompt);
   const [promptUUId, setPromptUUId] = useState(startPromptUUId);
@@ -145,13 +148,14 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   useEffect(() => {
     const id = query?.get('id') || "";
     const qtab = query?.get('tab') || "";
+    const qrtab = query?.get('rtab') || "";
     const qview = query?.get('view') || "mentions";
     const ssr = query?.getAll('ssr') || [];
     const top = query?.get('top') || "";
     const story = query?.get('story');
     const qprompt = query?.get('prompt') || '';
     const qpromptUUId = query?.get('promptUUId') || '';
-
+    console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
     if (story !== slug) {
       if (story !== slug) {
         setSlug(story || "");
@@ -164,8 +168,18 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
           window.scrollTo(0, 0);
         }, 0);
       }
-      if (qtab !== tab) setTab(qtab);
-      if (qview !== view) setView(qview);
+      if (qtab !== tab) {
+        console.log("==> setTab", qtab);
+        setTab(qtab);
+      }
+      if (qrtab !== rtab) {
+        console.log("==> setRtab", qrtab);
+        setRtab(qrtab);
+      }
+      if (qview !== view) {
+        console.log("==> setView", qview);
+        setView(qview);
+      }
       if (qprompt !== prompt) setPrompt(qprompt);
       if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
       let parts = pathname?.split("/") || [];
@@ -222,6 +236,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setTeamLogo={setTeamLogo}
         setLeague={setLeague}
         setTab={setTab}
+        setRtab={setRtab}
         setView={setView}
         params={params}
         params2={params2}
@@ -237,6 +252,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         league={league}
         view={view}
         tab={tab}
+        rtab={rtab}
         teamid={teamid}
         player={player}
         athleteUUId={athleteUUId}

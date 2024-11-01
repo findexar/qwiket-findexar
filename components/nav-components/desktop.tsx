@@ -18,16 +18,29 @@ import TertiaryTabs from "@/components/nav-components/tertiary-tabs";
 import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import LeagueMentions from "../func-components/league-mentions";
 
 const PageWrap = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
 `;
 
 const Page = styled.div`
-  max-width: 1200px;
+  max-width: 1800px;
+  @media screen and (max-width: 2200px) {
+    max-width: 1600px;
+  }
+  @media screen and (max-width: 1800px) {
+    max-width: 1300px;
+  }
+  @media screen and (mox-width: 1400px) {
+    max-width: 1200px;
+  }
+  @media screen and (mox-width: 1300px) {
+    max-width: 900px;
+  }
 `;
 
 const ContainerWrap = styled.div`
@@ -99,15 +112,31 @@ const CenterPanel = styled.div`
   padding-top: 10px;
   padding-bottom: 40px;
   height: auto;
-  flex-grow: 1;
-  width: 600px;
-  min-width: 600px;
-  @media screen and (min-width: 1600px) {
-    width: 800px;
+  flex-grow: 2;
+  width: 400px;
+  min-width: 400px;
+  
+  @media screen and (min-width: 1200px) {
+    width: 600px;
+    min-width: 600px;
   }
-  @media screen and (max-width: 1200px) {
-    width: 540px;
-    min-width: 500px;
+  @media screen and (min-width: 1300px) {
+    width: 6500px;
+    min-width: 650px;
+  }
+  
+  @media screen and (min-width: 1600px) {
+    width: 700px;
+    min-width: 700px;
+  }
+  @media screen and (min-width: 1800px) {
+    width: 900px;
+    min-width: 900px;
+  }
+  
+  @media screen and (min-width: 2400px) {
+    width: 1000px;
+    min-width: 1000px;
   }
 `;
 
@@ -119,7 +148,7 @@ const RightPanel = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding-top: 18px;
+  padding-top: 10px;
   a {
     color: var(--text);
     text-decoration: none;
@@ -138,17 +167,19 @@ interface Props { }
 const Desktop: React.FC<Props> = () => {
   const {
     teamid,
-    slug, tab: initialTab, view: initialView, setView, setTab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid
+    slug, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
   let tab = initialTab || "";
+  let rtab = initialRtab || "";
   let view = initialView || "mentions";
 
   //  console.log("==> view", view, tab);
   if (tab === 'chat') {
     view = 'mentions';
   }
+  console.log("==> rtab", { rtab, tab, initialRtab, initialTab });
   //console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
     setLocalFindexarxid(findexarxid);
@@ -156,12 +187,28 @@ const Desktop: React.FC<Props> = () => {
 
   const onTabNav = (option: any) => {
     const newTab = option.tab;
-    const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}` : `?tab=${newTab}` : '';
-    const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}`;
+    const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
+    const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
     window.history.pushState({}, "", newPath);
     setTimeout(() => setTab(newTab), 0);
+    if (rtab !== '') {
+      setTimeout(() => setRtab(rtab), 0);
+    }
     setView("mentions");
     setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+  }
+  const onRTabNav = (option: any) => {
+    const newTab = option.tab;
+    const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
+    const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
+    window.history.pushState({}, "", newPath);
+    console.log("==> newPath", newPath);
+    setTimeout(() => setRtab(newTab), 0);
+    if (tab !== '') {
+      setTimeout(() => setTab(tab), 0);
+    }
+    //setView("mentions");
+    setTimeout(async () => await recordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
   }
   const onTeamPlayerTabNav = (option: any) => {
     const newTab = option.tab;
@@ -192,8 +239,8 @@ const Desktop: React.FC<Props> = () => {
                         { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
 
                         { name: `AI Chat`, tab: 'chat', disabled: false },
-                        { name: "My Feed", tab: "myfeed", disabled: false },
-                        { name: "Favorites", tab: "fav", disabled: false }
+                        { name: "MyTeam", tab: "myteam", disabled: false },
+
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
@@ -212,18 +259,31 @@ const Desktop: React.FC<Props> = () => {
                     />
                   )}
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
-                  {pagetype === "league" && tab === "myfeed" && <MyfeedMentions league={league} />}
-                  {pagetype === "league" && tab === "fav" && <FavMentions />}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {view === 'faq' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
-
+                  {(pagetype === 'league' && tab === 'myteam') && <MyTeam />}
 
                 </CenterPanel>
                 <RightPanel>
-                  {pagetype === 'league' && <MyTeam />}
+                  {pagetype === 'league' && (<>
+                    <TertiaryTabs
+                      options={[
+                        { name: `@`, tab: '', disabled: false },
+                        { name: "MyFeed", tab: "myfeed", disabled: false },
+                        { name: "Favorites", tab: "fav", disabled: false }
+                      ]}
+                      onChange={onRTabNav}
+                      selectedOptionName={rtab}
+                    />
+                    {pagetype === "league" && rtab === "myfeed" && <MyfeedMentions league={league} />}
+                    {pagetype === "league" && rtab === "fav" && <FavMentions />}
+                    {pagetype === "league" && rtab === "" && <LeagueMentions />}
+
+                  </>
+                  )}
                   {(pagetype === 'team' || pagetype === 'player') && <Players />}
                 </RightPanel>
               </MainPanel>

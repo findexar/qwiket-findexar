@@ -23,23 +23,25 @@ import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 
 const PromptsContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
   margin-top: 10px;
   margin-bottom: 10px;
 `;
 
 const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
-  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'}; // More muted brown in dark mode, lighter peach in light mode
-  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'}; // Light gray text in dark mode, dark brown in light mode
+  display: block;
+  width: fit-content;
+  background-color: ${props => props.$isDarkMode ? '#1D4037' : '#CFE0C2'};
+  color: ${props => props.$isDarkMode ? '#E0E0E0' : '#4E342E'};
   padding: 2px 10px;
-  border-radius: 16px; // Slightly reduced for smaller size
-  font-size: 14px; // Smaller font size
+  border-radius: 16px;
+  font-size: 14px;
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
   &:hover {
-    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'}; // Slightly lighter in dark mode, slightly darker in light mode
-    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'}; // White in dark mode, darker text in light mode
+    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'};
+    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'};
   }
 `;
 
@@ -655,7 +657,7 @@ const ChatsComponent: React.FC<Props> = ({
                 )}
                 {drawMessages.map((message, index) => (
                     <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`w-full min-w-[200px] max-w-[95%] p-3 rounded-2xl 
+                        <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
                         ${message.role === 'user'
                                 ? 'bg-gray-100 dark:bg-gray-800'
                                 : ''

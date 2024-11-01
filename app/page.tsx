@@ -21,6 +21,7 @@ import SPALayout from '@/components/spa';
 import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@/lib/fetchers/account";
+import fetchLeagueMentions from "@/lib/fetchers/league-mentions";
 type Props = {
   params: {};
   searchParams: { [key: string]: string | string[] | undefined };
@@ -176,7 +177,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let { tab = "", fbclid, utm_content, view = "mentions", id, story, cid, aid } = searchParams as any;
+  let { tab = "", fbclid, utm_content, view = "mentions", rtab = "", id, story, cid, aid } = searchParams as any;
 
   let findexarxid = id || "";
   let pagetype = "league";
@@ -204,25 +205,31 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
-  if (tab == 'fav' && view == 'mentions') {
+  if (rtab == 'fav' && view == 'mentions') {
     if (!story && !findexarxid) {
       calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
     }
   }
-  if (view == 'my team' || view == 'mentions') {
+  if (view == 'my team' || tab == 'myteam') {
     if (!story && !findexarxid) {
       calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
     }
   }
-  if (tab == 'myfeed' || view == 'mentions') {
+  if (tab == 'myfeed' || rtab == 'myfeed' || view == 'mentions') {
     if (!story && !findexarxid) {
       calls.push(await fetchMyFeed({ userId, sessionid, league }));
     }
   }
-
+  console.log("SSSSR  =====>view", { view, tab, rtab });
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
+      console.log("fetchStories", userId, sessionid, league);
       calls.push(await fetchStories({ userId, sessionid, league }));
+    }
+  }
+  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {
+    if (!story && !findexarxid) {
+      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
     }
   }
   if (!bot) {
@@ -233,7 +240,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
+        <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
       </main>
     </SWRProvider>
   );

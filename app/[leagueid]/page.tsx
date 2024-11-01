@@ -14,6 +14,7 @@ import fetchMetaLink from '@/lib/fetchers/meta-link';
 import fetchStories from '@/lib/fetchers/stories';
 import fetchLeagueTeams from '@/lib/fetchers/league-teams';
 import fetchUserAccount from "@/lib/fetchers/account";
+import fetchLeagueMentions from "@/lib/fetchers/league-mentions";
 import { getASlugStory } from '@/lib/fetchers/slug-story';
 import { isbot } from '@/lib/is-bot';
 import { getAMention } from '@/lib/fetchers/mention';
@@ -45,7 +46,7 @@ export async function generateMetadata(
 
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
-  if (league == 'FAVICON.ICO') {
+  if (league == 'FAVICON.ICO' || !['NFL', 'MLB', 'NBA', 'NHL'].includes(league?.toUpperCase())) {
     return {
       title: "Qwiket AI",
       openGraph: {
@@ -192,6 +193,7 @@ export default async function Page({
 
   let {
     tab,
+    rtab = "",
     fbclid = "",
     utm_content = "",
     view = "mentions",
@@ -206,6 +208,7 @@ export default async function Page({
     utm_content: string,
     view: string,
     tab: string,
+    rtab: string,
     id: string,
     story: string,
     prompt: string,
@@ -259,26 +262,24 @@ export default async function Page({
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
 
-  if (tab == 'fav' && view == 'mentions') {
+  if (rtab == 'fav' && view == 'mentions') {
     if (!story && !findexarxid) {
-      calls.push(await fetchFavorites({ userId, sessionid, league, page: 0 }));
+      calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
     }
   }
-  if (view == 'my team' || view == 'mentions') {
-    //console.log("GET MY TEAM");
+  if (view == 'my team' || tab == 'myteam') {
     if (!story && !findexarxid) {
-      calls.push(await fetchMyTeam({ userId, sessionid, league }));
+      calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
     }
   }
-  if (tab == 'myfeed' || view == 'mentions') {
-    //  console.log("TAB=myfeed");
+  if (tab == 'myfeed' || rtab == 'myfeed' || view == 'mentions') {
     if (!story && !findexarxid) {
       calls.push(await fetchMyFeed({ userId, sessionid, league }));
     }
   }
-  if (view == 'mentions' && tab != 'myteam' && tab != 'fav') {
+  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {
     if (!story && !findexarxid) {
-      calls.push(await fetchStories({ userId, sessionid, league }));
+      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
     }
   }
   //  console.log("tab,view", tab, view);
@@ -288,6 +289,13 @@ export default async function Page({
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
+  console.log("SSSSR  =====>view", { view, tab, rtab });
+  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
+    if (!story && !findexarxid) {
+      console.log("fetchStories", userId, sessionid, league);
+      calls.push(await fetchStories({ userId, sessionid, league }));
+    }
+  }
   // console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
 
   await fetchData(t1, fallback, calls);
@@ -295,7 +303,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} />
       </main>
     </SWRProvider>
   );
