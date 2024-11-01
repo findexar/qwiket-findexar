@@ -262,17 +262,17 @@ const MobileAtmention2 = styled.div`
 `;
 
 const ShareContainer = styled.div`
-    margin-top:14px;
-    margin-bottom:14px;
+    margin-top:10px;
+   // margin-bottom:14px;
     margin-left:4px;
     margin-right:4px;
-    height:24px;
+    height:20px;
     width:100%;
     display:flex;
     justify-content:flex-start;
 
-    font-size: 28x;  
-    height:38px;
+    font-size: 18x;  
+    
     opacity:0.6;
     cursor:pointer;
     color:var(--mention-text);
@@ -287,8 +287,10 @@ const ShareContainer = styled.div`
 `;
 
 const ShareContainerInline = styled.span`
-    font-size: 28x;  
-    height:4\38px;
+    //font-size: 18x;  
+    height:10px;
+   // margin-top:-10px;
+  
     opacity:0.6;
     cursor:pointer;
     margin-left:10px;
@@ -720,7 +722,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 {showImage && <img src={image} alt={name} />}
                                 {summary}
                             </ImageTextWrapper>
-                            <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 6, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
+                            <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 0, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </Link>
                     </SummaryWrap>
                     <br />
@@ -747,13 +749,13 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 }}
                                 onClick={async () => await onShare(url)}
                             >
-                                <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </RWebShare>
                             <Link href={socialLinks.twitter} target="_blank">
-                                <ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><XIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>
                             <Link href={socialLinks.facebook} target="_blank">
-                                <ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><FacebookIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>
                         </ShareGroup>
                         <div className=" flex flex-row justify-between">
@@ -837,7 +839,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     {showImage && image && <img src={image} alt={name} />}
                                     {summary}
                                 </ImageTextWrapper>
-                                <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
+                                <ShareContainerInline><ContentCopyIcon style={{ color: copied ? 'green' : '' }} fontSize="medium" onClick={() => onCopyClick()} /></ShareContainerInline>
                             </Link>
                         </SummaryWrap>
 
@@ -864,13 +866,13 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 }}
                                 onClick={async () => await onShare(url)}
                             >
-                                <ShareContainer><IosShareIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </RWebShare>
                             <Link href={socialLinks.twitter} target="_blank">
-                                <ShareContainer><XIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><XIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>
                             <Link href={socialLinks.facebook} target="_blank">
-                                <ShareContainer><FacebookIcon className="h-6 w-6 mr-2" /></ShareContainer>
+                                <ShareContainer><FacebookIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>
                         </ShareGroup>
                         <Icon onClick={
