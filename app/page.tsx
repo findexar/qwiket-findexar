@@ -220,10 +220,10 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchMyFeed({ userId, sessionid, league }));
     }
   }
-  console.log("SSSSR  =====>view", { view, tab, rtab });
+  //console.log("SSSSR  =====>view", { view, tab, rtab });
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
-      console.log("fetchStories", userId, sessionid, league);
+      //console.log("fetchStories", userId, sessionid, league);
       calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }

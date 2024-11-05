@@ -155,7 +155,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     const story = query?.get('story');
     const qprompt = query?.get('prompt') || '';
     const qpromptUUId = query?.get('promptUUId') || '';
-    console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
+    // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
     if (story !== slug) {
       if (story !== slug) {
         setSlug(story || "");
@@ -169,15 +169,15 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         }, 0);
       }
       if (qtab !== tab) {
-        console.log("==> setTab", qtab);
+       // console.log("==> setTab", qtab);
         setTab(qtab);
       }
       if (qrtab !== rtab) {
-        console.log("==> setRtab", qrtab);
+        // console.log("==> setRtab", qrtab);
         setRtab(qrtab);
       }
       if (qview !== view) {
-        console.log("==> setView", qview);
+        // console.log("==> setView", qview);
         setView(qview);
       }
       if (qprompt !== prompt) setPrompt(qprompt);

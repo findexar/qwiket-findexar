@@ -17,7 +17,7 @@ export default function ChatPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false); // Add a ref to track if response has been set
 
-    console.log(`==> messages:`, messages);
+    //  console.log(`==> messages:`, messages);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!userInput.trim()) return;

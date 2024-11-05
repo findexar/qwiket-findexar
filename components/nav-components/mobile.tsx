@@ -27,6 +27,7 @@ import FavMentions from "@/components/func-components/fav-mentions";
 import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
 import Chat from "@/components/func-components/chat";
+import LeagueMentions from "../func-components/league-mentions";
 
 const FadeTransition = styled.div<{ $isVisible: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -87,11 +88,19 @@ const CenterPanel = styled.div`
     padding-bottom: 200px;
 `;
 
+const RightAlignWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    
+   
+`;
+
 interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, view, setView, setTab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
+    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -110,6 +119,9 @@ const Mobile: React.FC<Props> = () => {
 
         const tab = option.tab;
         setTab(tab);
+        if (rtab !== '') {
+            setTimeout(() => setRtab(rtab), 0);
+        }
         // setView("main");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
@@ -117,7 +129,7 @@ const Mobile: React.FC<Props> = () => {
 
         await recordEvent(
             'tab-nav',
-            `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}"}`
+            `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "rtab":"${rtab}"}`
         );
 
         // Simulate content loading
@@ -126,7 +138,19 @@ const Mobile: React.FC<Props> = () => {
         setIsLoading(false);
         setIsVisible(true);
     }, [fbclid, utm_content, league, params, setTab, setView, router]);
-
+    const onRTabNav = (option: any) => {
+        const newTab = option.tab;
+        const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
+        const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
+        window.history.pushState({}, "", newPath);
+        // console.log("==> newPath", newPath);
+        setTimeout(() => setRtab(newTab), 0);
+        if (tab !== '') {
+            setTimeout(() => setTab(tab), 0);
+        }
+        //setView("mentions");
+        setTimeout(async () => await recordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+    }
     const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
         if (name == 'main' || name == 'feed' || name == 'home') {
@@ -165,7 +189,35 @@ const Mobile: React.FC<Props> = () => {
                 }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
 
-                {pagetype == "league" && (view == "mentions" || view == '') && <TertiaryTabs options={[{ name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false }, { name: "AI Chat", tab: "chat", disabled: false }, { name: "My Feed", tab: "myfeed", disabled: false }, { name: "Favorites", tab: "fav", disabled: false }]} onChange={async (option: any) => { await onTabNav(option); }} selectedOptionName={tab} />}
+                {pagetype == "league" && (view == "mentions" || view == '') &&
+
+                    <TertiaryTabs
+                        options={[
+                            { name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false },
+                            { name: "AI Chat", tab: "chat", disabled: false },
+                            { name: `${league ? league : 'All'} Mentions`, tab: "mentions", disabled: false }
+                        ]}
+                        onChange={async (option: any) => { await onTabNav(option); }}
+                        selectedOptionName={tab}
+                    />
+
+                }
+                {pagetype == "league" && tab == 'mentions' && (view == "mentions" || view == '') &&
+                    <div className="w-full bg-slate-200 dark:bg-slate-800">
+                        <RightAlignWrapper>
+                            <TertiaryTabs
+                                level="secondary"
+                                options={[
+                                    { name: ` @ `, tab: '', disabled: false },
+                                    { name: "My Feed", tab: "myfeed", disabled: false },
+                                    { name: "Favorites", tab: "fav", disabled: false }
+                                ]}
+                                onChange={async (option: any) => { await onRTabNav(option); }}
+                                selectedOptionName={rtab}
+                            />
+                        </RightAlignWrapper>
+                    </div>
+                }
 
                 {currentView == 'teams' &&
                     <LeftMobilePanel>
@@ -176,8 +228,13 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype == "team" && tab != "chat" ? <TeamMentions /> : null}
                     {pagetype == "player" && tab != "chat" && <PlayerMentions />}
                     {pagetype == "league" && currentTab == "all" ? <Stories /> : null}
-                    {pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
-                    {pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
+                    {pagetype === "league" && tab == "mentions" && rtab === "myfeed" && <MyfeedMentions league={league} />}
+                    {pagetype === "league" && tab == "mentions" && rtab === "fav" && <FavMentions />}
+                    {pagetype === "league" && tab == "mentions" && rtab === "" && <LeagueMentions />}
+
+
+                    {false && pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
+                    {false && pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                     {tab == 'chat' && <Chat source="mobile" />}
 
                 </CenterPanel>}

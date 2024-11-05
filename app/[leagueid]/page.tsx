@@ -289,7 +289,7 @@ export default async function Page({
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
 
   }
-  console.log("SSSSR  =====>view", { view, tab, rtab });
+  //console.log("SSSSR  =====>view", { view, tab, rtab });
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
       console.log("fetchStories", userId, sessionid, league);

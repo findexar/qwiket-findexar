@@ -64,7 +64,7 @@ export const fetchUser = async (
             // throw new Error("Failed to fetchUser");
         }
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${encodeURIComponent(utm_content)}&ua=${encodeURIComponent(ua)}&cid=${encodeURIComponent(cid)}&aid=${encodeURIComponent(aid)}`;
-        console.log("fetching user", url);
+        // console.log("fetching user", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
         //  console.log("return fetching user", url, data);

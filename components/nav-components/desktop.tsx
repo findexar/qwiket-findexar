@@ -179,7 +179,10 @@ const Desktop: React.FC<Props> = () => {
   if (tab === 'chat') {
     view = 'mentions';
   }
-  console.log("==> rtab", { rtab, tab, initialRtab, initialTab });
+  if (tab == 'mentions')
+    tab = '';
+
+  // console.log("==> rtab", { rtab, tab, initialRtab, initialTab });
   //console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
   useEffect(() => {
     setLocalFindexarxid(findexarxid);
@@ -202,7 +205,7 @@ const Desktop: React.FC<Props> = () => {
     const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
     const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
     window.history.pushState({}, "", newPath);
-    console.log("==> newPath", newPath);
+    // console.log("==> newPath", newPath);
     setTimeout(() => setRtab(newTab), 0);
     if (tab !== '') {
       setTimeout(() => setTab(tab), 0);
