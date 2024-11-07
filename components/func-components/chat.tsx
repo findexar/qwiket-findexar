@@ -420,7 +420,7 @@ const ChatsComponent: React.FC<Props> = ({
                             href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.uuid}`}
                             $isDarkMode={isDarkMode}
                         >
-                            {p.prompt}
+                            {typeof p.prompt === 'string' ? p.prompt : JSON.stringify(p.prompt)}
                         </PromptTag>
                     ))}
                 </PromptsContainer>
@@ -708,16 +708,20 @@ const ChatsComponent: React.FC<Props> = ({
                     <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
                         {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
                         <div className="flex flex-wrap gap-2">
-                            {followupPrompts.map((prompt, index) => (
+                            {followupPrompts.map((prompt: string | { prompt: string }, index: number) => (
                                 <button
                                     key={index}
-                                    onClick={() => handlePromptClick(prompt)}
+                                    onClick={() => handlePromptClick(typeof prompt === 'string' ? prompt : prompt.prompt)}
                                     className={`text-sm px-6 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
                                         ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
                                         : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
                                         }`}
                                 >
-                                    {prompt}
+                                    {typeof prompt === 'string'
+                                        ? prompt
+                                        : 'prompt' in prompt
+                                            ? prompt.prompt
+                                            : ''}
                                 </button>
                             ))}
                         </div>
@@ -733,7 +737,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 setIsPromptSelected(false);
                                 setIsMessageSubmitted(false);  // Reset on manual input
                             }}
-                            placeholder={messages.length ? "Ask again..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
+                            placeholder={messages.length ? "Ask a follow-up question..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
                             className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                             rows={3}
                             disabled={isLoading}
