@@ -40,6 +40,10 @@ const Digest = styled.div`
     display:flex;
     flex-direction:column;
     font-size: 15px;
+    p {
+        margin-top: 4px ;
+        padding-bottom: 4px;
+    }
 `;
 
 const ArticleDigest = styled.div`

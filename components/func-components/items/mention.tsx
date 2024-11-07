@@ -73,6 +73,10 @@ const MentionWrap = styled.div<MentionsProps>`
            color: var(--mention-text);
         }   
     }
+    p {
+        margin-top: 4px ;
+        padding-bottom: 4px;
+    }
     display: ${props => props.$hideit ? 'none' : 'flex'};
     @media screen and (max-width: 1199px) {
         display: none;
