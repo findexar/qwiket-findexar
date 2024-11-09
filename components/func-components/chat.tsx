@@ -20,6 +20,7 @@ import CreatorMode from "@components/func-components/creator-mode";
 import { actionRecordEvent as recordEvent } from "@/lib/actions";
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
+import Toast from './toaster'; // Import your Toast component
 
 const PromptsContainer = styled.div`
   display: flex;
@@ -100,6 +101,8 @@ const ChatsComponent: React.FC<Props> = ({
     const [isPromptSelected, setIsPromptSelected] = useState(false);
     const [isMessageSubmitted, setIsMessageSubmitted] = useState(false);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastIcon, setToastIcon] = useState(<></>);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
@@ -179,9 +182,12 @@ const ChatsComponent: React.FC<Props> = ({
     }, [initialPrompt]);
 
     useEffect(() => {
+
         setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
         setChatName('');
+        setFollowupPrompts([]);
+        // console.log('==> useEffect league', league);
     }, [league])
     /* useEffect(() => {
          setIsLoading(isLoadingChat);
@@ -253,7 +259,7 @@ const ChatsComponent: React.FC<Props> = ({
                 // setIsUpdatingPrompts(true);
                 setUpdateMessage('');
                 const newPrompts = content;
-                console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
+                //console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
                 /*  setMessages(prevMessages => {
                       const updatedMessages = [...prevMessages];
                       const lastMessage = updatedMessages[updatedMessages.length - 1];
@@ -267,6 +273,22 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onChatNameUpdate: (content: string) => {
                 setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
+            },
+            onLeagueUpdate: (content: string) => {
+                // Display the loading message
+                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content)) {
+                    setToastMessage(`Loading ${content} Tab...`);
+                    // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
+
+                    // Automatically clear the toast message after 3 seconds
+                    setTimeout(() => {
+                        setToastMessage("");
+                    }, 3000);
+
+                    // Navigate to the new league view
+                    window.history.pushState({}, '', `/${content.trim().toUpperCase()}${params}${tp}`);
+                    // console.log('*********************** CHAT onLeagueUpdate:', content);
+                }
             },
             styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
             dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
@@ -312,6 +334,12 @@ const ChatsComponent: React.FC<Props> = ({
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
         }
+        /* else if (!league && chatUUId != '_new' && !loadedChat) {
+             setChatName('New Chat');
+             setFollowupPrompts([]);
+             setMessages([]);
+             setChatUUId('_new');
+         }*/
     }, [loadedChat]);
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -401,9 +429,9 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [followupPrompts, messages]);*/
 
-    if (!league) {
-        return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
-    }
+    /*if (!league) {
+         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
+     }*/
 
     const isDarkMode = mode === 'dark';
     const renderPrompts = (device: "desktop" | "mobile") => {
@@ -469,301 +497,317 @@ const ChatsComponent: React.FC<Props> = ({
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
     // console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
     // console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
+
+    /*    useEffect(() => {
+            const confirmSwitch = window.confirm(`Do you want to switch to ${league} view?`);
+            if (confirmSwitch) {
+                window.history.pushState({}, '', `/${league.trim().toUpperCase()}${params}${tp}`);
+                setFollowupPrompts([]); // Reset followup prompts when league changes
+            }
+        }, [league]);*/
+
+
+
     return (
-        <div className="flex flex-col bg-white dark:bg-black w-full relative">
-            <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
-                <div className="flex items-center justify-end">
-                    <Link
-                        href="/account/dashboard"
-                        className={`text-xs ${creditColorClass} hover:underline mr-2`}
-                    >
-                        {creditsString}
-                    </Link>
-                    <button
-                        onClick={() => setShowCreditsInfo(!showCreditsInfo)}
-                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                    >
-                        <FaInfoCircle size={14} />
-                    </button>
-                </div>
-                <div className="flex flex-col">
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => setOpenMyChats(!openMyChats)}
-                                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                            >
-                                {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
-                            </button>
-                            <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{drawChatName}</h1>
-                        </div>
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => {
-                                    setChatUUId("_new");
-                                    setMessages([]);
-                                    setChatName('New Chat');
-                                    setOpenMyChats(false);
-                                    setIsLoading(false);
-                                    setFollowupPrompts([]);
-                                }}
-                                className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                disabled={drawChatName === 'New Chat'}
-                            >
-                                <HiOutlinePencilAlt size={24} />
-                            </button>
-                        </div>
+        <>
+            {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
+            <div className="flex flex-col bg-white dark:bg-black w-full relative">
+                <div className="flex-shrink-0 lg:p-4 p-4 pt-2 lg:pt-4 relative z-2">
+                    <div className="flex items-center justify-end">
+                        <Link
+                            href="/account/dashboard"
+                            className={`text-xs ${creditColorClass} hover:underline mr-2`}
+                        >
+                            {creditsString}
+                        </Link>
+                        <button
+                            onClick={() => setShowCreditsInfo(!showCreditsInfo)}
+                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                            <FaInfoCircle size={14} />
+                        </button>
                     </div>
-                    {!openMyChats && (
-                        <>
-                            <div className="flex items-center justify-center mt-2 mb-2">
-                                <div className="flex items-center">
-                                    <span className="mr-2 text-sm text-gray-600 dark:text-gray-400">Creator Mode</span>
-                                    <label className="inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            disabled={level !== "creator" && level !== "trial"}
-                                            className="sr-only peer"
-                                            checked={creator}
-                                            onChange={() => {
-                                                setCreator(!creator);
-                                                if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
-                                                    actionFlipCreatorMode(!creator, chatUUId);
-                                                }
-                                                recordEvent(`flip-creator`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
-                                                    .then((r: any) => {
-                                                        //console.log("recordEvent", r);
-                                                    });
-                                            }}
-                                        />
-                                        <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[0px] after:start-[0px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    </label>
-                                    <button
-                                        onClick={() => setShowCreatorInfo(!showCreatorInfo)}
-                                        className="ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                                    >
-                                        <FaInfoCircle size={14} />
-                                    </button>
-                                    <button
-                                        onClick={() => setShowAttachments(!showAttachments)}
-                                        className={`ml-4 flex items-center text-sm ${creator ? 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                                            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                                            }`}
-                                        disabled={!creator}
-                                    >
-                                        <FaPaperclip className="mr-1" size={14} />
-                                        Attachments
-                                        {creator && (
-                                            showAttachments ?
-                                                <FaChevronUp className="ml-1" size={12} /> :
-                                                <FaChevronDown className="ml-1" size={12} />
-                                        )}
-                                    </button>
-                                </div>
+                    <div className="flex flex-col">
 
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <button
+                                    onClick={() => setOpenMyChats(!openMyChats)}
+                                    className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                                >
+                                    {openMyChats ? <FaChevronUp /> : <FaChevronDown />}
+                                </button>
+                                <h1 className="ml-4 text-lg font-bold text-gray-800 dark:text-gray-200">{drawChatName}</h1>
                             </div>
-                            {showCreatorInfo && (
-                                <><div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                                    Creator Mode supports creative sports content producers, allows to attach documents to the chat and more. Note: each document attached to chat costs extra 5 credits per request.
-                                </div>
-                                    {(level !== "creator" && level !== "trial") && (
-                                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                                            Creator Mode is not available for your subscription level. <Link href="/account/dashboard" className="text-blue-500 hover:underline">Upgrade to creator level</Link> to use this feature.
-                                        </div>
-                                    )}
-                                </>)}
-                            {showCreditsInfo && (
-                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                                    Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
-                                        Dashboard
-                                    </Link> for more details on your credit usage and subscription options.
-                                </div>
-                            )}
-                            {creator && !showCreatorInfo && (
-                                <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
-                                    {isCid ? <Link href="/account/rsp-creator">
-                                        Revenue-Sharing Program
-                                    </Link> : <Link href="/account/rsp">
-                                        Learn about the Revenue-Sharing Program for Creators
-                                    </Link>}
-                                </div>
-                            )}
-                            {isCid && creator && !showCreatorInfo && (
-                                <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
-                                    <Link href="/account/dashboard">
-                                        Revenue-Sharing Dashboard
-                                    </Link>
-                                </div>
-                            )}
-                            <AnimatePresence>
-                                {creator && showAttachments && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <CreatorMode
-                                            chatUUId={chatUUId}
-                                            selectedDocuments={selectedDocuments}
-                                            onSelectedDocumentsChange={(documents: UserDocument[]) => {
-                                                //console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
-                                                setSelectedDocuments(documents)
-                                            }}
-                                        />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </>
-                    )}
-                </div>
-                <div
-                    className={`absolute top-full mt-4 left-0 w-full bg-white dark:bg-black z-20 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-128' : 'max-h-0'}`}
-                >
-                    <MyChats
-                        onChatSelect={async (selectedChatUUId) => {
-                            setChatUUId(selectedChatUUId);
-                            setTimeout(() => {
-                                setOpenMyChats(false);
-                            }, 200);
-                        }}
-                        onNewChat={async () => {
-                            setChatUUId("_new");
-                            setMessages([]);
-                            setChatName('New Chat');
-                            setOpenMyChats(false);
-                        }}
-                        onFirstChat={(firstChat) => {
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div className={`overflow-y-auto mb-32 p-0 pb-8 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
-                {drawMessages.length === 0 && (
-                    <>
-                        {(!prompts || prompts.length === 0) ? <>
-                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-0 mb-8">
-                                Ask Qwiket AI anything about major league and fantasy sports and more...
-                            </p>
-                            <p className="text-gray-600 dark:text-gray-400 italic text-center mt-6 mb-8">
-                                Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
-                            </p>
-
-                        </> : renderPrompts(isMobile ? "mobile" : "desktop")}
-                    </>
-                )}
-                {drawMessages.map((message, index) => (
-                    <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
-                        ${message.role === 'user'
-                                ? 'bg-gray-100 dark:bg-gray-800'
-                                : ''
-                            } text-gray-800 dark:text-gray-200`}>
-                            <div className="flex justify-between items-center mb-1">
-                                {message.role !== 'user' && (
+                            <div className="flex items-center">
+                                <button
+                                    onClick={() => {
+                                        setChatUUId("_new");
+                                        setMessages([]);
+                                        setChatName('New Chat');
+                                        setOpenMyChats(false);
+                                        setIsLoading(false);
+                                        setFollowupPrompts([]);
+                                    }}
+                                    className={`text-gray-800 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-200 font-bold py-2 px-4 rounded ${drawChatName === 'New Chat' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={drawChatName === 'New Chat'}
+                                >
+                                    <HiOutlinePencilAlt size={24} />
+                                </button>
+                            </div>
+                        </div>
+                        {!openMyChats && (
+                            <>
+                                <div className="flex items-center justify-center mt-2 mb-2">
                                     <div className="flex items-center">
-                                        {streamingMessageIndex !== index && (
-                                            <>
-                                                <img
-                                                    src="/q-logo-light-42.png"
-                                                    alt="Qwiket AI Logo"
-                                                    className="w-5 h-5 mr-1.5 opacity-60 dark:hidden"
-                                                />
-                                                <img
-                                                    src="/q-logo-dark-42.png"
-                                                    alt="Qwiket AI Logo"
-                                                    className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline"
-                                                />
-                                            </>
+                                        <span className="mr-2 text-sm text-gray-600 dark:text-gray-400">Creator Mode</span>
+                                        <label className="inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                disabled={level !== "creator" && level !== "trial"}
+                                                className="sr-only peer"
+                                                checked={creator}
+                                                onChange={() => {
+                                                    setCreator(!creator);
+                                                    if (chatUUId && chatUUId !== "_new" && chatUUId !== "blocked") {
+                                                        actionFlipCreatorMode(!creator, chatUUId);
+                                                    }
+                                                    recordEvent(`flip-creator`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                                        .then((r: any) => {
+                                                            //console.log("recordEvent", r);
+                                                        });
+                                                }}
+                                            />
+                                            <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[0px] after:start-[0px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                        </label>
+                                        <button
+                                            onClick={() => setShowCreatorInfo(!showCreatorInfo)}
+                                            className="ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                        >
+                                            <FaInfoCircle size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => setShowAttachments(!showAttachments)}
+                                            className={`ml-4 flex items-center text-sm ${creator ? 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                                : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                                                }`}
+                                            disabled={!creator}
+                                        >
+                                            <FaPaperclip className="mr-1" size={14} />
+                                            Attachments
+                                            {creator && (
+                                                showAttachments ?
+                                                    <FaChevronUp className="ml-1" size={12} /> :
+                                                    <FaChevronDown className="ml-1" size={12} />
+                                            )}
+                                        </button>
+                                    </div>
+
+                                </div>
+                                {showCreatorInfo && (
+                                    <><div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                        Creator Mode supports creative sports content producers, allows to attach documents to the chat and more. Note: each document attached to chat costs extra 5 credits per request.
+                                    </div>
+                                        {(level !== "creator" && level !== "trial") && (
+                                            <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                                Creator Mode is not available for your subscription level. <Link href="/account/dashboard" className="text-blue-500 hover:underline">Upgrade to creator level</Link> to use this feature.
+                                            </div>
                                         )}
-                                        <span className="font-bold ml-0.5">Qwiket AI</span>
+                                    </>)}
+                                {showCreditsInfo && (
+                                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                                        Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
+                                            Dashboard
+                                        </Link> for more details on your credit usage and subscription options.
                                     </div>
                                 )}
-                                {message.role !== 'user' && message.content.length >= 20 && (
-                                    <button
-                                        onClick={() => copyToClipboard(message.content, index)}
-                                        className={`${copiedMessageIndex === index
-                                            ? 'text-green-500 dark:text-green-400'
-                                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                                            } transition-colors duration-200`}
-                                    >
-                                        {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
-                                    </button>
+                                {creator && !showCreatorInfo && (
+                                    <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
+                                        {isCid ? <Link href="/account/rsp-creator">
+                                            Revenue-Sharing Program
+                                        </Link> : <Link href="/account/rsp">
+                                            Learn about the Revenue-Sharing Program for Creators
+                                        </Link>}
+                                    </div>
                                 )}
-                            </div>
-                            <ReactMarkdown components={MarkdownComponents}>
-                                {message?.content || ''}
-                            </ReactMarkdown>
-                            {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && <BlinkingDot />}
-                        </div>
+                                {isCid && creator && !showCreatorInfo && (
+                                    <div className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 mb-4">
+                                        <Link href="/account/dashboard">
+                                            Revenue-Sharing Dashboard
+                                        </Link>
+                                    </div>
+                                )}
+                                <AnimatePresence>
+                                    {creator && showAttachments && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <CreatorMode
+                                                chatUUId={chatUUId}
+                                                selectedDocuments={selectedDocuments}
+                                                onSelectedDocumentsChange={(documents: UserDocument[]) => {
+                                                    //console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
+                                                    setSelectedDocuments(documents)
+                                                }}
+                                            />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </>
+                        )}
                     </div>
-                ))}
-                <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
-                    {updateMessage || "***"}
-                </div>
-                {followupPrompts.length > 0 && (
-                    <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
-                        {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
-                        <div className="flex flex-wrap gap-2">
-                            {followupPrompts.map((prompt: string | { prompt: string }, index: number) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handlePromptClick(typeof prompt === 'string' ? prompt : prompt.prompt)}
-                                    className={`text-sm px-6 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
-                                        ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
-                                        : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
-                                        }`}
-                                >
-                                    {typeof prompt === 'string'
-                                        ? prompt
-                                        : 'prompt' in prompt
-                                            ? prompt.prompt
-                                            : ''}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-                <div className="p-0 mt-4 mx-4">
-                    <form onSubmit={handleSubmit} className="relative">
-                        <textarea
-                            ref={textareaRef}
-                            defaultValue={userInput}
-                            onKeyDown={handleKeyDown}
-                            onChange={() => {
-                                setIsPromptSelected(false);
-                                setIsMessageSubmitted(false);  // Reset on manual input
+                    <div
+                        className={`absolute top-full mt-4 left-0 w-full bg-white dark:bg-black z-20 transition-all duration-300 overflow-hidden ${openMyChats ? 'max-h-128' : 'max-h-0'}`}
+                    >
+                        <MyChats
+                            onChatSelect={async (selectedChatUUId) => {
+                                setChatUUId(selectedChatUUId);
+                                setTimeout(() => {
+                                    setOpenMyChats(false);
+                                }, 200);
                             }}
-                            placeholder={messages.length ? "Ask a follow-up question..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
-                            className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
-                            rows={3}
-                            disabled={isLoading}
+                            onNewChat={async () => {
+                                setChatUUId("_new");
+                                setMessages([]);
+                                setChatName('New Chat');
+                                setOpenMyChats(false);
+                            }}
+                            onFirstChat={(firstChat) => {
+                            }}
                         />
-                        <button
-                            type="submit"
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
-                            ) : (
-                                <div className="relative p-1.5">
-                                    {(messages.length === 0 && textareaRef.current?.value.trim() !== '' && !isMessageSubmitted) || (isPromptSelected && !isMessageSubmitted) ? <FlashingCircle /> : null}
-                                    <FaPaperPlane size={18} />
+                    </div>
+                </div>
+
+                <div className={`overflow-y-auto mb-32 p-0 pb-8 relative z-0 ${openMyChats ? 'opacity-50' : ''}`}>
+                    {drawMessages.length === 0 && (
+                        <>
+                            {(!prompts || prompts.length === 0) ? <>
+                                <p className="text-gray-600 dark:text-gray-400 italic text-center mt-0 mb-8">
+                                    Ask Qwiket AI anything about major league and fantasy sports and more...
+                                </p>
+                                <p className="text-gray-600 dark:text-gray-400 italic text-center mt-6 mb-8">
+                                    Please note that AI results may not always be reliable. It&apos;s recommended to ask follow-up questions for clarification and verify important information from trusted sources.
+                                </p>
+
+                            </> : renderPrompts(isMobile ? "mobile" : "desktop")}
+                        </>
+                    )}
+                    {drawMessages.map((message, index) => (
+                        <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
+                        ${message.role === 'user'
+                                    ? 'bg-gray-100 dark:bg-gray-800'
+                                    : ''
+                                } text-gray-800 dark:text-gray-200`}>
+                                <div className="flex justify-between items-center mb-1">
+                                    {message.role !== 'user' && (
+                                        <div className="flex items-center">
+                                            {streamingMessageIndex !== index && (
+                                                <>
+                                                    <img
+                                                        src="/q-logo-light-42.png"
+                                                        alt="Qwiket AI Logo"
+                                                        className="w-5 h-5 mr-1.5 opacity-60 dark:hidden"
+                                                    />
+                                                    <img
+                                                        src="/q-logo-dark-42.png"
+                                                        alt="Qwiket AI Logo"
+                                                        className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline"
+                                                    />
+                                                </>
+                                            )}
+                                            <span className="font-bold ml-0.5">Qwiket AI</span>
+                                        </div>
+                                    )}
+                                    {message.role !== 'user' && message.content.length >= 20 && (
+                                        <button
+                                            onClick={() => copyToClipboard(message.content, index)}
+                                            className={`${copiedMessageIndex === index
+                                                ? 'text-green-500 dark:text-green-400'
+                                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                                } transition-colors duration-200`}
+                                        >
+                                            {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                        </button>
+                                    )}
                                 </div>
-                            )}
-                        </button>
-                    </form>
+                                <ReactMarkdown components={MarkdownComponents}>
+                                    {message?.content || ''}
+                                </ReactMarkdown>
+                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && <BlinkingDot />}
+                            </div>
+                        </div>
+                    ))}
+                    <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
+                        {updateMessage || "***"}
+                    </div>
+                    {chatName !== "New Chat" && followupPrompts.length > 0 && (
+                        <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
+                            {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
+                            <div className="flex flex-wrap gap-2">
+                                {followupPrompts.map((prompt: string | { prompt: string }, index: number) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handlePromptClick(typeof prompt === 'string' ? prompt : prompt.prompt)}
+                                        className={`text-sm px-6 py-1 rounded-full transition-colors duration-200 text-left ${isDarkMode
+                                            ? 'bg-[#1D4037] text-[#E0E0E0] hover:bg-[#795548] hover:text-white'
+                                            : 'bg-[#CFE0C2] text-[#4E342E] hover:bg-[#FFCCBC] hover:text-[#3E2723]'
+                                            }`}
+                                    >
+                                        {typeof prompt === 'string'
+                                            ? prompt
+                                            : 'prompt' in prompt
+                                                ? prompt.prompt
+                                                : ''}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <div className="p-0 mt-4 mx-4">
+                        <form onSubmit={handleSubmit} className="relative">
+                            <textarea
+                                ref={textareaRef}
+                                defaultValue={userInput}
+                                onKeyDown={handleKeyDown}
+                                onChange={() => {
+                                    setIsPromptSelected(false);
+                                    setIsMessageSubmitted(false);  // Reset on manual input
+                                }}
+                                placeholder={messages.length ? "Ask a follow-up question..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
+                                className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
+                                rows={3}
+                                disabled={isLoading}
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
+                                ) : (
+                                    <div className="relative p-1.5">
+                                        {(messages.length === 0 && textareaRef.current?.value.trim() !== '' && !isMessageSubmitted) || (isPromptSelected && !isMessageSubmitted) ? <FlashingCircle /> : null}
+                                        <FaPaperPlane size={18} />
+                                    </div>
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
                 </div>
             </div>
 
-            <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
-            </div>
-        </div>
+        </>
     );
+
 };
 
 export default ChatsComponent;

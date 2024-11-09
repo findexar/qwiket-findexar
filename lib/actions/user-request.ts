@@ -12,6 +12,7 @@ export interface UserRequestProps {
     onMetaUpdate: (content: string) => void;
     onFollowupPromptsUpdate: (content: string[]) => void;
     onChatNameUpdate: (content: string) => void;
+    onLeagueUpdate: (content: string) => void;
     creator?: boolean;
     styleDocument?: string;
     dataDocumentsString?: string;
@@ -20,7 +21,7 @@ export interface UserRequestProps {
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, onFollowupPromptsUpdate, onChatNameUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
+        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, onFollowupPromptsUpdate, onChatNameUpdate, onLeagueUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
@@ -109,6 +110,14 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                         let content = jsonData.content || [];
                         if (content.length > 0) {
                             onChatNameUpdate(content);
+                        }
+                    }
+                    if (line.startsWith('league: ')) {
+                        console.log('*********************** name: content received', line);
+                        const jsonData = JSON.parse(line.slice(7));
+                        let content = jsonData.content || [];
+                        if (content.length > 0) {
+                            onLeagueUpdate(content.trim().toUpperCase());
                         }
                     }
                 }
