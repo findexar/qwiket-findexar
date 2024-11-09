@@ -276,8 +276,9 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onLeagueUpdate: (content: string) => {
                 // Display the loading message
-                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content)) {
-                    setToastMessage(`Loading ${content} Tab...`);
+                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
+                    setChatUUId('_new');
+                    setToastMessage(`Switching to ${content} tab...`);
                     // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
                     // Automatically clear the toast message after 3 seconds
