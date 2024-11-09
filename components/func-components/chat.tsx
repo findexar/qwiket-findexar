@@ -182,12 +182,13 @@ const ChatsComponent: React.FC<Props> = ({
     }, [initialPrompt]);
 
     useEffect(() => {
-        setChatUUId('_new');
-
-        // setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
-        setMessages([]);
-        setChatName('New Chat');
-        setFollowupPrompts([]);
+        if (!loadedChat) {
+            setChatUUId('_new');
+            // setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
+            setMessages([]);
+            setChatName('New Chat');
+            setFollowupPrompts([]);
+        }
         // console.log('==> useEffect league', league);
     }, [league])
     /* useEffect(() => {
