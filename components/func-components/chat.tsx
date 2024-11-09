@@ -181,7 +181,7 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [initialPrompt]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (!loadedChat) {
             setChatUUId('_new');
             // setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
@@ -190,7 +190,7 @@ const ChatsComponent: React.FC<Props> = ({
             setFollowupPrompts([]);
         }
         // console.log('==> useEffect league', league);
-    }, [league])
+    }, [league])*/
     /* useEffect(() => {
          setIsLoading(isLoadingChat);
      }, [isLoadingChat]);*/
