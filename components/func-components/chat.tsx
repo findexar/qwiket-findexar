@@ -182,10 +182,11 @@ const ChatsComponent: React.FC<Props> = ({
     }, [initialPrompt]);
 
     useEffect(() => {
+        setChatUUId('_new');
 
-        setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
+        // setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
         setMessages([]);
-        setChatName('');
+        setChatName('New Chat');
         setFollowupPrompts([]);
         // console.log('==> useEffect league', league);
     }, [league])
@@ -277,7 +278,6 @@ const ChatsComponent: React.FC<Props> = ({
             onLeagueUpdate: (content: string) => {
                 // Display the loading message
                 if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
-                    setChatUUId('_new');
                     setToastMessage(`Switching to ${content} tab...`);
                     // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
