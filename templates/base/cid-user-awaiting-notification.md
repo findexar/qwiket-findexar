@@ -1,7 +1,7 @@
 Welcome to Qwiket AI! You have been enrolled into a creator revenue-sharing program. You have been granted ${creditsTotal} credits to start with.
 ### How It Works: Simple Steps to Revenue
 
-1. **Share Your Links**: Use your personalized links (with your Affiliate ID {{cid}}), for example:: https://www.qwiket.com?aid={{cid}} when sharing Qwiket content. The visitors from your links will be started with 100 free credits, which is 400% over the default user.
+1. **Share Your Links**: Use your personalized links (with your Affiliate ID {{cid}}), for example:: https://www.qwiket.com?aid={{cid}} when sharing Qwiket content. The visitors from your links will be started with 50 free credits, which is a double over the default user.
 2. **Get Credits for Traffic**: For every 100 visitors through your links, we'll top up your Qwiket AI credits to 2000.
 3. **Earn from Subscriptions**: When your readers become Qwiket subscribers, you earn 5% of their subscription fee. That's $1 per month for every $20 subscription.
 

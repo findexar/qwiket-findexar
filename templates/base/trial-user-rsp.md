@@ -7,8 +7,8 @@ Are you a sports or fantasy sports content creator looking to earn from your exp
 ### How It Works: Simple Steps to Revenue
 
 1. **Join the Program**: Once accepted, you'll receive a unique Affiliate ID (AID).
-2. **Start with 200 Credits**: We'll kickstart your account with 200 credits for Qwiket AI use.
-3. **Share Your Links**: Use your personalized links (with your AID) when sharing Qwiket content. The visitors from your links will be started with 100 free credits, which is 400% over the default user.
+2. **Start with 200 Credits**: We'll kickstart your account with 100 credits for Qwiket AI use.
+3. **Share Your Links**: Use your personalized links (with your AID) when sharing Qwiket content. The visitors from your links will be started with 50 free credits, which is a double over the default user.
 4. **Get Credits for Traffic**: For every 100 visitors through your links, we'll top up your Qwiket AI credits to 2000.
 5. **Earn from Subscriptions**: When your readers become Qwiket subscribers, you earn 5% of their subscription fee. That's $1 per month for every $20 subscription.
 
