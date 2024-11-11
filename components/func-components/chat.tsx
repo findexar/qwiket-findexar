@@ -303,8 +303,12 @@ const ChatsComponent: React.FC<Props> = ({
             setIsLoading(false);
             setIsStreaming(false);
         });
+        recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
+            //console.log("recordEvent", r);
+        });
         setProvisionalChatUUId('');
         setProvisionalUserInput('');
+
     }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts, setIsStreaming]);
 
     useEffect(() => {

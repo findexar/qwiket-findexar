@@ -318,7 +318,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     useEffect(() => {
         if (!site_name) {
-            recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${shareUrls.share}"}`).then((r: any) => {
+            recordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${url}"}`).then((r: any) => {
                 //console.log("recordEvent", r);
             });;
         }
