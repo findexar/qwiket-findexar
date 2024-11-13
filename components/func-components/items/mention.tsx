@@ -2,7 +2,6 @@
 import React, { useEffect, useCallback, useState, useMemo } from "react";
 import useSWR from 'swr';
 import Link from 'next/link';
-import { SignInButton, RedirectToSignIn } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
 import { RWebShare } from "react-web-share";
