@@ -168,7 +168,7 @@ const ChatsComponent: React.FC<Props> = ({
             const url = new URL(window.location.href);
             url.searchParams.delete('prompt');
             url.searchParams.delete('promptUUId');
-            router.replace(url.toString());
+            window.history.replaceState({}, '', url.toString());
         }
     }, [searchParams]);
 
