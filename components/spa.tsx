@@ -169,7 +169,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         }, 0);
       }
       if (qtab !== tab) {
-       // console.log("==> setTab", qtab);
+        // console.log("==> setTab", qtab);
         setTab(qtab);
       }
       if (qrtab !== rtab) {
@@ -303,8 +303,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
                 pagetype === "admin-invite" ? <Invites /> :
                   pagetype === "account-dashboard" ? <Dashboard /> :
                     <>
-                      <Desktop />
-                      <Mobile />
+                      {isMobile ? <Mobile /> : <Desktop />}
+
                     </>}
         </main>
       </AppWrapper>

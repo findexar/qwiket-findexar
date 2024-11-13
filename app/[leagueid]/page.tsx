@@ -23,6 +23,7 @@ import fetchData from '@/lib/fetchers/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchChat from "@/lib/fetchers/chat";
 import promiseUser from "@/lib/fetchers/account";
+import { notFound } from 'next/navigation';
 type Props = {
   params: { leagueid: string };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -222,10 +223,8 @@ export default async function Page({
   let league = params.leagueid.toUpperCase();
   if (league === 'FAVICON.ICO') {
     console.log("==> SSR PAGE.TSX FOUND league === 'FAVICON.ICO'");
-    return {
-      status: 204,
-      body: null,
-    };
+    notFound();
+    return <h1>Not Found</h1>;
   }
   /// console.log("league->", league);
   // console.log("utm_content->", utm_content);

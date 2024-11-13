@@ -535,8 +535,8 @@ const ChatsComponent: React.FC<Props> = ({
          }
      }, [tag, prompt]);*/
     useEffect(() => {
-        console.log("==> CHAT.TSX useEffect", source,tag, prompt);
-    }, [tag, prompt]);
+        console.log("======> CHAT.TSX useEffect", source, tag, prompt);
+    }, []);
 
     return (
         <>
