@@ -220,8 +220,12 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
-  if (league == 'FAVICON.ICO') {
-    return new Response('Not Found', { status: 404 });
+  if (league === 'FAVICON.ICO') {
+    console.log("==> SSR PAGE.TSX FOUND league === 'FAVICON.ICO'");
+    return {
+      status: 204,
+      body: null,
+    };
   }
   /// console.log("league->", league);
   // console.log("utm_content->", utm_content);
@@ -299,7 +303,8 @@ export default async function Page({
   // console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
 
   await fetchData(t1, fallback, calls);
-
+  const t2 = new Date().getTime() - t1;
+  console.log("==> SSR PAGE.TSX", { t2 });
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
