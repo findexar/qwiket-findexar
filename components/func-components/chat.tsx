@@ -523,7 +523,7 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }, [league]);*/
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
             console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt", tag, prompt);
             if (textareaRef.current) {
@@ -533,7 +533,7 @@ const ChatsComponent: React.FC<Props> = ({
                 hasSubmittedPromptRef.current = true; // Mark as submitted
             }
         }
-    }, [tag, prompt]);
+    }, [tag, prompt]);*/
 
     return (
         <>
