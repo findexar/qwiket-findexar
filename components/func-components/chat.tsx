@@ -129,6 +129,10 @@ const ChatsComponent: React.FC<Props> = ({
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
+    const tag = useMemo(() => {
+        return userAccount?.tag || "base";
+    }, [userAccount]);
+    console.log("==> CHAT.TSX tag", tag);
     useEffect(() => {
         if (isCid) {
             setCreator(true);
@@ -348,9 +352,13 @@ const ChatsComponent: React.FC<Props> = ({
          }*/
     }, [loadedChat]);
 
+    const hasSubmittedPromptRef = useRef(false);
+
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         const currentUserInput = textareaRef.current?.value.trim();
+        console.log("==> CHAT.TSX handleSubmit", tag, currentUserInput);
+
         if (!currentUserInput) return;
         setIsMessageSubmitted(true);
         setIsPromptSelected(false);  // Reset prompt selection on submit
@@ -512,7 +520,17 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }, [league]);*/
 
-
+    useEffect(() => {
+        if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
+            console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt", tag, prompt);
+            if (textareaRef.current) {
+                textareaRef.current.value = prompt; // Load prompt into textarea
+                const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                hasSubmittedPromptRef.current = true; // Mark as submitted
+            }
+        }
+    }, [tag, prompt]);
 
     return (
         <>

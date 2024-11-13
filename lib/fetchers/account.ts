@@ -67,7 +67,7 @@ export const fetchUser = async (
         // console.log("fetching user", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        //  console.log("return fetching user", url, data);
+        console.log("return fetching user", url, data);
         if (data.success) {
             // console.log("===>GET USER", data.account);
             return data.account as UserAccount;
