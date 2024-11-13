@@ -225,6 +225,7 @@ const ChatsComponent: React.FC<Props> = ({
             fantasyTeam: isFantasyTeam || false,
             onUpdate: (content: string) => {
                 setUpdateMessage('');
+                console.log("==> CHAT.TSX onUpdate", content);
                 setResponse(prev => {
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
@@ -243,6 +244,7 @@ const ChatsComponent: React.FC<Props> = ({
                 userAccountMutate();
                 setIsLoading(false);
                 setStreamingMessageIndex(null);
+                console.log("==> CHAT.TSX onDone", chatUUId);
                 actionChatName({ chatUUId }).then(
                     (data) => {
                         if (data.success) {
@@ -259,6 +261,7 @@ const ChatsComponent: React.FC<Props> = ({
                 });
             },
             onMetaUpdate: (content: string) => {
+                console.log("==> CHAT.TSX onMetaUpdate", content);
                 setUpdateMessage(content);
             },
             onFollowupPromptsUpdate: (content: string[]) => {
