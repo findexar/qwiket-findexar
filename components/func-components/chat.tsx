@@ -385,9 +385,10 @@ const ChatsComponent: React.FC<Props> = ({
                 console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
-                console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
-
-                setChatName(loadedChat?.chat?.name || 'New Chat');
+                if (loadedChat?.chat?.name != "New Chat") {
+                    console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
+                    setChatName(loadedChat?.chat?.name || 'New Chat');
+                }
             }
         }
         /* else if (!league && chatUUId != '_new' && !loadedChat) {
