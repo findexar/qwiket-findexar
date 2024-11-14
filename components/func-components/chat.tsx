@@ -418,6 +418,22 @@ const ChatsComponent: React.FC<Props> = ({
             }
         } catch (error) {
             console.error("Error in actionUserRequest:", error);
+            setUpdateMessage("Streaming network error");
+            setResponse(prev => {
+                const updatedContent = prev + "Network error. Please try again.";
+                setMessages(prevMessages => {
+                    const updatedMessages = [...prevMessages];
+                    //setStreamingMessageIndex(updatedMessages.length - 1);
+                    if (updatedMessages.length > 0) {
+                        updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                    }
+                    return updatedMessages;
+                });
+                return updatedContent;
+            });
+            // setIsLoading(false);
+            // setStreamingMessageIndex(null);
+            setUserInput(lastUserInput);
             setIsLoading(false);
         }
         setTimeout(() => {
