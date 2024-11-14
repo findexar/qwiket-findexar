@@ -216,6 +216,8 @@ const ChatsComponent: React.FC<Props> = ({
         //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
         //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
         setIsStreaming(true);
+        setInitialPrompt(null);
+        setInitialPromptUUId(null);
         actionUserRequest({
             chatUUId: provisionalChatUUId || chatUUId,
             promptUUId: initialPromptUUId || "",
@@ -253,8 +255,8 @@ const ChatsComponent: React.FC<Props> = ({
                         }
                     }
                 );
-                setInitialPrompt(null);
-                setInitialPromptUUId(null);
+                //setInitialPrompt(null);
+                //setInitialPromptUUId(null);
             },
             onChatUUId: (content: string) => {
                 setChatUUId(prev => {
@@ -285,10 +287,10 @@ const ChatsComponent: React.FC<Props> = ({
                 setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             },
             onError: (content: string) => {
-                setUpdateMessage(content);
+                setUpdateMessage("Comm. Error");
                 // setUpdateMessage("Streaming network error");
                 setResponse(prev => {
-                    const updatedContent = prev + "Network error. Please try again.";
+                    const updatedContent = prev + content;
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
                         //setStreamingMessageIndex(updatedMessages.length - 1);
