@@ -304,11 +304,25 @@ const ChatsComponent: React.FC<Props> = ({
             creator
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
+            setUpdateMessage("");
+            setResponse(prev => {
+                const updatedContent = prev + "Network error. Please try again.";
+                setMessages(prevMessages => {
+                    const updatedMessages = [...prevMessages];
+                    //setStreamingMessageIndex(updatedMessages.length - 1);
+                    if (updatedMessages.length > 0) {
+                        updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                    }
+                    return updatedMessages;
+                });
+                return updatedContent;
+            });
             setIsLoading(false);
             setStreamingMessageIndex(null);
+            setUserInput(provisionalUserInput);
         }).finally(() => {
-           // setIsLoading(false);
-           // setIsStreaming(false);
+            // setIsLoading(false);
+            // setIsStreaming(false);
         });
         recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
             //console.log("recordEvent", r);
