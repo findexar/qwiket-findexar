@@ -284,6 +284,8 @@ const ChatsComponent: React.FC<Props> = ({
                 // setIsUpdatingPrompts(false);
             },
             onChatNameUpdate: (content: string) => {
+                console.log("==> CHAT.TSX setting chat name3 loadedChat?.chat?.name", content, loadedChat?.chat?.name);
+
                 setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             },
             onError: (content: string) => {
@@ -380,8 +382,11 @@ const ChatsComponent: React.FC<Props> = ({
 
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
+                console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
+                console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
+
                 setChatName(loadedChat?.chat?.name || 'New Chat');
             }
         }
