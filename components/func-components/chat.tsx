@@ -107,7 +107,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
-    const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
+    const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
     //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
@@ -259,6 +259,7 @@ const ChatsComponent: React.FC<Props> = ({
                 //setInitialPromptUUId(null);
             },
             onChatUUId: (content: string) => {
+                console.log("==> CHAT.TSX onChatUUId", content);
                 setChatUUId(prev => {
                     return content;
                 });
@@ -305,8 +306,10 @@ const ChatsComponent: React.FC<Props> = ({
                 });
                 // setIsLoading(false);
                 // setStreamingMessageIndex(null);
-                console.log("setting lastUserInput", lastUserInput);
+                mutateLoadedChat();
+                console.log("setting lastUserInput", lastUserInput, "chatUUId:", chatUUId);
                 setUserInput(lastUserInput);
+
             },
             onLeagueUpdate: (content: string) => {
                 // Display the loading message
