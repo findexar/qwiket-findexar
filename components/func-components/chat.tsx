@@ -284,6 +284,26 @@ const ChatsComponent: React.FC<Props> = ({
             onChatNameUpdate: (content: string) => {
                 setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             },
+            onError: (content: string) => {
+                setUpdateMessage(content);
+                // setUpdateMessage("Streaming network error");
+                setResponse(prev => {
+                    const updatedContent = prev + "Network error. Please try again.";
+                    setMessages(prevMessages => {
+                        const updatedMessages = [...prevMessages];
+                        //setStreamingMessageIndex(updatedMessages.length - 1);
+                        if (updatedMessages.length > 0) {
+                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                        }
+                        return updatedMessages;
+                    });
+                    return updatedContent;
+                });
+                // setIsLoading(false);
+                // setStreamingMessageIndex(null);
+                console.log("setting lastUserInput", lastUserInput);
+                setUserInput(lastUserInput);
+            },
             onLeagueUpdate: (content: string) => {
                 // Display the loading message
                 if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
@@ -321,6 +341,7 @@ const ChatsComponent: React.FC<Props> = ({
             // setIsLoading(false);
             // setStreamingMessageIndex(null);
             setUserInput(lastUserInput);
+            console.log("setting lastUserInput2", lastUserInput);
         }).finally(() => {
             // setIsLoading(false);
             // setIsStreaming(false);
@@ -434,6 +455,7 @@ const ChatsComponent: React.FC<Props> = ({
             // setIsLoading(false);
             // setStreamingMessageIndex(null);
             setUserInput(lastUserInput);
+            console.log("setting lastUserInput3", lastUserInput);
             setIsLoading(false);
         }
         setTimeout(() => {

@@ -13,6 +13,7 @@ export interface UserRequestProps {
     onFollowupPromptsUpdate: (content: string[]) => void;
     onChatNameUpdate: (content: string) => void;
     onLeagueUpdate: (content: string) => void;
+    onError: (content: string) => void;
     creator?: boolean;
     styleDocument?: string;
     dataDocumentsString?: string;
@@ -21,7 +22,7 @@ export interface UserRequestProps {
 export const actionUserRequest = async (props: UserRequestProps) => {
     'use client';
     try {
-        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, onFollowupPromptsUpdate, onChatNameUpdate, onLeagueUpdate, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
+        const { chatUUId, promptUUId, userRequest, athleteUUId, teamid, league, fantasyTeam, onUpdate, onDone, onChatUUId, onMetaUpdate, onFollowupPromptsUpdate, onChatNameUpdate, onLeagueUpdate, onError, creator = false, styleDocument = "", dataDocumentsString = "" } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/user-request2`;
 
@@ -124,6 +125,8 @@ export const actionUserRequest = async (props: UserRequestProps) => {
             }
         } catch (error) {
             console.error('Error in user request:', error);
+            onUpdate("Streamin error. Please try again.");
+            onError("Streamin error. Please try again.");
             throw error;
         } finally {
             onDone();
