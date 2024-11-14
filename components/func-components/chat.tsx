@@ -89,6 +89,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
     const [provisionalChatUUId, setProvisionalChatUUId] = useState<string>('');
     const [provisionalUserInput, setProvisionalUserInput] = useState<string>('');
+    const [lastUserInput, setLastUserInput] = useState<string>('');
     const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
     const [prompts, setPrompts] = useState<string[]>([]);
     const [creator, setCreator] = useState<boolean>(false);
@@ -304,7 +305,7 @@ const ChatsComponent: React.FC<Props> = ({
             creator
         }).catch(error => {
             console.error("Error in actionUserRequest:", error);
-            setUpdateMessage("");
+            setUpdateMessage("Streaming network error");
             setResponse(prev => {
                 const updatedContent = prev + "Network error. Please try again.";
                 setMessages(prevMessages => {
@@ -317,9 +318,9 @@ const ChatsComponent: React.FC<Props> = ({
                 });
                 return updatedContent;
             });
-            setIsLoading(false);
-            setStreamingMessageIndex(null);
-            setUserInput(provisionalUserInput);
+            // setIsLoading(false);
+            // setStreamingMessageIndex(null);
+            setUserInput(lastUserInput);
         }).finally(() => {
             // setIsLoading(false);
             // setIsStreaming(false);
@@ -389,6 +390,7 @@ const ChatsComponent: React.FC<Props> = ({
         setProvisionalUserInput((prev) => {
             return userInputCleaned;
         });
+        setLastUserInput(userInputCleaned);
         setIsLoading(true);
         setResponse('');
         setFollowupPrompts([]); // Clear follow-up prompts
