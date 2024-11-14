@@ -307,8 +307,8 @@ const ChatsComponent: React.FC<Props> = ({
             setIsLoading(false);
             setStreamingMessageIndex(null);
         }).finally(() => {
-            setIsLoading(false);
-            setIsStreaming(false);
+           // setIsLoading(false);
+           // setIsStreaming(false);
         });
         recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
             //console.log("recordEvent", r);
