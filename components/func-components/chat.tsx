@@ -397,6 +397,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
                 // console.log('==> CHAT.TSX loadedChat.chat.messages', loadedChat.chat.messages);
                 setMessages(loadedChat.chat.messages);
+                setIsLoading(false);
 
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
