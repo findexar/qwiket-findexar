@@ -390,7 +390,7 @@ const ChatsComponent: React.FC<Props> = ({
     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
 
     useEffect(() => {
-        setIsLoading(false);
+        // setIsLoading(false);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
@@ -837,16 +837,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         <div className="flex items-center">
                                             {streamingMessageIndex !== index && (
                                                 <>
-                                                    <img
-                                                        src="/q-logo-light-42.png"
-                                                        alt="Qwiket AI Logo"
-                                                        className="w-5 h-5 mr-1.5 opacity-60 dark:hidden"
-                                                    />
-                                                    <img
-                                                        src="/q-logo-dark-42.png"
-                                                        alt="Qwiket AI Logo"
-                                                        className="w-5 h-5 mr-1.5 opacity-60 hidden dark:inline"
-                                                    />
+
                                                 </>
                                             )}
                                             <span className="font-bold ml-0.5">Qwiket AI</span>
@@ -867,11 +858,11 @@ const ChatsComponent: React.FC<Props> = ({
                                 <ReactMarkdown components={MarkdownComponents}>
                                     {message?.content || ''}
                                 </ReactMarkdown>
-                                {isLoading && index === messages.length - 1 && (
+                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
                                     <>
                                         <BlinkingDot />
                                         <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
-                                            <FaRedo size={14} /> {/* Retry icon */}
+                                            <FaRedo size={8} /> {/* Retry icon */}
                                         </button>
                                     </>
                                 )}
