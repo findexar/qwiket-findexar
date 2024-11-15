@@ -602,18 +602,18 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }, [league]);*/
 
-    /* useEffect(() => {
-         if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
-             console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt", tag, prompt);
-             if (textareaRef.current) {
-                 textareaRef.current.value = prompt; // Load prompt into textarea
-                 const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-                 handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
-                 hasSubmittedPromptRef.current = true; // Mark as submitted
-                 console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt submitted", source, tag, prompt);
-             }
-         }
-     }, []);*/
+    useEffect(() => {
+        if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
+            console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt", tag, prompt);
+            if (textareaRef.current) {
+                textareaRef.current.value = prompt; // Load prompt into textarea
+                const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                hasSubmittedPromptRef.current = true; // Mark as submitted
+                console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt submitted", source, tag, prompt);
+            }
+        }
+    }, []);
     /* useEffect(() => {
          console.log("======> CHAT.TSX useEffect", source, tag, prompt);
      }, []);*/
