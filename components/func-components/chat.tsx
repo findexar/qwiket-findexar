@@ -867,7 +867,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 <ReactMarkdown components={MarkdownComponents}>
                                     {message?.content || ''}
                                 </ReactMarkdown>
-                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
+                                {isLoading && index === messages.length - 1 && (
                                     <>
                                         <BlinkingDot />
                                         <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
