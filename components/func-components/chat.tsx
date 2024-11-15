@@ -291,7 +291,7 @@ const ChatsComponent: React.FC<Props> = ({
             },
             onError: (content: string) => {
                 console.log("==> CHAT.TSX onError", content);
-                setUpdateMessage("Comm. Error, retrying");
+                // setUpdateMessage("Comm. Error, retrying");
                 // setUpdateMessage("Streaming network error");
                 setMessages(prevMessages => {
                     const updatedMessages = [...prevMessages];
