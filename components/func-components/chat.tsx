@@ -290,7 +290,8 @@ const ChatsComponent: React.FC<Props> = ({
                 setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             },
             onError: (content: string) => {
-                setUpdateMessage("Comm. Error");
+                console.log("==> CHAT.TSX onError", content);
+                setUpdateMessage("Comm. Error, retrying");
                 // setUpdateMessage("Streaming network error");
                 setResponse(prev => {
                     const updatedContent = prev + content;
@@ -306,9 +307,14 @@ const ChatsComponent: React.FC<Props> = ({
                 });
                 // setIsLoading(false);
                 // setStreamingMessageIndex(null);
-                mutateLoadedChat();
+                // mutateLoadedChat();
                 console.log("setting lastUserInput", lastUserInput, "chatUUId:", chatUUId);
                 setUserInput(lastUserInput);
+                if (textareaRef.current) {
+                    textareaRef.current.value = lastUserInput;
+                    const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                    handleSubmit(formEvent as unknown as React.FormEvent);
+                }
 
             },
             onLeagueUpdate: (content: string) => {
@@ -561,11 +567,11 @@ const ChatsComponent: React.FC<Props> = ({
 
     const FlashingCircle = () => (
         <motion.div
-            className="absolute -inset-1.5 rounded-full"
+            className="absolute -inset-0 rounded-full"
             animate={{
                 boxShadow: [
                     '0 0 0 0 rgba(0, 255, 255, 0)',
-                    '0 0 0 6px rgba(0, 255, 255, 0.3)'
+                    '0 0 0 9px rgba(0, 255, 255, 0.3)'
                 ]
             }}
             transition={{

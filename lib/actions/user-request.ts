@@ -123,13 +123,14 @@ export const actionUserRequest = async (props: UserRequestProps) => {
                     }
                 }
             }
+            onDone();
         } catch (error) {
             console.error('Error in user request:', error);
             // onUpdate("Streamin error. Please try again.");
             onError(" *** Streaming error. Please try again. ***");
             // throw error;
         } finally {
-            onDone();
+
         }
 
         // Return a Response object with the stream
