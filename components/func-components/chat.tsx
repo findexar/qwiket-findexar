@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip } from 'react-icons/fa';
+import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
@@ -133,7 +133,7 @@ const ChatsComponent: React.FC<Props> = ({
     const tag = useMemo(() => {
         return userAccount?.tag || "base";
     }, [userAccount]);
-    console.log("==> CHAT.TSX tag", tag);
+    //console.log("==> CHAT.TSX tag", tag);
     useEffect(() => {
         if (isCid) {
             setCreator(true);
@@ -208,6 +208,7 @@ const ChatsComponent: React.FC<Props> = ({
 
 
     const userRequest = useCallback(() => {
+        console.log("==> CHAT.TSX userRequest", provisionalUserInput || textareaRef.current?.value.trim());
         setPendingUserRequest(false);
         setStreamingMessageIndex(messages.length);
         const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
@@ -421,12 +422,12 @@ const ChatsComponent: React.FC<Props> = ({
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         const currentUserInput = textareaRef.current?.value.trim();
-        console.log("==> CHAT.TSX handleSubmit", tag, currentUserInput);
+        console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId });
 
         if (!currentUserInput) return;
         setIsMessageSubmitted(true);
         setIsPromptSelected(false);  // Reset prompt selection on submit
-        update('Loading...');
+        update(`Loading ...`);
         const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
         const userInputCleaned = currentUserInput.replace(/qw:/i, "");
         const newMessage: Message = {
@@ -451,6 +452,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setPendingUserRequest(true);
                 //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
                 //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
+                console.log("==> CHAT.TSX handleSubmit actionCreateChat", { teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator });
                 actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
                     (chatUUId) => {
                         setProvisionalChatUUId((prev) => {
@@ -602,21 +604,38 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }, [league]);*/
 
-    useEffect(() => {
-        if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
-            console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt", tag, prompt);
+    /* useEffect(() => {
+         if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
+             console.log("==> CHAT.TSX useEffect111 tag === 'expA' && prompt", tag, prompt);
+             if (textareaRef.current) {
+                 setTimeout(() => {
+                     if (textareaRef.current) {
+                         textareaRef.current.value = prompt; // Load prompt into textarea
+                         const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                         handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                         hasSubmittedPromptRef.current = true; // Mark as submitted
+                         console.log("==> CHAT.TSX useEffect222 tag === 'expA' && prompt submitted", source, tag, prompt);
+                     }
+                 }, 1);
+             }
+         }
+     }, []);*/
+    /* useEffect(() => {
+         console.log("======> CHAT.TSX useEffect", source, tag, prompt);
+     }, []);*/
+
+    const handleRetry = () => {
+        if (textareaRef.current) {
             if (textareaRef.current) {
                 textareaRef.current.value = prompt; // Load prompt into textarea
                 const formEvent = new Event('submit', { bubbles: true }); // Create a new event
                 handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
                 hasSubmittedPromptRef.current = true; // Mark as submitted
-                console.log("==> CHAT.TSX useEffect tag === 'expA' && prompt submitted", source, tag, prompt);
+                console.log("==> CHAT.TSX useEffect333 tag === 'expA' && prompt submitted", source, tag, prompt);
             }
+
         }
-    }, []);
-    /* useEffect(() => {
-         console.log("======> CHAT.TSX useEffect", source, tag, prompt);
-     }, []);*/
+    };
 
     return (
         <>
@@ -848,7 +867,14 @@ const ChatsComponent: React.FC<Props> = ({
                                 <ReactMarkdown components={MarkdownComponents}>
                                     {message?.content || ''}
                                 </ReactMarkdown>
-                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && <BlinkingDot />}
+                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
+                                    <>
+                                        <BlinkingDot />
+                                        <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
+                                            <FaRedo size={14} /> {/* Retry icon */}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))}

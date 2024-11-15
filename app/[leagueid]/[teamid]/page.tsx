@@ -221,7 +221,7 @@ export default async function Page({
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
   let { teamName, teamLogo } = { teamName: teams?.find((x: any) => x.id == teamid)?.name, teamLogo: teams?.find((x: any) => x.id == teamid)?.logo };
-  console.log("teamLogo", teamLogo);
+  //console.log("teamLogo", teamLogo);
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
