@@ -293,6 +293,14 @@ const ChatsComponent: React.FC<Props> = ({
                 console.log("==> CHAT.TSX onError", content);
                 setUpdateMessage("Comm. Error, retrying");
                 // setUpdateMessage("Streaming network error");
+                setMessages(prevMessages => {
+                    const updatedMessages = [...prevMessages];
+                    if (updatedMessages.length > 1) {
+                        updatedMessages.pop(); // Remove last AI response
+                        updatedMessages.pop(); // Remove last user request
+                    }
+                    return updatedMessages;
+                });
                 setResponse(prev => {
                     const updatedContent = prev + content;
                     setMessages(prevMessages => {
