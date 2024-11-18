@@ -232,11 +232,16 @@ const ChatsComponent: React.FC<Props> = ({
                         return updatedContent;
                     });
                     setUserInput(lastUserInput);
-                    if (textareaRef.current) {
+                    /*if (textareaRef.current) {
                         textareaRef.current.value = lastUserInput;
                         const formEvent = new Event('submit', { bubbles: true });
                         handleSubmit(formEvent as unknown as React.FormEvent);
-                    }
+                    }*/
+                    setPumpUUId('');
+                    setTimeout(() => {
+                        setPumpUUId(pumpUUId); //to trigger useEffect
+                    }, 100);
+
                 },
             }).catch(error => {
                 console.error("Error in actionUserRequest:", error);
@@ -514,6 +519,7 @@ setProvisionalUserInput('');
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
+
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
         console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
 
@@ -605,6 +611,7 @@ setProvisionalUserInput('');
                         }
                     }
                 );
+
             }
             /* else {
                 userRequest();
