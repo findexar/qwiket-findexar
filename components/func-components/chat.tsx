@@ -212,25 +212,26 @@ const ChatsComponent: React.FC<Props> = ({
                 },
                 onError: (content: string) => {
                     console.log("==> CHAT.TSX onError", content);
-                    setMessages(prevMessages => {
-                        const updatedMessages = [...prevMessages];
-                        if (updatedMessages.length > 1) {
-                            updatedMessages.pop(); // Remove last AI response
-                            updatedMessages.pop(); // Remove last user request
-                        }
-                        return updatedMessages;
-                    });
-                    setResponse(prev => {
-                        const updatedContent = prev + content;
-                        setMessages(prevMessages => {
-                            const updatedMessages = [...prevMessages];
-                            if (updatedMessages.length > 0) {
-                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                            }
-                            return updatedMessages;
-                        });
-                        return updatedContent;
-                    });
+                    setUpdateMessage(content);
+                    /*  setMessages(prevMessages => {
+                          const updatedMessages = [...prevMessages];
+                          if (updatedMessages.length > 1) {
+                              updatedMessages.pop(); // Remove last AI response
+                              updatedMessages.pop(); // Remove last user request
+                          }
+                          return updatedMessages;
+                      });*/
+                    /* setResponse(prev => {
+                         const updatedContent = prev + content;
+                         setMessages(prevMessages => {
+                             const updatedMessages = [...prevMessages];
+                             if (updatedMessages.length > 0) {
+                                 updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                             }
+                             return updatedMessages;
+                         });
+                         return updatedContent;
+                     });*/
                     setUserInput(lastUserInput);
                     /*if (textareaRef.current) {
                         textareaRef.current.value = lastUserInput;
