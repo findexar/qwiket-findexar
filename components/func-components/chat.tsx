@@ -514,7 +514,7 @@ setProvisionalUserInput('');
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
-        const currentUserInput = textareaRef.current?.value.trim();
+        const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
         console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
 
         if (!currentUserInput) return;
