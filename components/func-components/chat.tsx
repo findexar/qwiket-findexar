@@ -1003,9 +1003,9 @@ setProvisionalUserInput('');
                                 {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
                                     <>
                                         <BlinkingDot />
-                                        <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
+                                        {false && <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
                                             <FaRedo size={8} /> {/* Retry icon */}
-                                        </button>
+                                        </button>}
                                     </>
                                 )}
                             </div>
