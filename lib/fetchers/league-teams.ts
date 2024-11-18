@@ -10,8 +10,9 @@ interface FetchLeagueTeamsProps {
 const fetchLeagueTeams = async (key: LeagueTeamsKey) => {
     const { league } = key;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-league-teams?api_key=${api_key}&league=${league}`;
-    // console.log("fetching league teams:",url)
+    console.log("fetching league teams:", url)
     const fetchResponse = await fetch(url);
+    console.log("fetchLeagueTeams:", fetchResponse);
     const res = await fetchResponse.json();
     //console.log("RET:",res.teams)
     return res.teams;

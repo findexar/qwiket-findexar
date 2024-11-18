@@ -4,10 +4,11 @@ import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionChat, actionChatName, actionCreateChat, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
+import { actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
 import { actionUserRequest } from "@lib/actions/user-request";
+import { actionChatStream } from "@lib/actions/chat-stream";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
@@ -83,6 +84,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false);
     const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '_new' : (chatUUIdProp || ""));
+    const [pumpUUId, setPumpUUId] = useState<string>('');
     const [chatName, setChatName] = useState<string>('');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
@@ -158,6 +160,103 @@ const ChatsComponent: React.FC<Props> = ({
 
         }
     }, [loadedChat]);
+    //console.log("==> CHAT.TSX $$$$ pumpUUId", pumpUUId);
+    useEffect(() => {
+        if (pumpUUId && chatUUId && chatUUId !== '_new') {
+            console.log("==> CHAT.TSX pumpUUId", pumpUUId, chatUUId);
+            actionChatStream({
+                chatUUId: provisionalChatUUId || chatUUId,
+                pumpUUId: pumpUUId,
+                onUpdate: (content: string) => {
+                    setUpdateMessage('');
+                    console.log("==> CHAT.TSX onUpdate", content);
+                    setResponse(prev => {
+                        const updatedContent = prev + content;
+                        setMessages(prevMessages => {
+                            const updatedMessages = [...prevMessages];
+                            if (updatedMessages.length > 0) {
+                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            }
+                            return updatedMessages;
+                        });
+                        return updatedContent;
+                    });
+                },
+                onDone: () => {
+                    setUpdateMessage('');
+                    userAccountMutate();
+                    setIsLoading(false);
+                    setStreamingMessageIndex(null);
+                    console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
+                    setPumpUUId((prev) => {
+                        return '';
+                    });
+                    //setTimeout(() => {
+                    console.log("==> CHAT.TSX onDone1 setting userInput to ''");
+                    setUserInput('');
+                    if (textareaRef.current) {
+                        textareaRef.current.value = '';
+                        console.log("==> CHAT.TSX onDone2 setting textareaRef.current.value to ''");
+                        responseSetRef.current = false;
+                    }
+                    // }, 100);
+                },
+                onMetaUpdate: (content: string) => {
+                    console.log("==> CHAT.TSX onMetaUpdate", content);
+                    setUpdateMessage(content);
+                },
+                onFollowupPromptsUpdate: (content: string[]) => {
+                    setUpdateMessage('');
+                    const newPrompts = content;
+                    setFollowupPrompts(newPrompts);
+                },
+                onError: (content: string) => {
+                    console.log("==> CHAT.TSX onError", content);
+                    setMessages(prevMessages => {
+                        const updatedMessages = [...prevMessages];
+                        if (updatedMessages.length > 1) {
+                            updatedMessages.pop(); // Remove last AI response
+                            updatedMessages.pop(); // Remove last user request
+                        }
+                        return updatedMessages;
+                    });
+                    setResponse(prev => {
+                        const updatedContent = prev + content;
+                        setMessages(prevMessages => {
+                            const updatedMessages = [...prevMessages];
+                            if (updatedMessages.length > 0) {
+                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            }
+                            return updatedMessages;
+                        });
+                        return updatedContent;
+                    });
+                    setUserInput(lastUserInput);
+                    if (textareaRef.current) {
+                        textareaRef.current.value = lastUserInput;
+                        const formEvent = new Event('submit', { bubbles: true });
+                        handleSubmit(formEvent as unknown as React.FormEvent);
+                    }
+                },
+            }).catch(error => {
+                console.error("Error in actionUserRequest:", error);
+                setUpdateMessage("Streaming network error");
+                setResponse(prev => {
+                    const updatedContent = prev + "Network error. Please try again.";
+                    setMessages(prevMessages => {
+                        const updatedMessages = [...prevMessages];
+                        if (updatedMessages.length > 0) {
+                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                        }
+                        return updatedMessages;
+                    });
+                    return updatedContent;
+                });
+                setUserInput(lastUserInput);
+            });
+        }
+    }, [pumpUUId, chatUUId]);
+
     useEffect(() => {
         const prompt = searchParams?.get('prompt') || "";
         const promptUUId = searchParams?.get('promptUUId') || "";
@@ -206,189 +305,182 @@ const ChatsComponent: React.FC<Props> = ({
     }, []);
 
 
-
-    const userRequest = useCallback(() => {
-        console.log("==> CHAT.TSX userRequest", provisionalUserInput || textareaRef.current?.value.trim());
-        setPendingUserRequest(false);
-        setStreamingMessageIndex(messages.length);
-        const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
-        const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
-        //console.log(`==>styleDocument: ${styleDocument}`);
-        //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
-        //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
-        setIsStreaming(true);
-        setInitialPrompt(null);
-        setInitialPromptUUId(null);
-        actionUserRequest({
-            chatUUId: provisionalChatUUId || chatUUId,
-            promptUUId: initialPromptUUId || "",
-            userRequest: provisionalUserInput || textareaRef.current?.value.trim() || "",
-            athleteUUId: athleteUUId,
-            teamid: teamid,
-            league: league,
-            fantasyTeam: isFantasyTeam || false,
-            onUpdate: (content: string) => {
-                setUpdateMessage('');
-                console.log("==> CHAT.TSX onUpdate", content);
-                setResponse(prev => {
-                    const updatedContent = prev + content;
-                    setMessages(prevMessages => {
-                        const updatedMessages = [...prevMessages];
-                        //setStreamingMessageIndex(updatedMessages.length - 1);
-                        if (updatedMessages.length > 0) {
-                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                        }
-                        return updatedMessages;
+    /*
+        const userRequest = useCallback(() => {
+            console.log("==> CHAT.TSX userRequest", provisionalUserInput || textareaRef.current?.value.trim());
+            setPendingUserRequest(false);
+            setStreamingMessageIndex(messages.length);
+            const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
+            const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
+            //console.log(`==>styleDocument: ${styleDocument}`);
+            //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
+            //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
+            setIsStreaming(true);
+            setInitialPrompt(null);
+            setInitialPromptUUId(null);
+            actionUserRequest({
+                chatUUId: provisionalChatUUId || chatUUId,
+                promptUUId: initialPromptUUId || "",
+                userRequest: provisionalUserInput || textareaRef.current?.value.trim() || "",
+                athleteUUId: athleteUUId,
+                teamid: teamid,
+                league: league,
+                fantasyTeam: isFantasyTeam || false,
+                onUpdate: (content: string) => {
+                    setUpdateMessage('');
+                    console.log("==> CHAT.TSX onUpdate", content);
+                    setResponse(prev => {
+                        const updatedContent = prev + content;
+                        setMessages(prevMessages => {
+                            const updatedMessages = [...prevMessages];
+                            //setStreamingMessageIndex(updatedMessages.length - 1);
+                            if (updatedMessages.length > 0) {
+                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            }
+                            return updatedMessages;
+                        });
+                        return updatedContent;
                     });
-                    return updatedContent;
-                });
-            },
-            onDone: () => {
-                setUpdateMessage('');
-                userAccountMutate();
-                setIsLoading(false);
-                setStreamingMessageIndex(null);
-                console.log("==> CHAT.TSX onDone", chatUUId);
-                actionChatName({ chatUUId }).then(
-                    (data) => {
-                        if (data.success) {
-                            setChatName(data.chatName);
+                },
+                onDone: () => {
+                    setUpdateMessage('');
+                    userAccountMutate();
+                    setIsLoading(false);
+                    setStreamingMessageIndex(null);
+                    console.log("==> CHAT.TSX onDone", chatUUId);
+                    actionChatName({ chatUUId }).then(
+                        (data) => {
+                            if (data.success) {
+                                setChatName(data.chatName);
+                            }
                         }
-                    }
-                );
-                //setInitialPrompt(null);
-                //setInitialPromptUUId(null);
-            },
-            onChatUUId: (content: string) => {
-                console.log("==> CHAT.TSX onChatUUId", content);
-                setChatUUId(prev => {
-                    return content;
-                });
-            },
-            onMetaUpdate: (content: string) => {
-                console.log("==> CHAT.TSX onMetaUpdate", content);
-                setUpdateMessage(content);
-            },
-            onFollowupPromptsUpdate: (content: string[]) => {
-                // setIsUpdatingPrompts(true);
-                setUpdateMessage('');
-                const newPrompts = content;
-                //console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
-                /*  setMessages(prevMessages => {
-                      const updatedMessages = [...prevMessages];
-                      const lastMessage = updatedMessages[updatedMessages.length - 1];
-                      if (lastMessage && lastMessage.role === 'assistant') {
-                          lastMessage.prompts = newPrompts;
-                      }
-                      return updatedMessages;
-                  });*/
-                setFollowupPrompts(newPrompts);
-                // setIsUpdatingPrompts(false);
-            },
-            onChatNameUpdate: (content: string) => {
+                    );
+                    //setInitialPrompt(null);
+                    //setInitialPromptUUId(null);
+                },
+                onChatUUId: (content: string) => {
+                    console.log("==> CHAT.TSX onChatUUId", content);
+                    setChatUUId(prev => {
+                        return content;
+                    });
+                },
+                onMetaUpdate: (content: string) => {
+                    console.log("==> CHAT.TSX onMetaUpdate", content);
+                    setUpdateMessage(content);
+                },
+                onFollowupPromptsUpdate: (content: string[]) => {
+                    // setIsUpdatingPrompts(true);
+                    setUpdateMessage('');
+                    const newPrompts = content;
+                    //console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
+                  
+    setFollowupPrompts(newPrompts);
+    // setIsUpdatingPrompts(false);
+},
+    onChatNameUpdate: (content: string) => {
                 console.log("==> CHAT.TSX setting chat name3 loadedChat?.chat?.name", content, loadedChat?.chat?.name);
 
-                setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
+setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             },
-            onError: (content: string) => {
-                console.log("==> CHAT.TSX onError", content);
-                // setUpdateMessage("Comm. Error, retrying");
-                // setUpdateMessage("Streaming network error");
-                setMessages(prevMessages => {
-                    const updatedMessages = [...prevMessages];
-                    if (updatedMessages.length > 1) {
-                        updatedMessages.pop(); // Remove last AI response
-                        updatedMessages.pop(); // Remove last user request
-                    }
-                    return updatedMessages;
-                });
-                setResponse(prev => {
-                    const updatedContent = prev + content;
-                    setMessages(prevMessages => {
-                        const updatedMessages = [...prevMessages];
-                        //setStreamingMessageIndex(updatedMessages.length - 1);
-                        if (updatedMessages.length > 0) {
-                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                        }
-                        return updatedMessages;
-                    });
-                    return updatedContent;
-                });
-                // setIsLoading(false);
-                // setStreamingMessageIndex(null);
-                // mutateLoadedChat();
-                console.log("setting lastUserInput", lastUserInput, "chatUUId:", chatUUId);
-                setUserInput(lastUserInput);
-                if (textareaRef.current) {
-                    textareaRef.current.value = lastUserInput;
-                    const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-                    handleSubmit(formEvent as unknown as React.FormEvent);
-                }
+onError: (content: string) => {
+    console.log("==> CHAT.TSX onError", content);
+    // setUpdateMessage("Comm. Error, retrying");
+    // setUpdateMessage("Streaming network error");
+    setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        if (updatedMessages.length > 1) {
+            updatedMessages.pop(); // Remove last AI response
+            updatedMessages.pop(); // Remove last user request
+        }
+        return updatedMessages;
+    });
+    setResponse(prev => {
+        const updatedContent = prev + content;
+        setMessages(prevMessages => {
+            const updatedMessages = [...prevMessages];
+            //setStreamingMessageIndex(updatedMessages.length - 1);
+            if (updatedMessages.length > 0) {
+                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+            }
+            return updatedMessages;
+        });
+        return updatedContent;
+    });
+    // setIsLoading(false);
+    // setStreamingMessageIndex(null);
+    // mutateLoadedChat();
+    console.log("setting lastUserInput", lastUserInput, "chatUUId:", chatUUId);
+    setUserInput(lastUserInput);
+    if (textareaRef.current) {
+        textareaRef.current.value = lastUserInput;
+        const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+        handleSubmit(formEvent as unknown as React.FormEvent);
+    }
 
-            },
-            onLeagueUpdate: (content: string) => {
-                // Display the loading message
-                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
-                    setToastMessage(`Switching to ${content} tab...`);
-                    // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
+},
+    onLeagueUpdate: (content: string) => {
+        // Display the loading message
+        if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
+            setToastMessage(`Switching to ${content} tab...`);
+            // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
-                    // Automatically clear the toast message after 3 seconds
-                    setTimeout(() => {
-                        setToastMessage("");
-                    }, 3000);
+            // Automatically clear the toast message after 3 seconds
+            setTimeout(() => {
+                setToastMessage("");
+            }, 3000);
 
-                    // Navigate to the new league view
-                    window.history.pushState({}, '', `/${content.trim().toUpperCase()}${params}${tp}`);
-                    // console.log('*********************** CHAT onLeagueUpdate:', content);
-                }
-            },
-            styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
+            // Navigate to the new league view
+            window.history.pushState({}, '', `/${content.trim().toUpperCase()}${params}${tp}`);
+            // console.log('*********************** CHAT onLeagueUpdate:', content);
+        }
+    },
+        styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
             dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
-            creator
-        }).catch(error => {
-            console.error("Error in actionUserRequest:", error);
-            setUpdateMessage("Streaming network error");
-            setResponse(prev => {
-                const updatedContent = prev + "Network error. Please try again.";
-                setMessages(prevMessages => {
-                    const updatedMessages = [...prevMessages];
-                    //setStreamingMessageIndex(updatedMessages.length - 1);
-                    if (updatedMessages.length > 0) {
-                        updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                    }
-                    return updatedMessages;
-                });
-                return updatedContent;
-            });
-            // setIsLoading(false);
-            // setStreamingMessageIndex(null);
-            setUserInput(lastUserInput);
-            console.log("setting lastUserInput2", lastUserInput);
-        }).finally(() => {
-            // setIsLoading(false);
-            // setIsStreaming(false);
+                creator
+        }).catch (error => {
+    console.error("Error in actionUserRequest:", error);
+    setUpdateMessage("Streaming network error");
+    setResponse(prev => {
+        const updatedContent = prev + "Network error. Please try again.";
+        setMessages(prevMessages => {
+            const updatedMessages = [...prevMessages];
+            //setStreamingMessageIndex(updatedMessages.length - 1);
+            if (updatedMessages.length > 0) {
+                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+            }
+            return updatedMessages;
         });
-        recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
-            //console.log("recordEvent", r);
-        });
-        setProvisionalChatUUId('');
-        setProvisionalUserInput('');
+        return updatedContent;
+    });
+    // setIsLoading(false);
+    // setStreamingMessageIndex(null);
+    setUserInput(lastUserInput);
+    console.log("setting lastUserInput2", lastUserInput);
+}).finally(() => {
+    // setIsLoading(false);
+    // setIsStreaming(false);
+});
+recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
+    //console.log("recordEvent", r);
+});
+setProvisionalChatUUId('');
+setProvisionalUserInput('');
 
     }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts, setIsStreaming]);
-
-    useEffect(() => {
-        if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
-            setPendingUserRequest(false);
-            userRequest();
-        }
-        if (chatUUId && chatUUId == 'blocked') {
-            setIsLoading(false);
-            setPendingUserRequest(false);
-            setChatUUId('');
-            setUpdateMessage('Your request could not be processed due to browser settings blocking user sessions. Please adjust your settings to allow sessions (cookies) and try again.');
-        }
-    }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
-
+*/
+    /* useEffect(() => {
+         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
+             setPendingUserRequest(false);
+             userRequest();
+         }
+         if (chatUUId && chatUUId == 'blocked') {
+             setIsLoading(false);
+             setPendingUserRequest(false);
+             setChatUUId('');
+             setUpdateMessage('Your request could not be processed due to browser settings blocking user sessions. Please adjust your settings to allow sessions (cookies) and try again.');
+         }
+     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
+     */
     useEffect(() => {
         // setIsLoading(false);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
@@ -404,7 +496,7 @@ const ChatsComponent: React.FC<Props> = ({
                 console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
-                if (loadedChat?.chat?.name != "New Chat") {
+                if (loadedChat?.chat?.name != "New Chat" && loadedChat?.chat?.name != chatName) {
                     console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
                     setChatName(loadedChat?.chat?.name || 'New Chat');
                 }
@@ -423,7 +515,7 @@ const ChatsComponent: React.FC<Props> = ({
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         const currentUserInput = textareaRef.current?.value.trim();
-        console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId });
+        console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
 
         if (!currentUserInput) return;
         setIsMessageSubmitted(true);
@@ -431,6 +523,7 @@ const ChatsComponent: React.FC<Props> = ({
         update(`Loading ...`);
         const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
         const userInputCleaned = currentUserInput.replace(/qw:/i, "");
+
         const newMessage: Message = {
             role: 'user',
             content: userInputCleaned
@@ -439,6 +532,11 @@ const ChatsComponent: React.FC<Props> = ({
             return userInputCleaned;
         });
         setLastUserInput(userInputCleaned);
+        setUserInput('');
+        if (textareaRef.current) {
+            textareaRef.current.value = '';
+        }
+
         setIsLoading(true);
         setResponse('');
         setFollowupPrompts([]); // Clear follow-up prompts
@@ -447,24 +545,72 @@ const ChatsComponent: React.FC<Props> = ({
             content: ''
         };
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
+
         try {
-            if (!chatUUId || chatUUId == '_new') {
+            if (!pumpUUId) {
+                let paramChatUUId = chatUUId;
+                if (paramChatUUId == '_new') {
+                    paramChatUUId = '';
+                }
                 setIsLoading(true);
                 setPendingUserRequest(true);
                 //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
                 //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
                 console.log("==> CHAT.TSX handleSubmit actionCreateChat", { teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator });
-                actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
-                    (chatUUId) => {
-                        setProvisionalChatUUId((prev) => {
-                            return chatUUId as string;
-                        });
+                /* actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
+                     (chatUUId) => {
+                         setProvisionalChatUUId((prev) => {
+                             return chatUUId as string;
+                         });
+                     }
+                 );*/
+                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
+                    (data) => {
+                        console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
+                        const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
+                        if (nocredits) {
+                            setIsLoading(false);
+                            setUpdateMessage("No credits remaining");
+                            return;
+                        }
+                        if (pumpUUId != newPumpUUId) {
+                            console.log("==> CHAT.TSX handleSubmit setting pumpUUId", newPumpUUId);
+
+                            setPumpUUId((prev) => {
+                                return newPumpUUId;
+                            });
+                        }
+                        if (chatUUId != newChatUUId) {
+                            setChatUUId((prev) => {
+                                return newChatUUId;
+                            });
+                        }
+                        if (chatName != newName) {
+                            setChatName(newName);
+                        }
+                        if (league != newLeague) {
+                            if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
+                                setToastMessage(`Switching to ${newLeague} tab...`);
+                                // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
+
+                                // Automatically clear the toast message after 3 seconds
+                                setTimeout(() => {
+                                    setToastMessage("");
+                                }, 3000);
+
+                                // Navigate to the new league view
+                                window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}${params}${tp}`);
+                                // console.log('*********************** CHAT onLeagueUpdate:', content);
+                            }
+                        }
                     }
                 );
             }
-            else {
+            /* else {
                 userRequest();
-            }
+            }*/
+
+
         } catch (error) {
             console.error("Error in actionUserRequest:", error);
             setUpdateMessage("Streaming network error");
@@ -486,13 +632,8 @@ const ChatsComponent: React.FC<Props> = ({
             console.log("setting lastUserInput3", lastUserInput);
             setIsLoading(false);
         }
-        setTimeout(() => {
-            if (textareaRef.current) {
-                textareaRef.current.value = '';
-                responseSetRef.current = false;
-            }
-        }, 1000);
-    }, [chatUUId, athleteUUId, teamid, league, isFantasyTeam])
+
+    }, [chatUUId, pumpUUId, athleteUUId, teamid, league, isFantasyTeam])
 
     useEffect(() => {
         if (responseTextareaRef.current) {

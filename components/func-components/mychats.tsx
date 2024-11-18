@@ -87,7 +87,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     // Group chats by groupName
     const groupedChats = chats.reduce((acc, chat) => {
-        (acc[chat.groupName] = acc[chat.groupName] || []).push(chat);
+        (acc[chat?.groupName] = acc[chat?.groupName] || []).push(chat);
         return acc;
     }, {} as Record<string, ChatItem[]>);
 
@@ -111,10 +111,10 @@ const ChatsComponent: React.FC<Props> = ({
             {groupChats.map((chat) => (
                 <div
                     key={chat.chatUUId}
-                    onClick={() => onChatSelect(chat.chatUUId)}
+                    onClick={() => onChatSelect(chat?.chatUUId)}
                     className="w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-lg transition-colors duration-200"
                 >
-                    <div className="text-sm font-medium">{chat.name}</div>
+                    <div className="text-sm font-medium">{chat?.name}</div>
                 </div>
             ))}
         </div>

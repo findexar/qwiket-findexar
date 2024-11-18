@@ -208,6 +208,70 @@ export const actionCreateChat = async (props: CreateChatProps) => {
     return createChat(props, userId || "", sessionid);
 }
 
+export interface ChatInitProps {
+    league?: string;
+    teamid?: string;
+    athleteUUId?: string;
+    insider?: boolean;
+    fantasyTeam?: boolean;
+    styleDocument?: string;
+    dataDocumentsString?: string;
+    creator?: boolean;
+    chatUUId?: string;
+    userRequest: string;
+}
+export interface ChatInitReturn {
+    chatUUId: string;
+    league: string;
+    pumpUUId: string;
+    nocredits: boolean;
+    name: string;
+}
+const chatInit = async (props: ChatInitProps, userId: string, sessionid: string): Promise<ChatInitReturn> => {
+    'use server';
+    const { athleteUUId, teamid, league, fantasyTeam = false, insider = false, styleDocument = "", dataDocumentsString = "", creator = false, chatUUId = "", userRequest = "" } = props;
+    console.log("****** chatInit", props)
+    userId = userId || sessionid;
+    const insiderParam = insider ? '1' : '0';
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}}`;
+    console.log("chatInit", url);
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            athleteUUId,
+            teamid,
+            league,
+            fantasyTeam,
+            chatUUId,
+            userRequest,
+        }),
+    });
+
+    if (!res.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await res.json();
+    //console.log("RET create chat:", JSON.stringify({ success: data.success, chatUUId: data.chatUUId, error: data.error }, null, 2))
+    return data.success ? data.chatInit as ChatInitReturn : { chatUUId: 'blocked', league: '', pumpUUId: '', nocredits: true, name: '' };
+}
+export const actionChatInit = async (props: ChatInitProps) => {
+    'use server';
+    console.log("===================================>actionChatInit", props)
+    const session = await fetchSession();
+
+    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const { userId = "" } = auth() || {};
+
+    const sessionid = session.sessionid || "";
+
+    console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
+    return chatInit(props, userId || "", sessionid);
+}
+
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
     const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, email } = props;
