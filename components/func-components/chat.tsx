@@ -161,18 +161,24 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [loadedChat]);
     //console.log("==> CHAT.TSX $$$$ pumpUUId", pumpUUId);
+    const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
+
+    // Update the ref whenever pumpUUId changes
+    useEffect(() => {
+        pumpUUIdRef.current = pumpUUId;
+    }, [pumpUUId]);
     useEffect(() => {
         if (status == 'red') {
             setStatus('yellow');
         }
-        if (pumpUUId && chatUUId && chatUUId !== '_new') {
-            console.log("==> CHAT.TSX pumpUUId", pumpUUId, chatUUId);
+        if (pumpUUIdRef.current && chatUUId && chatUUId !== '_new') {
+            console.log("==> CHAT.TSX pumpUUId", pumpUUIdRef.current, chatUUId);
             if (status == 'yellow') {
                 setStatus('green');
             }
             actionChatStream({
                 chatUUId: provisionalChatUUId || chatUUId,
-                pumpUUId: pumpUUId,
+                pumpUUId: pumpUUIdRef.current,
                 onUpdate: (content: string) => {
                     setUpdateMessage('');
                     console.log("==> CHAT.TSX onUpdate", content);
@@ -551,12 +557,7 @@ setProvisionalUserInput('');
 
     const hasSubmittedPromptRef = useRef(false);
 
-    const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
 
-    // Update the ref whenever pumpUUId changes
-    useEffect(() => {
-        pumpUUIdRef.current = pumpUUId;
-    }, [pumpUUId]);
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
