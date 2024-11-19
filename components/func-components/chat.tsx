@@ -106,7 +106,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-
+    const [status, setStatus] = useState<string>('white');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
@@ -162,14 +162,23 @@ const ChatsComponent: React.FC<Props> = ({
     }, [loadedChat]);
     //console.log("==> CHAT.TSX $$$$ pumpUUId", pumpUUId);
     useEffect(() => {
+        if (status == 'red') {
+            setStatus('yellow');
+        }
         if (pumpUUId && chatUUId && chatUUId !== '_new') {
             console.log("==> CHAT.TSX pumpUUId", pumpUUId, chatUUId);
+            if (status == 'yellow') {
+                setStatus('green');
+            }
             actionChatStream({
                 chatUUId: provisionalChatUUId || chatUUId,
                 pumpUUId: pumpUUId,
                 onUpdate: (content: string) => {
                     setUpdateMessage('');
                     console.log("==> CHAT.TSX onUpdate", content);
+                    if (status != 'white') {
+                        setStatus('white');
+                    }
                     setResponse(prev => {
                         const updatedContent = prev + content;
                         setMessages(prevMessages => {
@@ -212,6 +221,7 @@ const ChatsComponent: React.FC<Props> = ({
                 },
                 onError: (content: string) => {
                     console.log("==> CHAT.TSX onError", content);
+                    setStatus('red');
                     setUpdateMessage(content);
                     /*  setMessages(prevMessages => {
                           const updatedMessages = [...prevMessages];
@@ -520,7 +530,7 @@ setProvisionalUserInput('');
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
-
+        setStatus('green');
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
         console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
 
@@ -730,8 +740,14 @@ setProvisionalUserInput('');
             className="absolute -inset-0 rounded-full"
             animate={{
                 boxShadow: [
-                    '0 0 0 0 rgba(0, 255, 255, 0)',
-                    '0 0 0 9px rgba(0, 255, 255, 0.3)'
+                    status === 'red' ? '0 0 0 0 rgba(255, 0, 0, 0)' :
+                        status === 'yellow' ? '0 0 0 0 rgba(255, 255, 0, 0)' :
+                            status === 'white' ? '0 0 0 0 rgba(0, 255, 255, 0)' : // Original color for white
+                                '0 0 0 0 rgba(0, 255, 0, 0)', // Default for green
+                    status === 'red' ? '0 0 0 9px rgba(255, 0, 0, 0.3)' :
+                        status === 'yellow' ? '0 0 0 9px rgba(255, 255, 0, 0.3)' :
+                            status === 'white' ? '0 0 0 9px rgba(0, 255, 255, 0.3)' : // Original color for white
+                                '0 0 0 9px rgba(0, 255, 0, 0.3)' // Default for green
                 ]
             }}
             transition={{
