@@ -196,16 +196,16 @@ const ChatsComponent: React.FC<Props> = ({
                     userAccountMutate();
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
-                    console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
+                    // console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
                     setPumpUUId((prev) => {
                         return '';
                     });
                     //setTimeout(() => {
-                    console.log("==> CHAT.TSX onDone1 setting userInput to ''");
+                    //console.log("==> CHAT.TSX onDone1 setting userInput to ''");
                     setUserInput('');
                     if (textareaRef.current) {
                         textareaRef.current.value = '';
-                        console.log("==> CHAT.TSX onDone2 setting textareaRef.current.value to ''");
+                        // console.log("==> CHAT.TSX onDone2 setting textareaRef.current.value to ''");
                         responseSetRef.current = false;
                     }
                     // }, 100);
