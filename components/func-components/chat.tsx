@@ -248,8 +248,9 @@ const ChatsComponent: React.FC<Props> = ({
                         setPumpUUId('');
                         setTimeout(() => {
                             const formEvent = new Event('submit', { bubbles: true });
+                            console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
                             handleSubmit(formEvent as unknown as React.FormEvent);
-                        }, 100);
+                        }, 1000);
                         setResponse(prev => {
                             const updatedContent = "";
                             setMessages(prevMessages => {
@@ -673,7 +674,7 @@ setProvisionalUserInput('');
             setIsLoading(false);
         }
 
-    }, [chatUUId, pumpUUId, athleteUUId, teamid, league, isFantasyTeam])
+    }, [chatUUId, pumpUUId, athleteUUId, teamid, league, isFantasyTeam, lastUserInput])
 
     useEffect(() => {
         if (responseTextareaRef.current) {
