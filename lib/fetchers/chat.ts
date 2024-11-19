@@ -230,11 +230,11 @@ export interface ChatInitReturn {
 const chatInit = async (props: ChatInitProps, userId: string, sessionid: string): Promise<ChatInitReturn> => {
     'use server';
     const { athleteUUId, teamid, league, fantasyTeam = false, insider = false, styleDocument = "", dataDocumentsString = "", creator = false, chatUUId = "", userRequest = "" } = props;
-    console.log("****** chatInit", props)
+    //console.log("****** chatInit", props)
     userId = userId || sessionid;
     const insiderParam = insider ? '1' : '0';
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}}`;
-    console.log("chatInit", url);
+    // console.log("chatInit", url);
 
     const res = await fetch(url, {
         method: 'POST',
@@ -260,7 +260,7 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
 }
 export const actionChatInit = async (props: ChatInitProps) => {
     'use server';
-    console.log("===================================>actionChatInit", props)
+    // console.log("===================================>actionChatInit", props)
     const session = await fetchSession();
 
     //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
@@ -268,7 +268,7 @@ export const actionChatInit = async (props: ChatInitProps) => {
 
     const sessionid = session.sessionid || "";
 
-    console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
+    //  console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
     return chatInit(props, userId || "", sessionid);
 }
 

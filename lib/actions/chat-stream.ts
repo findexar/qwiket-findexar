@@ -54,6 +54,10 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                         console.log('*********************** [STOP] received', line);
                         onDone();
                         return;
+                    } else if (line.trim().includes('[ERRORSTOP]')) {
+                        console.log('*********************** [ERRORSTOP] received', line);
+                        onError("Server error. Retrying...");
+                        return;
                     } else if (line.startsWith('data: ')) {
                         console.log('*********************** data: content received', line);
                         try {

@@ -243,15 +243,37 @@ const ChatsComponent: React.FC<Props> = ({
                          return updatedContent;
                      });*/
                     setUserInput(lastUserInput);
-                    /*if (textareaRef.current) {
-                        textareaRef.current.value = lastUserInput;
-                        const formEvent = new Event('submit', { bubbles: true });
-                        handleSubmit(formEvent as unknown as React.FormEvent);
-                    }*/
-                    setPumpUUId('');
-                    setTimeout(() => {
-                        setPumpUUId(pumpUUId); //to trigger useEffect
-                    }, 100);
+                    if (content.includes('Server error')) {
+                        setStatus('red');
+                        setPumpUUId('');
+                        setTimeout(() => {
+                            const formEvent = new Event('submit', { bubbles: true });
+                            handleSubmit(formEvent as unknown as React.FormEvent);
+                        }, 100);
+                        setResponse(prev => {
+                            const updatedContent = "";
+                            setMessages(prevMessages => {
+                                const updatedMessages = [...prevMessages];
+                                if (updatedMessages.length > 0) {
+                                    updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                                }
+                                return updatedMessages;
+                            });
+                            return updatedContent;
+                        });
+                    }
+                    else {
+
+                        /*if (textareaRef.current) {
+                            textareaRef.current.value = lastUserInput;
+                            const formEvent = new Event('submit', { bubbles: true });
+                            handleSubmit(formEvent as unknown as React.FormEvent);
+                        }*/
+                        setPumpUUId('');
+                        setTimeout(() => {
+                            setPumpUUId(pumpUUId); //to trigger useEffect
+                        }, 100);
+                    }
 
                 },
             }).catch(error => {
