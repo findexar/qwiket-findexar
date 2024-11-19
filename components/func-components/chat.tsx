@@ -250,7 +250,7 @@ const ChatsComponent: React.FC<Props> = ({
                             const formEvent = new Event('submit', { bubbles: true });
                             console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
                             handleSubmit(formEvent as unknown as React.FormEvent);
-                        }, 1000);
+                        }, 1);
                         setResponse(prev => {
                             const updatedContent = "";
                             setMessages(prevMessages => {
@@ -551,6 +551,13 @@ setProvisionalUserInput('');
 
     const hasSubmittedPromptRef = useRef(false);
 
+    const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
+
+    // Update the ref whenever pumpUUId changes
+    useEffect(() => {
+        pumpUUIdRef.current = pumpUUId;
+    }, [pumpUUId]);
+
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('green');
@@ -587,7 +594,7 @@ setProvisionalUserInput('');
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         try {
-            if (!pumpUUId) {
+            if (!pumpUUIdRef.current) {
                 let paramChatUUId = chatUUId;
                 if (paramChatUUId == '_new') {
                     paramChatUUId = '';
@@ -613,7 +620,7 @@ setProvisionalUserInput('');
                             setUpdateMessage("No credits remaining");
                             return;
                         }
-                        if (pumpUUId != newPumpUUId) {
+                        if (pumpUUIdRef.current != newPumpUUId) {
                             console.log("==> CHAT.TSX handleSubmit setting pumpUUId", newPumpUUId);
 
                             setPumpUUId((prev) => {
@@ -674,7 +681,7 @@ setProvisionalUserInput('');
             setIsLoading(false);
         }
 
-    }, [chatUUId, pumpUUId, athleteUUId, teamid, league, isFantasyTeam, lastUserInput])
+    }, [chatUUId, athleteUUId, teamid, league, isFantasyTeam, lastUserInput]);
 
     useEffect(() => {
         if (responseTextareaRef.current) {
