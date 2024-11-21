@@ -4,8 +4,8 @@ import useSWR from 'swr';
 import { styled } from "styled-components";
 import { useAppContext } from '@/lib/context';
 import { LeagueTeamsKey } from '@/lib/keys';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/league-teams';
-import { actionRecordEvent } from "@/lib/actions";
+import { actionFetchLeagueTeams } from '@lib/server-actions/league-teams';
+import { actionRecordEvent } from "@lib/server-actions/event";
 const SideLeagueName = styled.div`
     height: 40px;
     width: 200px; 

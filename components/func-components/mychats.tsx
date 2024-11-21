@@ -5,7 +5,7 @@ import LoadMore from "@components/func-components/load-more";
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { MyChatsKey } from "@/lib/keys";
 import useSWRInfinite from "swr/infinite";
-import { actionMyChats } from "@/lib/fetchers/mychats";
+import { actionMyChats } from "@lib/server-actions/mychats";
 import { ChatItem } from "@/lib/types/chat";
 
 interface Props {

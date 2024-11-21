@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '@lib/context';
 import useSWR from 'swr';
 import { UserUsageAccountKey, CidUsageAccountKey } from '@lib/keys';
-import { actionUserUsage, actionCidUsage } from '@/lib/fetchers/account';
+import { actionUserUsage, actionCidUsage } from '@lib/server-actions/account';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartData, ChartOptions } from 'chart.js';
 import { UserAccount, UserUsage, CidUsage } from '@/lib/types/user';
@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         let newPeriods = [];
         if (isFirstWeekOfMonth) {
-           // console.log(`Dashboard==>isFirstWeekOfMonth: ${isFirstWeekOfMonth}`);
+            // console.log(`Dashboard==>isFirstWeekOfMonth: ${isFirstWeekOfMonth}`);
             const prevMonth = new Date(parseInt(selectedYear), parseInt(selectedMonth) - 2, 1);
             newPeriods.push({
                 year: prevMonth.getFullYear().toString(),
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
 
     const dailyUsageAccountKey: UserUsageAccountKey = { type: "daily-usage", periods };
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
-   // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
+    // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
     const chartData: ChartData<'bar'> = {
         labels: dailyUsageAccount?.flatMap(monthData =>

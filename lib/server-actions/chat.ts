@@ -2,7 +2,7 @@
 import { unstable_serialize } from 'swr'
 import { ChatKey, CreateChatKey, FetchUserDocumentsKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
-import fetchSession from "@/lib/fetchers/session";
+import fetchSession from "@lib/server-actions/session";
 import { Chat, UserDocument, UserDocuments } from "@/lib/types/chat";
 
 

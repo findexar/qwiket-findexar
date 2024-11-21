@@ -1,7 +1,7 @@
 // components/func-components/application-form.tsx
 'use client';
 import React, { useState } from 'react';
-import { actionUpsertCidApp } from '@/lib/fetchers/cid-applications';
+import { actionUpsertCidApp } from '@lib/server-actions/cid-applications';
 
 interface ApplicationFormProps {
     onCancel: () => void;

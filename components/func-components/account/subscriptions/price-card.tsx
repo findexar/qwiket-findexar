@@ -4,7 +4,7 @@ import { useStripe } from '@stripe/react-stripe-js';
 import { useAppContext } from '@lib/context';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@clerk/nextjs';
-import { createCheckoutSession, cancelSubscription } from '@/lib/actions/stripe';
+import { createCheckoutSession, cancelSubscription } from '@lib/client-actions/stripe';
 import { useState } from 'react';
 
 interface PriceCardProps extends PlanDetails {

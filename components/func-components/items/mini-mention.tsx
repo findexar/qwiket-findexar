@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { styled } from "styled-components";
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import Mention from "@/components/func-components/items/mention";
 
 declare global {
@@ -185,7 +185,7 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
 
     const onHover = useCallback((label: string) => {
         try {
-            recordEvent(`mini-mention-hover`, `{"label","${label}","params":"${params}"}`)
+            actionRecordEvent(`mini-mention-hover`, `{"label","${label}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });

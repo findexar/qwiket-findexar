@@ -3,22 +3,22 @@ import { unstable_serialize } from 'swr';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider';
 
-import fetchLeagues from '@/lib/fetchers/leagues';
-import fetchSession from '@/lib/fetchers/session';
-import fetchSlugStory from '@/lib/fetchers/slug-story';
-import fetchMention from '@/lib/fetchers/mention';
-import fetchMetaLink from '@/lib/fetchers/meta-link';
-import fetchLeagueTeams from '@/lib/fetchers/league-teams';
-import fetchTeamMentions from '@/lib/fetchers/team-mentions';
-import fetchTeamPlayers from '@/lib/fetchers/team-players';
-import fetchChat from "@/lib/fetchers/chat";
-import { getASlugStory } from '@/lib/fetchers/slug-story';
+import fetchLeagues from '@lib/server-actions/leagues';
+import fetchSession from '@lib/server-actions/session';
+import fetchSlugStory from '@lib/server-actions/slug-story';
+import fetchMention from '@lib/server-actions/mention';
+import fetchMetaLink from '@lib/server-actions/meta-link';
+import fetchLeagueTeams from '@lib/server-actions/league-teams';
+import fetchTeamMentions from '@lib/server-actions/team-mentions';
+import fetchTeamPlayers from '@lib/server-actions/team-players';
+import fetchChat from "@lib/server-actions/chat";
+import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot';
-import { getAMention } from '@/lib/fetchers/mention';
+import { getAMention } from '@lib/server-actions/mention';
 import SPALayout from '@/components/spa';
-import fetchData from '@/lib/fetchers/fetch-data';
+import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
-import fetchUserAccount from "@/lib/fetchers/account";
+import fetchUserAccount from "@lib/server-actions/account";
 type Props = {
   params: { leagueid: string, teamid: string },
   searchParams: { [key: string]: string | string[] | undefined }

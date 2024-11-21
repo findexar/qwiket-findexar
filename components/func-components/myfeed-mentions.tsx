@@ -4,8 +4,8 @@ import useSWRInfinite from 'swr/infinite'
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { FetchMyFeedKey } from '@/lib/keys';
-import { actionMyFeed } from '@/lib/fetchers/myfeed';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
+import { actionMyFeed } from '@lib/server-actions/myfeed';
+import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 
 interface Props {
     league: string

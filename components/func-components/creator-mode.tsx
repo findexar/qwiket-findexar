@@ -1,12 +1,12 @@
 import { UserDocument } from "@/lib/types/chat";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAppContext } from "@lib/context";
-import { fetchUserDocuments, saveChatDocuments, deleteUploadedDocument, actionUserDocuments, actionSaveUploadedDocument, actionDeleteUploadedDocument } from "@/lib/fetchers/chat";
+import { fetchUserDocuments, saveChatDocuments, deleteUploadedDocument, actionUserDocuments, actionSaveUploadedDocument, actionDeleteUploadedDocument } from "@lib/server-actions/chat";
 import useSWR from 'swr';
 import { FileUploaderRegular } from "@uploadcare/react-uploader";
 import "@uploadcare/react-uploader/core.css";
 import { FetchUserDocumentsKey } from "@/lib/keys";
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 
 interface CreatorModeProps {
     chatUUId: string | null;

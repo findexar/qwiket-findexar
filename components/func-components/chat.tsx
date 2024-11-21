@@ -4,21 +4,21 @@ import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/fetchers/chat";
+import { actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
-import { actionUserRequest } from "@lib/actions/user-request";
-import { actionChatStream } from "@lib/actions/chat-stream";
+import { actionUserRequest } from "@lib/client-actions/user-request";
+import { actionChatStream } from "@lib/client-actions/chat-stream";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
 import Link from 'next/link';
-import { actionFetchPrompts } from "@lib/actions/fetch-prompts";
+import { actionFetchPrompts } from "@lib/client-actions/fetch-prompts";
 import { styled } from "styled-components";
 import CreatorMode from "@components/func-components/creator-mode";
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 import Toast from './toaster'; // Import your Toast component

@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import { headers } from "next/headers";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { getUserSubscription } from "@/lib/fetchers/user-subscription";
+import { getUserSubscription } from "@lib/server-actions/user-subscription";
 const api_key = process.env.LAKE_API_KEY;
 export async function createCheckoutSession(
   level: string,

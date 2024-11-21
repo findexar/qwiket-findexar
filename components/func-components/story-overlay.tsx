@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'; // Corrected import for useRouter
 import Link from 'next/link';  // Add this import at the top
 
 import { ASlugStoryKey } from '@/lib/keys';
-import { actionRecordEvent } from "@/lib/actions";
-import { actionASlugStory, removeASlugStory } from '@/lib/fetchers/slug-story';
+import { actionRecordEvent } from "@lib/server-actions/event";
+import { actionASlugStory, removeASlugStory } from '@lib/server-actions/slug-story';
 import Story from '@/components/func-components/items/story';
 import { useAppContext } from '@/lib/context';
 import CloseIcon from '@components/icons/close';

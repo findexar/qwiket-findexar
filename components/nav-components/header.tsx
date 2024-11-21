@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import useSWR from "swr";
 import { LeaguesKey, UserSubscriptionKey as SubscriptionKey } from '@/lib/keys';
-import fetchLeagues from '@lib/fetchers/leagues';
+import fetchLeagues from '@lib/server-actions/leagues';
 
 import { styled } from "styled-components";
 import { Tabs, Tab } from '@components/nav-components/tabs';
@@ -18,10 +18,10 @@ import StarOutlineIcon from '@/components/icons/star-outline';
 import StarIcon from '@/components/icons/star';
 import { UserButton, SignInButton, SignedOut, SignedIn, useAuth } from "@clerk/nextjs";
 import { useAppContext } from '@lib/context';
-import { actionRecordEvent as recordEvent } from "@lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import PlayerPhoto from "@components/util-components/player-photo";
-import saveSession from '@lib/fetchers/save-session';
-import { actionUserSubscription } from '@/lib/fetchers/user-subscription';
+import saveSession from '@lib/server-actions/save-session';
+import { actionUserSubscription } from '@lib/server-actions/user-subscription';
 import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
 import Image, { ImageProps } from 'next/image';
@@ -477,7 +477,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     // console.log("replaceState", url);
     window.history.pushState({}, "", url);
     setTimeout(async () =>
-      await recordEvent(
+      await actionRecordEvent(
         'league-nav',
         `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
       ), 0);
@@ -491,7 +491,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           try {
             s = true;
             setScrolled(true);
-            recordEvent(`header-scrolled`, `{"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
+            actionRecordEvent(`header-scrolled`, `{"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
               .then((r: any) => {
                 //console.log("recordEvent", r);
               });

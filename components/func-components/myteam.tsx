@@ -11,10 +11,10 @@ import { useAppContext } from '@/lib/context';
 import { MyTeamRosterKey } from '@/lib/keys';
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionFetchMyTeam, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
-import { actionRecordEvent } from "@/lib/actions";
+import { actionFetchMyTeam, actionRemoveMyTeamMember } from "@lib/server-actions/my-team-actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import { FetchMyFeedKey } from '@/lib/keys';
-import { actionMyFeed } from '@/lib/fetchers/myfeed';
+import { actionMyFeed } from '@lib/server-actions/myfeed';
 import Toast from './toaster';
 
 declare global {

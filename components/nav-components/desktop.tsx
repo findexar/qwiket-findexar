@@ -17,7 +17,7 @@ import { useAppContext } from '@/lib/context';
 import TertiaryTabs from "@/components/nav-components/tertiary-tabs";
 import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import LeagueMentions from "../func-components/league-mentions";
 
 const PageWrap = styled.div`
@@ -198,7 +198,7 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(() => setRtab(rtab), 0);
     }
     setView("mentions");
-    setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
   }
   const onRTabNav = (option: any) => {
     const newTab = option.tab;
@@ -211,7 +211,7 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(() => setTab(tab), 0);
     }
     //setView("mentions");
-    setTimeout(async () => await recordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+    setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
   }
   const onTeamPlayerTabNav = (option: any) => {
     const newTab = option.tab;
@@ -220,7 +220,7 @@ const Desktop: React.FC<Props> = () => {
     window.history.pushState({}, "", newPath);
     setTimeout(() => setTab(newTab), 0);
     setView("mentions");
-    setTimeout(async () => await recordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
   }
   // console.log("==> pagetype", pagetype, tab);
   return (

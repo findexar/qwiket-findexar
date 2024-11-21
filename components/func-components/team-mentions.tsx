@@ -5,8 +5,8 @@ import useSWRInfinite from 'swr/infinite'
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { TeamMentionsKey } from '@/lib/keys';
-import { actionTeamMentions } from '@/lib/fetchers/team-mentions';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
+import { actionTeamMentions } from '@lib/server-actions/team-mentions';
+import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 interface Props {
 }
 const Stories: React.FC<Props> = () => {

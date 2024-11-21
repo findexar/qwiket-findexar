@@ -7,8 +7,8 @@ import { styled } from "styled-components";
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { FavoritesKey } from '@/lib/keys';
-import { actionFavorites } from '@/lib/fetchers/favorites';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
+import { actionFavorites } from '@lib/server-actions/favorites';
+import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 interface Props {
 }
 const Fav: React.FC<Props> = () => {

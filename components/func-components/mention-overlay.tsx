@@ -4,10 +4,10 @@ import styled from 'styled-components';
 //import { useRouter } from 'next/navigation'
 
 
-import{AMentionKey} from '@/lib/keys';
-import{actionAMention,removeAMention} from '@/lib/fetchers/mention';
+import { AMentionKey } from '@/lib/keys';
+import { actionAMention, removeAMention } from '@lib/server-actions/mention';
 import Mention from '@/components/func-components/items/mention';
-import { actionRecordEvent } from "@/lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 
 import CloseIcon from '@/components/icons/close';
 import { useAppContext } from '@/lib/context';
@@ -101,11 +101,11 @@ interface Props {
 
 const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
 
-  let { fallback,tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
+  let { fallback, tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
   const [xid, setXid] = React.useState<string>(findexarxid || "");
-  const [open, setOpen] = React.useState(findexarxid?true:false);
+  const [open, setOpen] = React.useState(findexarxid ? true : false);
   const key: AMentionKey = { type: "AMention", findexarxid: xid };
-  const { data: amention, error, isLoading } = useSWR(key, actionAMention,{fallback})
+  const { data: amention, error, isLoading } = useSWR(key, actionAMention, { fallback })
   const { date, url, summary, fav, type, league, team, teamName, name } = amention || {};
   //const theme = useTheme();
   //const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -172,15 +172,15 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
       <div className="fixed inset-0 overflow-y-auto">
         <div className="flex min-h-full items-center justify-center md:p-4 text-center">
           <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full">
-          <div className="md:hidden text-white px-4 py-1"> QWIKET </div>
+            <div className="md:hidden text-white px-4 py-1"> QWIKET </div>
             <div className="bg-black bg-opacity-25 md:px-4 md:pt-4 md:pb-4 pt-2 pb-2">
               <div className="sm:flex sm:items-start">
                 <div className="lg:mt-3 text-left sm:mt-0 sm:ml-0 sm:text-left">
-                 <div className="mt-0">
+                  <div className="mt-0">
                     <DialogTitleMobileWrap> <div className='h-4 text-white text-xl md:text-2xl'>{target}</div>
                     </DialogTitleMobileWrap>
                     <DialogTitleWrap>
-                        <div className='text-white text-xl md:text-2xl'>{target}</div>
+                      <div className='text-white text-xl md:text-2xl'>{target}</div>
                     </DialogTitleWrap>
                     <ContentWrap>
                       <div autoFocus onClick={() => { handleClose(); }}>

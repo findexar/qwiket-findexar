@@ -5,8 +5,8 @@ import useSWRInfinite from 'swr/infinite'
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { LeagueMentionsKey } from '@/lib/keys';
-import { actionLeagueMentions } from '@/lib/fetchers/league-mentions';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
+import { actionLeagueMentions } from '@lib/server-actions/league-mentions';
+import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 interface Props {
 }
 let lastMutate = 0;

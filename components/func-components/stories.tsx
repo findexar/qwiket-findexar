@@ -5,7 +5,7 @@ import { styled } from "styled-components";
 import { useAppContext } from '@/lib/context';
 import Story from "@/components/func-components/items/story";
 import LoadMore from "@/components/func-components/load-more";
-import { actionStories } from '@/lib/fetchers/stories';
+import { actionStories } from '@lib/server-actions/stories';
 import { StoriesKey } from '@/lib/keys';
 
 const MentionsBody = styled.div`

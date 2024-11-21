@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useSWRInfinite from 'swr/infinite';
 import { useAppContext } from '@/lib/context';
-import { actionNotifications, dismissNotification as apiDismissNotification, removeNotification as apiRemoveNotification, Notification } from '@/lib/fetchers/notifications';
+import { actionNotifications, dismissNotification as apiDismissNotification, removeNotification as apiRemoveNotification, Notification } from '@lib/server-actions/notifications';
 import { NotificationsKey } from '@/lib/keys';
 
 const PAGE_SIZE = 20;

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { UserAccountKey } from "@lib/keys";
-import { actionUser } from "@/lib/fetchers/account";
+import { actionUser } from "@lib/server-actions/account";
 import PriceCard from './price-card';
 import { getPricePlans, PlanDetails, FeatureCard } from "./price-plans";
 import FeatureCardComponent from './feature-card';

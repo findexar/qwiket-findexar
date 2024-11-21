@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
 import { useNotifications } from '@lib/hooks/use-notifications';
-import { Notification } from '@lib/fetchers/notifications';
+import { Notification } from '@lib/server-actions/notifications';
 import { useTheme } from 'next-themes';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

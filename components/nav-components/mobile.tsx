@@ -21,7 +21,7 @@ import SecondaryTabs from "@/components/nav-components/secondary-tabs";
 import TertiaryTabs from "@/components/nav-components/tertiary-tabs";
 import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
-import { actionRecordEvent as recordEvent } from "@/lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import MyfeedMentions from "@/components/func-components/myfeed-mentions";
 import FavMentions from "@/components/func-components/fav-mentions";
 import TeamMentions from "@/components/func-components/team-mentions";
@@ -127,7 +127,7 @@ const Mobile: React.FC<Props> = () => {
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
 
-        await recordEvent(
+        await actionRecordEvent(
             'tab-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "rtab":"${rtab}"}`
         );
@@ -149,7 +149,7 @@ const Mobile: React.FC<Props> = () => {
             setTimeout(() => setTab(tab), 0);
         }
         //setView("mentions");
-        setTimeout(async () => await recordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+        setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
     }
     const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
@@ -166,7 +166,7 @@ const Mobile: React.FC<Props> = () => {
         else {
             window.history.replaceState({}, "", `/${league}/${teamid}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
         }
-        await recordEvent(
+        await actionRecordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );

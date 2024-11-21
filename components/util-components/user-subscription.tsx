@@ -1,4 +1,4 @@
-import { createCheckoutSession } from "@/lib/actions/stripe";
+import { createCheckoutSession } from "@lib/client-actions/stripe";
 import getStripe from "@/lib/get-stripejs";
 /*
 Create a responsive (full screen on small screen) modal dialog governed by "openCreateUser" state that tells user that he needs to create the user account or login if he wants to have more than 10 fantasy players in his My Team.

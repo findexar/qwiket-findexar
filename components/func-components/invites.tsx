@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite';
 import { useAppContext } from '@/lib/context';
 import Invite from "@/components/func-components/items/invite";
 import LoadMore from "@/components/func-components/load-more";
-import { actionInvites, actionUpdateInvite, UpdateInviteProps } from '@/lib/fetchers/invites';
+import { actionInvites, actionUpdateInvite, UpdateInviteProps } from '@lib/server-actions/invites';
 import { InvitesKey } from '@/lib/keys';
 
 interface InviteData {

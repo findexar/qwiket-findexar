@@ -6,9 +6,9 @@ import { styled } from "styled-components";
 import { useAppContext } from '@/lib/context';
 import Mentions from '@/components/func-components/mentions';
 import { PlayerMentionsKey } from '@/lib/keys';
-import { actionPlayerMentions } from '@/lib/fetchers/player-mentions';
+import { actionPlayerMentions } from '@lib/server-actions/player-mentions';
 import { TeamPlayersKey, MyTeamKey } from '@/lib/keys';
-import { actionFetchLeagueTeams } from '@/lib/fetchers/team-players';
+import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 interface Props {
 }
 const PlayerMentions: React.FC<Props> = () => {

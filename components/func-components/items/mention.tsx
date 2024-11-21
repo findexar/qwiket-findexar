@@ -19,17 +19,17 @@ import { MetaLinkKey, getMetaLink } from '@/lib/api';
 import { convertToUTCDateString, convertToReadableLocalTime } from "@/lib/date-convert";
 import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import { useAppContext } from '@/lib/context';
-import { actionRecordEvent } from "@/lib/actions";
+import { actionRecordEvent } from "@lib/server-actions/event";
 import TeamAddIcon from "@/components/icons/usergroup-add";
 import TeamRemoveIcon from "@/components/icons/usergroup-delete";
-import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@/lib/fetchers/my-team-actions";
-import { actionAddFavorite, actionRemoveFavorite } from "@/lib/fetchers/favorites";
+import { actionFetchMyTeam, actionAddMyTeamMember, actionRemoveMyTeamMember } from "@lib/server-actions/my-team-actions";
+import { actionAddFavorite, actionRemoveFavorite } from "@lib/server-actions/favorites";
 
 import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
 //import LimitAccountModal from '@/components/util-components/user-account';
 //import LimitSubscriptionModal from "@/components/util-components/user-subscription";
-//import { actionUserSubscription } from "@/lib/fetchers/user-subscription";
+//import { actionUserSubscription } from "@lib/server-actions/user-subscription";
 
 
 declare global {

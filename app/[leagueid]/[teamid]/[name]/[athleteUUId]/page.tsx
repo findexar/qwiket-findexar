@@ -4,24 +4,24 @@ import { unstable_serialize } from 'swr'
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider'
 
-import fetchLeagues from '@/lib/fetchers/leagues';
-import fetchSession from '@/lib/fetchers/session';
-import fetchSlugStory from '@/lib/fetchers/slug-story';
-import fetchMention from '@/lib/fetchers/mention';
-import fetchMetaLink from '@/lib/fetchers/meta-link';
+import fetchLeagues from '@lib/server-actions/leagues';
+import fetchSession from '@lib/server-actions/session';
+import fetchSlugStory from '@lib/server-actions/slug-story';
+import fetchMention from '@lib/server-actions/mention';
+import fetchMetaLink from '@lib/server-actions/meta-link';
 
-import fetchLeagueTeams from '@/lib/fetchers/league-teams';
-import fetchPlayerMentions from '@/lib/fetchers/player-mentions';
-import fetchTeamPlayers from '@/lib/fetchers/team-players';
-import fetchUserSubscription from "@/lib/fetchers/user-subscription";
-import { getASlugStory } from '@/lib/fetchers/slug-story';
+import fetchLeagueTeams from '@lib/server-actions/league-teams';
+import fetchPlayerMentions from '@lib/server-actions/player-mentions';
+import fetchTeamPlayers from '@lib/server-actions/team-players';
+import fetchUserSubscription from "@lib/server-actions/user-subscription";
+import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot'
 import SPALayout from '@/components/spa';
-import { getAMention } from '@/lib/fetchers/mention';
-import fetchData from '@/lib/fetchers/fetch-data';
+import { getAMention } from '@lib/server-actions/mention';
+import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
-import fetchChat from "@/lib/fetchers/chat";
-import fetchUserAccount from "@/lib/fetchers/account";
+import fetchChat from "@lib/server-actions/chat";
+import fetchUserAccount from "@lib/server-actions/account";
 
 //what conflicts?
 //testing push
