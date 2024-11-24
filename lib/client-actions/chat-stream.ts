@@ -49,17 +49,17 @@ export const actionChatStream = async (props: ChatStreamProps) => {
 
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i];
-                    console.log('*********************** line received', line);
+                    // console.log('*********************** line received', line);
                     if (line.trim().includes('[STOP]')) {
-                        console.log('*********************** [STOP] received', line);
+                        // console.log('*********************** [STOP] received', line);
                         onDone();
                         return;
                     } else if (line.trim().includes('[ERRORSTOP]')) {
-                        console.log('*********************** [ERRORSTOP] received', line);
+                        // console.log('*********************** [ERRORSTOP] received', line);
                         onError("Server error. Retrying...");
                         return;
                     } else if (line.startsWith('data: ')) {
-                        console.log('*********************** data: content received', line);
+                        // console.log('*********************** data: content received', line);
                         try {
                             const jsonData = JSON.parse(line.slice(5));
                             if (jsonData.content) {
@@ -71,7 +71,7 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                     }
 
                     if (line.startsWith('meta: ')) {
-                        console.log('*********************** meta: content received', line);
+                        // console.log('*********************** meta: content received', line);
                         const jsonData = JSON.parse(line.slice(5));
                         if (jsonData.content == "followupPrompts") {
                             onFollowupPromptsUpdate(jsonData.followupPrompts);
@@ -86,7 +86,7 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                         }
                     }
                     if (line.startsWith('error: ')) {
-                        console.log('*********************** meta: content received', line);
+                        // console.log('*********************** meta: content received', line);
                         const jsonData = JSON.parse(line.slice(6));
                         onError(jsonData.content);
                     }

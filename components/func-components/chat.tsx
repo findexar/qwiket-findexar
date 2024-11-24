@@ -152,7 +152,8 @@ const ChatsComponent: React.FC<Props> = ({
     const searchParams = useSearchParams();
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
-    const [initialPromptUUId, setInitialPromptUUId] = useState<string | null>(null);
+    const initialPromptUUIdRef = useRef<string | null>(null); // Create a ref for initialPromptUUId
+
     //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
         if (loadedChat) {
@@ -165,6 +166,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     // Update the ref whenever pumpUUId changes
     useEffect(() => {
+        console.log("==> CHAT.TSX setting pumpUUIdRef", pumpUUId);
         pumpUUIdRef.current = pumpUUId;
     }, [pumpUUId]);
     useEffect(() => {
@@ -181,7 +183,7 @@ const ChatsComponent: React.FC<Props> = ({
                 pumpUUId: pumpUUIdRef.current,
                 onUpdate: (content: string) => {
                     setUpdateMessage('');
-                    console.log("==> CHAT.TSX onUpdate", content);
+                    //console.log("==> CHAT.TSX onUpdate", content);
                     if (status != 'white') {
                         setStatus('white');
                     }
@@ -305,9 +307,11 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         const prompt = searchParams?.get('prompt') || "";
         const promptUUId = searchParams?.get('promptUUId') || "";
-
+        console.log("==> CHAT.TSX useEffect promptUUId", promptUUId);
         if (prompt) setInitialPrompt(prompt);
-        if (promptUUId) setInitialPromptUUId(promptUUId);
+        if (promptUUId) {
+            initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
+        }
 
         if (prompt || promptUUId) {
             const url = new URL(window.location.href);
@@ -538,11 +542,11 @@ setProvisionalUserInput('');
 
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
-                console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
+                // console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
                 if (loadedChat?.chat?.name != "New Chat" && loadedChat?.chat?.name != chatName) {
-                    console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
+                    // console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
                     setChatName(loadedChat?.chat?.name || 'New Chat');
                 }
             }
@@ -563,7 +567,7 @@ setProvisionalUserInput('');
         e.preventDefault();
         setStatus('green');
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
-        console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
+        // console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
 
         if (!currentUserInput) return;
         setIsMessageSubmitted(true);
@@ -604,7 +608,7 @@ setProvisionalUserInput('');
                 setPendingUserRequest(true);
                 //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
                 //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
-                console.log("==> CHAT.TSX handleSubmit actionCreateChat", { teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator });
+                // console.log("==> CHAT.TSX prompt handleSubmit actionChatInit", { teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", promptUUId: initialPromptUUIdRef.current || '', creator });
                 /* actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
                      (chatUUId) => {
                          setProvisionalChatUUId((prev) => {
@@ -612,7 +616,7 @@ setProvisionalUserInput('');
                          });
                      }
                  );*/
-                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
+                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
                         console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
                         const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;

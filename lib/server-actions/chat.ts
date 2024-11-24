@@ -219,6 +219,7 @@ export interface ChatInitProps {
     creator?: boolean;
     chatUUId?: string;
     userRequest: string;
+    promptUUId?: string;
 }
 export interface ChatInitReturn {
     chatUUId: string;
@@ -226,14 +227,15 @@ export interface ChatInitReturn {
     pumpUUId: string;
     nocredits: boolean;
     name: string;
+
 }
 const chatInit = async (props: ChatInitProps, userId: string, sessionid: string): Promise<ChatInitReturn> => {
     'use server';
-    const { athleteUUId, teamid, league, fantasyTeam = false, insider = false, styleDocument = "", dataDocumentsString = "", creator = false, chatUUId = "", userRequest = "" } = props;
+    const { athleteUUId, teamid, league, fantasyTeam = false, insider = false, styleDocument = "", dataDocumentsString = "", creator = false, chatUUId = "", userRequest = "", promptUUId = "" } = props;
     //console.log("****** chatInit", props)
     userId = userId || sessionid;
     const insiderParam = insider ? '1' : '0';
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}&promptUUId=${promptUUId}`;
     // console.log("chatInit", url);
 
     const res = await fetch(url, {
