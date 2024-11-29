@@ -53,7 +53,7 @@ export async function generateMetadata(
     }
     //@ts-ignore
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", athleteUUId: amentionAthleteUUId = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
-    const {
+    let {
         title: astoryTitle = "",
         site_name: astorySite_Name = "",
         authors: astoryAuthors = "",
@@ -89,6 +89,8 @@ export async function generateMetadata(
 
     let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
+    if (!astoryImageOgUrl)
+        image_height = 630;
     let ogTitle = ogTarget || `Qwiket AI`;
     if (astory) {
         ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`

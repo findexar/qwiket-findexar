@@ -51,7 +51,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     date: amentionDate = ""
   } = amention || {};
 
-  const {
+  let {
     title: astoryTitle = "",
     site_name: astorySite_Name = "",
     authors: astoryAuthors = "",
@@ -82,6 +82,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
+  if (!astoryImageOgUrl)
+    image_height = 630;
   let ogTitle = ogTarget || `Qwiket AI`;
 
   if (astory) {

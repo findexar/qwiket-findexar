@@ -78,7 +78,7 @@ export async function generateMetadata(
     date: amentionDate = ""
   } = amention || {};
 
-  const {
+  let {
     title: astoryTitle = "",
     site_name: astorySite_Name = "",
     authors: astoryAuthors = "",
@@ -109,13 +109,16 @@ export async function generateMetadata(
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
   let ogTitle = ogTarget || `Qwiket AI`;
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
+
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
     ogTitle = astoryTitle;
     ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
-    ogImage = astoryImageOgUrl;
-  }
 
+  }
+  ogImage = astoryImageOgUrl || `/q-logo-og-1200.png`;
+  if (!astoryImageOgUrl)
+    image_height = 630;
   const indexable = findexarxid || story;
   let noindex = +(process.env.NEXT_PUBLIC_NOINDEX || indexable ? "0" : "1");
 
