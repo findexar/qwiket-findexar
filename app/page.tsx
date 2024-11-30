@@ -80,7 +80,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
 
-  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
+  let ogDescription = amentionSummary || "Sport News Monitor and Sports Savvy AI Chat.";
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
   if (!astoryImageOgUrl)
     image_height = 630;
