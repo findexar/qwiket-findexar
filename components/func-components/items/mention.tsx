@@ -27,10 +27,6 @@ import { actionAddFavorite, actionRemoveFavorite } from "@lib/server-actions/fav
 
 import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
-//import LimitAccountModal from '@/components/util-components/user-account';
-//import LimitSubscriptionModal from "@/components/util-components/user-subscription";
-//import { actionUserSubscription } from "@lib/server-actions/user-subscription";
-
 
 declare global {
     interface Window {
@@ -148,7 +144,7 @@ const ExtendedMention = styled.div`
     display:flex;
     flex-direction:column;
     a{
-        font-size:15px !important;    
+        font-size:15px;    
     }
 `;
 
@@ -165,7 +161,7 @@ const MobileExtendedMention = styled.div`
     display:flex;
     flex-direction:column;
     a{
-        font-size:15px !important;
+        font-size:15px;
       
     }
 `;
@@ -176,8 +172,7 @@ const Body = styled.div`
     flex: 2 1 auto;
     line-height:1.4;
     a{
-        font-size:15px !important;
-      
+        font-size:15px;
     }
 `;
 
@@ -241,7 +236,7 @@ const HorizontalContainer = styled.div`
     align-items:flex-start;
     flex-wrap: wrap;   
     a{
-        font-size:15px !important;     
+        font-size:15px;     
     }
 `;
 
@@ -266,7 +261,6 @@ const MobileAtmention2 = styled.div`
 
 const ShareContainer = styled.div`
     margin-top:10px;
-   // margin-bottom:14px;
     margin-left:4px;
     margin-right:4px;
     height:20px;
@@ -290,10 +284,7 @@ const ShareContainer = styled.div`
 `;
 
 const ShareContainerInline = styled.span`
-    //font-size: 18x;  
     height:10px;
-   // margin-top:-10px;
-  
     opacity:0.6;
     cursor:pointer;
     margin-left:10px;
@@ -339,19 +330,16 @@ const SummaryWrap = styled.div`
     width:'100%';
     line-height: 1.2;
    
-    font-size:15px !important;
+    font-size:15px;
     a{
-        font-size:15px !important;
+        font-size:15px;
       
     }
     @media screen and (max-width: 1199px) {
         padding-bottom:10px;
-  }
-    
+  }  
 `;
-const LocalLink = styled.a`
-    cursor:pointer;
-`;
+
 const ImageTextWrapper = styled.div`
     img {
         float: left;
@@ -363,6 +351,39 @@ const ImageTextWrapper = styled.div`
         object-fit: cover;
     }
 `;
+
+const PromptsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const PromptTag = styled(Link) <{ $isDarkMode: boolean }>`
+  background-color: ${props => props.$isDarkMode ? '#34063b' : '#CFE0C2'};
+  color: ${props => props.$isDarkMode ? '#E0E000' : '#4E342E'};
+  padding: 2px 10px;
+  border-radius: 16px;
+  font-size: 11px !important;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  @media screen and (max-width: 1199px) {
+    font-size: 13px !important;
+  }
+  a{
+    font-size: 11px !important;
+    color: ${props => props.$isDarkMode ? '#E0E000' : '#4E342E'} !important;
+    @media screen and (max-width: 1199px) {
+        font-size: 13px !important;
+    }
+  }
+  &:hover {
+    background-color: ${props => props.$isDarkMode ? '#795548' : '#FFCCBC'};
+    color: ${props => props.$isDarkMode ? '#FFFFFF' : '#3E2723'};
+  }
+`;
+
 interface Props {
     mention: any,
     linkType?: string;
@@ -376,9 +397,11 @@ interface Props {
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
     const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
+    const isDarkMode = mode === 'dark';
+
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image } = mention;
+    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image, prompts } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -479,35 +502,40 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [summary, mutate, date, url]);
 
-    //  const subscriptionKey: SubscriptionKey = { type: "subscription" };
-    //    const { data: subscription, error: subscriptionError } = useSWR(subscriptionKey, actionUserSubscription, { fallback });
-    //const subscrLevel = subscription?.subscrLevel || 0;
     //prepare urls:
     const prepName = encodeURIComponent(name.replace(/\./g, '!'));//name?.replaceAll(' ', '_') || "";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink`);
 
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink`);
     const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink`);
-    // console.log("fbShareUrl",mention,{prepName,league,team,fbShareUrl})
 
-    /* let localUrl = "";
-     localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}` : `/${league}/${team}?id=${findexarxid}`
-     if (mini)
-         localUrl = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`
- 
-     //let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}${params}${tp}${params.includes('?') ? '&' : '?'}top=1` : `/${league}/${team}${params}${tp}${params.includes('?') ? '&' : '?'}top=1`;
-     let bottomLink = type == 'person' ? `/${league}/${team}/${prepName}/${athleteUUId}` : `/${league}/${team}`;
-     if (linkType == 'final')
-         bottomLink += `${params.includes('?') ? '&' : '?'}top=1`;
-     localUrl = localUrl.replace('&tab=all', '');
-     bottomLink = bottomLink.replace('&tab=all', '');
-     localUrl = localUrl.replace('&tab=myfeed', '');
-     bottomLink = bottomLink.replace('&tab=myfeed', '');*/
+
+    const renderPrompts = (device: string) => {
+        if (!prompts || prompts.length === 0) return null;
+        const param = "?tab=chat";
+        return (
+            <PromptsContainer>
+                {prompts.map((p: any, index: number) => {
+                    const promptUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `${league}/${encodeURIComponent(team)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
+                    return (
+                        <PromptTag
+                            key={`prompt-${index}`}
+                            href={`${promptUrl}`}
+                            $isDarkMode={isDarkMode}
+                            style={{ textDecoration: 'none', fontSize: 11 }}
+                        >
+                            {p.prompt}
+                        </PromptTag>
+                    )
+                })}
+            </PromptsContainer>
+        );
+    };
+
     const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary?.substring(0, 230) || "" + '...')}&url=${twitterShareUrl}&via=findexar`;
     summary = summary || "";
     // Normalize summary to ensure it's safe for URI encoding
     summary = summary.normalize("NFKC");
-    // console.log("******** SUMMARY", summary, fbShareUrl, { quote: summary.substring(0, 140) + '...' })
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
@@ -529,7 +557,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string, athleteUUId: string, url: string) => {
-        console.log("onMentionNav", name, athleteUUId, url);
         let pgt = type == 'person' ? 'player' : 'team';
         await actionRecordEvent(
             'mention-nav',
@@ -537,17 +564,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         );
     }, [league, team, type, params]);
 
-    const enableRedirect = useCallback(() => {
-        if (window && window.Clerk) {
-            const Clerk = window.Clerk;
-            const user = Clerk.user;
-            const id = Clerk.user?.id;
-            if (!id) {
-                setSignin(true);
-                return;
-            }
-        }
-    }, []);
 
     const onExtended = useCallback(async (on: boolean) => {
 
@@ -600,14 +616,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         copy(digest);
     }, [digest]);
     const iconClick = useCallback(async () => {
-        console.log("ICON CLICK")
-
         if (localTracked == true) {
-            console.log("TRACKED", name);
             setToastMessage("Player removed from the Team");
             setToastIcon(<TeamRemoveIcon className="h-6 w-6 opacity-60 hover:opacity-100 text-grey-4000" />);
-
-            console.log("tracked after mutatePlayers", name, team);
             setLocalTracked(false);
             await actionRemoveMyTeamMember({ member: name, teamid: team, athleteUUId: athleteUUId });
 
@@ -631,7 +642,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             );
         }
         else {
-            console.log("UNTRACKED", name)
             const response = await actionAddMyTeamMember({ member: name, teamid: team, athleteUUId: athleteUUId });
             if (response.success) {
                 setToastMessage("Player added to the Fantasy Team");
@@ -690,7 +700,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
 
     }, [mention])
-    //console.log("bottomLink",bottomLink)
+
     return (
         <>
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
@@ -728,8 +738,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 0, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </Link>
                     </SummaryWrap>
-                    <br />
 
+                    {renderPrompts("desktop")}
+                    <br />
                     <hr />
                     <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
@@ -859,6 +870,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </Atmention>
                         <MobileAtmention2>{meta?.site_name}</MobileAtmention2>
                     </div>
+                    <br />
+                    {renderPrompts("mobile")}
                     <BottomLine>
                         <ShareGroup>
                             <RWebShare

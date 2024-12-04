@@ -25,7 +25,7 @@ const Body = styled.div`
     flex: 2 1 auto;
     line-height:1.4;
     a{
-        font-size:15px !important;    
+        font-size:15px;    
     }
 `;
 
@@ -110,7 +110,7 @@ const HorizontalContainer = styled.div`
     align-items:flex-start;
     flex-wrap: wrap;   
     a{
-        font-size:15px !important;     
+        font-size:15px;     
     }
 `;
 
@@ -132,10 +132,8 @@ const ShareContainer = styled.div`
 
 const ShareContainerInline = styled.span`
     font-size: 28x;  
-    //height:38px;
     opacity:0.6;
     cursor:pointer;
-   // margin-left:10px;
     color:var(--mention-text);
     :hover{
         opacity:1;
@@ -163,7 +161,6 @@ const BottomLine = styled.div`
     justify-content:space-between;
     align-items:flex-end;
     margin-top:10px;
-    //margin-left:28px;
     width:100%;
     @media screen and (max-width: 1199px) {
         margin-left:-4px;
@@ -180,18 +177,14 @@ const ShareIcon = styled.div`
 `;
 
 const DesktopWrap = styled.div`
-   // border-radius:5px;
     display:flex;
     flex-direction:column;
     max-width:100%;
-   // margin-top:20px;
-   // margin-bottom:20px;
-   // background-color:var(--mention-bg);
     background-color:var(--background);
    
     padding:10px;
     a{
-        font-size:15px !important;   
+        font-size:15px;   
     }
     @media screen and (max-width: 1024px) {
         display: none;
@@ -207,7 +200,7 @@ const MobileWrap = styled.div`
     background-color:var(--background);
     padding:10px;
     a{
-        font-size:15px !important;
+        font-size:15px;
     }
     @media screen and (min-width: 1024px) {
         display: none;
@@ -218,11 +211,10 @@ const MentionsWrap = styled.div`
     display:flex;
     flex-direction:column;
     width:100%;
-    //padding-right:20px;
     margin-top:6px;
     margin-bottom:6px;
     a{
-        font-size:15px !important;    
+        font-size:15px;    
     }
 `;
 
@@ -265,11 +257,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
-    //console.log("STORY CREATED TIME", createdTime,title,site_name);
-    // console.log("==> story prompts", prompts);
-    //console.log("==> story mentions", mentions);
     url = url || "";
-
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [selectedXid, setSelectedXid] = React.useState("");

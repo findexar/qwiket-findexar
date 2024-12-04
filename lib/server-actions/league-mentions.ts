@@ -15,23 +15,16 @@ interface FetchMentionsProps {
 const fetchMentions = async (key: LeagueMentionsKey, userId: string, sessionid: string) => {
     const { league, page } = key;
     const url = `${lake_api}/api/v50/findexar/get-mentions?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
-    console.log("fetchLeagueMentions", url);
     const fetchResponse = await fetch(url);
-    //  console.log("fetchTeamMentions fetchResponse", await fetchResponse.text());
-    // const strResponse = await fetchResponse.text();
-    //  console.log("fetchTeamMentions JSON strResponse", JSON.parse(strResponse));
     const res = await fetchResponse.json();
-    //console.log("fetchTeamMentions res",res);
     return res.mentions;
 }
 
 const promiseLeagueMentions = async ({ userId, sessionid, league }: FetchMentionsProps) => {
-    console.log("promiseLeagueMentions", userId, sessionid, league);
     let keyMentions = (page: any) => {
         const keyFetchedLeagueMentions: LeagueMentionsKey = { type: "fetch-league-mentions", page: page, league }
         return keyFetchedLeagueMentions;
     };
-    console.log("promiseTeamMentions KEY:", keyMentions);
     return { key: us(keyMentions), call: fetchMentions(keyMentions(0), userId, sessionid) };
 }
 export const actionLeagueMentions = async (key: LeagueMentionsKey) => {
