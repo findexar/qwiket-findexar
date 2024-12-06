@@ -569,13 +569,13 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
         await actionRecordEvent(
             'mention-extended',
-            `{"on":"${on}","summary","${summary}","url":"${url}","params":"${params}"}`
+            `{"on":"${on}","name":"${name}","summary","${summary}","url":"${url}","params":"${params}"}`
         );
     }, [params]);
 
     const onHover = useCallback((label: string) => {
         try {
-            actionRecordEvent(`mention-hover`, `{"label":"${label}","url":"${encodeURI(url)}","params":"${params}"}`)
+            actionRecordEvent(`mention-hover`, `{"label":"${label}","name":"${name}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
 
                 });
@@ -586,7 +586,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onShare = useCallback((url: string) => {
         try {
-            actionRecordEvent(`mention-share`, `{"url","${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-share`, `{"name":"${name}","url","${url}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("actionRecordEvent", r);
                 });
@@ -597,7 +597,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onClick = useCallback((url: string) => {
         try {
-            actionRecordEvent(`mention-story-click`, `{"url","${url}","params":"${params}"}`)
+            actionRecordEvent(`mention-story-click`, `{"name":"${name}","url","${url}","params":"${params}"}`)
                 .then((r: any) => {
                     console.log("actionRecordEvent", r);
                 });
