@@ -198,7 +198,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         if (astory) {
             //console.log("openDialog")
             setOpen(true);
-            actionRecordEvent(`story-overlay-open`, `{"slug":"${slug}","url":"${url}","params":"${params}"}`)
+            actionRecordEvent(`story-overlay-open`, `{"slug":"${slug}","idx":"${idx}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });
@@ -216,7 +216,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         // console.log("closeDialog slug=", slug)
         // let localUrl = router.asPath.replace('&story=' + slug, '').replace('?story=' + slug + "&", '?').replace('?story=' + slug, '');
         //router.push(localUrl); // Correctly using router to navigate
-        await actionRecordEvent(`close-story-overlay`, `{"utm_content":"${utm_content}","params":"${params}"}`)
+        await actionRecordEvent(`close-story-overlay`, `{"idx":"${idx}","slug":"${slug}","utm_content":"${utm_content}","params":"${params}"}`)
             .then((r: any) => {
                 //console.log("recordEvent", r);
             });
