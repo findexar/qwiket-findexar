@@ -7,7 +7,7 @@ import { Chat, Message, UserDocument } from "@lib/types/chat";
 import { actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
-import { actionUserRequest } from "@lib/client-actions/user-request";
+
 import { actionChatStream } from "@lib/client-actions/chat-stream";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { actionFetchPrompts } from "@lib/client-actions/fetch-prompts";
 import { styled } from "styled-components";
 import CreatorMode from "@components/func-components/creator-mode";
-import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
+import { actionRecordEvent, actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 import Toast from './toaster'; // Import your Toast component
@@ -205,6 +205,10 @@ const ChatsComponent: React.FC<Props> = ({
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
                     // console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
+                    actionRecordEvent(`chat-done`, `{"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","response":"${response}","params":"${params}"}`)
+                        .then((r: any) => {
+                            //console.log("recordEvent", r);
+                        });
                     setPumpUUId((prev) => {
                         return '';
                     });
@@ -353,183 +357,6 @@ const ChatsComponent: React.FC<Props> = ({
 
     }, []);
 
-
-    /*
-        const userRequest = useCallback(() => {
-            console.log("==> CHAT.TSX userRequest", provisionalUserInput || textareaRef.current?.value.trim());
-            setPendingUserRequest(false);
-            setStreamingMessageIndex(messages.length);
-            const styleDocument = selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "";
-            const dataDocumentsString = selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(',');
-            //console.log(`==>styleDocument: ${styleDocument}`);
-            //console.log(`==>dataDocumentsString: ${dataDocumentsString}`);
-            //console.log(`==>selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
-            setIsStreaming(true);
-            setInitialPrompt(null);
-            setInitialPromptUUId(null);
-            actionUserRequest({
-                chatUUId: provisionalChatUUId || chatUUId,
-                promptUUId: initialPromptUUId || "",
-                userRequest: provisionalUserInput || textareaRef.current?.value.trim() || "",
-                athleteUUId: athleteUUId,
-                teamid: teamid,
-                league: league,
-                fantasyTeam: isFantasyTeam || false,
-                onUpdate: (content: string) => {
-                    setUpdateMessage('');
-                    console.log("==> CHAT.TSX onUpdate", content);
-                    setResponse(prev => {
-                        const updatedContent = prev + content;
-                        setMessages(prevMessages => {
-                            const updatedMessages = [...prevMessages];
-                            //setStreamingMessageIndex(updatedMessages.length - 1);
-                            if (updatedMessages.length > 0) {
-                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                            }
-                            return updatedMessages;
-                        });
-                        return updatedContent;
-                    });
-                },
-                onDone: () => {
-                    setUpdateMessage('');
-                    userAccountMutate();
-                    setIsLoading(false);
-                    setStreamingMessageIndex(null);
-                    console.log("==> CHAT.TSX onDone", chatUUId);
-                    actionChatName({ chatUUId }).then(
-                        (data) => {
-                            if (data.success) {
-                                setChatName(data.chatName);
-                            }
-                        }
-                    );
-                    //setInitialPrompt(null);
-                    //setInitialPromptUUId(null);
-                },
-                onChatUUId: (content: string) => {
-                    console.log("==> CHAT.TSX onChatUUId", content);
-                    setChatUUId(prev => {
-                        return content;
-                    });
-                },
-                onMetaUpdate: (content: string) => {
-                    console.log("==> CHAT.TSX onMetaUpdate", content);
-                    setUpdateMessage(content);
-                },
-                onFollowupPromptsUpdate: (content: string[]) => {
-                    // setIsUpdatingPrompts(true);
-                    setUpdateMessage('');
-                    const newPrompts = content;
-                    //console.log('*********************** CHAT onFollowupPromptsUpdate:', content);
-                  
-    setFollowupPrompts(newPrompts);
-    // setIsUpdatingPrompts(false);
-},
-    onChatNameUpdate: (content: string) => {
-                console.log("==> CHAT.TSX setting chat name3 loadedChat?.chat?.name", content, loadedChat?.chat?.name);
-
-setChatName(content.replace("ChatGPT", "Qwiket AI") || 'New Chat');
-            },
-onError: (content: string) => {
-    console.log("==> CHAT.TSX onError", content);
-    // setUpdateMessage("Comm. Error, retrying");
-    // setUpdateMessage("Streaming network error");
-    setMessages(prevMessages => {
-        const updatedMessages = [...prevMessages];
-        if (updatedMessages.length > 1) {
-            updatedMessages.pop(); // Remove last AI response
-            updatedMessages.pop(); // Remove last user request
-        }
-        return updatedMessages;
-    });
-    setResponse(prev => {
-        const updatedContent = prev + content;
-        setMessages(prevMessages => {
-            const updatedMessages = [...prevMessages];
-            //setStreamingMessageIndex(updatedMessages.length - 1);
-            if (updatedMessages.length > 0) {
-                updatedMessages[updatedMessages.length - 1].content = updatedContent;
-            }
-            return updatedMessages;
-        });
-        return updatedContent;
-    });
-    // setIsLoading(false);
-    // setStreamingMessageIndex(null);
-    // mutateLoadedChat();
-    console.log("setting lastUserInput", lastUserInput, "chatUUId:", chatUUId);
-    setUserInput(lastUserInput);
-    if (textareaRef.current) {
-        textareaRef.current.value = lastUserInput;
-        const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-        handleSubmit(formEvent as unknown as React.FormEvent);
-    }
-
-},
-    onLeagueUpdate: (content: string) => {
-        // Display the loading message
-        if (['NFL', 'MLB', 'NBA', 'NHL'].includes(content) && content != league) {
-            setToastMessage(`Switching to ${content} tab...`);
-            // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
-
-            // Automatically clear the toast message after 3 seconds
-            setTimeout(() => {
-                setToastMessage("");
-            }, 3000);
-
-            // Navigate to the new league view
-            window.history.pushState({}, '', `/${content.trim().toUpperCase()}${params}${tp}`);
-            // console.log('*********************** CHAT onLeagueUpdate:', content);
-        }
-    },
-        styleDocument: selectedDocuments.find(doc => doc.type === 'STYLE' && doc.selected === 1)?.uuid || "",
-            dataDocumentsString: selectedDocuments.filter(doc => doc.type === 'DATA' && doc.selected === 1).map(doc => doc.uuid).join(','),
-                creator
-        }).catch (error => {
-    console.error("Error in actionUserRequest:", error);
-    setUpdateMessage("Streaming network error");
-    setResponse(prev => {
-        const updatedContent = prev + "Network error. Please try again.";
-        setMessages(prevMessages => {
-            const updatedMessages = [...prevMessages];
-            //setStreamingMessageIndex(updatedMessages.length - 1);
-            if (updatedMessages.length > 0) {
-                updatedMessages[updatedMessages.length - 1].content = updatedContent;
-            }
-            return updatedMessages;
-        });
-        return updatedContent;
-    });
-    // setIsLoading(false);
-    // setStreamingMessageIndex(null);
-    setUserInput(lastUserInput);
-    console.log("setting lastUserInput2", lastUserInput);
-}).finally(() => {
-    // setIsLoading(false);
-    // setIsStreaming(false);
-});
-recordEvent('chat-request', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","userRequest": ${provisionalUserInput || textareaRef.current?.value.trim() || ""}"}`).then((r: any) => {
-    //console.log("recordEvent", r);
-});
-setProvisionalChatUUId('');
-setProvisionalUserInput('');
-
-    }, [chatUUId, provisionalChatUUId, athleteUUId, teamid, league, isFantasyTeam, initialPromptUUId, creator, selectedDocuments, setFollowupPrompts, setIsStreaming]);
-*/
-    /* useEffect(() => {
-         if (chatUUId && chatUUId != '_new' && chatUUId != 'blocked' && pendingUserRequest || provisionalChatUUId && pendingUserRequest) {
-             setPendingUserRequest(false);
-             userRequest();
-         }
-         if (chatUUId && chatUUId == 'blocked') {
-             setIsLoading(false);
-             setPendingUserRequest(false);
-             setChatUUId('');
-             setUpdateMessage('Your request could not be processed due to browser settings blocking user sessions. Please adjust your settings to allow sessions (cookies) and try again.');
-         }
-     }, [chatUUId, provisionalChatUUId, pendingUserRequest]);
-     */
     useEffect(() => {
         // setIsLoading(false);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
@@ -551,18 +378,9 @@ setProvisionalUserInput('');
                 }
             }
         }
-        /* else if (!league && chatUUId != '_new' && !loadedChat) {
-             setChatName('New Chat');
-             setFollowupPrompts([]);
-             setMessages([]);
-             setChatUUId('_new');
-         }*/
     }, [loadedChat]);
 
     const hasSubmittedPromptRef = useRef(false);
-
-
-
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('green');
@@ -606,19 +424,13 @@ setProvisionalUserInput('');
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                //AI: find a single style (type === STYLE) and 0-n data (type === DATA) documentids for this chat
-                //need two params: styleDocument and dataDocumentsString. Second is comma separated list of uuids.
-                // console.log("==> CHAT.TSX prompt handleSubmit actionChatInit", { teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", promptUUId: initialPromptUUIdRef.current || '', creator });
-                /* actionCreateChat({ teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator }).then(
-                     (chatUUId) => {
-                         setProvisionalChatUUId((prev) => {
-                             return chatUUId as string;
-                         });
-                     }
-                 );*/
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
                         console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
+                        actionRecordEvent(`chat-init`, `{"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                            .then((r: any) => {
+                                //console.log("recordEvent", r);
+                            });
                         const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
                         if (nocredits) {
                             setIsLoading(false);
@@ -714,18 +526,12 @@ setProvisionalUserInput('');
             setIsMessageSubmitted(false);  // Reset this when a prompt is clicked
         }
     };
-
-    /*useEffect(() => {
-        if (followupPrompts.length > 0) {
-            // Force a re-render of the message list
-            setMessages([...messages]);
-        }
-    }, [followupPrompts, messages]);*/
-
-    /*if (!league) {
-         return <><br /><h2 className="text-xl min-h-screen font-bold p-4">Please select a league first.</h2></>;
-     }*/
-
+    useEffect(() => {
+        actionRecordEvent(`chat-component-open`, `{"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","league":"${league}","params":"${params}"}`)
+            .then((r: any) => {
+                //console.log("recordEvent", r);
+            });
+    }, []);
     const isDarkMode = mode === 'dark';
     const renderPrompts = (device: "desktop" | "mobile") => {
         if (!prompts || prompts.length === 0) return null;
@@ -733,7 +539,6 @@ setProvisionalUserInput('');
         return (
             <>
                 <h3 className="text-sm mt-4 font-semibold text-gray-700 dark:text-gray-300 mb-2">Suggested first time chat prompts:</h3>
-
                 <PromptsContainer>
                     {prompts.map((p: any, index: number) => (
                         <PromptTag
@@ -794,36 +599,7 @@ setProvisionalUserInput('');
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-    // console.log("==> CHAT.TSX drawMessages", JSON.stringify(drawMessages));
-    // console.log("==> CHAT.TSX drawChatName", loadedChat?.chat?.name, drawChatName, chatName);
 
-    /*    useEffect(() => {
-            const confirmSwitch = window.confirm(`Do you want to switch to ${league} view?`);
-            if (confirmSwitch) {
-                window.history.pushState({}, '', `/${league.trim().toUpperCase()}${params}${tp}`);
-                setFollowupPrompts([]); // Reset followup prompts when league changes
-            }
-        }, [league]);*/
-
-    /* useEffect(() => {
-         if (tag === 'expA' && prompt && !hasSubmittedPromptRef.current) {
-             console.log("==> CHAT.TSX useEffect111 tag === 'expA' && prompt", tag, prompt);
-             if (textareaRef.current) {
-                 setTimeout(() => {
-                     if (textareaRef.current) {
-                         textareaRef.current.value = prompt; // Load prompt into textarea
-                         const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-                         handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
-                         hasSubmittedPromptRef.current = true; // Mark as submitted
-                         console.log("==> CHAT.TSX useEffect222 tag === 'expA' && prompt submitted", source, tag, prompt);
-                     }
-                 }, 1);
-             }
-         }
-     }, []);*/
-    /* useEffect(() => {
-         console.log("======> CHAT.TSX useEffect", source, tag, prompt);
-     }, []);*/
 
     const handleRetry = () => {
         if (textareaRef.current) {
