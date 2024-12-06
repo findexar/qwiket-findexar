@@ -268,9 +268,9 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
                                 </LogoContainer>
                                 <QwiketText>QWIKET AI</QwiketText>
                             </div>
-                            <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
+                            {false && <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
                                 <AskAIButton>Ask AI</AskAIButton>
-                            </Link>
+                            </Link>}
                             <XElement onClick={() => handleClose()}>&#x2715;</XElement>
                         </HeaderContainer>
                         <div className="bg-transparent  p-0 pb-0 ">
