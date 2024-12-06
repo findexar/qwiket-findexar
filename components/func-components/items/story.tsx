@@ -345,7 +345,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     const onMentionClick = useCallback((mention: any) => {
         try {
-            actionRecordEvent(`min-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
+            actionRecordEvent(`mini-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });
