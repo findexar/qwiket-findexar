@@ -9,6 +9,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { UserAccount, UserUsage, CidUsage } from '@/lib/types/user';
 import Link from 'next/link';
 import { FaCopy, FaCheck } from 'react-icons/fa';
+import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -44,7 +45,12 @@ const Dashboard: React.FC = () => {
         newPeriods.push({ year: selectedYear, month: selectedMonth });
         setPeriods(newPeriods);
     }, [selectedYear, selectedMonth, isFirstWeekOfMonth]);
-
+    useEffect(() => {
+        recordEvent(`dashboard-load`, `{}`)
+            .then((r: any) => {
+                console.log("recordEvent", r);
+            });
+    }, []);
     const dailyUsageAccountKey: UserUsageAccountKey = { type: "daily-usage", periods };
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);

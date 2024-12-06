@@ -847,11 +847,21 @@ setProvisionalUserInput('');
                         <Link
                             href="/account/dashboard"
                             className={`text-xs ${creditColorClass} hover:underline mr-2`}
+                            onClick={() => recordEvent(`credits-chat-dashboard-click`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                .then((r: any) => {
+                                    console.log("recordEvent", r);
+                                })}
                         >
                             {creditsString}
                         </Link>
                         <button
-                            onClick={() => setShowCreditsInfo(!showCreditsInfo)}
+                            onClick={() => {
+                                setShowCreditsInfo(!showCreditsInfo);
+                                recordEvent(`credits-chat-info-click`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                    .then((r: any) => {
+                                        console.log("recordEvent", r);
+                                    });
+                            }}
                             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                         >
                             <FaInfoCircle size={14} />
@@ -946,7 +956,11 @@ setProvisionalUserInput('');
                                     </>)}
                                 {showCreditsInfo && (
                                     <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                                        Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the <Link href="/account/dashboard" className="text-blue-500 hover:underline">
+                                        Credits are used for AI Chat requests. Regular credits refill monthly based on your subscription. Extra credits never expire and are used when regular credits run out. Visit the
+                                        <Link href="/account/dashboard" className="text-blue-500 hover:underline" onClick={() => recordEvent(`credits-info-link-dashboard-click`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                            .then((r: any) => {
+                                                //console.log("recordEvent", r);
+                                            })}>
                                             Dashboard
                                         </Link> for more details on your credit usage and subscription options.
                                     </div>

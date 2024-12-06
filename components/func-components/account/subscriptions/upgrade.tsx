@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { UserAccountKey } from "@lib/keys";
@@ -8,7 +8,7 @@ import PriceCard from './price-card';
 import { getPricePlans, PlanDetails, FeatureCard } from "./price-plans";
 import FeatureCardComponent from './feature-card';
 import { FaCheckCircle, FaComments, FaLightbulb, FaShieldAlt } from 'react-icons/fa';
-
+import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 interface Props {
     chatUUId?: string;
     isFantasyTeam?: boolean;
@@ -30,7 +30,12 @@ const AccountUpgrade: React.FC<Props> = ({
     console.log("userAccount", userAccount);
 
     const plans: PlanDetails[] = getPricePlans(level);
-
+    useEffect(() => {
+        recordEvent(`dashboard-upgrade-load`, `{}`)
+            .then((r: any) => {
+                console.log("recordEvent", r);
+            });
+    }, []);
     const handleSeeAllFeatures = (planLevel: string) => {
         setDisplayFeatures(planLevel);
         setTimeout(() => {
