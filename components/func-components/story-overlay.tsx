@@ -198,7 +198,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         if (astory) {
             //console.log("openDialog")
             setOpen(true);
-            actionRecordEvent(`story-overlay-open`, `{"slug":"${slug}","idx":"${idx}","url":"${url}","params":"${params}"}`)
+            actionRecordEvent(`story-overlay-open`, `{"idx":"${idx}","slug":"${slug}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });
