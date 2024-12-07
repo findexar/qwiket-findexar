@@ -602,17 +602,34 @@ const ChatsComponent: React.FC<Props> = ({
 
 
     const handleRetry = () => {
+        // console.log("==> CHAT.TSX  handleRetry", componentId, textareaRef.current);
         if (textareaRef.current) {
             if (textareaRef.current) {
                 textareaRef.current.value = prompt; // Load prompt into textarea
                 const formEvent = new Event('submit', { bubbles: true }); // Create a new event
                 handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
                 hasSubmittedPromptRef.current = true; // Mark as submitted
-                console.log("==> CHAT.TSX useEffect333 tag === 'expA' && prompt submitted", source, tag, prompt);
+                // console.log("==> CHAT.TSX useEffect555 handleRetry tag === 'expA' && prompt submitted", { componentId, source, tag, prompt });
             }
 
         }
     };
+
+    const [componentId, setComponentId] = useState(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+    let singularity = 0;
+    useEffect(() => {
+        if (prompt && !singularity && tag === 'expA') {
+            singularity++;
+            recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+            setTimeout(() => {
+                //console.log("==> CHAT.TSX useEffect333 handleRetry prompt", { chatUUId, componentId, prompt, isMobile });
+                setTimeout(() => {
+                    singularity = 0;
+                }, 2000);
+                handleRetry();
+            }, 2000);
+        }
+    }, [prompt]);
 
     return (
         <>
