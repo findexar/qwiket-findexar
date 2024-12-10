@@ -383,6 +383,8 @@ const ChatsComponent: React.FC<Props> = ({
     const hasSubmittedPromptRef = useRef(false);
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
+
         setStatus('green');
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
         // console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
@@ -407,7 +409,6 @@ const ChatsComponent: React.FC<Props> = ({
             textareaRef.current.value = '';
         }
 
-        setIsLoading(true);
         setResponse('');
         setFollowupPrompts([]); // Clear follow-up prompts
         const assistantMessage: Message = {
