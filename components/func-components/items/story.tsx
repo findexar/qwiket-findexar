@@ -44,6 +44,18 @@ const Digest = styled.div`
         margin-top: 4px ;
         padding-bottom: 4px;
     }
+    h2 {
+        margin-top: 10px ;
+        padding-bottom: 4px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    h3 {
+        margin-top: 4px ;
+        padding-bottom: 4px;
+        font-size: 18px;
+        font-weight: bold;
+    }
 `;
 
 const ArticleDigest = styled.div`

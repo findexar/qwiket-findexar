@@ -618,7 +618,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [componentId, setComponentId] = useState(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
     let singularity = 0;
     useEffect(() => {
-        if (prompt && !singularity && tag === 'expA') {
+        if (prompt && !singularity) {
             singularity++;
             recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
             setTimeout(() => {
