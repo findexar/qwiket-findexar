@@ -205,7 +205,7 @@ const ChatsComponent: React.FC<Props> = ({
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
                     // console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
-                    actionRecordEvent(`chat-done`, `{"utm_content":${utm_content},"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","response":"${response}","params":"${params}"}`)
+                    actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
                         .then((r: any) => {
                             //console.log("recordEvent", r);
                         });
@@ -428,7 +428,7 @@ const ChatsComponent: React.FC<Props> = ({
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
                         console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
-                        actionRecordEvent(`chat-init`, `{"utm_content":${utm_content},"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                        actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
                             .then((r: any) => {
                                 //console.log("recordEvent", r);
                             });
@@ -528,7 +528,7 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     useEffect(() => {
-        actionRecordEvent(`chat-component-open`, `{"utm_content":${utm_content},"isMobile":${isMobile},"promptUUId":${initialPromptUUIdRef.current},"prompt":"${prompt}","league":"${league}","params":"${params}"}`)
+        actionRecordEvent(`chat-component-open`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","league":"${league}","params":"${params}"}`)
             .then((r: any) => {
                 //console.log("recordEvent", r);
             });

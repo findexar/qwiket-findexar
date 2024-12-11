@@ -93,7 +93,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
   useEffect(() => {
-    actionRecordEvent(`spa-load`, `{"utm_content":${utm_content},"params":"${params}"}`)
+    actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}"}`)
       .then((r: any) => {
         //console.log("recordEvent", r);
       });

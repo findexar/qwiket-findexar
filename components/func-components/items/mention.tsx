@@ -575,7 +575,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onHover = useCallback((label: string) => {
         try {
-            actionRecordEvent(`mention-hover`, `{"utm_content":${utm_content},"label":"${label}","name":"${name}","url":"${encodeURI(url)}","params":"${params}"}`)
+            actionRecordEvent(`mention-hover`, `{"utm_content":"${utm_content}","label":"${label}","name":"${name}","url":"${encodeURI(url)}","params":"${params}"}`)
                 .then((r: any) => {
 
                 });
