@@ -19,6 +19,7 @@ import { actionUser } from '@lib/server-actions/account';
 import Dashboard from './func-components/account/dashboard';
 import Invites from './func-components/invites';
 import RevenueSharedContent from './func-components/revenue-sharing-content';
+import { actionRecordEvent } from '@/lib/server-actions/event';
 
 interface LeagueLayoutProps {
   fallback: any,
@@ -91,6 +92,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
+  useEffect(() => {
+    actionRecordEvent(`spa-load`, `{"utm_content":${utm_content},"params":"${params}"}`)
+      .then((r: any) => {
+        //console.log("recordEvent", r);
+      });
+  }, []);
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
   }, [localMode]);
