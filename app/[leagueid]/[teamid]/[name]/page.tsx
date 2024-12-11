@@ -205,7 +205,7 @@ export default async function Page({
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
-  if (!bot) {
+  if (userId) {
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
 

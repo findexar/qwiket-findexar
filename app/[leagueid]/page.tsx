@@ -255,7 +255,7 @@ export default async function Page({
   }
   //console.log("==> isBot", bot);
   //console.log("==> ua", ua);
-  if (!bot) {
+  if (userId) {
     // console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid);
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }

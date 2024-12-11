@@ -234,7 +234,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
       calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
     }
   }
-  if (!bot) {
+  if (userId) {
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
   await fetchData(t1, fallback, calls);
