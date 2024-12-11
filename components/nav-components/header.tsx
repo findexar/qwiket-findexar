@@ -491,7 +491,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           try {
             s = true;
             setScrolled(true);
-            actionRecordEvent(`header-scrolled`, `{"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}", "utm_content":"${utm_content}"}`)
+            actionRecordEvent(`header-scrolled`, `{"utm_content":${utm_content},"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}"}`)
               .then((r: any) => {
                 //console.log("recordEvent", r);
               });

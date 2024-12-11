@@ -309,7 +309,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     useEffect(() => {
         if (inView && !visible) {
             setVisible(true);
-            actionRecordEvent(`story-inview`, `{"slug":"${slug}","url":"${url}","params":"${params}"}`)
+            actionRecordEvent(`story-inview`, `{"utm_content":${utm_content},"slug":"${slug}","url":"${url}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });
