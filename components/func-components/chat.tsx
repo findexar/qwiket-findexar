@@ -878,7 +878,7 @@ const ChatsComponent: React.FC<Props> = ({
                             </div>
                         </div>
                     ))}
-                    <span style={{ color: 'red' }}>WE ARE EXPERIENCING PROBLEMS DUE TO OPENAI OUTAGE.<br/>THEY ARE WORKING ON RESOLUTION.</span>
+                    <span style={{ color: 'red' }}>WE ARE EXPERIENCING INTERITTENT PROBLEMS DUE TO OPENAI OUTAGE.<br />THEY ARE WORKING ON THERESOLUTION.</span>
                     <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                         {updateMessage || "***"}
                     </div>
