@@ -523,6 +523,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             href={`${promptUrl}`}
                             $isDarkMode={isDarkMode}
                             style={{ textDecoration: 'none', fontSize: 11 }}
+                            rel="nofollow"
                         >
                             {p.prompt}
                         </PromptTag>
