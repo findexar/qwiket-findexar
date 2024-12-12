@@ -167,7 +167,7 @@ interface Props { }
 const Desktop: React.FC<Props> = () => {
   const {
     teamid,
-    slug, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid
+    slug, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
@@ -198,7 +198,9 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(() => setRtab(rtab), 0);
     }
     setView("mentions");
-    setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    if (!bot) {
+      setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    }
   }
   const onRTabNav = (option: any) => {
     const newTab = option.tab;
@@ -211,7 +213,9 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(() => setTab(tab), 0);
     }
     //setView("mentions");
-    setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+    if (!bot) {
+      setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+    }
   }
   const onTeamPlayerTabNav = (option: any) => {
     const newTab = option.tab;
@@ -220,7 +224,9 @@ const Desktop: React.FC<Props> = () => {
     window.history.pushState({}, "", newPath);
     setTimeout(() => setTab(newTab), 0);
     setView("mentions");
-    setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    if (!bot) {
+      setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
+    }
   }
   // console.log("==> pagetype", pagetype, tab);
   return (

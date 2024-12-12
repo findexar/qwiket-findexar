@@ -149,7 +149,7 @@ const RightScroll = styled.div`
 interface Props {
 }
 const MyTeam: React.FC<Props> = () => {
-    const { fallback, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { fallback, bot, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
@@ -224,10 +224,12 @@ const MyTeam: React.FC<Props> = () => {
                                     // mutateMentions();
                                     mutateMyFeed();
                                     //mutatePlayerMentions();
-                                    await actionRecordEvent(
-                                        'player-remove-myteam',
-                                        `{"params":"${params}","team":"${teamid}","player":"$member}"}`
-                                    );
+                                    if (!bot) {
+                                        await actionRecordEvent(
+                                            'player-remove-myteam',
+                                            `{"params":"${params}","team":"${teamid}","player":"${member}"}`
+                                        );
+                                    }
 
 
                                 }} aria-label="Add new list">

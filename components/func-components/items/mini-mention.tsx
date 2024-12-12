@@ -137,9 +137,10 @@ interface Props {
 
     handleClose: () => void;
     prompts: any[];
+    bot: boolean;
 }
 
-const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, image, date, url, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate, prompts }) => {
+const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, image, date, url, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate, prompts, bot }) => {
     const [expanded, setExpanded] = React.useState(startExtended);
     const [hide, setHide] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
@@ -186,10 +187,12 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
 
     const onHover = useCallback((label: string) => {
         try {
-            actionRecordEvent(`mini-mention-hover`, `{"label","${label}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
+            if (!bot) {
+                actionRecordEvent(`mini-mention-hover`, `{"label","${label}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            }
         } catch (x) {
             console.log('recordEvent', x);
         }

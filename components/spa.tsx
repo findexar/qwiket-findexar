@@ -93,10 +93,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
   useEffect(() => {
-    actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}"}`)
-      .then((r: any) => {
-        //console.log("recordEvent", r);
-      });
+    if (!bot) {
+      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}"}`)
+        .then((r: any) => {
+          //console.log("recordEvent", r);
+        });
+    }
   }, []);
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);

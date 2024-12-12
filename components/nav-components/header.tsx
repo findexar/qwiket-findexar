@@ -439,7 +439,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo } = useAppContext();
+  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
@@ -476,11 +476,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     setTeamid("");
     // console.log("replaceState", url);
     window.history.pushState({}, "", url);
-    setTimeout(async () =>
-      await actionRecordEvent(
-        'league-nav',
-        `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
-      ), 0);
+    if (!bot) {
+      setTimeout(async () =>
+        await actionRecordEvent(
+          'league-nav',
+          `{"fbclid":"${fbclid}","utm_content":"${utm_content}","league":"${l}"}`
+        ), 0);
+    }
   }, [fbclid, utm_content]);
 
   useEffect(() => {
@@ -491,10 +493,12 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           try {
             s = true;
             setScrolled(true);
-            actionRecordEvent(`header-scrolled`, `{"utm_content":${utm_content},"league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}"}`)
-              .then((r: any) => {
-                //console.log("recordEvent", r);
-              });
+            if (!bot) {
+              actionRecordEvent(`header-scrolled`, `{"utm_content":"${utm_content}","league":"${league}","teamid":"${teamid}","player":"${player}","fbclid":"${fbclid}"}`)
+                .then((r: any) => {
+                  //console.log("recordEvent", r);
+                });
+            }
           } catch (x) {
             console.log('recordEvent', x);
           }

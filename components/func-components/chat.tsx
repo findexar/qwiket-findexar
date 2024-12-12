@@ -76,7 +76,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
@@ -205,10 +205,12 @@ const ChatsComponent: React.FC<Props> = ({
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
                     // console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
-                    actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
-                        .then((r: any) => {
-                            //console.log("recordEvent", r);
-                        });
+                    if (!bot) {
+                        actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
+                            .then((r: any) => {
+                                //console.log("recordEvent", r);
+                            });
+                    }
                     setPumpUUId((prev) => {
                         return '';
                     });
@@ -428,10 +430,12 @@ const ChatsComponent: React.FC<Props> = ({
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
                         console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
-                        actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
-                            .then((r: any) => {
-                                //console.log("recordEvent", r);
-                            });
+                        if (!bot) {
+                            actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                                .then((r: any) => {
+                                    //console.log("recordEvent", r);
+                                });
+                        }
                         const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
                         if (nocredits) {
                             setIsLoading(false);
@@ -528,10 +532,12 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     useEffect(() => {
-        actionRecordEvent(`chat-component-open`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","league":"${league}","params":"${params}"}`)
-            .then((r: any) => {
-                //console.log("recordEvent", r);
-            });
+        if (!bot) {
+            actionRecordEvent(`chat-component-open`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","league":"${league}","params":"${params}"}`)
+                .then((r: any) => {
+                    //console.log("recordEvent", r);
+                });
+        }
     }, []);
     const isDarkMode = mode === 'dark';
     const renderPrompts = (device: "desktop" | "mobile") => {

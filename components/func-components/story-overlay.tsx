@@ -176,7 +176,7 @@ interface Props {
 
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     const [promptUUId, setPromptUUId] = useState('');
-    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, setSlug } = useAppContext();
+    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, setSlug, bot } = useAppContext();
 
     const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
     let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
@@ -198,10 +198,12 @@ const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
         if (astory) {
             //console.log("openDialog")
             setOpen(true);
-            actionRecordEvent(`story-overlay-open`, `{"utm_content":"${utm_content}","idx":"${idx}","slug":"${slug}","url":"${url}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
+            if (!bot) {
+                actionRecordEvent(`story-overlay-open`, `{"utm_content":"${utm_content}","idx":"${idx}","slug":"${slug}","url":"${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            }
         }
     }, [astory]);
 

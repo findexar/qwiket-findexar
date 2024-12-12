@@ -100,7 +100,7 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid } = useAppContext();
+    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid, bot } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -127,10 +127,12 @@ const Mobile: React.FC<Props> = () => {
         router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
         window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
 
-        await actionRecordEvent(
-            'tab-nav',
-            `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "rtab":"${rtab}"}`
-        );
+        if (!bot) {
+            await actionRecordEvent(
+                'tab-nav',
+                `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "rtab":"${rtab}"}`
+            );
+        }
 
         // Simulate content loading
         await new Promise(resolve => setTimeout(resolve, 300));
@@ -149,7 +151,9 @@ const Mobile: React.FC<Props> = () => {
             setTimeout(() => setTab(tab), 0);
         }
         //setView("mentions");
-        setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+        if (!bot) {
+            setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
+        }
     }
     const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();

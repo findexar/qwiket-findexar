@@ -131,7 +131,7 @@ interface Props {
 }
 const Players: React.FC<Props> = () => {
 
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName, setTeamLogo } = useAppContext();
+    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName, setTeamLogo, bot } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
     const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
@@ -181,10 +181,12 @@ const Players: React.FC<Props> = () => {
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
         //  console.log("replaceState", url)
         //  window.history.replaceState({}, "", url);
-        await actionRecordEvent(
-            'player-nav',
-            `{"params":"${params}","player":"${name}"}`
-        );
+        if (!bot) {
+            await actionRecordEvent(
+                'player-nav',
+                `{"params":"${params}","player":"${name}"}`
+            );
+        }
     }
 
     const PlayersNav = players && players?.map((p: { name: string, athleteUUId: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
@@ -220,10 +222,12 @@ const Players: React.FC<Props> = () => {
                                 })
                             }, { revalidate: true });
                             await actionRemoveMyTeamMember({ member: p.name, athleteUUId: p.athleteUUId, teamid });
-                            await actionRecordEvent(
-                                'player-remove-myteam',
-                                `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
-                            );
+                            if (!bot) {
+                                await actionRecordEvent(
+                                    'player-remove-myteam',
+                                    `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
+                                );
+                            }
                             mutateMentions();
                             mutateMyFeed();
                             mutatePlayerMentions();
@@ -243,10 +247,12 @@ const Players: React.FC<Props> = () => {
                                         return player;
                                     })
                                 }, { revalidate: true });
-                                await actionRecordEvent(
-                                    'player-add-myteam',
-                                    `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
-                                );
+                                if (!bot) {
+                                    await actionRecordEvent(
+                                        'player-add-myteam',
+                                        `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
+                                    );
+                                }
                                 mutateMentions();
                                 mutateMyFeed();
                                 mutatePlayerMentions();

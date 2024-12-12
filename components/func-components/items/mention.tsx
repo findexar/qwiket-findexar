@@ -396,7 +396,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
-    const { setFindexarxid, setSlug, fallback, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
+    const { setFindexarxid, setSlug, fallback, bot, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     const [toastMessage, setToastMessage] = useState("");
@@ -559,10 +559,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onMentionNav = useCallback(async (name: string, athleteUUId: string, url: string) => {
         let pgt = type == 'person' ? 'player' : 'team';
-        await actionRecordEvent(
-            'mention-nav',
-            `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
-        );
+        if (!bot) {
+            await actionRecordEvent(
+                'mention-nav',
+                `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
+            );
+        }
     }, [league, team, type, params]);
 
 
@@ -576,10 +578,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onHover = useCallback((label: string) => {
         try {
-            actionRecordEvent(`mention-hover`, `{"utm_content":"${utm_content}","label":"${label}","name":"${name}","url":"${encodeURI(url)}","params":"${params}"}`)
-                .then((r: any) => {
-
-                });
+            if (!bot) {
+                actionRecordEvent(`mention-hover`, `{"utm_content":"${utm_content}","label":"${label}","name":"${name}","url":"${encodeURI(url)}","params":"${params}"}`)
+                    .then((r: any) => {
+                    });
+            }
         } catch (x) {
             console.log('actionRecordEvent', x);
         }
@@ -587,10 +590,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onShare = useCallback((url: string) => {
         try {
-            actionRecordEvent(`mention-share`, `{"name":"${name}","url","${url}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("actionRecordEvent", r);
-                });
+            if (!bot) {
+                actionRecordEvent(`mention-share`, `{"name":"${name}","url","${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("actionRecordEvent", r);
+                    });
+            }
         } catch (x) {
             console.log('actionRecordEvent', x);
         }
@@ -598,10 +603,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onClick = useCallback((url: string) => {
         try {
-            actionRecordEvent(`mention-story-click`, `{"name":"${name}","url","${url}","params":"${params}"}`)
-                .then((r: any) => {
-                    console.log("actionRecordEvent", r);
-                });
+            if (!bot) {
+                actionRecordEvent(`mention-story-click`, `{"name":"${name}","url","${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        console.log("actionRecordEvent", r);
+                    });
+            }
         } catch (x) {
             console.log('actionRecordEvent', x);
         }
@@ -616,6 +623,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         setDigestCopied(true);
         copy(digest);
     }, [digest]);
+
     const iconClick = useCallback(async () => {
         if (localTracked == true) {
             setToastMessage("Player removed from the Team");
@@ -637,10 +645,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     })
                 }, { revalidate: true });
             }
-            await actionRecordEvent(
-                'mention-remove-myteam',
-                `{"params":"${params}","team":"${team}","player":"${name}", "athleteUUId": "${athleteUUId}"}`
-            );
+            if (!bot) {
+                await actionRecordEvent(
+                    'mention-remove-myteam',
+                    `{"params":"${params}","team":"${team}","player":"${name}", "athleteUUId": "${athleteUUId}"}`
+                );
+            }
         }
         else {
             const response = await actionAddMyTeamMember({ member: name, teamid: team, athleteUUId: athleteUUId });
@@ -664,10 +674,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         })
                     }, { revalidate: true });
                 }
-                await actionRecordEvent(
-                    'mention-add-myteam',
-                    `{"params":"${params}","team":"${team}","player":"${name}"}`
-                );
+                if (!bot) {
+                    await actionRecordEvent(
+                        'mention-add-myteam',
+                        `{"params":"${params}","team":"${team}","player":"${name}"}`
+                    );
+                }
             }
             else {
                 const { error, maxUser, maxSubscription } = response;
@@ -700,7 +712,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             }
         }
 
-    }, [mention])
+    }, [mention]);
 
     return (
         <>
@@ -718,8 +730,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 if (mutate) mutate();
                                 setToastMessage("Added to Favorites.");
                                 setToastIcon(<StarIcon className="h-4 w-4" />);
-
-
 
                             }} style={{ color: "#888" }} /> :
                             <StarIcon className="h-4 w-4" onClick={async () => {

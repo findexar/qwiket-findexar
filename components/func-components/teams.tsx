@@ -37,7 +37,7 @@ const SelectedSideTeam = styled.div`
 interface Props {
 }
 const Teams: React.FC<Props> = () => {
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, setTeamName, setTeamLogo } = useAppContext();
+    const { fallback, bot, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, setTeamName, setTeamLogo } = useAppContext();
 
     const leagueTeamsKey: LeagueTeamsKey = { type: "league-teams", league };
     const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
@@ -55,10 +55,12 @@ const Teams: React.FC<Props> = () => {
         console.log("replaceState", url)
         window.history.replaceState({}, "", url);
 
-        await actionRecordEvent(
-            'team-nav',
-            `{"params":"${params}","teamid":"${name}"}`
-        );
+        if (!bot) {
+            await actionRecordEvent(
+                'team-nav',
+                `{"params":"${params}","teamid":"${name}"}`
+            );
+        }
     }, []);
     useEffect(() => {
         if (teams && teams.length > 0) {

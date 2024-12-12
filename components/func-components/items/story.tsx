@@ -268,7 +268,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
 
-    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
+    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts, bot } = story || {};
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
@@ -309,18 +309,22 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     useEffect(() => {
         if (inView && !visible) {
             setVisible(true);
-            actionRecordEvent(`story-inview`, `{"utm_content":"${utm_content}","slug":"${slug}","url":"${url}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
+            if (!bot) {
+                actionRecordEvent(`story-inview`, `{"utm_content":"${utm_content}","slug":"${slug}","url":"${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            }
         }
     }, [inView]);
 
     useEffect(() => {
         if (!site_name) {
-            actionRecordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${url}"}`).then((r: any) => {
-                //console.log("recordEvent", r);
-            });;
+            if (!bot) {
+                actionRecordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${url}"}`).then((r: any) => {
+                    //console.log("recordEvent", r);
+                });;
+            }
         }
     }, [site_name]);
 
@@ -340,13 +344,15 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     }, [createdTime])
 
     const onShare = useCallback((url: string) => {
-        try {
-            actionRecordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
-        } catch (x) {
-            console.log('recordEvent', x);
+        if (!bot) {
+            try {
+                actionRecordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            } catch (x) {
+                console.log('recordEvent', x);
+            }
         }
     }, [params]);
 
@@ -356,24 +362,28 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     }, [digest]);
 
     const onMentionClick = useCallback((mention: any) => {
-        try {
-            actionRecordEvent(`mini-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
-        } catch (x) {
-            console.log('recordEvent', x);
+        if (!bot) {
+            try {
+                actionRecordEvent(`mini-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            } catch (x) {
+                console.log('recordEvent', x);
+            }
         }
     }, []);
 
     const onStoryClick = useCallback(() => {
-        try {
-            actionRecordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`)
-                .then((r: any) => {
-                    //console.log("recordEvent", r);
-                });
-        } catch (x) {
-            console.log('recordEvent', x);
+        if (!bot) {
+            try {
+                actionRecordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            } catch (x) {
+                console.log('recordEvent', x);
+            }
         }
     }, []);
 
@@ -409,6 +419,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     selectedXid={selectedXid}
                     setSelectedXid={setSelectedXid}
                     mutate={() => { }}
+                    bot={bot}
                 />
             ))}
         </MentionsWrap>
