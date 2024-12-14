@@ -32,7 +32,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
-  let { id, story }:
+  let { id, story, tab, view }:
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
@@ -113,7 +113,7 @@ export async function generateMetadata(
       ],
       type: 'website'
     },
-    robots: noindex ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || tab === 'chat' || view === 'chat') ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },

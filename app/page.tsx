@@ -28,7 +28,7 @@ type Props = {
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  let { id, story } = searchParams as any;
+  let { id, story, tab, view } = searchParams as any;
   let findexarxid = id || "";
   const league = '';
 
@@ -120,7 +120,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description: ogDescription,
       images: [ogImage],
     },
-    robots: noindex === 1 ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || tab === 'chat' || view === 'chat') ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },

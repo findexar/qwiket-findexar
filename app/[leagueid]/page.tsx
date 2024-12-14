@@ -35,7 +35,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   let {
     id,
-    story
+    story,
+    tab,
+    view
   }: {
     fbclid: string,
     utm_content: string,
@@ -138,7 +140,7 @@ export async function generateMetadata(
       ],
       type: 'website'
     },
-    robots: noindex ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || tab === 'chat' || view === 'chat') ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },
