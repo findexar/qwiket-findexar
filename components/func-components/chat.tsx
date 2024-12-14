@@ -910,6 +910,18 @@ const ChatsComponent: React.FC<Props> = ({
                             </div>
                         </div>
                     )}
+                    {level == 'trial' && !isLoading && drawMessages.length >= 6 && (
+                        <div className="text-xs text-green-600 dark:text-green-400 mb-6 mt-4 ml-4 mr-4">
+                            You have {totalCredits} trial credits remaining. Consider&nbsp;
+                            <Link href="/account/upgrade" className="text-blue-500 hover:underline" onClick={() => recordEvent(`reasoning-trial-upgrade-click`, `{"creator":"${!creator}","utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","remainingCredits":"${totalCredits}","params":"${JSON.stringify(params)}"}`)
+                                .then((r: any) => {
+                                    //console.log("recordEvent", r);
+                                })}>
+                                subscribing to Qwiket AI
+                            </Link> for continuous reasoning and decision-making support in your Fantasy Sports and Betting strategies.
+                        </div>
+                    )}
+
                     <div className="p-0 mt-4 mx-4">
                         <form onSubmit={handleSubmit} className="relative">
                             <textarea
