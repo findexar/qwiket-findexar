@@ -42,7 +42,8 @@ interface LeagueLayoutProps {
   teamLogo?: string,
   userInfo?: any,
   prompt?: string,
-  promptUUId?: string
+  promptUUId?: string,
+  ua?: string
 }
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
@@ -68,7 +69,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   teamLogo: startTeamLogo = "",
   userInfo,
   prompt: startPrompt = '',
-  promptUUId: startPromptUUId = ''
+  promptUUId: startPromptUUId = '',
+  ua
 }) => {
   const [tab, setTab] = useState(startTab || "");
   const [rtab, setRtab] = useState(startRtab || "");
@@ -94,7 +96,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
   useEffect(() => {
     if (!bot) {
-      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}"}`)
+      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
         .then((r: any) => {
           //console.log("recordEvent", r);
         });
