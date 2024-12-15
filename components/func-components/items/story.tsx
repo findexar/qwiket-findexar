@@ -265,10 +265,10 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount } = useAppContext();
+    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot } = useAppContext();
     const isDarkMode = mode === 'dark';
 
-    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts, bot } = story || {};
+    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
