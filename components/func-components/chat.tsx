@@ -235,6 +235,10 @@ const ChatsComponent: React.FC<Props> = ({
                     const newPrompts = content;
                     setFollowupPrompts(newPrompts);
                 },
+                onLastMessageUUIDUpdate: (content: string) => {
+                    setUpdateMessage('');
+                    setLastMessageUUID(content);
+                },
                 onError: (content: string) => {
                     console.log("==> CHAT.TSX onError", content);
                     setStatus('red');

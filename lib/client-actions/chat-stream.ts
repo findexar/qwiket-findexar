@@ -6,12 +6,13 @@ export interface ChatStreamProps {
     onError: (content: string) => void;
     onMetaUpdate: (content: string) => void;
     onFollowupPromptsUpdate: (content: string[]) => void;
+    onLastMessageUUIDUpdate: (content: string) => void;
 }
 
 export const actionChatStream = async (props: ChatStreamProps) => {
     'use client';
     try {
-        const { chatUUId, pumpUUId, onUpdate, onDone, onError, onMetaUpdate, onFollowupPromptsUpdate } = props;
+        const { chatUUId, pumpUUId, onUpdate, onDone, onError, onMetaUpdate, onFollowupPromptsUpdate, onLastMessageUUIDUpdate } = props;
         // Create a ReadableStream for the response
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/stream`;
         console.log("actionChatStream:", url);
@@ -75,6 +76,8 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                         const jsonData = JSON.parse(line.slice(5));
                         if (jsonData.content == "followupPrompts") {
                             onFollowupPromptsUpdate(jsonData.followupPrompts);
+                        } else if (jsonData.content == "lastMessageUUID") {
+                            onLastMessageUUIDUpdate(jsonData.lastMessageUUID);
                         } else {
                             if (jsonData.content.trim() == '[STOP]') {
                                 console.log('*********************** meta [STOP] received', line);
