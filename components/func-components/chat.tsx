@@ -523,7 +523,12 @@ const ChatsComponent: React.FC<Props> = ({
             handleSubmit(e as unknown as React.FormEvent);
         }
     };
-
+    const handleFeedbackKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleFeedbackSubmit();
+        }
+    };
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.focus();
@@ -932,7 +937,7 @@ const ChatsComponent: React.FC<Props> = ({
                     {!isLoading && lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user' && (
                         <div className="mt-4 mb-4 ml-4 mr-4">
                             <div className="flex items-center">
-                                {[...Array(5)].map((_, index) => (
+                                Rate the QwiketAI response:&nbsp;{[...Array(5)].map((_, index) => (
                                     <span
                                         key={index}
                                         onClick={() => handleStarClick(index)}
@@ -958,6 +963,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 <div className={`mt-2 ${feedback.feedback ? 'opacity-50' : ''}`}>
                                     <div className="relative">
                                         <textarea
+                                            onKeyDown={handleFeedbackKeyDown}
                                             ref={feedbackTextareaRef}
                                             defaultValue={feedback.feedback || ''}
                                             // onChange={(e) => { lastMessage.feedback = e.target.value }}
