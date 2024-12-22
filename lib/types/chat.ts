@@ -15,6 +15,7 @@ export type Chat = {
     name?: string,
     position?: number,
     creator?: boolean,
+    lastMessageUUID?: string,
 }
 
 export type ChatItem = {
@@ -46,6 +47,7 @@ export type Mention = {
     date: Date | null;
     teamName: string | null;
     athleteUUId: string | null;
+    feedbackVisible?: boolean;
 }
 
 export type Message = {
@@ -53,6 +55,7 @@ export type Message = {
     content: string;
     mentions?: { athleteUUId: string; teamid: string }[],
     prompts?: string[],
+    messageUUId?: string;
 }
 
 export type UserDocument = {

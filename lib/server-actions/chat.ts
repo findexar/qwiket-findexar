@@ -227,6 +227,7 @@ export interface ChatInitReturn {
     pumpUUId: string;
     nocredits: boolean;
     name: string;
+    lastMessageUUID?: string;
 
 }
 const chatInit = async (props: ChatInitProps, userId: string, sessionid: string): Promise<ChatInitReturn> => {
@@ -250,6 +251,7 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
             fantasyTeam,
             chatUUId,
             userRequest,
+
         }),
     });
 
@@ -310,7 +312,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         console.log("NULL RET loadLatestChat:", data.error)
         return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
     }
-    // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
     return { success: true, chat: data.chat, error: '' };
 }
 
@@ -343,7 +345,29 @@ export const actionChatName = async (props: ChatNameProps) => {
     const sessionid = session.sessionid || "";
     return chatName(props, userId || "", sessionid);
 }
-
+interface FeedbackProps {
+    stars: number;
+    feedback: string;
+    messageUUId: string;
+}
+const feedback = async (props: FeedbackProps, userId: string, sessionid: string) => {
+    const { stars, feedback, messageUUId } = props;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/feedback?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&stars=${stars}&feedback=${feedback}&messageUUId=${messageUUId}`;
+    console.log("feedback url", url);
+    const fetchResponse = await fetch(url);
+    const data = await fetchResponse.json();
+    return data;
+}
+export const actionFeedback = async (props: FeedbackProps) => {
+    'use server';
+    const session = await fetchSession();
+    let { userId } = auth() || { userId: session.sessionid };
+    const sessionid = session.sessionid || "";
+    if (!userId) {
+        userId = sessionid;
+    }
+    return feedback(props, userId || "", sessionid);
+}
 const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: string) => {
     'use server';
     //  console.log("promiseCreateChat", key, userId, sessionid)

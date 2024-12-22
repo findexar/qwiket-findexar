@@ -19,6 +19,7 @@ import SPALayout from '@/components/spa';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
+import { notFound } from 'next/navigation';
 type Props = {
   params: { leagueid: string, teamid: string },
   searchParams: { [key: string]: string | string[] | undefined }
@@ -33,7 +34,10 @@ export async function generateMetadata(
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
-
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
+    notFound();
+  }
   let amention, astory;
   if (findexarxid) {
     amention = await getAMention({ type: "AMention", findexarxid });
@@ -171,6 +175,11 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "team";
   let league = params.leagueid.toUpperCase();
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
+    notFound();
+
+  }
   let teamid = params.teamid;
   //console.log("league->", league);
 

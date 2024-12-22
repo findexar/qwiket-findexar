@@ -91,6 +91,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
+  const [feedback, setFeedback] = useState({ messageUUId: "", feedback: "", stars: 0, open: false });
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
@@ -281,6 +282,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         userAccountMutate={userAccountMutate}
         prompt={prompt}
         promptUUId={promptUUId}
+        feedback={feedback}
+        setFeedback={setFeedback}
       >
 
         <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>

@@ -49,14 +49,9 @@ export async function generateMetadata(
 
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
-  if (league == 'FAVICON.ICO' || !['NFL', 'MLB', 'NBA', 'NHL'].includes(league?.toUpperCase())) {
-    return {
-      title: "Qwiket AI",
-      openGraph: {
-        title: "Qwiket AI",
-      },
-      robots: 'noindex, nofollow'
-    }
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
+    notFound();
   }
   let amention, astory;
 
@@ -226,8 +221,8 @@ export default async function Page({
   let findexarxid = id || "";
   let pagetype = "league";
   let league = params.leagueid.toUpperCase();
-  if (league === 'FAVICON.ICO') {
-    console.log("==> SSR PAGE.TSX FOUND league === 'FAVICON.ICO'");
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
     notFound();
     return <h1>Not Found</h1>;
   }

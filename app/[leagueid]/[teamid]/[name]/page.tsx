@@ -21,6 +21,7 @@ import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
 import fetchChat from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { leagueid: string, teamid: string }
@@ -36,6 +37,11 @@ export async function generateMetadata(
     { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
+    notFound();
+   
+  }
   /**
    * Fill an array of fetch promises for parallel execution
    * note: view - only on mobile, tab - on both

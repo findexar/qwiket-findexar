@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
+import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
 
@@ -76,14 +76,16 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
+    const feedbackTextareaRef = useRef<HTMLTextAreaElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false);
     const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '_new' : (chatUUIdProp || ""));
+    const [lastMessageUUID, setLastMessageUUID] = useState<string>('');
     const [pumpUUId, setPumpUUId] = useState<string>('');
     const [chatName, setChatName] = useState<string>('');
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
@@ -379,6 +381,8 @@ const ChatsComponent: React.FC<Props> = ({
                     setChatName(loadedChat?.chat?.name || 'New Chat');
                 }
             }
+            console.log("==> CHAT.TSX loadedChat?.chat?.lastMessageUUID", loadedChat?.chat?.lastMessageUUID);
+            setLastMessageUUID(loadedChat?.chat?.lastMessageUUID || '');
         }
     }, [loadedChat]);
 
@@ -386,7 +390,9 @@ const ChatsComponent: React.FC<Props> = ({
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-
+        let lastMessage = drawMessages[drawMessages.length - 1];
+        // Reset feedback state
+        setFeedback({ messageUUId: "", feedback: "", stars: 0, open: false });
         setStatus('green');
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
         // console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
@@ -637,7 +643,42 @@ const ChatsComponent: React.FC<Props> = ({
             }, 2000);
         }
     }, [prompt]);
+    // const [starRating, setStarRating] = useState<number>(0);
+    // const [feedbackText, setFeedbackText] = useState<string>('');
 
+    // Function to handle star click
+    const handleStarClick = (index: number) => {
+
+        const lastMessage = drawMessages[drawMessages.length - 1]; // Get the last message
+
+        const stars = index + 1;
+        setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: stars, open: feedback.open });
+        console.log("==> CHAT.TSX handleStarClick", lastMessage);
+        actionFeedback({ stars: stars, feedback: feedback.feedback, messageUUId: lastMessageUUID }).then(() => {
+            console.log("==> star rating submitted", stars);
+        });
+    };
+
+    // Function to handle feedback submission
+    const handleFeedbackSubmit = () => {
+        const feedbackText = feedbackTextareaRef.current?.value || '';
+
+        console.log("==> CHAT.TSX handleFeedbackSubmit", feedbackText, lastMessageUUID);
+        if (feedbackText) {
+            const lastMessage = drawMessages[drawMessages.length - 1]; // Get the last message
+
+            actionFeedback({ stars: 0, feedback: feedbackText, messageUUId: lastMessageUUID }).then(() => {
+            });
+            //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
+            setFeedback({ messageUUId: lastMessageUUID, feedback: 'Thank you for your feedback!', stars: feedback.stars, open: feedback.open });
+            if (feedbackTextareaRef.current) {
+                feedbackTextareaRef.current.value = 'Thank you for your feedback!';
+            }
+            //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
+
+        }
+    };
+    let lastMessage = drawMessages[drawMessages.length - 1];
     return (
         <>
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
@@ -840,7 +881,7 @@ const ChatsComponent: React.FC<Props> = ({
                             </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                         </>
                     )}
-                    {drawMessages.map((message, index) => (
+                    {drawMessages.map((message: Message, index: number) => (
                         <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
                         ${message.role === 'user'
@@ -884,6 +925,57 @@ const ChatsComponent: React.FC<Props> = ({
                             </div>
                         </div>
                     ))}
+                    {!isLoading && lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user' && (
+                        <div className="mt-4 mb-4 ml-4 mr-4">
+                            <div className="flex items-center">
+                                {[...Array(5)].map((_, index) => (
+                                    <span
+                                        key={index}
+                                        onClick={() => handleStarClick(index)}
+                                        className={`cursor-pointer ${feedback.stars && feedback.stars > index ? 'text-yellow-500' : 'text-gray-400'}`}
+                                    >
+                                        ★
+                                    </span>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => {
+                                    if (lastMessage) {
+                                        setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: feedback.stars, open: !feedback.open });
+                                        //setLastMessageUpdate(prev => prev + 1);
+                                    }
+                                }
+                                }
+                                className="mt-2 text-blue-500"
+                            >
+                                More Feedback
+                            </button>
+                            {feedback.open && (
+                                <div className={`mt-2 ${feedback.feedback ? 'opacity-50' : ''}`}>
+                                    <div className="relative">
+                                        <textarea
+                                            ref={feedbackTextareaRef}
+                                            defaultValue={feedback.feedback || ''}
+                                            // onChange={(e) => { lastMessage.feedback = e.target.value }}
+                                            placeholder="Your feedback..."
+                                            //className="w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
+                                            className={`w-full p-3 pr-16 border mh-4 rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
+
+                                            rows={3}
+                                            disabled={isLoading || feedback.feedback}
+                                        />
+                                        <button
+                                            onClick={handleFeedbackSubmit}
+                                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
+                                        >
+                                            <FaPaperPlane size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                         {updateMessage || "***"}
                     </div>
