@@ -670,10 +670,14 @@ const ChatsComponent: React.FC<Props> = ({
             actionFeedback({ stars: 0, feedback: feedbackText, messageUUId: lastMessageUUID }).then(() => {
             });
             //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
-            setFeedback({ messageUUId: lastMessageUUID, feedback: 'Thank you for your feedback!', stars: feedback.stars, open: feedback.open });
-            if (feedbackTextareaRef.current) {
-                feedbackTextareaRef.current.value = 'Thank you for your feedback!';
-            }
+            setTimeout(() => {
+                setFeedback({ messageUUId: lastMessageUUID, feedback: 'Thank you for your feedback!', stars: feedback.stars, open: feedback.open });
+
+                if (feedbackTextareaRef.current) {
+                    feedbackTextareaRef.current.value = 'Thank you for your feedback!';
+                }
+            }, 2000);
+
             //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
 
         }
