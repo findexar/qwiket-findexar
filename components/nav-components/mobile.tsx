@@ -100,7 +100,7 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid, bot } = useAppContext();
+    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid, bot, player, athleteUUId } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -108,12 +108,12 @@ const Mobile: React.FC<Props> = () => {
     // Use useMemo to memoize complex calculations or derived values
     const currentTab = React.useMemo(() => tab || "all", [tab]);
     const currentView = React.useMemo(() => view == 'main' ? 'mentions' : view || 'mentions', [view]);
-
+    //console.log("==> mobile page", pagetype);
     // Use useCallback for event handlers
-    const onTabNav = React.useCallback(async (option: any) => {
+    const onTabNav = React.useCallback(async (option: any, level: number) => {
         setIsVisible(false);
         setIsLoading(true);
-
+        //console.log("==> mobile onTabNav", { option, level });
         // Wait for fade out
         await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -124,13 +124,13 @@ const Mobile: React.FC<Props> = () => {
         }
         // setView("main");
         let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-        router.push(league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`)
-        window.history.pushState({}, "", league ? `/${league}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+        router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+        window.history.pushState({}, "", league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
 
         if (!bot) {
             await actionRecordEvent(
                 'tab-nav',
-                `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "rtab":"${rtab}"}`
+                `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${tab}", "level":"${level}","rtab":"${rtab}"}`
             );
         }
 
@@ -140,6 +140,8 @@ const Mobile: React.FC<Props> = () => {
         setIsLoading(false);
         setIsVisible(true);
     }, [fbclid, utm_content, league, params, setTab, setView, router]);
+
+
     const onRTabNav = (option: any) => {
         const newTab = option.tab;
         const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
@@ -191,7 +193,10 @@ const Mobile: React.FC<Props> = () => {
                 {pagetype == "landing" && <Landing />}
                 {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
-                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => { console.log(option); await onViewNav(option); }} selectedOptionName={view} />}
+                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => {
+                    //console.log(option);
+                    await onViewNav(option);
+                }} selectedOptionName={view} />}
 
                 {pagetype == "league" && (view == "mentions" || view == '') &&
 
@@ -201,7 +206,31 @@ const Mobile: React.FC<Props> = () => {
                             { name: "AI Chat", tab: "chat", disabled: false },
                             { name: `${league ? league : 'All'} Mentions`, tab: "mentions", disabled: false }
                         ]}
-                        onChange={async (option: any) => { await onTabNav(option); }}
+                        onChange={async (option: any) => { await onTabNav(option, 0); }}
+                        selectedOptionName={tab}
+                    />
+
+                }
+                {pagetype == "team" && (view == "mentions" || view == '') &&
+
+                    <TertiaryTabs
+                        options={[
+                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: "AI Chat", tab: "chat", disabled: false },
+                        ]}
+                        onChange={async (option: any) => { await onTabNav(option, 1); }}
+                        selectedOptionName={tab}
+                    />
+
+                }
+                {pagetype == "player" && (view == "mentions" || view == '') &&
+
+                    <TertiaryTabs
+                        options={[
+                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: "AI Chat", tab: "chat", disabled: false },
+                        ]}
+                        onChange={async (option: any) => { await onTabNav(option, 2); }}
                         selectedOptionName={tab}
                     />
 
