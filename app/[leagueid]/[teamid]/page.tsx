@@ -19,7 +19,7 @@ import SPALayout from '@/components/spa';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 type Props = {
   params: { leagueid: string, teamid: string },
   searchParams: { [key: string]: string | string[] | undefined }
@@ -182,7 +182,10 @@ export default async function Page({
   }
   let teamid = params.teamid;
   //console.log("league->", league);
-
+  if (!teamid || teamid == 'null') {
+    //forward to main page
+    redirect(`/${league}`);
+  }
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
   ));
