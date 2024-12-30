@@ -184,7 +184,7 @@ export default async function Page({
   //console.log("league->", league);
   if (!teamid || teamid == 'null') {
     //forward to main page
-    redirect(`/${league}`);
+    return redirect(`/${league}`);
   }
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
