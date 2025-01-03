@@ -141,7 +141,11 @@ const MobileSidePlayer = styled.div`
 `;
 
 const RightScroll = styled.div`
+    margin-left:46px;
+    margin-top:6px;
     position:sticky;
+    display:flex;
+    flex-direction:column;
     height:auto !important;
     top:-110px;
     overflow-y: hidden;
