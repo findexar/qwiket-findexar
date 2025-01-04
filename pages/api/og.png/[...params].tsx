@@ -102,6 +102,9 @@ async function handler(
             case 'Los Angeles Times':
                 sn = "LAT";
                 break;
+            case 'RotoWire':
+                sn = "RW";
+                break;
             default:
                 sn = site_name;
                 break;
