@@ -88,7 +88,7 @@ export async function generateMetadata(
     image_height = 1200
   } = astory || {};
   console.log("*** *** ***astory:", astory);
-  astoryOgImage = ''; //DEBIG
+  //astoryOgImage = ''; //DEBIG
   const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
   console.log("*** *** ***astoryImageOgUrl:", astoryImageOgUrl);
   let ogUrl = '';

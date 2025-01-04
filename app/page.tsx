@@ -63,7 +63,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     image_width = 1200,
     image_height = 1200
   } = astory || {};
-  astoryOgImage = ''; //DEBIG
+  //astoryOgImage = ''; //DEBIG
   const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
 
   let ogUrl = '';
