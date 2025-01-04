@@ -54,7 +54,7 @@ async function handler(
                         top: '20%',
                         left: offset ? '10%' : '3%',
                         //right: 0,
-                        height: '20%', // Adjust as needed
+                        height: '24%', // Adjust as needed
                         backgroundColor: 'rgba(0, 0, 0, 0.6)', // Dark background with opacity
                         display: 'flex',
                         flexDirection: 'column',
