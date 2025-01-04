@@ -93,6 +93,9 @@ async function handler(
             case 'Virginia Pilot':
                 sn = "VP";
                 break;
+            case 'Bultimore Sun':
+                sn = "BS";
+                break;
             case 'thePeachBasket':
                 sn = "TPB";
                 break;
