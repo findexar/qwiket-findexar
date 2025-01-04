@@ -64,13 +64,13 @@ async function handler(
                         padding: '10px',
                         borderRadius: '10px',
                     }}>
-                        <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px`, padding: 10 }} >{site_name ? site_name.trim() : ''}</span>
+                        <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px`, padding: 10 }} >Source: {site_name ? site_name.trim() : ''}</span>
                         <br />
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
-                            <div style={{ zIndex: 0, fontSize: `26px`, padding: 10, color: 'yellow', }} >Please click Like to support Qwiket&apos;s growth.</div>
+                            <div style={{ zIndex: 0, fontSize: `32px`, padding: 10, color: 'yellow', }} >Please click Like to support Qwiket&apos;s growth.</div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
