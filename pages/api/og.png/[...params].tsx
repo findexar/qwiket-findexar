@@ -46,7 +46,7 @@ async function handler(
                 sn = "TA";
                 break;
             case 'Yahoo Sports':
-                sn = "YS";
+                sn = "Y!S";
                 break;
             case 'CBSSports':
                 sn = "CBS";
@@ -126,9 +126,8 @@ async function handler(
                         position: 'absolute',
                         top: '20%',
                         left: offset ? '10%' : '3%',
-                        //right: 0,
                         height: '24%', // Adjust as needed
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)', // Dark background with opacity
+                        backgroundColor: 'rgba(0, 0, 0, 0.0)', // Dark background with opacity
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -137,7 +136,16 @@ async function handler(
                         padding: '10px',
                         borderRadius: '10px',
                     }}>
-                        <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px`, padding: 10 }} >{sn}</span>
+                        <div style={{
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Light background for the oval
+                            borderRadius: '50%', // Makes it oval
+                            padding: '10px 20px', // Padding to create the oval shape
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px` }}>{sn}</span>
+                        </div>
                         <br />
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             {false && <svg xmlns="http://www.w3.org/2000/svg" width={`${(+height) / 18}`} height={`${(+height) / 18}`} viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
