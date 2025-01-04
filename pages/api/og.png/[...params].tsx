@@ -65,7 +65,7 @@ async function handler(
                         borderRadius: '10px',
                     }}>
                         <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px`, padding: 10 }} >{site_name ? site_name.trim() : ''}</span>
-                        <br /><div style={{ zIndex: 0, fontSize: `18px`, padding: 10, color: 'yellow', }} >Please click <b>Like</b> to support Qwiket&apos;s growth.</div>
+                        <br /><div style={{ zIndex: 0, fontSize: `18px`, padding: 10, color: 'yellow', }} >Please click Like to support Qwiket&apos;s growth.</div>
                     </div>
                 </div>
             ),
