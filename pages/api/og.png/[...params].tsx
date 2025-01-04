@@ -42,7 +42,7 @@ async function handler(
             case 'RotoWire':
                 sn = "RW";
                 break;
-            case "Rotoboller":
+            case "Rotoballer":
                 sn = "RB";
                 break;
             case 'Sports Illustrated':
