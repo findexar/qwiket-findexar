@@ -90,6 +90,9 @@ async function handler(
             case 'Dallas News':
                 sn = "DN";
                 break;
+            case 'Virginia Pilot':
+                sn = "VP";
+                break;
             case 'thePeachBasket':
                 sn = "TPB";
                 break;
