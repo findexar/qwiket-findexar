@@ -117,6 +117,15 @@ async function handler(
             case 'RotoWire':
                 sn = "RW";
                 break;
+            case 'Blue Seat Blogs':
+                sn = "BSB";
+                break;
+            case 'NHL Rumors':
+                sn = "NR";
+                break;
+            case 'NoVa Caps':
+                sn = "NVC";
+                break;
             default:
                 sn = site_name;
                 break;
