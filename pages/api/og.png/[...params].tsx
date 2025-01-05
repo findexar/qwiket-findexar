@@ -93,7 +93,7 @@ async function handler(
             case 'Virginia Pilot':
                 sn = "VP";
                 break;
-            case 'Bultimore Sun':
+            case 'Baltimore Sun':
                 sn = "BS";
                 break;
             case 'thePeachBasket':
