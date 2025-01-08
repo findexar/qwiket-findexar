@@ -265,6 +265,7 @@ const ChatsComponent: React.FC<Props> = ({
                     setUserInput(lastUserInput);
                     if (content.includes('Server error')) {
                         setStatus('red');
+                        setUpdateMessage("Server error. Retrying...");
                         setPumpUUId('');
                         setTimeout(() => {
                             const formEvent = new Event('submit', { bubbles: true });

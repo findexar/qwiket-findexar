@@ -312,7 +312,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         console.log("NULL RET loadLatestChat:", data.error)
         return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
     }
-    console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
     return { success: true, chat: data.chat, error: '' };
 }
 
