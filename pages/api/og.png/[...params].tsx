@@ -79,7 +79,7 @@ async function handler(
                 sn = "NYDN";
                 break;
             case 'The Globe and Mail':
-                sn = "TG";
+                sn = "TG&M";
                 break;
             case 'The Washington Times':
                 sn = "WT";

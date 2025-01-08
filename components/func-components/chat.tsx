@@ -243,59 +243,38 @@ const ChatsComponent: React.FC<Props> = ({
                     console.log("==> CHAT.TSX onError", content);
                     setStatus('red');
                     setUpdateMessage(content);
-                    /*  setMessages(prevMessages => {
-                          const updatedMessages = [...prevMessages];
-                          if (updatedMessages.length > 1) {
-                              updatedMessages.pop(); // Remove last AI response
-                              updatedMessages.pop(); // Remove last user request
-                          }
-                          return updatedMessages;
-                      });*/
-                    /* setResponse(prev => {
-                         const updatedContent = prev + content;
-                         setMessages(prevMessages => {
-                             const updatedMessages = [...prevMessages];
-                             if (updatedMessages.length > 0) {
-                                 updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                             }
-                             return updatedMessages;
-                         });
-                         return updatedContent;
-                     });*/
-                    setUserInput(lastUserInput);
-                    if (content.includes('Server error')) {
-                        setStatus('red');
-                        setUpdateMessage("Server error. Retrying...");
-                        setPumpUUId('');
-                        setTimeout(() => {
-                            const formEvent = new Event('submit', { bubbles: true });
-                            console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
-                            handleSubmit(formEvent as unknown as React.FormEvent);
-                        }, 1);
-                        setResponse(prev => {
-                            const updatedContent = "";
-                            setMessages(prevMessages => {
-                                const updatedMessages = [...prevMessages];
-                                if (updatedMessages.length > 0) {
-                                    updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                                }
-                                return updatedMessages;
-                            });
-                            return updatedContent;
-                        });
-                    }
-                    else {
 
-                        /*if (textareaRef.current) {
-                            textareaRef.current.value = lastUserInput;
-                            const formEvent = new Event('submit', { bubbles: true });
-                            handleSubmit(formEvent as unknown as React.FormEvent);
-                        }*/
-                        setPumpUUId('');
-                        setTimeout(() => {
-                            setPumpUUId(pumpUUId); //to trigger useEffect
-                        }, 100);
-                    }
+
+                    /* setUserInput(lastUserInput);
+                     if (content.includes('Server error')) {
+                         setStatus('red');
+                         setUpdateMessage("Server error. Retrying...");
+                         setPumpUUId('');
+                         setTimeout(() => {
+                             const formEvent = new Event('submit', { bubbles: true });
+                             console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
+                             handleSubmit(formEvent as unknown as React.FormEvent);
+                         }, 1);
+                         setResponse(prev => {
+                             const updatedContent = "";
+                             setMessages(prevMessages => {
+                                 const updatedMessages = [...prevMessages];
+                                 if (updatedMessages.length > 0) {
+                                     updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                                 }
+                                 return updatedMessages;
+                             });
+                             return updatedContent;
+                         });
+                     }
+                     else {
+ 
+                     
+                    setPumpUUId('');
+                    setTimeout(() => {
+                        setPumpUUId(pumpUUId); //to trigger useEffect
+                    }, 100);
+                }*/
 
                 },
             }).catch(error => {
