@@ -667,6 +667,10 @@ const ChatsComponent: React.FC<Props> = ({
         actionFeedback({ stars: stars, feedback: feedback.feedback, messageUUId: lastMessageUUID }).then(() => {
             console.log("==> star rating submitted", stars);
         });
+        recordEvent(`chat-stars-click`, `{"stars":${stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+            .then((r: any) => {
+                console.log("recordEvent", r);
+            })
     };
 
     // Function to handle feedback submission
@@ -686,6 +690,10 @@ const ChatsComponent: React.FC<Props> = ({
                 if (feedbackTextareaRef.current) {
                     feedbackTextareaRef.current.value = 'Thank you for your feedback!';
                 }
+                recordEvent(`chat-feedback-submit`, `{"stars":${feedback.stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                    .then((r: any) => {
+                        console.log("recordEvent", r);
+                    })
             }, 2000);
 
             //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
@@ -956,9 +964,14 @@ const ChatsComponent: React.FC<Props> = ({
                                 onClick={() => {
                                     if (lastMessage) {
                                         setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: feedback.stars, open: !feedback.open });
-                                        //setLastMessageUpdate(prev => prev + 1);
+                                        recordEvent(`chat-feedback-click`, `{"stars":${feedback.stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                                            .then((r: any) => {
+                                                console.log("recordEvent", r);
+                                            })
                                     }
+                                    //setLastMessageUpdate(prev => prev + 1);
                                 }
+
                                 }
                                 className="mt-2 text-blue-500"
                             >
@@ -1064,7 +1077,7 @@ const ChatsComponent: React.FC<Props> = ({
 
                 <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
                 </div>
-            </div>
+            </div >
 
         </>
     );
