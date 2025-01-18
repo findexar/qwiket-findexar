@@ -126,6 +126,9 @@ async function handler(
             case 'NoVa Caps':
                 sn = "NVC";
                 break;
+            case 'Purple Insider Podcasts':
+                sn = "@PI";
+                break;
             default:
                 sn = site_name;
                 break;
