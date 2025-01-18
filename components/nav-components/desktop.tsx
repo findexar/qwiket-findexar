@@ -141,9 +141,9 @@ const CenterPanel = styled.div`
 `;
 
 const RightPanel = styled.div`
-  min-width: 300px;
+  width: 350px;
   padding-left: 20px;
-  flex-grow: 1;
+  //flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -156,9 +156,13 @@ const RightPanel = styled.div`
       color: var(--highlight);
     }
   }
+  @media screen and (max-width: 1400px) {
+    min-width: 300px;
+    width: 300px;
+  }
   @media screen and (max-width: 1200px) {
-    min-width: 200px;
-    width: 250px;
+    min-width: 300px;
+    width: 300px;
   }
 `;
 
