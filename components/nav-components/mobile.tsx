@@ -202,9 +202,10 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `${league ? league : 'All'} Stories`, tab: 'all', disabled: false },
+                            { name: `Stories`, tab: 'all', disabled: false },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
                             { name: "AI Chat", tab: "chat", disabled: false },
-                            { name: `${league ? league : 'All'} Mentions`, tab: "mentions", disabled: false }
+                            { name: `Mentions`, tab: "mentions", disabled: false }
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 0); }}
                         selectedOptionName={tab}
@@ -261,6 +262,7 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype == "team" && tab != "chat" ? <TeamMentions /> : null}
                     {pagetype == "player" && tab != "chat" && <PlayerMentions />}
                     {pagetype == "league" && currentTab == "all" ? <Stories /> : null}
+                    {pagetype == "league" && currentTab == "podcasts" ? <Stories type="v" /> : null}
                     {pagetype === "league" && tab == "mentions" && rtab === "myfeed" && <MyfeedMentions league={league} />}
                     {pagetype === "league" && tab == "mentions" && rtab === "fav" && <FavMentions />}
                     {pagetype === "league" && tab == "mentions" && rtab === "" && <LeagueMentions />}

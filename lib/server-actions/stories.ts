@@ -10,13 +10,15 @@ interface FetchStoriesProps {
     userId: string;
     sessionid: string;
     league: string;
+    type: string;
 }
 
 const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) => {
-    const { league, page } = key;
-    const url = `${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
+    const { type, league, page } = key;
+    let t = type == 'fetch-stories-v' ? 'v' : '';
+    const url = `${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}&type=${t}`;
     const t1 = Date.now();
-    //console.log("fetchStories", url);
+    console.log("fetchStories", url);
     const fetchResponse = await fetch(url);
     const t2 = Date.now();
 
@@ -26,10 +28,10 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     return res.stories;
 }
 
-const promiseStories = async ({ userId, sessionid, league }: FetchStoriesProps) => {
+const promiseStories = async ({ userId, sessionid, league, type }: FetchStoriesProps) => {
     //  console.log("promiseStories", userId, sessionid, league);
     let keyStories = (page: any) => {
-        const keyFetchedStories: StoriesKey = { type: "fetch-stories", page: page, league }
+        const keyFetchedStories: StoriesKey = { type: type == 'v' ? "fetch-stories-v" : "fetch-stories", page: page, league }
         return keyFetchedStories;
     };
     //console.log("StoriesKey:", keyStories);

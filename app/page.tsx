@@ -226,7 +226,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
       //console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league }));
+      calls.push(await fetchStories({ userId, sessionid, league,type:tab=='podcasts'?'v':'' }));
     }
   }
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {

@@ -82,6 +82,7 @@ const ImageWrapper = styled.div`
     margin-top:8px;
     flex: 1 1 auto;
     max-width: 100%;
+    width:100%;
 `;
 
 const Topline = styled.div`
@@ -98,6 +99,8 @@ const Image = styled.img`
     height: auto;
     object-fit: cover;
     margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
 `;
 
 const Authors = styled.div`
@@ -121,6 +124,7 @@ const HorizontalContainer = styled.div`
     display: flex;
     align-items:flex-start;
     flex-wrap: wrap;   
+    width:100%;
     a{
         font-size:15px;     
     }
@@ -442,11 +446,13 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     </Byline>
                 </Link>
                 <HorizontalContainer>
-                    <Link href={url} scroll={false} onClick={onStoryClick}>
-                        <ImageWrapper>
+
+                    <ImageWrapper>
+                        <Link href={url} scroll={false} onClick={onStoryClick}>
                             {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) && <Image src={image} alt={title} />}
-                        </ImageWrapper>
-                    </Link>
+                        </Link>
+                    </ImageWrapper>
+
                     <Body>
                         {false && <Link href={url} onClick={onStoryClick} target="_blank"><ArticleDigest>
                             <b>{true ? 'Digest:' : 'Short Digest:'}</b>

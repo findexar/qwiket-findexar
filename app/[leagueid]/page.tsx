@@ -297,7 +297,9 @@ export default async function Page({
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
       console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league }));
+      calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
+
+      //calls.push(await fetchStories({ userId, sessionid, league }));
     }
   }
   // console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));

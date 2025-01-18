@@ -245,8 +245,8 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "league" && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `${league || 'All'} Stories`, tab: 'all', disabled: false },
-
+                        { name: `Articles`, tab: 'all', disabled: false },
+                        { name: `Podcasts`, tab: 'podcasts', disabled: false },
                         { name: `AI Chat`, tab: 'chat', disabled: false },
                         { name: "MyTeam", tab: "myteam", disabled: false },
 
@@ -269,7 +269,8 @@ const Desktop: React.FC<Props> = () => {
                   )}
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
-                  {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "league" && view !== 'faq' && (tab === 'al' || tab === '') && <Stories />}
+                  {pagetype === "league" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
                   {view === 'faq' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
