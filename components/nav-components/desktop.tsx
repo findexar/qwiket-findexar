@@ -273,7 +273,7 @@ const Desktop: React.FC<Props> = () => {
                   )}
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
-                  {pagetype === "league" && view !== 'faq' && (tab === 'al' || tab === '') && <Stories />}
+                  {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
                   {view === 'faq' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
