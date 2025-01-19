@@ -130,7 +130,7 @@ async function handler(
                 sn = "@PI";
                 break;
             default:
-                sn = site_name;
+                sn = site_name.length > 8 ? '' : site_name;
                 break;
         }
         const response = new ImageResponse(
