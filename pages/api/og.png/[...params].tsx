@@ -160,7 +160,7 @@ async function handler(
                         padding: '10px',
                         borderRadius: '10px',
                     }}>
-                        <div style={{
+                        {sn && <div style={{
                             backgroundColor: 'rgba(0, 0, 0, 0.8)', // Light background for the oval
                             borderRadius: '50%', // Makes it oval
                             padding: '10px 20px', // Padding to create the oval shape
@@ -169,7 +169,7 @@ async function handler(
                             justifyContent: 'center',
                         }}>
                             <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px` }}>{sn}</span>
-                        </div>
+                        </div>}
                         <br />
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             {false && <svg xmlns="http://www.w3.org/2000/svg" width={`${(+height) / 18}`} height={`${(+height) / 18}`} viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
