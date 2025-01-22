@@ -59,7 +59,7 @@ const Welcome: React.FC<Props> = () => {
     return <> <WelcomeWrap className="text-left">
         Welcome to Qwiket AI!<br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
-
+        <br />
         Featuring sports-savvy AI Chat and a real-time, annotated,
         indexed sports media feed.<br /><br />
         As new stories and podcasts are published , they are digested, sliced and diced
