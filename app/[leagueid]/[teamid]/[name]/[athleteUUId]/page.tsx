@@ -13,7 +13,7 @@ import fetchMetaLink from '@lib/server-actions/meta-link';
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
 import fetchPlayerMentions from '@lib/server-actions/player-mentions';
 import fetchTeamPlayers from '@lib/server-actions/team-players';
-import fetchUserSubscription from "@lib/server-actions/user-subscription";
+import fetchStories from '@lib/server-actions/stories';
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot'
 import SPALayout from '@/components/spa';
@@ -182,7 +182,7 @@ export default async function Page({
 
     fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-    let { tab, fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" }:
+    let { tab = "", fbclid = "", utm_content = "", view = "", id, story, cid = "", aid = "" }:
         { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, cid: string, aid: string } = searchParams as any;
 
     let findexarxid = id || "";
@@ -200,7 +200,7 @@ export default async function Page({
         /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
     ))
     view = view.toLowerCase();
-    if (view == 'main' || view == 'feed' || view == 'home')
+    if (view==''||view == 'main' || view == 'feed' || view == 'home')
         view = 'mentions';
     let calls: { key: any, call: Promise<any> }[] = [];
 
@@ -241,13 +241,22 @@ export default async function Page({
     if (tab == 'chat') {
         calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
+    console.log("*** *** *** ==> player SSR", teamid, athleteUUId, tab, view);
+    if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
+        if (!story && !findexarxid) {
+            console.log("**********fetchStories", userId, sessionid, league);
+            calls.push(await fetchStories({ userId, sessionid, league, teamid, athleteUUId, type: tab == 'podcasts' ? 'v' : '' }));
+
+            //calls.push(await fetchStories({ userId, sessionid, league }));
+        }
+    }
     await fetchData(t1, fallback, calls);
 
     const key = { type: "league-teams", league };
 
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-
+    console.log("==> player SSR", teamName, teamid, athleteUUId, tab, view);
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >

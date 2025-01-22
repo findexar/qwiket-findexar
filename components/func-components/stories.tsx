@@ -65,10 +65,10 @@ let scrollY = 0;
 
 const Stories: React.FC<Props> = ({ type }) => {
     type = type || "";
-    const { fallback, league } = useAppContext();
+    const { fallback, league, teamid, athleteUUId } = useAppContext();
 
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
-        let key: StoriesKey = { type: `fetch-stories${type ? `-${type}` : ""}`, page: pageIndex, league };
+        let key: StoriesKey = { type: `fetch-stories${type ? `-${type}` : ""}`, page: pageIndex, league, teamid, athleteUUId };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     };

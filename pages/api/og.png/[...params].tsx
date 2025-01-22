@@ -126,9 +126,6 @@ async function handler(
             case 'NoVa Caps':
                 sn = "NVC";
                 break;
-            case 'Purple Insider Podcasts':
-                sn = "@PI";
-                break;
             default:
                 sn = site_name.length > 8 ? '' : site_name;
                 break;
@@ -168,7 +165,7 @@ async function handler(
                             alignItems: 'center',
                             justifyContent: 'center',
                         }}>
-                            <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px` }}>{sn}</span>
+                            <span style={{ zIndex: 0, fontSize: `${(+height) / 16}px` }}>{sn ? sn : "qwiket"}</span>
                         </div>}
                         <br />
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -176,9 +173,9 @@ async function handler(
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>}
                             {false && <div style={{ zIndex: 0, fontSize: `${(+height) / 18}px`, padding: 10, color: 'yellow', }} >Please click Like to support Qwiket&apos;s growth.</div>}
-                            <svg xmlns="http://www.w3.org/2000/svg" width={`${(+height) / 18}`} height={`${(+height) / 18}`} viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
+                            {sn && <svg xmlns="http://www.w3.org/2000/svg" width={`${(+height) / 18}`} height={`${(+height) / 18}`} viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
+                            </svg>}
                             {false && <svg xmlns="http://www.w3.org/2000/svg" width={`${(+height) / 18}`} height={`${(+height) / 18}`} viewBox="0 0 24 24" fill="none" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '5px' }}>
                                 <line x1="12" y1="4" x2="12" y2="20" stroke="yellow" strokeWidth="2" />
                                 <polygon points="10,18 12,20 14,18" fill="yellow" />

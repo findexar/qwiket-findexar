@@ -59,12 +59,12 @@ const Welcome: React.FC<Props> = () => {
     return <> <WelcomeWrap className="text-left">
         Welcome to Qwiket AI!<br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
-        <br />Sports News Monitor and  <br />AI Chat. <br /><br />
 
+        <br />Interactive Sports Knowledge, Reasoning <br />and Decision Support for Fantasy <br />Sports and Betting Enthusiasts.  <br />
         Featuring sports-savvy AI Chat and a real-time, annotated,
         indexed sports media feed.<br /><br />
-        As new stories are published in the media, they are digested, sliced and diced
-        into mentions of individual athletes and teams and fed back into   knowledge base.<br /><br />
+        As new stories and podcasts are published , they are digested, sliced and diced
+        into mentions of individual athletes and teams and fed back into the knowledge base.<br /><br />
 
         Track the media mentions across <br />your fantasy teams effortlessly<br />
         using the My Team feature.<br /><br />

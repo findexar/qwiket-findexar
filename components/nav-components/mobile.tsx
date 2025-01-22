@@ -182,7 +182,7 @@ const Mobile: React.FC<Props> = () => {
     /*  useEffect(() => {
           // Preload components or data here
       }, [tab, view]);*/
-    //  console.log("==> pagetype", pagetype);
+    console.log("==> pagetype", pagetype, view, tab);
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
@@ -216,8 +216,11 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: `Stories`, tab: 'all', disabled: false },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
                             { name: "AI Chat", tab: "chat", disabled: false },
+                            { name: `@`, tab: 'mentions', disabled: false },
+
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 1); }}
                         selectedOptionName={tab}
@@ -228,8 +231,11 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: `Stories`, tab: 'all', disabled: false },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
                             { name: "AI Chat", tab: "chat", disabled: false },
+                            { name: `@`, tab: 'mentions', disabled: false },
+
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 2); }}
                         selectedOptionName={tab}
@@ -258,11 +264,12 @@ const Mobile: React.FC<Props> = () => {
                         <Teams />
                     </LeftMobilePanel>
                 }
+
                 {currentView == 'mentions' && <CenterPanel>
-                    {pagetype == "team" && tab != "chat" ? <TeamMentions /> : null}
-                    {pagetype == "player" && tab != "chat" && <PlayerMentions />}
-                    {pagetype == "league" && currentTab == "all" ? <Stories /> : null}
-                    {pagetype == "league" && currentTab == "podcasts" ? <Stories type="v" /> : null}
+                    {pagetype == "team" && tab == "mentions" ? <TeamMentions /> : null}
+                    {pagetype == "player" && tab == "mentions" && <PlayerMentions />}
+                    {(pagetype == "league" || pagetype == "team" || pagetype == "player") && currentTab == "all" ? <Stories /> : null}
+                    {(pagetype == "league" || pagetype == "team" || pagetype == "player") && currentTab == "podcasts" ? <Stories type="v" /> : null}
                     {pagetype === "league" && tab == "mentions" && rtab === "myfeed" && <MyfeedMentions league={league} />}
                     {pagetype === "league" && tab == "mentions" && rtab === "fav" && <FavMentions />}
                     {pagetype === "league" && tab == "mentions" && rtab === "" && <LeagueMentions />}

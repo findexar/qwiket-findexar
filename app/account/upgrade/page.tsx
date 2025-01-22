@@ -79,7 +79,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
     }
 
-    let ogDescription = amentionSummary || "Sports News Monitor and AI Chat.";
+    let ogDescription = amentionSummary || "Interactive Sports Knowledge and Reasoning Support for Fantasy Sports and Betting Enthusiasts.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     let ogTitle = ogTarget || `Qwiket AI`;
 

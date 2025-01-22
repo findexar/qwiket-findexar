@@ -595,7 +595,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                     </TeamNameGroup>
                 }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket AI : ${league}` : `Qwiket AI`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Sports Knowledge</Subhead><SubheadMobile>Sports Knowledge</SubheadMobile></div>}
+                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Interactive Sports Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts</Subhead><SubheadMobile>Interactive Sports Knowledge</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}

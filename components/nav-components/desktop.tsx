@@ -175,9 +175,9 @@ const Desktop: React.FC<Props> = () => {
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
-  let tab = initialTab || "";
+  let tab = initialTab || "all";
   let rtab = initialRtab || "";
-  let view = initialView || "mentions";
+  let view = initialView || "";
 
   //  console.log("==> view", view, tab);
   if (tab === 'chat') {
@@ -232,7 +232,8 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }
   }
-  // console.log("==> pagetype", pagetype, tab);
+  // tab = tab || 'all';
+  console.log("==> pagetype", pagetype, tab, view);
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>
@@ -262,8 +263,11 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === "team" || pagetype === "player") && view !== 'faq' && (
                     <TertiaryTabs
                       options={[
-                        { name: `Press Mentions`, tab: 'mentions', disabled: false },
+                        { name: `Articles`, tab: 'all', disabled: false },
+                        { name: `Podcasts`, tab: 'podcasts', disabled: false },
                         { name: `AI Chat`, tab: 'chat', disabled: false },
+                        { name: `@`, tab: 'mentions', disabled: false },
+
 
 
                       ]}
@@ -271,10 +275,16 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
+
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "team" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "player" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
                   {pagetype === "league" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+                  {pagetype === "team" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+                  {pagetype === "player" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+
                   {view === 'faq' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
