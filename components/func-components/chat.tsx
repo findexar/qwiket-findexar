@@ -76,7 +76,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(prompt || '');
@@ -119,7 +119,7 @@ const ChatsComponent: React.FC<Props> = ({
     const level = useMemo(() => {
         return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
     }, [subscriptionType]);
-    // console.log("==> CHATS.TSX level", JSON.stringify(level));
+    console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
 
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -566,7 +566,7 @@ const ChatsComponent: React.FC<Props> = ({
                     {prompts.map((p: any, index: number) => (
                         <PromptTag
                             key={`prompt-${index}`}
-                            href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.uuid}`}
+                            href={`/${p.league}${teamid ? `/${teamid}` : ''}${player ? `/${player}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.uuid}`}
                             $isDarkMode={isDarkMode}
                         >
                             {typeof p.prompt === 'string' ? p.prompt : JSON.stringify(p.prompt)}
@@ -701,6 +701,7 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     let lastMessage = drawMessages[drawMessages.length - 1];
+    // console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
     return (
         <>
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}

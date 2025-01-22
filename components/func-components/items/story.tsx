@@ -269,7 +269,7 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot } = useAppContext();
+    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot, teamid, name, athleteUUId } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
@@ -399,7 +399,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 {prompts.map((p: any, index: number) => (
                     <PromptTag
                         key={`prompt-${index}`}
-                        href={`/${p.league}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
+                        href={`/${p.league}${teamid ? `/${teamid}` : ''}${player ? `/${player}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
                         rel="nofollow"
                     >
@@ -431,7 +431,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     if (image && image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0)
         return null;
-
+    console.log("==> STORY.TSX teamid,player,athleteUUId", { teamid, player, name, athleteUUId });
     return (
         <div ref={ref}>
             <DesktopWrap>
