@@ -83,7 +83,7 @@ const Welcome: React.FC<Props> = () => {
             }
         }} style={{ padding: 10 }} variant="outlined">{view == "faq" ? <HomeIcon fontSize="small" /> : <HelpOutlineIcon fontSize="small" />}&nbsp;&nbsp;{view == "faq" ? <span>Back to Home</span> : <span>Read Me</span>}</Button></Favorites>}
 
-        <LeftText><hr />Copyright &#169; 2024, Findexar, Inc.<br />Made in Minnesota. L&apos;Étoile du Nord.</LeftText>
+        <LeftText><hr />Copyright &#169; 2024,2025 Qwiket AI (Findexar, Inc)<br />Made in Minnesota. L&apos;Étoile du Nord.</LeftText>
         {noUser && <><LeftText>Click here to sign-in or sign-up: <br /><br /><br /></LeftText>
             <Favorites><SignInButton><Button style={{ padding: 10 }} size="small" variant="outlined"><LoginIcon />&nbsp;&nbsp;Sign-In</Button></SignInButton></Favorites></>}
         <LeftText><hr />Contact: support @ qwiket.com<hr /></LeftText>
