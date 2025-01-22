@@ -60,7 +60,6 @@ const Welcome: React.FC<Props> = () => {
         Welcome to Qwiket AI!<br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
 
-        <br />Interactive Sports Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts.  <br />
         Featuring sports-savvy AI Chat and a real-time, annotated,
         indexed sports media feed.<br /><br />
         As new stories and podcasts are published , they are digested, sliced and diced
