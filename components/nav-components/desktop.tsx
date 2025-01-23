@@ -92,10 +92,10 @@ const LeftPanel = styled.div`
   }
   overflow-y: hidden;
   overflow-x: hidden;
-  padding-top: 18px;
-  max-height: 150vh;
+  padding-top: 10px;
+  max-height: 350vh;
   position: sticky;
-  top: -400px;
+  top: -450px;
   @media screen and (max-width: 1200px) {
     top: -300px;
     min-width: 200px;

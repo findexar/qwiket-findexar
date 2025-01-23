@@ -21,6 +21,11 @@ const WelcomeWrap = styled.div`
             color:var(--highlight);
         }
     }
+    p{
+        margin-top:10px;
+        margin-bottom:10px;
+        margin-right:10px;
+    }
     @media screen and (max-width: 1200px) {
         padding-right:30px;
     }
@@ -57,21 +62,20 @@ const Welcome: React.FC<Props> = () => {
     const router = useRouter();
     const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     return <> <WelcomeWrap className="text-left">
-        Welcome to Qwiket AI!<br /><br /><hr />
+        <span style={{ fontSize: 18 }}> Welcome to Qwiket AI!</span><br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
-        <br />
-        Featuring sports-savvy AI Chat and a real-time, annotated,
-        indexed sports media feed.<br /><br />
-        As new stories and podcasts are published , they are digested, sliced and diced
-        into mentions of individual athletes and teams and fed back into the knowledge base.<br /><br />
 
-        Track the media mentions across <br />your fantasy teams effortlessly<br />
-        using the My Team feature.<br /><br />
-        Content creators can use the Qwiket AI Chat to generate custom content for their audience, backed by Qwiket AI knowledge and real-time sports data feeds.
-        A revenue-sharing program is available for content creators to help them to monetize their content. <br /><br />
+        <p>We believe that knowledge elevates the quality of our reasoning, improves our productivity and decision-making, and creates wealth and fulfillment in every endeavor we pursue.</p>
+
+        <p>It is our quest for knowledge that was the driving force behind the digital revolution from its earliest days. First, it delivered access to raw information, then the content created by people with more knowledge than ourselves that we could consume and process to develop knowledge. And now, the age of AI finally delivers direct interactive access to knowledge, allowing us to interrogate the knowledge, follow up, and &quot;surf&quot; the knowledge, just like we used to surf the content in the old days, before ChatGPT.</p>
+
+        <p>While tools like ChatGPT are very good at providing access to generic and static knowledge, they are completely inadequate in areas such as sports, where content is added daily and the information is very specific and real-time. That&apos;s where Qwiket AI comes in&mdash;it &quot;reads&quot; hundreds of articles daily, &quot;listens&quot; to dozens of knowledgeable podcasts, and adds the resulting knowledge to the static and stale knowledge of ChatGPT. It also augments it with real-time data feeds&mdash;stats, schedules, rosters, etc. And it provides interactive access to all this knowledge, which would require our users to spend hours and hours daily consuming and processing raw content and still get only a fraction of the value. It also uses its knowledge to structure the access to source content in the most efficient form.</p>
+
+        <p>Take a look and explore Qwiket AI. You can also use its AI Chat to ask questions about Qwiket itself. Let us know if it elevates your fantasy or betting game; after all, this is why we created Qwiket AI.</p>
+
 
     </WelcomeWrap>
-        <br />
+
         {false && <Favorites><Button disabled={view == 'fav'} onClick={() => {
             if (view != 'faq') {
                 setView("faq")
