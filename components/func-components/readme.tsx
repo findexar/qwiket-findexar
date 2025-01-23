@@ -1,4 +1,25 @@
 import React, { ReactNode } from 'react';
+import { styled } from 'styled-components';
+
+const WelcomeWrap = styled.div`
+    paddWelcomeWraping-top:18px;
+    padding-right:40px;
+    width:100%;
+    a{
+        text-decoration: none;
+        &:hover{
+            color:var(--highlight);
+        }
+    }
+    p{
+        margin-top:10px;
+        margin-bottom:10px;
+        margin-right:10px;
+    }
+    @media screen and (max-width: 1200px) {
+        padding-right:30px;
+    }
+`;
 
 const Container = ({ children }: { children: ReactNode }) => (
     <div className="p-5 bg-background text-text pb-[100vw]">
@@ -9,38 +30,20 @@ const Container = ({ children }: { children: ReactNode }) => (
 const Readme = () => {
     return (
         <Container>
-            <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
-            <h2 className="text-2xl font-semibold mt-4">What is {process.env.NEXT_PUBLIC_APP_NAME}?</h2>
-            <p className="mt-2">{process.env.NEXT_PUBLIC_APP_NAME} is a media reader and a mention tracking index focused on professional teams and athletes across the Major Leagues: NFL, NHL, MLB, and NBA.</p>
-            <p className="mt-2">Our advanced platform comprehensively scans both legacy and web-only media to identify and index every mention of athletes and teams. We go beyond just professional sports commentary, including general interest sections of leading newspapers and websites, to ensure thorough coverage of relevant mentions.</p>
-            <p className="mt-2">Typically, such in-depth information used to be available only to professional teams, sports agents, and athletes with deep pockets, often acquired through large agencies like Nielsen.  We provide not only links to media sources but also brief digests of the mention&apos;s context and summaries of the articles, all powered by the premier AI technology in the industry – OpenAI&apos;s Large Language Model.</p>
-            <h2 className="text-2xl font-semibold mt-4">Who is the Target Audience?</h2>
-            <p className="mt-2">{process.env.NEXT_PUBLIC_APP_NAME} is designed for Fantasy Sports enthusiasts who demand a robust media monitoring tool for tracking mentions of their chosen athletes. And a research tool: our platform enables easy browsing for athlete mentions by team and name.</p>
-            <p className="mt-2">It is also a vital resource for any sports fan looking to stay informed, particularly those involved in sports betting. It saves hours of valuable time manually searching the internet for mentions.</p>
-            <h2 className="text-2xl font-semibold mt-4">What are {process.env.NEXT_PUBLIC_APP_NAME}&apos;s features?</h2>
-            <h3 className="text-xl font-semibold mt-3">Browse by League, Team, and Athlete</h3>
-            <p className="mt-2">You can go directly to the level of specificity you are looking for by selecting the league, team, or athlete to review the mentions.</p>
-            <h3 className="text-xl font-semibold mt-3">Review the Combined Mentions Feed</h3>
-            <p className="mt-2">If you stay at the top level, or the league level, you can jump off to an athlete&apos;s or team&apos;s section by clicking on a mention.</p>
-            <h3 className="text-xl font-semibold mt-3">Favorites</h3>
-            <p className="mt-2">Click on a star on a mention to add the mention to the Favorites collection.</p>
-            <h4 className="text-lg font-semibold mt-3">My Team</h4>
-            <p className="mt-2">When in the team area, click on the icon to the right of the athlete&apos;s name to add them to the My Team collection. Use the My Team checkbox to filter mentions by My Team when at the top or league levels.</p>
-            <h2 className="text-2xl font-semibold mt-4">How does {process.env.NEXT_PUBLIC_APP_NAME} work?</h2>
-            <p className="mt-2">Suffice it to say, we use AI to create digests for the article with athletes or teams mentions. Then, for every mention in the article, we create a short mention gist, to give you an idea of the nature and context of each mention, as much as possible.</p>
-            <h2 className="text-2xl font-semibold mt-4">Are there any social media accounts to follow Findexar on?</h2>
-            <p className="mt-2">Yes, to contact us use X (aka Twitter) <a href="https://twitter.com/findexar/" className="text-blue-500">@findexar</a>.</p>
-            <p className="mt-2">We also use the following X accounts for full league digests:</p>
-            <p className="mt-2">NFL: <a href="https://twitter.com/nflpress_digest" className="text-blue-500">@nflpress_digest</a></p>
-            <p className="mt-2">NHL: <a href="https://twitter.com/nhl_digest" className="text-blue-500">@nhl_digest</a></p>
-            <p className="mt-2">MLB: <a href="https://twitter.com/mlb_digest" className="text-blue-500">@mlb_digest</a></p>
-            <p className="mt-2">NBA: <a href="https://twitter.com/nba_digest" className="text-blue-500">@nba_digest</a></p>
-            <h2 className="text-2xl font-semibold mt-4">What&apos;s next?</h2>
-            <p className="mt-2">As the product grows and AI technology matures, we will be adding full video mentions and will experiment with AI-based prediction ability, based on the data we collect. Also adding more leagues, such as Premier League and MLS. Join us on this journey!</p>
-            <p className="mt-2">Let us know what else you would like to see in our product.</p>
-            <p className="mt-2">Copyright © 2024, Findexar, Inc.</p>
-            <p className="mt-2">Made in Northern Minnesota, USA.</p>
-        </Container>
+            <WelcomeWrap className="text-left">
+                <span style={{ fontSize: 18 }}> Welcome to Qwiket AI!</span><br /><br /><hr />
+                <br />
+
+                <p>We believe that knowledge elevates the quality of our reasoning, improves our productivity and decision-making, and creates wealth and fulfillment in every endeavor we pursue.</p>
+
+                <p>It is our quest for knowledge that was the driving force behind the digital revolution from its earliest days. First, it delivered access to raw information, then the content created by people with more knowledge than ourselves that we could consume and process to develop knowledge. And now, the age of AI finally delivers direct interactive access to knowledge, allowing us to interrogate the knowledge, follow up, and &quot;surf&quot; the knowledge, just like we used to surf the content in the old days, before ChatGPT.</p>
+
+                <p>While tools like ChatGPT are very good at providing access to generic and static knowledge, they are completely inadequate in areas such as sports, where content is added daily and the information is very specific and real-time. That&apos;s where Qwiket AI comes in&mdash;it &quot;reads&quot; hundreds of articles daily, &quot;listens&quot; to dozens of knowledgeable podcasts, and adds the resulting knowledge to the static and stale knowledge of ChatGPT. It also augments it with real-time data feeds&mdash;stats, schedules, rosters, etc. And it provides interactive access to all this knowledge, which would require our users to spend hours and hours daily consuming and processing raw content and still get only a fraction of the value. It also uses its knowledge to structure the access to source content in the most efficient form.</p>
+
+                <p>Take a look and explore Qwiket AI. You can also use its AI Chat to ask questions about Qwiket itself. Let us know if it elevates your fantasy or betting game; after all, this is why we created Qwiket AI.</p>
+                <hr />Copyright &#169; 2024,2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.
+            </WelcomeWrap>
+        </Container >
     )
 }
 

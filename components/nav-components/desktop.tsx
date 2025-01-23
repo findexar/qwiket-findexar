@@ -247,7 +247,7 @@ const Desktop: React.FC<Props> = () => {
                   {league ? <Teams /> : <Welcome />}
                 </LeftPanel>
                 <CenterPanel>
-                  {pagetype === "league" && view !== 'faq' && (
+                  {pagetype === "league" && view !== 'about' && (
                     <TertiaryTabs
                       options={[
                         { name: `Articles`, tab: 'all', disabled: false },
@@ -260,7 +260,7 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
-                  {(pagetype === "team" || pagetype === "player") && view !== 'faq' && (
+                  {(pagetype === "team" || pagetype === "player") && view !== 'about' && (
                     <TertiaryTabs
                       options={[
                         { name: `Articles`, tab: 'all', disabled: false },
@@ -278,14 +278,14 @@ const Desktop: React.FC<Props> = () => {
 
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
-                  {pagetype === "league" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "team" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "player" && view !== 'faq' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "league" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
-                  {pagetype === "team" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
-                  {pagetype === "player" && view !== 'faq' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+                  {pagetype === "league" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "team" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "player" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
+                  {pagetype === "league" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+                  {pagetype === "team" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
+                  {pagetype === "player" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
 
-                  {view === 'faq' && <Readme />}
+                  {view === 'about' && <Readme />}
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'league' && tab === 'myteam') && <MyTeam />}

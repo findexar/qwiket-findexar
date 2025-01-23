@@ -191,7 +191,7 @@ const Mobile: React.FC<Props> = () => {
                 }
 
                 {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "FAQ", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "About", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => {
                     //console.log(option);
@@ -280,7 +280,7 @@ const Mobile: React.FC<Props> = () => {
                     {tab == 'chat' && <Chat source="mobile" />}
 
                 </CenterPanel>}
-                {view == 'faq' && <Readme />}
+                {view == 'about' && <Readme />}
                 {view == 'my team' && <MyTeam />}
                 {view == 'players' && <Players />}
 
