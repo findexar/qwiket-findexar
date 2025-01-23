@@ -117,6 +117,7 @@ interface Props {
     athleteUUId: string;
     date: string;
     url: string;
+    timecode: string;
     findex?: string;
     summary: string;
     findexarxid: string;
@@ -140,7 +141,7 @@ interface Props {
     bot: boolean;
 }
 
-const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, image, date, url, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate, prompts, bot }) => {
+const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid, startExtended, linkType, tp, params, noUser, league, type, team, teamName, name, athleteUUId, image, date, url, timecode, findex, summary, findexarxid, fav, setLocalPageType, setLocalPlayer, setLocalLeague, setLocalTeam, mutate, prompts, bot }) => {
     const [expanded, setExpanded] = React.useState(startExtended);
     const [hide, setHide] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
@@ -214,7 +215,7 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
                     <Atmention><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""}  {league}</Atmention>
                 </MentionSummary>
             </MobileMentionWrap>
-            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="final" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, athleteUUId, date, url, summary, findexarxid, fav, image, prompts }} mutate={mutate} showImage={true} /></InnerMention>}
+            {selectedXid == findexarxid && <InnerMention><Mention handleClose={handleClose} linkType="final" mini={true} startExtended={false} mention={{ league, type, team, teamName, name, athleteUUId, date, url, timecode, summary, findexarxid, fav, image, prompts }} mutate={mutate} showImage={true} /></InnerMention>}
         </>
     );
 };

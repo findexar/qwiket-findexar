@@ -431,7 +431,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     if (image && image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0)
         return null;
-    console.log("==> STORY.TSX teamid,player,athleteUUId", { teamid, player, name, athleteUUId });
+    //console.log("==> STORY.TSX teamid,player,athleteUUId", { teamid, player, name, athleteUUId });
     return (
         <div ref={ref}>
             <DesktopWrap>
