@@ -78,6 +78,7 @@ const MainPanel = styled.div`
 
 const LeftPanel = styled.div`
   min-width: 300px;
+  max-width: 300px;
   height: auto !important;
   background-color: var(--background);
   padding-top: 18px;
@@ -92,10 +93,10 @@ const LeftPanel = styled.div`
   }
   overflow-y: hidden;
   overflow-x: hidden;
-  padding-top: 10px;
-  max-height: 350vh;
+ 
+  max-height: 750vh;
   position: sticky;
-  top: -450px;
+ // top: -1550px;
   @media screen and (max-width: 1200px) {
     top: -300px;
     min-width: 200px;
