@@ -32,8 +32,13 @@ export const config = {
          * - favicon.ico (favicon file)
          * - public folder
          */
-        '/((?!static|.*\\..*|_next|favicon.ico).*)',
-        '/',
-        '/(api|trpc)(.*)'
+        process.env.NODE_ENV === 'development'
+            ? '/*' // Excludes all routes in DEV
+            : [
+                '/((?!static|.*\\..*|_next|favicon.ico).*)', // Old config for PROD
+                '/',
+                '/(api|trpc)(.*)'
+            ],
+        // DEBIG '/((?!static|.*\\..*|_next|favicon.ico).*)',
     ],
 };

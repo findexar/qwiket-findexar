@@ -237,7 +237,7 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
     userId = userId || sessionid;
     const insiderParam = insider ? '1' : '0';
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}&promptUUId=${promptUUId}`;
-    // console.log("chatInit", url);
+    console.log("chatInit", url);
 
     const res = await fetch(url, {
         method: 'POST',
@@ -272,7 +272,7 @@ export const actionChatInit = async (props: ChatInitProps) => {
 
     const sessionid = session.sessionid || "";
 
-    //  console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
+    console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
     return chatInit(props, userId || "", sessionid);
 }
 
