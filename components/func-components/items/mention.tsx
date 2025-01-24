@@ -764,9 +764,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     ></iframe>
                                 </div>
                             )}
-                            <div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
+                            {timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                                 Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
-                            </div>
+                            </div>)}
                             <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 0, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
                         </Link>
                     </SummaryWrap>
@@ -853,9 +853,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             ></iframe>
                                         </div>
                                     )}
-                                    <div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
-                                        Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
-                                    </div>
+                                    {timecode && url.includes("youtube") && (
+                                        <div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
+                                            Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
+                                        </div>
+                                    )}
                                     <ShareContainerInline>
                                         <ContentCopyIcon style={{ color: digestCopied ? 'green' : '' }} fontSize="large"
                                             onClick={() => onDigestCopyClick()} />
@@ -917,9 +919,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 ></iframe>
                             </div>
                         )}
-                        <div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
+                        {timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                             Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
-                        </div>
+                        </div>)}
 
                         <hr />
                         <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
