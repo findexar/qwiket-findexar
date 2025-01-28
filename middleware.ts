@@ -21,24 +21,20 @@ const middleware = clerkMiddleware((auth, request) => {
     return NextResponse.next();
 });
 
-export default middleware;
+// Define the type for the config object
+type Config = {
+    matcher: string[];
+};
 
+
+
+// Export the config
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next
-         * - static (static files)
-         * - favicon.ico (favicon file)
-         * - public folder
-         */
-        process.env.NODE_ENV === 'development'
-            ? '/*' // Excludes all routes in DEV
-            : [
-                '/((?!static|.*\\..*|_next|favicon.ico).*)', // Old config for PROD
-                '/',
-                '/(api|trpc)(.*)'
-            ],
-        // DEBIG '/((?!static|.*\\..*|_next|favicon.ico).*)',
+        '/((?!static|.*\\..*|_next|favicon.ico).*)', // Old config for PROD
+        '/',
+        '/(api|trpc)(.*)'
     ],
 };
+
+export default middleware;

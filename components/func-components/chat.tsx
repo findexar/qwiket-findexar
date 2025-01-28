@@ -479,7 +479,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 }, 3000);
 
                                 // Navigate to the new league view
-                                window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}${params}${tp}`);
+                                window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}?tab=chat`);
                                 // console.log('*********************** CHAT onLeagueUpdate:', content);
                             }
                         }
