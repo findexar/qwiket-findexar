@@ -814,11 +814,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </ImageTextWrapper>
                             {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
 
-                                {timecode && url.includes("youtube") && (
+                                {isVisible && timecode && url.includes("youtube") ? (
                                     <ErrorBoundary>
                                         <iframe
                                             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                            src={isVisible ? youTubeLink : ""}
+                                            src={youTubeLink}
                                             title="YouTube video player"
                                             frameBorder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -826,6 +826,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         ></iframe>
 
                                     </ErrorBoundary>
+                                ) : (
+                                    (timecode && url.includes("youtube")) && img &&
+                                    <img src={img} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
                                 )}
                             </div>}
                             {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
@@ -908,16 +911,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         <div dangerouslySetInnerHTML={{ __html: digest }} />
                                     </Link>
                                     {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
-                                        {timecode && url.includes("youtube") && (
+                                        {isVisible && timecode && url.includes("youtube") ? (
                                             <iframe
                                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                                src={isVisible ? youTubeLink : ""}
+                                                src={youTubeLink}
                                                 title="YouTube video player"
                                                 frameBorder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                             ></iframe>
 
+                                        ) : (
+                                            timecode && url.includes("youtube") && img && <img src={img} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
                                         )}
                                     </div>}
                                     <ShareContainerInline>
@@ -968,17 +973,19 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </Link>
                         </SummaryWrap>
 
-                        {timecode && url.includes("youtube") && (
+                        {isVisible && timecode && url.includes("youtube") ? (
                             <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
                                 <iframe
                                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                    src={isVisible ? youTubeLink : ""}
+                                    src={youTubeLink}
                                     title="YouTube video player"
                                     frameBorder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 ></iframe>
                             </div>
+                        ) : (
+                            timecode && url.includes("youtube") && img && <img src={img} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
                         )}
                         {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                             Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
@@ -1049,15 +1056,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                         <ContentCopyIcon style={{ marginBottom: 10, color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
                                     {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
-                                        {timecode && url.includes("youtube") && (
+                                        {isVisible && timecode && url.includes("youtube") ? (
                                             <iframe
                                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                                src={isVisible ? youTubeLink : ""}
+                                                src={youTubeLink}
                                                 title="YouTube video player"
                                                 frameBorder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                             ></iframe>
+
+                                        ) : (
+                                            timecode && url.includes("youtube") && img && <img src={img} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
                                         )}
                                     </div>}
                                 </Digest>
