@@ -27,7 +27,7 @@ import { actionAddFavorite, actionRemoveFavorite } from "@lib/server-actions/fav
 
 import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
-
+import ErrorBoundary from '@/components/util-components/error-boundary';
 declare global {
     interface Window {
         Clerk: any;
@@ -764,16 +764,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </ImageTextWrapper>
 
                             {timecode && url.includes("youtube") && (
-                                <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
-                                    <iframe
-                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                        src={youTubeLink}
-                                        title="YouTube video player"
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    ></iframe>
-                                </div>
+                                <ErrorBoundary>
+                                    <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
+                                        <iframe
+                                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                            src={youTubeLink}
+                                            title="YouTube video player"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                </ErrorBoundary>
                             )}
                             {timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                                 Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
