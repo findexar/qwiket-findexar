@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useCallback, useState, useMemo } from "react";
+import React, { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import useSWR from 'swr';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
@@ -415,6 +415,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league: ll };
     const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, fallback);
+    const [isVisible, setIsVisible] = useState(false);
+    const mentionRef = useRef<HTMLDivElement | null>(null);
+    const mobileMentionRef = useRef<HTMLDivElement | null>(null);
 
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
@@ -731,11 +734,52 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         `https://www.youtube.com/embed/${new URL(url).searchParams.get('v')}?start=${timecodeSeconds}`
         : "";
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        if (mentionRef.current) {
+            observer.observe(mentionRef.current);
+        } else {
+            console.warn("Mention ref not found for intersection observer.");
+        }
+
+        return () => {
+            if (mentionRef.current) {
+                observer.unobserve(mentionRef.current);
+            }
+        };
+    }, []);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        if (mobileMentionRef.current) {
+            observer.observe(mobileMentionRef.current);
+        } else {
+            console.warn("Mention ref not found for intersection observer.");
+        }
+
+        return () => {
+            if (mobileMentionRef.current) {
+                observer.unobserve(mobileMentionRef.current);
+            }
+        };
+    }, []);
+
     return (
         <>
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
             {/* {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />} */}
-            <MentionWrap onMouseEnter={() => onHover('desktop')}>
+            <MentionWrap ref={mentionRef} onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
                         {!localFav ? <StarOutlineIcon className="h-4 w-4"
@@ -762,10 +806,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 {showImage && image && <img src={image} alt={name} />}
                                 {summary}
                             </ImageTextWrapper>
+                            {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
 
-                            {timecode && url.includes("youtube") && (
-                                <ErrorBoundary>
-                                    <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
+                                {isVisible && timecode && url.includes("youtube") ? (
+                                    <ErrorBoundary>
                                         <iframe
                                             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                                             src={youTubeLink}
@@ -774,10 +818,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowFullScreen
                                         ></iframe>
-                                    </div>
-                                </ErrorBoundary>
-                            )}
-                            {timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
+
+                                    </ErrorBoundary>
+                                ) : (
+                                    (timecode && url.includes("youtube")) && meta?.image &&
+                                    <img src={meta.image} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
+                                )}
+                            </div>}
+                            {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                                 Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
                             </div>)}
                             <ShareContainerInline><ContentCopyIcon style={{ paddingTop: 0, marginBottom: -2, color: copied ? 'green' : '' }} fontSize="large" onClick={() => onCopyClick()} /></ShareContainerInline>
@@ -826,7 +874,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     await onExtended(ne);
                                 }}
                             >
+
                                 {!expanded ? <IconChevronDown className="h-6 w-6 " /> : <IconChevronUp className="h-6 w-6" />}</Icon>}
+
                         </div>
                     </BottomLine>
 
@@ -854,9 +904,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     <Link href={url} onClick={() => onClick(url)}>
                                         <div dangerouslySetInnerHTML={{ __html: digest }} />
                                     </Link>
-
-                                    {timecode && url.includes("youtube") && (
-                                        <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
+                                    {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
+                                        {isVisible && timecode && url.includes("youtube") ? (
                                             <iframe
                                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                                                 src={youTubeLink}
@@ -865,13 +914,18 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                             ></iframe>
-                                        </div>
-                                    )}
-                                    {timecode && url.includes("youtube") && (
-                                        <div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
-                                            Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
-                                        </div>
-                                    )}
+
+                                        ) : (
+                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{
+                                                width: '100%',
+                                                height: 'auto',
+                                                position: 'relative',
+                                                paddingBottom: '56.25%', // Maintain aspect ratio
+                                                display: 'block', // Ensure it behaves like a block element
+                                                marginTop: '20pt' // Match the margin of the iframe
+                                            }} />
+                                        )}
+                                    </div>}
                                     <ShareContainerInline>
                                         <ContentCopyIcon style={{ color: digestCopied ? 'green' : '' }} fontSize="large"
                                             onClick={() => onDigestCopyClick()} />
@@ -884,7 +938,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     </ExtendedMention>}
                 </MentionSummary>
             </MentionWrap>
-            <MobileMentionWrap $hideit={hide} onMouseEnter={() => onHover('mobile')}>
+            <MobileMentionWrap ref={mobileMentionRef} $hideit={hide} onMouseEnter={() => onHover('mobile')}>
                 <MentionSummary>
                     <div>
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>
@@ -920,7 +974,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             </Link>
                         </SummaryWrap>
 
-                        {timecode && url.includes("youtube") && (
+                        {isVisible && timecode && url.includes("youtube") ? (
                             <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
                                 <iframe
                                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
@@ -931,8 +985,17 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     allowFullScreen
                                 ></iframe>
                             </div>
+                        ) : (
+                            timecode && url.includes("youtube") && image && <img src={image} alt="Static representation" style={{
+                                width: '100%',
+                                height: 'auto',
+                                position: 'relative',
+                                paddingBottom: '56.25%', // Maintain aspect ratio
+                                display: 'block', // Ensure it behaves like a block element
+                                marginTop: '20pt' // Match the margin of the iframe
+                            }} />
                         )}
-                        {timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
+                        {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                             Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
                         </div>)}
 
@@ -1000,6 +1063,28 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     <ShareContainerInline>
                                         <ContentCopyIcon style={{ marginBottom: 10, color: digestCopied ? 'green' : '' }} fontSize="large" onClick={() => onDigestCopyClick()} />
                                     </ShareContainerInline>
+                                    {timecode && url.includes("youtube") && <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginTop: '20pt' }}>
+                                        {isVisible && timecode && url.includes("youtube") ? (
+                                            <iframe
+                                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                                src={youTubeLink}
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+
+                                        ) : (
+                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{
+                                                width: '100%',
+                                                height: 'auto',
+                                                position: 'relative',
+                                                paddingBottom: '56.25%', // Maintain aspect ratio
+                                                display: 'block', // Ensure it behaves like a block element
+                                                marginTop: '20pt' // Match the margin of the iframe
+                                            }} />
+                                        )}
+                                    </div>}
                                 </Digest>
                             </Body>
                         </HorizontalContainer>
