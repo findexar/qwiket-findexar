@@ -922,7 +922,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             ></iframe>
 
                                         ) : (
-                                            timecode && url.includes("youtube") && img && <img src={img} alt="Static representation" s style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+                                            timecode && url.includes("youtube") && img && <img src={img} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                                         )}
                                     </div>}
                                     <ShareContainerInline>
