@@ -827,7 +827,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                                     </ErrorBoundary>
                                 ) : (
-                                    (timecode && url.includes("youtube")) && meta?.image &&
+                                    (false && timecode && url.includes("youtube")) && meta?.image &&
                                     <img src={meta.image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                                 )}
                             </div>}
@@ -922,7 +922,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             ></iframe>
 
                                         ) : (
-                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{
+                                            false && timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{
                                                 width: '100%',
                                                 height: 'auto',
                                                 position: 'relative',
@@ -992,7 +992,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 ></iframe>
                             </div>
                         ) : (
-                            timecode && url.includes("youtube") && image && <img src={image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+                            false && timecode && url.includes("youtube") && image && <img src={image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                         )}
                         {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                             Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
@@ -1074,7 +1074,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             ></iframe>
 
                                         ) : (
-                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+                                            false && timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                                         )}
                                     </div>}
                                 </Digest>
