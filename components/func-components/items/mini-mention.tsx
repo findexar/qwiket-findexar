@@ -148,8 +148,10 @@ const MiniMention: React.FC<Props> = ({ handleClose, selectedXid, setSelectedXid
     const [digestCopied, setDigestCopied] = React.useState(false);
 
     useEffect(() => {
-        setExpanded(startExtended);
-    }, [startExtended, url]);
+        if (startExtended) {
+            setSelectedXid(findexarxid);
+        }
+    }, [startExtended]);
 
     useEffect(() => {
         setTimeout(() => {

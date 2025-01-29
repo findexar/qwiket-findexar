@@ -269,7 +269,7 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot, teamid, name, athleteUUId } = useAppContext();
+    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot, teamid, name, athleteUUId, m } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
@@ -279,7 +279,6 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const [selectedXid, setSelectedXid] = React.useState("");
     const [value, copy] = useCopyToClipboard();
     const [visible, setVisible] = React.useState(false);
-
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
@@ -424,6 +423,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     setSelectedXid={setSelectedXid}
                     mutate={() => { }}
                     bot={bot}
+                    startExtended={mention.open || false}
                 />
             ))}
         </MentionsWrap>

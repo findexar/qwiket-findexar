@@ -28,7 +28,7 @@ type Props = {
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  let { id, story, tab, view } = searchParams as any;
+  let { id, story, tab, view, m } = searchParams as any;
   let findexarxid = id || "";
   const league = '';
 
@@ -38,6 +38,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
   if (story) {
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
+  }
+  if (m) {
+    astory = await getASlugStory({ type: "ASlugStory", m });
   }
 
   const {
@@ -179,7 +182,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let { tab = "", fbclid, utm_content, view = "mentions", rtab = "", id, story, cid, aid } = searchParams as any;
+  let { tab = "", fbclid, utm_content, view = "mentions", rtab = "", id, story, m, cid, aid } = searchParams as any;
 
   let findexarxid = id || "";
   let pagetype = "league";
@@ -207,6 +210,9 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
+  if (m) {
+    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
+  }
   if (rtab == 'fav' && view == 'mentions') {
     if (!story && !findexarxid) {
       calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
@@ -226,7 +232,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
       //console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league,type:tab=='podcasts'?'v':'' }));
+      calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
     }
   }
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {
@@ -242,7 +248,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} ua={ua} />
+        <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} m={m} pagetype={pagetype} ua={ua} />
       </main>
     </SWRProvider>
   );

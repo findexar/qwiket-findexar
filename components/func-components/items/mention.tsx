@@ -398,10 +398,9 @@ interface Props {
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
     const { setFindexarxid, setSlug, fallback, bot, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
-
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
-    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image, prompts, timecode } = mention;
+    let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image, prompts, timecode, uuid } = mention;
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -429,11 +428,25 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}`
             : `${league}/${encodeURIComponent(team)}/${athleteUUId}`;
 
-        return {
-            share: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=sharelink${cidParam}`,
-            twitter: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=xlink${cidParam}`,
-            facebook: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=fblink${cidParam}`,
-        };
+        /*  return {
+              share: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=sharelink${cidParam}`,
+              twitter: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=xlink${cidParam}`,
+              facebook: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=fblink${cidParam}`,
+          };*/
+        if (uuid) {
+            return {
+                share: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=sharelink${cidParam}`,
+                twitter: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=xlink${cidParam}`,
+                facebook: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=fblink${cidParam}`,
+            };
+        }
+        else {
+            return {
+                share: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=sharelink${cidParam}`,
+                twitter: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=xlink${cidParam}`,
+                facebook: `${baseUrl}${typeSpecificPath}?id=${findexarxid}&utm_content=fblink${cidParam}`,
+            };
+        }
     }, [type, league, team, name, athleteUUId, findexarxid, isCid, userAccount]);
 
     const socialLinks = useMemo(() => {
@@ -445,9 +458,12 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const localUrl = useMemo(() => {
         const prepName = encodeURIComponent(name);
-        return type == 'person'
-            ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}`
-            : `/${league}/${team}?id=${findexarxid}`;
+        return uuid ? type == 'person'
+            ? `/${league}/${team}/${prepName}/${athleteUUId}?m=${uuid}`
+            : `/${league}/${team}?m=${uuid}`
+            : type == 'person'
+                ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}`
+                : `/${league}/${team}?id=${findexarxid}`;
     }, [type, league, team, name, athleteUUId, findexarxid]);
 
     const bottomLink = useMemo(() => {
@@ -484,7 +500,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [copied]);
 
     useEffect(() => {
-        //console.log("Mention, extended:", "useEffect", startExtended, expanded)
         setExpanded(startExtended);
     }, [startExtended]);
 
@@ -545,8 +560,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
     const [openLimitSubscriptionModal, setOpenLimitSubscriptionModal] = useState(false);
-    // console.log("isLoaded", isLoaded, isSignedIn, user);
-
 
     useEffect(() => {
         try {
@@ -606,7 +619,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             if (!bot) {
                 actionRecordEvent(`mention-story-click`, `{"name":"${name}","url","${url}","params":"${params}"}`)
                     .then((r: any) => {
-                        console.log("actionRecordEvent", r);
+                        // console.log("actionRecordEvent", r);
                     });
             }
         } catch (x) {
@@ -658,7 +671,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 setToastMessage("Player added to the Fantasy Team");
                 setToastIcon(<TeamAddIcon className="h-6 w-6 opacity-60 hover:opacity-100  text-grey-400" />);
                 setLocalTracked(true);
-                console.log("untracked after mutatePlayers", name, team, athleteUUId);
 
                 if (mutate)
                     mutate();
@@ -730,7 +742,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             onClick={async () => {
                                 if (noUser) return;
                                 setLocalFav(1);
-                                console.log("actionAddFavorite", { findexarxid })
                                 await actionAddFavorite({ findexarxid });
                                 if (mutate) mutate();
                                 setToastMessage("Added to Favorites.");
@@ -806,13 +817,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </ShareGroup>
                         <div className=" flex flex-row justify-between">
                             <Atmention2 className="mr-2">{meta?.site_name}</Atmention2>
-                            {!mini && <Icon onClick={
+                            {false && !mini && <Icon onClick={
                                 async (e) => {
                                     const ne = !expanded
                                     setExpanded(ne);
                                     await onExtended(ne);
                                 }}
-                            >{!expanded ? <IconChevronDown className="h-6 w-6 " /> : <IconChevronUp className="h-6 w-6" />}</Icon>}
+                            >
+                                {!expanded ? <IconChevronDown className="h-6 w-6 " /> : <IconChevronUp className="h-6 w-6" />}</Icon>}
                         </div>
                     </BottomLine>
 
@@ -878,7 +890,6 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 onClick={async () => {
                                     if (noUser) return;
                                     setLocalFav(1);
-                                    console.log("actionAddFavorite", { findexarxid })
                                     await actionAddFavorite({ findexarxid });
                                     if (mutate) mutate();
                                     setToastMessage("Added to Favorites.");

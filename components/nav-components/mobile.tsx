@@ -100,7 +100,7 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, findexarxid, bot, player, athleteUUId } = useAppContext();
+    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, m, findexarxid, bot, player, athleteUUId } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -182,7 +182,7 @@ const Mobile: React.FC<Props> = () => {
     /*  useEffect(() => {
           // Preload components or data here
       }, [tab, view]);*/
-    console.log("==> pagetype", pagetype, view, tab);
+    // console.log("==> pagetype", pagetype, view, tab);
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
@@ -285,7 +285,7 @@ const Mobile: React.FC<Props> = () => {
                 {view == 'players' && <Players />}
 
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
-                {slug && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
+                {(slug || m) && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
             </MobileContainerWrap >
         </div>
     )

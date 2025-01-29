@@ -176,9 +176,9 @@ interface Props {
 
 const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
     const [promptUUId, setPromptUUId] = useState('');
-    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, setSlug, bot } = useAppContext();
+    let { fallback, tab, view, mode, userId, isMobile, league, team, teamName, setLeague, setView, setTab, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, slug, m, setSlug, setM, bot } = useAppContext();
 
-    const aSlugStoryKey: ASlugStoryKey = { type: "ASlugStory", slug: slug };
+    const aSlugStoryKey: ASlugStoryKey = slug ? { type: "ASlugStory", slug: slug } : { type: "AMentionStory", m: m };
     let { data: aSlugStory } = useSWR(aSlugStoryKey, actionASlugStory, { fallback });
     let astory = aSlugStory;
     const [open, setOpen] = React.useState(astory ? true : false);

@@ -29,6 +29,7 @@ interface LeagueLayoutProps {
   bot: boolean,
   story: string,
   findexarxid: string,
+  m?: string,
   league?: string,
   teamid?: string,
   name?: string,
@@ -59,6 +60,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   bot,
   story,
   findexarxid: startFindexarxid,
+  m: startM,
   league: startLeague,
   teamid: startTeamid = "",
   name: startName = "",
@@ -85,6 +87,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [teamName, setTeamName] = useState(startTeamName);
   const [teamLogo, setTeamLogo] = useState(startTeamLogo);
   const [findexarxid, setFindexarxid] = useState(startFindexarxid);
+  const [m, setM] = useState(startM || "");
   const [slug, setSlug] = useState(story);
   const [localMode, setLocalMode] = useState(dark === -1 ? 'unknown' : dark === 1 ? 'dark' : 'light');
   const [params, setParams] = useState("");
@@ -224,7 +227,6 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       if (!isAccount) {
         setLeague(qleague);
         setTeamid(qteam);
-        console.log("spa setPlayer", qplayer);
         setPlayer(qplayer);
         setAthleteUUId(qathleteUUId);
       }
@@ -261,6 +263,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         bot={bot}
         slug={slug}
         findexarxid={findexarxid}
+        m={m}
+        setM={setM}
         league={league}
         view={view}
         tab={tab}

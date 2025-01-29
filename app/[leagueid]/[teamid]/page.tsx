@@ -31,8 +31,8 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // Read route params
-  let { id, story, tab, view }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
+  let { id, story, tab, view, m }:
+    { fbclid: string, utm_content: string, view: string, tab: string, id: string, m: string, story: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
@@ -45,6 +45,9 @@ export async function generateMetadata(
   }
   if (story) {
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
+  }
+  if (m) {
+    astory = await getASlugStory({ type: "ASlugStory", m });
   }
 
   const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention || {};
@@ -171,8 +174,8 @@ export default async function Page({
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
 
-  let { tab = "all", fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, cid: string, aid: string } = searchParams as any;
+  let { tab = "all", fbclid = "", utm_content = "", view = "mentions", id, story, m, cid = "", aid = "" }:
+    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, cid: string, aid: string } = searchParams as any;
   let findexarxid = id || "";
   let pagetype = "team";
   let league = params.leagueid.toUpperCase();
@@ -217,7 +220,9 @@ export default async function Page({
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
-
+  if (m) {
+    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
+  }
   if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
       calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
@@ -248,7 +253,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} teamLogo={teamLogo} ua={ua} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} teamLogo={teamLogo} ua={ua} />
       </main>
     </SWRProvider>
   );

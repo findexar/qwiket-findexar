@@ -35,6 +35,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   let {
     id,
+    m,
     story,
     tab,
     view
@@ -44,7 +45,8 @@ export async function generateMetadata(
     view: string,
     tab: string,
     id: string,
-    story: string
+    story: string,
+    m: string
   } = searchParams as any;
 
   let findexarxid = id || "";
@@ -62,6 +64,9 @@ export async function generateMetadata(
   if (story) {
     //console.log("==>*** *** ***story param:", story);
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
+  }
+  if (m) {
+    astory = await getASlugStory({ type: "ASlugStory", m });
   }
 
   const {
@@ -200,6 +205,7 @@ export default async function Page({
     utm_content = "",
     view = "mentions",
     id,
+    m,
     story,
     prompt = '',
     promptUUId = '',
@@ -212,6 +218,7 @@ export default async function Page({
     tab: string,
     rtab: string,
     id: string,
+    m: string,
     story: string,
     prompt: string,
     promptUUId: string,
@@ -265,6 +272,9 @@ export default async function Page({
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
+  if (m) {
+    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
+  }
 
   if (rtab == 'fav' && view == 'mentions') {
     if (!story && !findexarxid) {
@@ -310,7 +320,7 @@ export default async function Page({
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} ua={ua} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} ua={ua} />
       </main>
     </SWRProvider>
   );

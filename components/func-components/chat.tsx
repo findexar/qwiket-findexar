@@ -119,7 +119,7 @@ const ChatsComponent: React.FC<Props> = ({
     const level = useMemo(() => {
         return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
     }, [subscriptionType]);
-    console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
+    // console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
 
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -168,7 +168,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     // Update the ref whenever pumpUUId changes
     useEffect(() => {
-        console.log("==> CHAT.TSX setting pumpUUIdRef", pumpUUId);
+        //console.log("==> CHAT.TSX setting pumpUUIdRef", pumpUUId);
         pumpUUIdRef.current = pumpUUId;
     }, [pumpUUId]);
     useEffect(() => {
@@ -176,7 +176,7 @@ const ChatsComponent: React.FC<Props> = ({
             setStatus('yellow');
         }
         if (pumpUUIdRef.current && chatUUId && chatUUId !== '_new') {
-            console.log("==> CHAT.TSX pumpUUId", pumpUUIdRef.current, chatUUId);
+            // console.log("==> CHAT.TSX pumpUUId", pumpUUIdRef.current, chatUUId);
             if (status == 'yellow') {
                 setStatus('green');
             }
@@ -227,7 +227,7 @@ const ChatsComponent: React.FC<Props> = ({
                     // }, 100);
                 },
                 onMetaUpdate: (content: string) => {
-                    console.log("==> CHAT.TSX onMetaUpdate", content);
+                    //console.log("==> CHAT.TSX onMetaUpdate", content);
                     setUpdateMessage(content);
                 },
                 onFollowupPromptsUpdate: (content: string[]) => {
@@ -240,7 +240,7 @@ const ChatsComponent: React.FC<Props> = ({
                     setLastMessageUUID(content);
                 },
                 onError: (content: string) => {
-                    console.log("==> CHAT.TSX onError", content);
+                    //console.log("==> CHAT.TSX onError", content);
                     setStatus('red');
                     setUpdateMessage(content);
                     /*  setMessages(prevMessages => {
@@ -269,7 +269,7 @@ const ChatsComponent: React.FC<Props> = ({
                         setPumpUUId('');
                         setTimeout(() => {
                             const formEvent = new Event('submit', { bubbles: true });
-                            console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
+                            //console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
                             handleSubmit(formEvent as unknown as React.FormEvent);
                         }, 1);
                         setResponse(prev => {
@@ -320,7 +320,7 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         const prompt = searchParams?.get('prompt') || "";
         const promptUUId = searchParams?.get('promptUUId') || "";
-        console.log("==> CHAT.TSX useEffect promptUUId", promptUUId);
+        // console.log("==> CHAT.TSX useEffect promptUUId", promptUUId);
         if (prompt) setInitialPrompt(prompt);
         if (promptUUId) {
             initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
@@ -386,7 +386,7 @@ const ChatsComponent: React.FC<Props> = ({
                     setChatName(loadedChat?.chat?.name || 'New Chat');
                 }
             }
-            console.log("==> CHAT.TSX loadedChat?.chat?.lastMessageUUID", loadedChat?.chat?.lastMessageUUID);
+            // console.log("==> CHAT.TSX loadedChat?.chat?.lastMessageUUID", loadedChat?.chat?.lastMessageUUID);
             setLastMessageUUID(loadedChat?.chat?.lastMessageUUID || '');
         }
     }, [loadedChat]);
@@ -440,7 +440,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setPendingUserRequest(true);
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
-                        console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
+                        //console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
                         if (!bot) {
                             actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
                                 .then((r: any) => {
@@ -454,7 +454,7 @@ const ChatsComponent: React.FC<Props> = ({
                             return;
                         }
                         if (pumpUUIdRef.current != newPumpUUId) {
-                            console.log("==> CHAT.TSX handleSubmit setting pumpUUId", newPumpUUId);
+                            // console.log("==> CHAT.TSX handleSubmit setting pumpUUId", newPumpUUId);
 
                             setPumpUUId((prev) => {
                                 return newPumpUUId;
@@ -663,13 +663,13 @@ const ChatsComponent: React.FC<Props> = ({
 
         const stars = index + 1;
         setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: stars, open: feedback.open });
-        console.log("==> CHAT.TSX handleStarClick", lastMessage);
+        //console.log("==> CHAT.TSX handleStarClick", lastMessage);
         actionFeedback({ stars: stars, feedback: feedback.feedback, messageUUId: lastMessageUUID }).then(() => {
-            console.log("==> star rating submitted", stars);
+            //console.log("==> star rating submitted", stars);
         });
         recordEvent(`chat-stars-click`, `{"stars":${stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
             .then((r: any) => {
-                console.log("recordEvent", r);
+                //console.log("recordEvent", r);
             })
     };
 
@@ -677,7 +677,7 @@ const ChatsComponent: React.FC<Props> = ({
     const handleFeedbackSubmit = () => {
         const feedbackText = feedbackTextareaRef.current?.value || '';
 
-        console.log("==> CHAT.TSX handleFeedbackSubmit", feedbackText, lastMessageUUID);
+        //console.log("==> CHAT.TSX handleFeedbackSubmit", feedbackText, lastMessageUUID);
         if (feedbackText) {
             const lastMessage = drawMessages[drawMessages.length - 1]; // Get the last message
 

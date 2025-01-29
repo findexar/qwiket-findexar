@@ -172,7 +172,7 @@ interface Props { }
 const Desktop: React.FC<Props> = () => {
   const {
     teamid,
-    slug, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
+    slug, m, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
@@ -234,12 +234,12 @@ const Desktop: React.FC<Props> = () => {
     }
   }
   // tab = tab || 'all';
-  console.log("==> pagetype", pagetype, tab, view);
+  //console.log("==> pagetype", pagetype, tab, view);
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>
         {localFindexarxid && <MentionOverlay setDismiss={() => setView("mentions")} mutate={() => { }} />}
-        {slug && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
+        {(slug || m) && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
         <PageWrap>
           <Page>
             {pagetype === "landing" ? <Landing /> : (
