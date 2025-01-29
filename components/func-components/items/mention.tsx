@@ -739,7 +739,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             ([entry]) => {
                 setIsVisible(entry.isIntersecting);
             },
-            { threshold: 0.1 }
+            {
+                threshold: [0.1, 0.9], // Multiple thresholds for smoother transitions
+                rootMargin: '100px' // Add a buffer zone of 100px around the viewport
+            }
         );
 
         if (mentionRef.current) {
@@ -759,7 +762,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             ([entry]) => {
                 setIsVisible(entry.isIntersecting);
             },
-            { threshold: 0.1 }
+            {
+                threshold: [0.1, 0.9], // Multiple thresholds for smoother transitions
+                rootMargin: '100px' // Add a buffer zone of 100px around the viewport
+            }
         );
 
         if (mobileMentionRef.current) {
