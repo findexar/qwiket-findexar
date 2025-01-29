@@ -828,7 +828,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     </ErrorBoundary>
                                 ) : (
                                     (timecode && url.includes("youtube")) && meta?.image &&
-                                    <img src={meta.image} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
+                                    <img src={meta.image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                                 )}
                             </div>}
                             {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
@@ -992,14 +992,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                 ></iframe>
                             </div>
                         ) : (
-                            timecode && url.includes("youtube") && image && <img src={image} alt="Static representation" style={{
-                                width: '100%',
-                                height: 'auto',
-                                position: 'relative',
-                                paddingBottom: '56.25%', // Maintain aspect ratio
-                                display: 'block', // Ensure it behaves like a block element
-                                marginTop: '20pt' // Match the margin of the iframe
-                            }} />
+                            timecode && url.includes("youtube") && image && <img src={image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                         )}
                         {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
                             Note: We strive to provide accurate timecodes for the video. Please note that this feature is experimental.
@@ -1081,14 +1074,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                             ></iframe>
 
                                         ) : (
-                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{
-                                                width: '100%',
-                                                height: 'auto',
-                                                position: 'relative',
-                                                paddingBottom: '56.25%', // Maintain aspect ratio
-                                                display: 'block', // Ensure it behaves like a block element
-                                                marginTop: '20pt' // Match the margin of the iframe
-                                            }} />
+                                            timecode && url.includes("youtube") && meta.image && <img src={meta.image} alt="Static representation" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
                                         )}
                                     </div>}
                                 </Digest>
