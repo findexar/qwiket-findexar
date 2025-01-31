@@ -124,7 +124,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description: ogDescription,
       images: [ogImage],
     },
-    robots: (noindex === 1 || tab !== '' || view !== '') ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || tab !== '' || view !== '') ? 'noindex, follew' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },

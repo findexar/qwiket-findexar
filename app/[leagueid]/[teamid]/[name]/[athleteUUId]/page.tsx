@@ -125,7 +125,7 @@ export async function generateMetadata(
             ],
             type: 'website'
         },
-        robots: (noindex === 1 || s !== "1") ? 'noindex, nofollow' : 'index, follow',
+        robots: (noindex === 1 || s !== "1") ? 'noindex, follow' : 'index, follow',
         alternates: {
             canonical: ogUrl,
         },
