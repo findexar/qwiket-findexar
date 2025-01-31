@@ -33,14 +33,14 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
-  let { id, story, tab, view }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string } = searchParams as any;
+  let { id, story, tab, view, s = '0' }:
+    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, s: string } = searchParams as any;
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
     console.log("==> SSR PAGE.TSX FOUND invalid league");
     notFound();
-   
+
   }
   /**
    * Fill an array of fetch promises for parallel execution
@@ -119,7 +119,7 @@ export async function generateMetadata(
       ],
       type: 'website'
     },
-    robots: (noindex === 1 || tab === 'chat' || view === 'chat') ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || s !== "1") ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },

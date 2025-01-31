@@ -38,7 +38,8 @@ export async function generateMetadata(
     m,
     story,
     tab,
-    view
+    view,
+    s
   }: {
     fbclid: string,
     utm_content: string,
@@ -46,9 +47,10 @@ export async function generateMetadata(
     tab: string,
     id: string,
     story: string,
-    m: string
+    m: string,
+    s: string
   } = searchParams as any;
-
+  s = s || '0';
   let findexarxid = id || "";
   let league = params.leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
@@ -141,7 +143,7 @@ export async function generateMetadata(
       ],
       type: 'website'
     },
-    robots: (noindex === 1 || tab === 'chat' || view === 'chat') ? 'noindex, nofollow' : 'index, follow',
+    robots: (noindex === 1 || s !== "1") ? 'noindex, nofollow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },
