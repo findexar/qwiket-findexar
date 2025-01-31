@@ -40,10 +40,20 @@ const TertiaryTabs: React.FC<Props> = ({ level = "primary", options, onChange, s
 
   const tabs = options.map((option: Option, i: number) => {
     let selected = false;
-    if (option.tab.toLowerCase() == selectedOptionName?.toLowerCase()) {
+    let optionTab = option.tab.toLowerCase();
+    if (optionTab == '@') {
+      optionTab = 'mentions';
+    }
+    let selectedOptionNameTab = selectedOptionName?.toLowerCase();
+    if (selectedOptionNameTab == '@') {
+      selectedOptionNameTab = 'mentions';
+    }
+
+    if (optionTab == selectedOptionNameTab) {
       selected = true;
       selectedValue = i;
     }
+    // console.log("optionTab", optionTab, "selectedOptionNameTab", selectedOptionNameTab, "selected", selected);
     return <STab level={level} isnew={option.tab == 'chat'} disabled={option.disabled} selected={selected} key={`t3ab-${option.name}`} label={option.name} />;
   });
   return <TabsWrap level={level}><Tabs id={level == "secondary" ? "tabs6" : "tabs3"} variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange", value); onChange(options[value]) }}>{tabs}</Tabs></TabsWrap>;

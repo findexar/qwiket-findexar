@@ -184,8 +184,8 @@ const Desktop: React.FC<Props> = () => {
   if (tab === 'chat') {
     view = 'mentions';
   }
-  if (tab == 'mentions')
-    tab = '';
+  //if (tab == 'mentions')
+  //  tab = '';
 
   // console.log("==> rtab", { rtab, tab, initialRtab, initialTab });
   //console.log("==> teamid, player, athleteUUId", teamid, player, athleteUUId);
