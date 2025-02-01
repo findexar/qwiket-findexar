@@ -29,6 +29,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // Read route params
+  console.log("META searchParams", searchParams);
   const { id, story, tab, view, m, s = '0' } = await searchParams as any;
   let findexarxid = id || "";
 
@@ -132,9 +133,11 @@ export default async function Page({
   params: Params,
   searchParams: SearchParams
 }) {
+  console.log("searchParams=>");
   let { id, story, tab = "all", fbclid = "", utm_content = "", view = "mentions", m, cid = "", aid = "" } = await searchParams as any;
   const t1 = new Date().getTime();
   let headerslist = await headers();
+  console.log("headerslist", headerslist);
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
@@ -143,7 +146,7 @@ export default async function Page({
   }
   let userId = "";
   try {
-    let { userId: authId } = !bot ? auth() : { userId: "" };
+    let { userId: authId } = !bot ? await auth() : { userId: "" };
     userId = authId || "";
   } catch (x) {
     console.log("error fetching userId", x);

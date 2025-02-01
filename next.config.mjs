@@ -37,24 +37,14 @@ const nextConfig = {
       },
     ]
   },
-  // Add this new configuration
-  /* async headers() {
-     return [
-       {
-         source: '/:path*',
-         headers: [
-           {
-             key: 'X-Robots-Tag',
-             value: 'noindex, nofollow',
-           },
-         ],
-       },
-     ];
-   },*/
-  // Add this new middleware configuration
-  experimental: {
-    middleware: true,
-  },
+  // Add Clerk middleware configuration
+  middleware: [
+    {
+      // Specify the path for Clerk middleware
+      source: '/(.*)',
+      middleware: 'clerkMiddleware', // Replace with the actual middleware function if needed
+    },
+  ],
 };
 
 export default nextConfig;

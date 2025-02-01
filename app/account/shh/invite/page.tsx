@@ -76,7 +76,7 @@ export default async function Page({
 
     let sessionid = "";
     let dark = 0;
-    let { userId } = !botInfo.bot ? auth() : { userId: "" };
+    let { userId } = !botInfo.bot ? await auth() : { userId: "" };
 
     if (!userId) {
         userId = "";

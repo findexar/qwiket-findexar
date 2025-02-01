@@ -162,7 +162,7 @@ export default async function Page({
 
     let userId = "";
     try {
-        let { userId: authId } = !botInfo.bot ? auth() : { userId: "" };
+        let { userId: authId } = !botInfo.bot ? await auth() : { userId: "" };
         userId = authId || "";
     } catch (x) {
         console.log("error fetching userId", x);

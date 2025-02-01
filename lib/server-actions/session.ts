@@ -1,9 +1,10 @@
+"use server";
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 
 const fetchSession = async () => {
-    "use server";
+
     let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

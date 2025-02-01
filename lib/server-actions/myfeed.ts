@@ -33,7 +33,7 @@ export const actionMyFeed = async (key: FetchMyFeedKey) => {
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     return fetchMyFeed(key, userId || "", sessionid);
 }

@@ -19,7 +19,7 @@ export async function createCheckoutSession(
   });
   let headerslist = await headers();
   const origin: string = headerslist.get('origin') || "";
-  let { userId } = auth() || { userId: "" };
+  let { userId } = await auth() || { userId: "" };
   if (!userId) {
     userId = "";
   }
@@ -105,7 +105,7 @@ export async function cancelSubscription(): Promise<{ success: boolean; error?: 
       },
     });
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     if (!userId) {
       throw new Error("User not authenticated");
     }

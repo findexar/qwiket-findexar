@@ -38,7 +38,7 @@ export default async function Page({
         const session = await stripe.checkout.sessions.retrieve(session_id);
         console.log('Stripe session retrieved:', session);
         const { client_reference_id, metadata } = session;
-        const { userId } = auth();
+        const { userId } = await auth();
         const user = await currentUser();
         const email = user?.emailAddresses[0]?.emailAddress;
         const updateSubscriptionUrl = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/user/update-user-subscription`;

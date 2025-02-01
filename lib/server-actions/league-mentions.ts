@@ -30,7 +30,7 @@ const promiseLeagueMentions = async ({ userId, sessionid, league }: FetchMention
 export const actionLeagueMentions = async (key: LeagueMentionsKey) => {
 
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     return fetchMentions(key, userId || "", sessionid);
 }

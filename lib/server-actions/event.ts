@@ -21,7 +21,7 @@ const recordEvent = async ({ name, params }: RecordEventProps, userId: string, s
 }
 const workRecordEvent = async (name: string, params: string) => {
     const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     return await recordEvent({ name, params }, userId || "", sessionid);
 }

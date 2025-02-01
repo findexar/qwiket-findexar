@@ -33,7 +33,7 @@ const promiseFetchMyTeam = async ({ league = "", userId = "", sessionid = "" }: 
 export const actionFetchMyTeam = async (key: MyTeamKey) => {
     const session = await fetchSession();
     // const userId=session.username?session.username:"";
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid || "";
 
     return fetchMyTeam(key, userId || "", sessionid);
@@ -66,14 +66,14 @@ const removeMyTeamMember = async ({ teamid, member, athleteUUId }: MyTeamMemberP
 }
 export const actionAddMyTeamMember = async (props: MyTeamMemberProps) => {
     const session = await fetchSession();
-    const { userId = "" } = auth() || {};
+    const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
     return addMyTeamMember(props, userId || "", sessionid);
 }
 
 export const actionRemoveMyTeamMember = async (props: MyTeamMemberProps) => {
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     return removeMyTeamMember(props, userId || "", sessionid);
 }

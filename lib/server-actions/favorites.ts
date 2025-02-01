@@ -29,7 +29,7 @@ export const actionFavorites = async (key: FavoritesKey) => {
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
     //  console.log("actionFavorites", key, userId, sessionid);
@@ -59,7 +59,7 @@ export const actionAddFavorite = async (props: FavoriteParams) => {
     'use server';
     // console.log("actionAddFavorite")
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
     return addFavorite(props, userId || "", sessionid);
@@ -68,7 +68,7 @@ export const actionAddFavorite = async (props: FavoriteParams) => {
 export const actionRemoveFavorite = async (props: FavoriteParams) => {
     'use server';
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
     return removeFavorite(props, userId || "", sessionid);

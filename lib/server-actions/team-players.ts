@@ -30,7 +30,7 @@ const promiseFetchLeagueTeams = async ({ teamid = "", userId = "", sessionid = "
 }
 export const actionFetchLeagueTeams = async (key: TeamPlayersKey) => {
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
 
     return fetchTeamPlayers(key, userId || "", sessionid);
