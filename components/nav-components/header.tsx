@@ -542,6 +542,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
   //console.log("teamLogo", teamLogo);
+  console.log("==> header", teamName, teamLogo, pagetype);
   return (
     <>
       <Head>
@@ -581,19 +582,21 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                  <Link href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
-                  !teamid ? `${league}` : player ?
-                    <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>
+
+                <Superhead $scrolled={scrollY != 0}>
+                  {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
+                    <Link className="text-red bg-magenta-800" href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
+                    !teamid ? `${league}` : player ?
+                      <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>
+                        <TeamNameGroup $scrolled={scrollY != 0}>
+                          <div>{teamName}</div>
+                          {teamLogo && <img src={teamLogo} alt={teamName} />}
+                        </TeamNameGroup></Link></PlayerName> </PlayerNameGroup> :
                       <TeamNameGroup $scrolled={scrollY != 0}>
-                        <div>{teamName}</div>
+                        <div>{`${league} : ${teamName}`}</div>
                         {teamLogo && <img src={teamLogo} alt={teamName} />}
-                      </TeamNameGroup></Link></PlayerName> </PlayerNameGroup> :
-                    <TeamNameGroup $scrolled={scrollY != 0}>
-                      <div>{`${league} : ${teamName}`}</div>
-                      {teamLogo && <img src={teamLogo} alt={teamName} />}
-                    </TeamNameGroup>
-                }</Superhead>
+                      </TeamNameGroup>
+                  }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket AI : ${league}` : `Qwiket AI`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Interactive Sports Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts</Subhead><SubheadMobile>Interactive Sports Knowledge</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}

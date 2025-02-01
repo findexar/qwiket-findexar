@@ -29,8 +29,9 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // Read route params
-  console.log("META searchParams", searchParams);
   const { id, story, tab, view, m, s = '0' } = await searchParams as any;
+  console.log("META searchParams", { id, story, tab, view, m, s });
+
   let findexarxid = id || "";
 
   let amention, astory;
@@ -169,7 +170,7 @@ export default async function Page({
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
   let findexarxid = id || "";
-  let pagetype = "home";
+  let pagetype = "league";
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i

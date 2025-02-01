@@ -11,11 +11,11 @@
   "dependencies": {
     "@clerk/nextjs": "^6.10.6",
     "@clerk/themes": "^2.0.1",
-    "@stripe/react-stripe-js": "^2.1.0",
+    "@stripe/react-stripe-js": "^3.1.1",
     "@stripe/stripe-js": "^3.4.1",
     "@tailwindcss/postcss": "^4.0.3",
     "@types/react-window": "^1.8.8",
-    "@uploadcare/react-uploader": "^1.1.0",
+    "@uploadcare/react-uploader": "^1.4.0",
     "chart.js": "^4.4.4",
     "clerk": "^0.8.3",
     "framer-motion": "^12.0.6",
@@ -41,11 +41,11 @@
     "use-stripe-subscription": "^1.0.6"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "tailwindcss/typography",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
-    "autoprefixer": "^10.0.1",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "15.1.6",
     "postcss": "^8.5.1",
