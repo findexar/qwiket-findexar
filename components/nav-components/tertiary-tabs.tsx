@@ -12,6 +12,7 @@ interface STabsProps {
   selected: boolean;
   isnew: boolean;
   level: string;
+  link?: string;
 }
 const STab = styled(Tab) <STabsProps>`
    color: green !important;
@@ -27,6 +28,7 @@ interface Option {
   name: string;
   tab: string;
   disabled: boolean;
+  link?: string;
 }
 interface Props {
   options: Option[];
@@ -54,7 +56,7 @@ const TertiaryTabs: React.FC<Props> = ({ level = "primary", options, onChange, s
       selectedValue = i;
     }
     // console.log("optionTab", optionTab, "selectedOptionNameTab", selectedOptionNameTab, "selected", selected);
-    return <STab level={level} isnew={option.tab == 'chat'} disabled={option.disabled} selected={selected} key={`t3ab-${option.name}`} label={option.name} />;
+    return <STab level={level} isnew={option.tab == 'chat'} disabled={option.disabled} selected={selected} key={`t3ab-${option.name}`} label={option.name} link={option.link} />;
   });
   return <TabsWrap level={level}><Tabs id={level == "secondary" ? "tabs6" : "tabs3"} variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange", value); onChange(options[value]) }}>{tabs}</Tabs></TabsWrap>;
 };

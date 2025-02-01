@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { styled } from "styled-components";
 import Landing from "@/components/func-components/landing";
 import Teams from "@/components/func-components/teams";
@@ -195,44 +195,66 @@ const Desktop: React.FC<Props> = () => {
 
   const onTabNav = (option: any) => {
     const newTab = option.tab;
-    const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
-    const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
-    window.history.pushState({}, "", newPath);
-    setTimeout(() => setTab(newTab), 0);
-    if (rtab !== '') {
-      setTimeout(() => setRtab(rtab), 0);
-    }
-    setView("mentions");
+    /* const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
+     const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
+     window.history.pushState({}, "", newPath);
+     setTimeout(() => setTab(newTab), 0);
+     if (rtab !== '') {
+       setTimeout(() => setRtab(rtab), 0);
+     }
+     setView("mentions");*/
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }
   }
   const onRTabNav = (option: any) => {
     const newTab = option.tab;
-    const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
-    const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
-    window.history.pushState({}, "", newPath);
-    // console.log("==> newPath", newPath);
-    setTimeout(() => setRtab(newTab), 0);
+    /* const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
+     const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
+     window.history.pushState({}, "", newPath);
+     // console.log("==> newPath", newPath);*/
+    /*setTimeout(() => setRtab(newTab), 0);
     if (tab !== '') {
       setTimeout(() => setTab(tab), 0);
-    }
+    }*/
     //setView("mentions");
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
     }
   }
-  const onTeamPlayerTabNav = (option: any) => {
+  const onTeamPlayerTabNav = useCallback((option: any) => {
     const newTab = option.tab;
-    const tabParam = newTab !== 'mentions' ? params ? `&tab=${newTab}` : `?tab=${newTab}` : '';
+    /*const tabParam = newTab !== 'mentions' ? params ? `&tab=${newTab}` : `?tab=${newTab}` : '';
     const newPath = player ? `/${league}/${teamid}/${player}/${athleteUUId}${params}${tabParam}` : params ? `/${league}/${teamid}/${params}${tabParam}` : `/${league}/${teamid}?tab=${newTab}`;
     window.history.pushState({}, "", newPath);
     setTimeout(() => setTab(newTab), 0);
-    setView("mentions");
+    setView("mentions");*/
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }
+  }, [bot, fbclid, utm_content]);
+
+  const teamPlayerTabPath = (tab: string) => {
+
+    const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
+    //const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${tab}&rtab=${rtab}`;
+    const newPath = `/${league}/${teamid}/${pagetype === "player" ? `/${player}/${athleteUUId}` : ""}${tabParam}`;
+    return newPath;
   }
+  const tabPath = (tab: string) => {
+    const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
+    const newPath = league ? `/${league}${tabParam}` : `/${tabParam}`;
+    return newPath;
+
+
+  }
+  const rtabPath = (tab: string, rtab: string) => {
+
+    const tabParam = (tab !== 'all' && tab != '') ? params ? `${params}&tab=${tab}&rtab=${rtab}` : `?tab=${tab}&rtab=${rtab}` : params ? `${params}&rtab=${rtab}` : `?rtab=${rtab}`;
+    const newPath = league ? `/${league}${params}${tabParam}` : `/${tabParam}`;
+    return newPath;
+
+  };
   // tab = tab || 'all';
   //console.log("==> pagetype", pagetype, tab, view);
   return (
@@ -251,11 +273,11 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === "league" && view !== 'about' && (
                     <TertiaryTabs
                       options={[
-                        { name: `Articles`, tab: 'all', disabled: false },
-                        { name: `Podcasts`, tab: 'podcasts', disabled: false },
-                        { name: `AI Chat`, tab: 'chat', disabled: false },
-                        { name: "MyTeam", tab: "myteam", disabled: false },
-
+                        { name: `Articles`, tab: 'all', disabled: false, link: tabPath('all') },
+                        { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
+                        { name: `AI Chat`, tab: 'chat', disabled: false, link: tabPath('chat') },
+                        { name: "MyTeam", tab: "myteam", disabled: false, link: tabPath('myteam') },
+                        { name: "FAQ", tab: "faq", disabled: false, link: tabPath('faq') },
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
@@ -264,13 +286,11 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === "team" || pagetype === "player") && view !== 'about' && (
                     <TertiaryTabs
                       options={[
-                        { name: `Articles`, tab: 'all', disabled: false },
-                        { name: `Podcasts`, tab: 'podcasts', disabled: false },
-                        { name: `AI Chat`, tab: 'chat', disabled: false },
-                        { name: `@`, tab: 'mentions', disabled: false },
-
-
-
+                        { name: `Articles`, tab: 'all', disabled: false, link: teamPlayerTabPath('all') },
+                        { name: `Podcasts`, tab: 'podcasts', disabled: false, link: teamPlayerTabPath('podcasts') },
+                        { name: `AI Chat`, tab: 'chat', disabled: false, link: teamPlayerTabPath('chat') },
+                        { name: `@`, tab: 'mentions', disabled: false, link: teamPlayerTabPath('mentions') },
+                        { name: "FAQ", tab: "faq", disabled: false, link: teamPlayerTabPath('faq') },
                       ]}
                       onChange={onTeamPlayerTabNav}
                       selectedOptionName={tab}
@@ -296,9 +316,9 @@ const Desktop: React.FC<Props> = () => {
                   {pagetype === 'league' && (<>
                     <TertiaryTabs
                       options={[
-                        { name: `@`, tab: '', disabled: false },
-                        { name: "MyFeed", tab: "myfeed", disabled: false },
-                        { name: "Favorites", tab: "fav", disabled: false }
+                        { name: `@`, tab: '', disabled: false, link: rtabPath(tab, '') },
+                        { name: "MyFeed", tab: "myfeed", disabled: false, link: rtabPath(tab, 'myfeed') },
+                        { name: "Favorites", tab: "fav", disabled: false, link: rtabPath(tab, 'fav') }
                       ]}
                       onChange={onRTabNav}
                       selectedOptionName={rtab}

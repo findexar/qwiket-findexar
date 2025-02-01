@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const tabClasses = {
@@ -31,9 +32,10 @@ interface TabProps {
   iconPosition?: string;
   id?: string;
   isnew?: boolean;
+  link?: string;
 }
 
-const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start", id = "tabs1", isnew = false }) => {
+const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start", id = "tabs1", isnew = false, link = '' }) => {
   // console.log("TAB,selected ",selected,"id ",id)
   if (isnew) {
     if (id == 'tabs2')
@@ -49,7 +51,7 @@ const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, ic
       disabled={disabled}
     // Ensures that the button size doesn't change when selected
     >
-      {label}
+      {link ? <Link href={link}>{label}</Link> : label}
     </button>
   );
 };
