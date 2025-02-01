@@ -13,6 +13,7 @@ import fetchMetaLink from '@lib/server-actions/meta-link';
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
 import fetchPlayerMentions from '@lib/server-actions/player-mentions';
 import fetchTeamPlayers from '@lib/server-actions/team-players';
+import fetchStories from '@lib/server-actions/stories';
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot'
 import SPALayout from '@/components/spa';
@@ -23,24 +24,22 @@ import fetchChat from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 
-type Props = {
-  params: { leagueid: string, teamid: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+//migration to Next.js 15
+type Params = Promise<{ leagueid: string, teamid: string, name: string }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { params, searchParams }: { params: Params, searchParams: SearchParams },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
-  let { id, story, tab, view, s = '0' }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, s: string } = searchParams as any;
+  const { leagueid, teamid, name } = await params;
+  const { id, story, tab, view, m, s = '0' } = await searchParams as any;
   let findexarxid = id || "";
-  let league = params.leagueid.toUpperCase();
+  let league = leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
     console.log("==> SSR PAGE.TSX FOUND invalid league");
     notFound();
-
   }
   /**
    * Fill an array of fetch promises for parallel execution
@@ -54,10 +53,12 @@ export async function generateMetadata(
   if (story) { // if a digest story is opened
     astory = await getASlugStory({ type: "ASlugStory", slug: story });
   }
+  if (m) {
+    astory = await getASlugStory({ type: "ASlugStory", m });
+  }
   //@ts-ignore
-  const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
-
-  const {
+  const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", athleteUUId: amentionAthleteUUId = "", image: amentionImage = "", date: amentionDate = "" } = amention ? amention : {};
+  let {
     title: astoryTitle = "",
     site_name: astorySite_Name = "",
     authors: astoryAuthors = "",
@@ -93,6 +94,8 @@ export async function generateMetadata(
 
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
+  if (!astoryImageOgUrl)
+    image_height = 630;
   let ogTitle = ogTarget || `Qwiket AI`;
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}`
@@ -102,7 +105,7 @@ export async function generateMetadata(
     ogImage = astoryImageOgUrl;
   }
   const noindex = 1;
-  //console.log("ogImage:", ogImage)
+  // console.log("ogImage:", ogImage)
   return {
     title: ogTitle,
     openGraph: {
@@ -136,16 +139,20 @@ export async function generateMetadata(
 
   }
 }
+
 export default async function Page({
   params,
-  searchParams,
+  searchParams
 }: {
-  params: { leagueid: string, teamid: string, name: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Params,
+  searchParams: SearchParams
 }) {
 
+  let { leagueid, teamid, name } = await params;
+  let { tab = "", fbclid = "", utm_content = "", view = "", id, story, m, cid = "", aid = "" } = await searchParams as any;
+
   const t1 = new Date().getTime();
-  let headerslist = headers();
+  let headerslist = await headers();
   const ua = headerslist.get('user-agent') || "";
 
   const botInfo = isbot({ ua });
@@ -169,33 +176,25 @@ export default async function Page({
   try {
     const session = await fetchSession();
     sessionid = session.sessionid;
-
     dark = session.dark;
   }
   catch (x) {
     console.log("error fetching sessionid", x);
   }
-  let fallback: { [key: string]: any } = {}; // Add index signature
-  const leaguesKey = { type: "leagues" };
-
-  fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-
-
-  let { tab, fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, cid: string, aid: string } = searchParams as any;
-
   let findexarxid = id || "";
   let pagetype = "player";
-  let league = params.leagueid.toUpperCase();
-  let teamid = params.teamid;
-  let name = params.name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');
-
+  let league = leagueid.toUpperCase();
+  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
+    console.log("==> SSR PAGE.TSX FOUND invalid league");
+    notFound();
+  }
+  name = name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;
 
   let isMobile = Boolean(ua.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
   ))
   view = view.toLowerCase();
-  if (view == 'main' || view == 'feed' || view == 'home')
+  if (view == '' || view == 'main' || view == 'feed' || view == 'home')
     view = 'mentions';
   let calls: { key: any, call: Promise<any> }[] = [];
 
@@ -205,6 +204,7 @@ export default async function Page({
    * 
    */
   calls.push(await fetchLeagueTeams({ league }));
+
   let userInfo: { email: string } = { email: "" };
   if (userId) {
     const user = await currentUser();
@@ -223,15 +223,31 @@ export default async function Page({
   if (story) { // if a digest story is opened
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
-  if (!story && !findexarxid)
+  if (m) {
+    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
+  }
+  if (!story && !findexarxid && !m)
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
-  if (!story && !findexarxid)
+  if (!story && !findexarxid && !m)
     calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId: "" }));
-  //console.log("tab,view", tab, view);
+
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
+  console.log("*** *** *** ==> player SSR", teamid, name, tab, view);
+  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
+    if (!story && !findexarxid) {
+      console.log("**********fetchStories", userId, sessionid, league);
+      calls.push(await fetchStories({ userId, sessionid, league, teamid, athleteUUId: "", type: tab == 'podcasts' ? 'v' : '' }));
+    }
+  }
+
+  /* SSR FETCHES */
+
+  let fallback: { [key: string]: any } = {}; // Add index signature
+  const leaguesKey = { type: "leagues" };
+  fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
   await fetchData(t1, fallback, calls);
 
@@ -239,11 +255,11 @@ export default async function Page({
 
   let teams = fallback[unstable_serialize(key)];
   let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-
+  console.log("==> player SSR", teamName, teamid, name, tab, view);
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} league={league} pagetype={pagetype} teamid={teamid} name={name} teamName={teamName} ua={ua} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} teamName={teamName} ua={ua} />
       </main>
     </SWRProvider>
   );

@@ -1,3 +1,4 @@
+'use server';
 import { headers } from "next/headers";
 import { unstable_serialize } from 'swr';
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -15,30 +16,31 @@ import fetchStories from '@lib/server-actions/stories';
 import fetchChat from "@lib/server-actions/chat";
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot';
-import { getAMention } from '@lib/server-actions/mention';
 import SPALayout from '@/components/spa';
+import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound, redirect } from 'next/navigation';
-type Props = {
-  params: { leagueid: string, teamid: string },
-  searchParams: { [key: string]: string | string[] | undefined }
-};
+
+// Migration to Next.js 15
+type Params = Promise<{ leagueid: string, teamid: string }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { params, searchParams }: { params: Params, searchParams: SearchParams },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // Read route params
-  let { id, story, tab, view, m, s }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, m: string, story: string, s: string } = searchParams as any;
+  const { leagueid, teamid } = await params;
+  const { id, story, tab, view, m, s = '0' } = await searchParams as any;
   let findexarxid = id || "";
-  let league = params.leagueid.toUpperCase();
+  let league = leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
     console.log("==> SSR PAGE.TSX FOUND invalid league");
     notFound();
   }
+
   let amention, astory;
   if (findexarxid) {
     amention = await getAMention({ type: "AMention", findexarxid });
@@ -69,9 +71,9 @@ export async function generateMetadata(
   // Prepare meta data for amention
   let ogUrl = '';
   if (amention && amentionLeague && amentionTeam && amentionPlayer) {
-    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}/${amentionPlayer}?id=${findexarxid}`;
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
   } else if (amention && amentionLeague && amentionTeam) {
-    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}?id=${findexarxid}`;
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}?id=${findexarxid}`;
   } else if (amention && amentionLeague) {
     ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}?id=${findexarxid}`;
   } else if (amention) {
@@ -89,8 +91,7 @@ export async function generateMetadata(
 
   let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-  if (!astoryImageOgUrl)
-    image_height = 630;
+  if (!astoryImageOgUrl) image_height = 630;
   let ogTitle = ogTarget || `Qwiket AI`;
   if (astory) {
     ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
@@ -137,11 +138,13 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { leagueid: string, teamid: string },
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Params,
+  searchParams: SearchParams
 }) {
+  let { leagueid, teamid } = await params;
+  let { tab = "all", fbclid = "", utm_content = "", view = "mentions", id, story, m, cid = "", aid = "" } = await searchParams as any;
   const t1 = new Date().getTime();
-  let headerslist = headers();
+  let headerslist = await headers();
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
@@ -170,24 +173,18 @@ export default async function Page({
 
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
-
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-
-  let { tab = "all", fbclid = "", utm_content = "", view = "mentions", id, story, m, cid = "", aid = "" }:
-    { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, cid: string, aid: string } = searchParams as any;
   let findexarxid = id || "";
   let pagetype = "team";
-  let league = params.leagueid.toUpperCase();
+  let league = leagueid.toUpperCase();
   if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
     console.log("==> SSR PAGE.TSX FOUND invalid league");
     notFound();
-
   }
-  let teamid = params.teamid;
-  //console.log("league->", league);
+
   if (!teamid || teamid == 'null') {
-    //forward to main page
+    // Forward to main page
     return redirect(`/${league}`);
   }
   let isMobile = Boolean(ua.match(
@@ -197,7 +194,6 @@ export default async function Page({
   if (view == '' || view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
-  // console.log("VIEW:", view, isMobile);
   let calls: { key: any, call: Promise<any> }[] = [];
 
   calls.push(await fetchLeagueTeams({ league }));
@@ -210,7 +206,6 @@ export default async function Page({
   if (userId) {
     calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
   }
-
 
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
@@ -231,7 +226,6 @@ export default async function Page({
   if (!story && !findexarxid) {
     calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
   }
-  //console.log("tab,view", tab, view);
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
@@ -239,13 +233,10 @@ export default async function Page({
   if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
     if (!story && !findexarxid) {
       console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league, teamid, type: tab == 'podcasts' ? 'v' : '' }));
-
-      //calls.push(await fetchStories({ userId, sessionid, league }));
+      calls.push(await fetchStories({ userId, sessionid, league, teamid: teamid, type: tab == 'podcasts' ? 'v' : '' }));
     }
   }
   await fetchData(t1, fallback, calls);
-  // console.log("=======>TEAM FALLBACK:", fallback)
   const key = { type: "league-teams", league };
   let teams = fallback[unstable_serialize(key)];
   let { teamName, teamLogo } = { teamName: teams?.find((x: any) => x.id == teamid)?.name, teamLogo: teams?.find((x: any) => x.id == teamid)?.logo };

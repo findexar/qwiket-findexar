@@ -25,12 +25,22 @@ export const metadata: Metadata = {
         ],
     },
 };
-
-export default async function Page({ searchParams }: { params: { slug: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
+//migration to Next.js 15
+type Params = Promise<{}>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+export default async function Page({
+    params,
+    searchParams,
+}: {
+    params: Params,
+    searchParams: SearchParams
+}) {
+    //let { id, story, tab = "all", fbclid = "", utm_content = "", view = "mentions", m, cid = "", aid = "" } = await searchParams as any;
+    let { tab = "", fbclid, utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = await searchParams as any;
 
     const fetchSession = async () => {
         "use server";
-        let session = await getIronSession<SessionData>(cookies(), sessionOptions);
+        let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
         if (!session.sessionid) {
             var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             session.sessionid = randomstring();
@@ -40,8 +50,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     };
 
     const t1 = new Date().getTime();
-    let headerslist = headers();
-    let { tab = "", fbclid, utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = searchParams as any;
+    let headerslist = await headers();
 
     let findexarxid = id || "";
     let pagetype = "account-dashboard";

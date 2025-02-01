@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+
+//migration to Next.js 15
+type Params = Promise<{ slug: string }>
+
 export async function GET(
     request: NextRequest,
-    { params }: { params: { slug: string[] } }
+    segmentData: { params: Params }
 ) {
-    const slug = params.slug;
+    const { slug } = await segmentData.params;
 
     if (!Array.isArray(slug) || slug.length !== 2) {
         return NextResponse.json({ error: 'Invalid template path' }, { status: 400 });

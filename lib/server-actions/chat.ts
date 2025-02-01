@@ -199,7 +199,6 @@ export const actionCreateChat = async (props: CreateChatProps) => {
     console.log("===================================>actionCreateChat", props)
     const session = await fetchSession();
 
-    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
 
     const sessionid = session.sessionid || "";
@@ -264,12 +263,8 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
 }
 export const actionChatInit = async (props: ChatInitProps) => {
     'use server';
-    // console.log("===================================>actionChatInit", props)
     const session = await fetchSession();
-
-    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
     const { userId = "" } = auth() || {};
-
     const sessionid = session.sessionid || "";
 
     console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })

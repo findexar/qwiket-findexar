@@ -1,37 +1,36 @@
-import { cookies, headers } from "next/headers";
-import { getIronSession } from "iron-session";
-import { sessionOptions, SessionData } from "@/lib/session";
+'use server';
+import { headers } from "next/headers";
 import { unstable_serialize } from 'swr';
-import { SWRProvider } from '@/app/swr-provider';
 import { auth, currentUser } from "@clerk/nextjs/server";
-import fetchMyTeam from '@lib/server-actions/my-team-actions';
-import fetchMyFeed from '@lib/server-actions/myfeed';
+import { SWRProvider } from '@/app/swr-provider';
+
 import fetchLeagues from '@lib/server-actions/leagues';
-import fetchFavorites from '@lib/server-actions/favorites';
+import fetchSession from '@lib/server-actions/session';
 import fetchSlugStory from '@lib/server-actions/slug-story';
 import fetchMention from '@lib/server-actions/mention';
 import fetchMetaLink from '@lib/server-actions/meta-link';
 import fetchStories from '@lib/server-actions/stories';
-import fetchUserSubscription from "@lib/server-actions/user-subscription";
+import fetchChat from "@lib/server-actions/chat";
 import { getASlugStory } from '@lib/server-actions/slug-story';
-import { getAMention } from '@lib/server-actions/mention';
-//@ts-ignore
-import isbot from 'isbot-fast';
+import { isbot } from '@/lib/is-bot';
 import SPALayout from '@/components/spa';
+import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
-import fetchLeagueMentions from "@lib/server-actions/league-mentions";
-type Props = {
-  params: {};
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  let { id, story, tab, view, m, s } = searchParams as any;
-  s = s || '0';
+// Migration to Next.js 15
+type Params = Promise<{}>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export async function generateMetadata(
+  { params, searchParams }: { params: Params, searchParams: SearchParams },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Read route params
+  const { id, story, tab, view, m, s = '0' } = await searchParams as any;
   let findexarxid = id || "";
-  const league = '';
 
   let amention, astory;
   if (findexarxid) {
@@ -44,17 +43,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     astory = await getASlugStory({ type: "ASlugStory", m });
   }
 
-  const {
-    summary: amentionSummary = "",
-    league: amentionLeague = "",
-    type = "",
-    team: amentionTeam = "",
-    teamName: amentionTeamName = "",
-    name: amentionPlayer = "",
-    image: amentionImage = "",
-    date: amentionDate = ""
-  } = amention || {};
-
+  const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention || {};
   let {
     title: astoryTitle = "",
     site_name: astorySite_Name = "",
@@ -67,40 +56,41 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     image_width = 1200,
     image_height = 1200
   } = astory || {};
-  //astoryOgImage = ''; //DEBIG
+
   const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
 
+  // Prepare meta data for amention
   let ogUrl = '';
-  if (amention) {
-    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}/${amentionPlayer}?id=${findexarxid}`;
+  if (amention && amentionLeague && amentionTeam && amentionPlayer) {
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
+  } else if (amention && amentionLeague && amentionTeam) {
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}?id=${findexarxid}`;
+  } else if (amention && amentionLeague) {
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}?id=${findexarxid}`;
+  } else if (amention) {
+    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/?id=${findexarxid}`;
   } else {
     ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
   }
 
   let ogTarget = '';
-  if (amention && type == 'person') {
+  if (amention && amentionLeague && amentionTeam && amentionPlayer && type == 'person') {
     ogTarget = `${amentionPlayer} of ${amentionTeamName}`;
-  } else if (amention) {
+  } else if (amention && amentionLeague && amentionTeam) {
     ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
   }
 
-  let ogDescription = amentionSummary || "Sport News Monitor and Sports Savvy AI Chat.";
+  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
   let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-  if (!astoryImageOgUrl)
-    image_height = 630;
+  if (!astoryImageOgUrl) image_height = 630;
   let ogTitle = ogTarget || `Qwiket AI`;
-
   if (astory) {
-    ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
+    ogUrl = story ? `${process.env.NEXT_PUBLIC_SERVER}/?story=${story}` : `${process.env.NEXT_PUBLIC_SERVER}/`;
     ogTitle = astoryTitle;
     ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
     ogImage = astoryImageOgUrl;
   }
-  console.log("ogUrl", ogUrl);
-  console.log("ogTitle", ogTitle);
-  console.log("ogDescription", ogDescription);
-  console.log("ogImage", ogImage);
-  let noindex = +(process.env.NEXT_PUBLIC_NOINDEX || "0");
+  const noindex = 1;
 
   return {
     title: ogTitle,
@@ -118,13 +108,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       ],
       type: 'website'
     },
-    twitter: {
-      card: 'summary_large_image',
-      title: ogTitle,
-      description: ogDescription,
-      images: [ogImage],
-    },
-    robots: (noindex === 1 || tab !== '' || view !== '') ? 'noindex, follew' : 'index, follow',
+    robots: (noindex === 1 || s !== "1") ? 'noindex, follow' : 'index, follow',
     alternates: {
       canonical: ogUrl,
     },
@@ -141,115 +125,93 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-export default async function Page({ searchParams }: { params: { slug: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
-  const fetchSession = async () => {
-    "use server";
-    let session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    if (!session.sessionid) {
-      var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      session.sessionid = randomstring();
-      session.dark = -1;
-    }
-    return session;
-  };
-
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Params,
+  searchParams: SearchParams
+}) {
+  let { id, story, tab = "all", fbclid = "", utm_content = "", view = "mentions", m, cid = "", aid = "" } = await searchParams as any;
   const t1 = new Date().getTime();
-  let headerslist = headers();
+  let headerslist = await headers();
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
   if (!ua) {
     bot = true;
   }
-  let sessionid = "";
-  let dark = 0;
-  let { userId } = !bot ? auth() : { userId: "" };
-
+  let userId = "";
+  try {
+    let { userId: authId } = !bot ? auth() : { userId: "" };
+    userId = authId || "";
+  } catch (x) {
+    console.log("error fetching userId", x);
+  }
   if (!userId) {
     userId = "";
   }
-  // console.log("*** *** *** userId", userId);
+  let sessionid = "";
+  let dark = 0;
   try {
     const session = await fetchSession();
-    //    console.log("*** *** *** session", session);
     sessionid = session.sessionid;
     dark = session.dark;
   } catch (x) {
     console.log("error fetching sessionid", x);
   }
-  // console.log("sessionid", sessionid);
 
   let fallback: { [key: string]: any } = {};
   const leaguesKey = { type: "leagues" };
   fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let { tab = "", fbclid, utm_content, view = "mentions", rtab = "", id, story, m, cid, aid } = searchParams as any;
-
   let findexarxid = id || "";
-  let pagetype = "league";
-  let league = "";
-  utm_content = utm_content || '';
-  fbclid = fbclid || '';
+  let pagetype = "home";
 
-  let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
+  let isMobile = Boolean(ua.match(
+    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+  ));
   view = view.toLowerCase();
-  if (view == 'main' || view == 'feed' || view == 'home') {
+  if (view == '' || view == 'main' || view == 'feed' || view == 'home') {
     view = 'mentions';
   }
-  // console.log("VIEW:", view, isMobile);
-  let calls: { key: any; call: Promise<any> }[] = [];
-  let userInfo = { email: '' };
+  let calls: { key: any, call: Promise<any> }[] = [];
+
+  let userInfo: { email: string } = { email: "" };
   if (userId) {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
     userInfo.email = email || '';
   }
+  if (userId) {
+    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
+  }
+
   if (findexarxid) {
     calls.push(await fetchMention({ type: "AMention", findexarxid }));
     calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
   }
+
   if (story) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
   }
   if (m) {
     calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
   }
-  if (rtab == 'fav' && view == 'mentions') {
+  if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
-      calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
+      calls.push(await fetchStories({ league: "", userId, sessionid, type: tab == 'podcasts' ? 'v' : '' }));
     }
   }
-  if (view == 'my team' || tab == 'myteam') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
-    }
+  if (tab == 'chat') {
+    calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: "", teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
-  if (tab == 'myfeed' || rtab == 'myfeed' || view == 'mentions') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchMyFeed({ userId, sessionid, league }));
-    }
-  }
-  //console.log("SSSSR  =====>view", { view, tab, rtab });
-  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
-    if (!story && !findexarxid) {
-      //console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
-    }
-  }
-  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
-    }
-  }
-  if (userId) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
-  }
+  console.log("*** *** *** ==> home SSR", tab, view);
   await fetchData(t1, fallback, calls);
-
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} m={m} pagetype={pagetype} ua={ua} />
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} pagetype={pagetype} ua={ua} />
       </main>
     </SWRProvider>
   );

@@ -20,12 +20,12 @@ const recordEvent = async ({ name, params }: RecordEventProps, userId: string, s
     return res.success;
 }
 const workRecordEvent = async (name: string, params: string) => {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
     const { userId } = auth() || { userId: "" };
     const sessionid = session.sessionid;
-    return recordEvent({ name, params }, userId || "", sessionid);
+    return await recordEvent({ name, params }, userId || "", sessionid);
 }
-export const actionRecordEvent = (name: string, params: string) => {
+export const actionRecordEvent = async (name: string, params: string) => {
     return workRecordEvent(name, params);
 }
 

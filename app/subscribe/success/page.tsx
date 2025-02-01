@@ -4,27 +4,31 @@ import { auth } from "@clerk/nextjs/server";
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation'
 import Stripe from "stripe";
+//migration to Next.js 15
+type Params = Promise<{}>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
-export default async function SuccessPage({
+
+export default async function Page({
   params,
-  searchParams,
+  searchParams
 }: {
-  params: {};
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Params,
+  searchParams: SearchParams
 }) {
 
   let {
     session_id
   }: {
     session_id: string
-  } = searchParams as any;
+  } = await searchParams as any;
   console.log("Session_id:", session_id);
   const handleRedirect = async () => {
 
     if (typeof session_id === 'string') { // Ensure session_id is a string
       try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-          apiVersion: "2024-04-10",
+          apiVersion: "2025-01-27.acacia",
           appInfo: {
             name: "qwiket",
             url: "https://www.qwiket.com",

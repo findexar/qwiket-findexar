@@ -89,10 +89,13 @@ const Tabs: React.FC<TabsProps> = ({ children, id = "tabs1", variant, value, onC
       {React.Children.map(children, (child, index) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
+            //@ts-ignore
             ...child.props,
             onClick: (event: React.SyntheticEvent) => {
               handleTabChange(event, index);
+              //@ts-ignore
               if (child.props.onClick) {
+                //@ts-ignore
                 child.props.onClick();
               }
             },

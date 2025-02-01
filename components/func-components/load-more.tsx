@@ -15,22 +15,22 @@ interface Props {
 
 const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size, name, items = [] }) => {
     const [visible, setVisible] = useState(false);
-    const ref = useRef<HTMLDivElement | null>(null)
+    const ref = useRef<HTMLDivElement | null>(null);
     const entry = useIntersectionObserver(ref, {
         rootMargin: '50px',
         threshold: 0
     });
     const isVisible = !!entry?.isIntersecting;
-   // console.log("load-more isVisible", isVisible)
+    // console.log("load-more isVisible", isVisible)
     name = name || "stories";
 
-   /* useEffect(() => {
-        console.log("Intersection state:", {
-            entry,
-            isVisible,
-            ref: ref.current
-        });
-    }, [entry, isVisible]);*/
+    /* useEffect(() => {
+         console.log("Intersection state:", {
+             entry,
+             isVisible,
+             ref: ref.current
+         });
+     }, [entry, isVisible]);*/
 
     useEffect(() => {
         if (isVisible && !isLoadingMore && !isReachingEnd) {

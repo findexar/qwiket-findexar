@@ -24,22 +24,21 @@ import fetchChat from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 
-//what conflicts?
-//testing push
-type Props = {
-    params: { leagueid: string, teamid: string }
-    searchParams: { [key: string]: string | string[] | undefined }
-}
+//migration to Next.js 15
+type Params = Promise<{ leagueid: string, teamid: string, name: string, athleteUUId: string }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
 
 export async function generateMetadata(
-    { params, searchParams }: Props,
+    { params, searchParams }: { params: Params, searchParams: SearchParams },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     // read route params
-    let { id, story, tab, view, m, s = '0' }:
-        { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, s: string } = searchParams as any;
+    const { leagueid, teamid, name, athleteUUId } = await params;
+    const { id, story, tab, view, m, s = '0' }:
+        { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, s: string } = await searchParams as any;
     let findexarxid = id || "";
-    let league = params.leagueid.toUpperCase();
+    let league = leagueid.toUpperCase();
     if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
         console.log("==> SSR PAGE.TSX FOUND invalid league");
         notFound();
@@ -142,16 +141,21 @@ export async function generateMetadata(
 
     }
 }
+
 export default async function Page({
     params,
-    searchParams,
+    searchParams
 }: {
-    params: { leagueid: string, teamid: string, name: string, athleteUUId: string }
-    searchParams: { [key: string]: string | string[] | undefined }
+    params: Params,
+    searchParams: SearchParams
 }) {
 
+    let { leagueid, teamid, name, athleteUUId } = await params;
+    let { tab = "", fbclid = "", utm_content = "", view = "", id, story, m, cid = "", aid = "" }:
+        { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+
     const t1 = new Date().getTime();
-    let headerslist = headers();
+    let headerslist = await headers();
     const ua = headerslist.get('user-agent') || "";
 
     const botInfo = isbot({ ua });
@@ -180,24 +184,14 @@ export default async function Page({
     catch (x) {
         console.log("error fetching sessionid", x);
     }
-    let fallback: { [key: string]: any } = {}; // Add index signature
-    const leaguesKey = { type: "leagues" };
-
-    fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-
-    let { tab = "", fbclid = "", utm_content = "", view = "", id, story, m, cid = "", aid = "" }:
-        { fbclid: string, utm_content: string, view: string, tab: string, id: string, story: string, m: string, cid: string, aid: string } = searchParams as any;
-
     let findexarxid = id || "";
     let pagetype = "player";
-    let league = params.leagueid.toUpperCase();
+    let league = leagueid.toUpperCase();
     if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
         console.log("==> SSR PAGE.TSX FOUND invalid league");
         notFound();
     }
-    let teamid = params.teamid;
-    let name = params.name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;
-    let athleteUUId = params.athleteUUId;
+    name = name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;
 
     let isMobile = Boolean(ua.match(
         /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -213,6 +207,7 @@ export default async function Page({
      * 
      */
     calls.push(await fetchLeagueTeams({ league }));
+
     let userInfo: { email: string } = { email: "" };
     if (userId) {
         const user = await currentUser();
@@ -256,6 +251,13 @@ export default async function Page({
             //calls.push(await fetchStories({ userId, sessionid, league }));
         }
     }
+
+    /* SSR FETCHES */
+
+    let fallback: { [key: string]: any } = {}; // Add index signature
+    const leaguesKey = { type: "leagues" };
+    fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
+
     await fetchData(t1, fallback, calls);
 
     const key = { type: "league-teams", league };
