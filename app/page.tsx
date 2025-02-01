@@ -137,7 +137,7 @@ export default async function Page({
   let { id, story, tab = "all", fbclid = "", utm_content = "", view = "mentions", m, cid = "", aid = "" } = await searchParams as any;
   const t1 = new Date().getTime();
   let headerslist = await headers();
-  console.log("headerslist", headerslist);
+  //console.log("headerslist", headerslist);
   const ua = headerslist.get('user-agent') || "";
   const botInfo = isbot({ ua });
   let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
@@ -211,6 +211,7 @@ export default async function Page({
   }
   console.log("*** *** *** ==> home SSR", tab, view);
   await fetchData(t1, fallback, calls);
+  // console.log("*** *** *** ==> home SSR AFTER FETCH DATA", JSON.stringify(fallback));
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full">
