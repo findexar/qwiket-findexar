@@ -1,11 +1,17 @@
+
 import { Inter, Roboto } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import StyledComponentsRegistry from '@/lib/registry'
 import StripeProvider from "@/components/StripeProvider";
 import "./globals.css";
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
+export const metadata: Metadata = {
+  title: "Qwiket AI",
+  description: "Interactive sports knowledge",
+};
 
 export default function RootLayout({
   children,
