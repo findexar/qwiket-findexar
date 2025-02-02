@@ -278,7 +278,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                         { name: `AI Chat`, tab: 'chat', disabled: false, link: tabPath('chat') },
                         { name: "MyTeam", tab: "myteam", disabled: false, link: tabPath('myteam') },
-                        { name: "FAQ", tab: "faq", disabled: false, link: tabPath('faq') },
+                        // { name: "FAQ", tab: "faq", disabled: false, link: tabPath('faq') },
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
@@ -291,7 +291,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: teamPlayerTabPath('podcasts') },
                         { name: `AI Chat`, tab: 'chat', disabled: false, link: teamPlayerTabPath('chat') },
                         { name: `@`, tab: 'mentions', disabled: false, link: teamPlayerTabPath('mentions') },
-                        { name: "FAQ", tab: "faq", disabled: false, link: teamPlayerTabPath('faq') },
+                        // { name: "FAQ", tab: "faq", disabled: false, link: teamPlayerTabPath('faq') },
                       ]}
                       onChange={onTeamPlayerTabNav}
                       selectedOptionName={tab}
