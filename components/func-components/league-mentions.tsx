@@ -19,7 +19,7 @@ const Stories: React.FC<Props> = () => {
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
-    console.log("CLIENT====> fetchMentionsKey", fetchMentionsKey(0, null));
+    // console.log("CLIENT====> fetchMentionsKey", fetchMentionsKey(0, null));
     // now swrInfinite code:
     const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionLeagueMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
     /* useEffect(()=>{

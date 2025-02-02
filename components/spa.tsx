@@ -238,8 +238,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const userAccountKey: UserAccountKey = { type: "user-account", email: user.email, bot };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   // console.log("==> SPA userAccount", { userAccountKey, userAccount });
-  console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
-  console.log("==> pagetype", pagetype);
+  //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
+ // console.log("==> pagetype", pagetype);
 
   return (
     <StyledThemeProvider theme={palette}>

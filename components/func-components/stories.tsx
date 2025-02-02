@@ -66,17 +66,17 @@ let scrollY = 0;
 const Stories: React.FC<Props> = ({ type }) => {
     type = type || "";
     const { fallback, league, teamid, athleteUUId } = useAppContext();
-    console.log("Stories ==> fallback", fallback);
+    //   /  console.log("Stories ==> fallback", fallback);
     const fetchStoriesKey = (pageIndex: number, previousPageData: any): StoriesKey | null => {
         let key: StoriesKey = { type: `fetch-stories${type ? `-${type}` : ""}`, page: pageIndex, league: league || "", teamid: teamid || "", athleteUUId: athleteUUId || "" };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     };
-    console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
+    //console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: true, parallel: true, fallback, /*revalidateFirstPage: true*/ });
 
     let stories = data ? [].concat(...data) : [];
-    console.log("stories", stories);
+    //console.log("stories", stories);
     useEffect(() => {
         const intervalId = setInterval(() => {
             if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {

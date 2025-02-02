@@ -111,22 +111,22 @@ const Mobile: React.FC<Props> = () => {
     //console.log("==> mobile page", pagetype);
     // Use useCallback for event handlers
     const onTabNav = React.useCallback(async (option: any, level: number) => {
-        setIsVisible(false);
-        setIsLoading(true);
-        //console.log("==> mobile onTabNav", { option, level });
-        // Wait for fade out
-        await new Promise(resolve => setTimeout(resolve, 300));
-
-        const tab = option.tab;
-        setTab(tab);
-        if (rtab !== '') {
-            setTimeout(() => setRtab(rtab), 0);
-        }
-        // setView("main");
-        let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-        router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
-        window.history.pushState({}, "", league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
-
+        /*  setIsVisible(false);
+          setIsLoading(true);
+          //console.log("==> mobile onTabNav", { option, level });
+          // Wait for fade out
+          await new Promise(resolve => setTimeout(resolve, 300));
+  
+          const tab = option.tab;
+          setTab(tab);
+          if (rtab !== '') {
+              setTimeout(() => setRtab(rtab), 0);
+          }
+          // setView("main");
+          let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
+          router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+          window.history.pushState({}, "", league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+  */
         if (!bot) {
             await actionRecordEvent(
                 'tab-nav',
@@ -144,28 +144,29 @@ const Mobile: React.FC<Props> = () => {
 
     const onRTabNav = (option: any) => {
         const newTab = option.tab;
-        const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
-        const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
-        window.history.pushState({}, "", newPath);
-        // console.log("==> newPath", newPath);
-        setTimeout(() => setRtab(newTab), 0);
-        if (tab !== '') {
-            setTimeout(() => setTab(tab), 0);
-        }
-        //setView("mentions");
+        /* const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
+         const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
+         window.history.pushState({}, "", newPath);
+         // console.log("==> newPath", newPath);
+         setTimeout(() => setRtab(newTab), 0);
+         if (tab !== '') {
+             setTimeout(() => setTab(tab), 0);
+         }
+         //setView("mentions");
+         */
         if (!bot) {
             setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
         }
     }
     const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
-        if (name == 'main' || name == 'feed' || name == 'home') {
-            name = 'mentions';
-            if (currentView != 'mentions') {
-                setView('mentions');
-            }
-        }
-        setView(name);
+        /* if (name == 'main' || name == 'feed' || name == 'home') {
+             name = 'mentions';
+             if (currentView != 'mentions') {
+                 setView('mentions');
+             }
+         }
+         setView(name); */
         if (!teamid) {
             window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
         }
@@ -176,8 +177,36 @@ const Mobile: React.FC<Props> = () => {
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
         );
-    }, [teamid, league, params2, tp2, fbclid, utm_content, setView]);
+    }, [teamid, league, params2, tp2, fbclid, utm_content]);
 
+    const tabPath = (tab: string) => {
+        const leaguePath = league ? `/${league}` : `/`;
+        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
+        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
+        const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
+        const newPath = playerPath + tabParam;
+        return newPath;
+
+
+    }
+    const viewPath = (view: string) => {
+        const leaguePath = league ? `/${league}` : `/`;
+        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
+        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
+        const viewParam = view !== 'all' ? params ? `${params}&view=${encodeURIComponent(view)}` : `?view=${encodeURIComponent(view)}` : '';
+        const newPath = playerPath + viewParam;
+        return newPath;
+    }
+
+    const rtabPath = (tab: string, rtab: string) => {
+        const leaguePath = league ? `/${league}` : `/`;
+        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
+        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
+        const tabParam = (tab !== 'all' && tab != '') ? params ? `${params}&tab=${tab}&rtab=${rtab}` : `?tab=${tab}&rtab=${rtab}` : params ? `${params}&rtab=${rtab}` : `?rtab=${rtab}`;
+        const newPath = playerPath + tabParam;
+        return newPath;
+
+    };
     // Preload content
     /*  useEffect(() => {
           // Preload components or data here
@@ -202,10 +231,10 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `Stories`, tab: 'all', disabled: false },
-                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
-                            { name: "AI Chat", tab: "chat", disabled: false },
-                            { name: `Mentions`, tab: "mentions", disabled: false }
+                            { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
+                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: `Mentions`, tab: "mentions", disabled: false, link: tabPath('mentions') }
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 0); }}
                         selectedOptionName={tab}
@@ -216,10 +245,10 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `Stories`, tab: 'all', disabled: false },
-                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
-                            { name: "AI Chat", tab: "chat", disabled: false },
-                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
+                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
 
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 1); }}
@@ -231,10 +260,10 @@ const Mobile: React.FC<Props> = () => {
 
                     <TertiaryTabs
                         options={[
-                            { name: `Stories`, tab: 'all', disabled: false },
-                            { name: `Podcasts`, tab: 'podcasts', disabled: false },
-                            { name: "AI Chat", tab: "chat", disabled: false },
-                            { name: `@`, tab: 'mentions', disabled: false },
+                            { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
+                            { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
+                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
 
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 2); }}
@@ -248,9 +277,9 @@ const Mobile: React.FC<Props> = () => {
                             <TertiaryTabs
                                 level="secondary"
                                 options={[
-                                    { name: ` @ `, tab: '', disabled: false },
-                                    { name: "My Feed", tab: "myfeed", disabled: false },
-                                    { name: "Favorites", tab: "fav", disabled: false }
+                                    { name: ` @ `, tab: '', disabled: false, link: rtabPath(tab, '') },
+                                    { name: "My Feed", tab: "myfeed", disabled: false, link: rtabPath(tab, 'myfeed') },
+                                    { name: "Favorites", tab: "fav", disabled: false, link: rtabPath(tab, 'fav') }
                                 ]}
                                 onChange={async (option: any) => { await onRTabNav(option); }}
                                 selectedOptionName={rtab}
