@@ -256,7 +256,7 @@ const Desktop: React.FC<Props> = () => {
 
   };
   // tab = tab || 'all';
-  //console.log("==> pagetype", pagetype, tab, view);
+  console.log("==> pagetype", pagetype, tab, view);
   return (
     <div className="lg:block hidden h-full w-full">
       <ContainerWrap>

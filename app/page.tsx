@@ -10,6 +10,7 @@ import fetchSlugStory from '@lib/server-actions/slug-story';
 import fetchMention from '@lib/server-actions/mention';
 import fetchMetaLink from '@lib/server-actions/meta-link';
 import fetchStories from '@lib/server-actions/stories';
+import fetchLeagueMentions from '@lib/server-actions/league-mentions';
 import fetchChat from "@lib/server-actions/chat";
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot';
@@ -30,7 +31,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   // Read route params
   const { id, story, tab, view, m, s = '0' } = await searchParams as any;
-  console.log("META searchParams", { id, story, tab, view, m, s });
+  //console.log("META searchParams", { id, story, tab, view, m, s });
 
   let findexarxid = id || "";
 
@@ -205,6 +206,7 @@ export default async function Page({
   if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
       calls.push(await fetchStories({ league: "", userId, sessionid, type: tab == 'podcasts' ? 'v' : '' }));
+      calls.push(await fetchLeagueMentions({ userId, sessionid, league: "" }));
     }
   }
   if (tab == 'chat') {

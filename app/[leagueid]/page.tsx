@@ -11,6 +11,7 @@ import fetchMention from '@lib/server-actions/mention';
 import fetchMetaLink from '@lib/server-actions/meta-link';
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
 import fetchStories from '@lib/server-actions/stories';
+import fetchLeagueMentions from '@lib/server-actions/league-mentions';
 import fetchChat from "@lib/server-actions/chat";
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot';
@@ -215,6 +216,7 @@ export default async function Page({
   if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
       calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
+      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
     }
   }
   if (tab == 'chat') {
