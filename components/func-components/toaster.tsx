@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 interface ToastProps {
   message: string;
-  icon?: JSX.Element; // Optional SVG icon
+  icon?: any; // Optional SVG icon
   onClose: () => void;
 }
 
