@@ -6,12 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
 import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
-import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
+import { FaPaperPlane as FaPaperPlaneIcon, FaChevronDown as FaChevronDownIcon, FaChevronUp as FaChevronUpIcon, FaCopy as FaCopyIcon, FaCheck as FaCheckIcon, FaInfoCircle as FaInfoCircleIcon, FaPaperclip as FaPaperclipIcon, FaRedo as FaRedoIcon } from 'react-icons/fa';
 
 import { actionChatStream } from "@lib/client-actions/chat-stream";
 import MyChats from "@components/func-components/mychats";
 import { MyChatsKey, CreateChatKey } from "@lib/keys";
-import { HiOutlinePencilAlt } from "react-icons/hi";
+import { HiOutlinePencilAlt as HiOutlinePencilAltIcon } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
 import Link from 'next/link';
@@ -22,6 +22,16 @@ import { actionRecordEvent, actionRecordEvent as recordEvent } from "@lib/server
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 import Toast from './toaster'; // Import your Toast component
+const FaPaperPlane: any = FaPaperPlaneIcon as any;
+const FaChevronDown: any = FaChevronDownIcon as any;
+const FaChevronUp: any = FaChevronUpIcon as any;
+const FaCopy: any = FaCopyIcon as any;
+const FaCheck: any = FaCheckIcon as any;
+const FaInfoCircle: any = FaInfoCircleIcon as any;
+const FaPaperclip: any = FaPaperclipIcon as any;
+const FaRedo: any = FaRedoIcon as any;
+
+const HiOutlinePencilAlt: any = HiOutlinePencilAltIcon as any;
 
 const PromptsContainer = styled.div`
   display: flex;

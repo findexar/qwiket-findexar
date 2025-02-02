@@ -2,13 +2,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '@lib/context';
 import useSWR from 'swr';
+import { FaCopy as FaCopyIcon, FaCheck as FaCheckIcon } from 'react-icons/fa';
 import { UserUsageAccountKey, CidUsageAccountKey } from '@lib/keys';
 import { actionUserUsage, actionCidUsage } from '@lib/server-actions/account';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartData, ChartOptions } from 'chart.js';
 import { UserAccount, UserUsage, CidUsage } from '@/lib/types/user';
 import Link from 'next/link';
-import { FaCopy, FaCheck } from 'react-icons/fa';
+const FaCopy: any = FaCopyIcon as any;
+const FaCheck: any = FaCheckIcon as any;
+//import { FaPaperPlane, FaChevronDown, FaChevronUp, FaCopy, FaCheck, FaInfoCircle, FaPaperclip, FaRedo } from 'react-icons/fa';
+
 import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -363,7 +367,8 @@ const Dashboard: React.FC = () => {
                                             : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                                             }`}
                                     >
-                                        {copiedUrl ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                        {copiedUrl ?
+                                            <FaCheck size={14} aria-hidden="true" /> : <FaCopy size={14} aria-hidden="true" />}
                                     </button>
                                 </div>
                             </div>

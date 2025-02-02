@@ -4,8 +4,8 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
-import { RWebShare } from "react-web-share";
-
+//import { RWebShare } from "react-web-share";
+//import { WebShareApi } from 'react-web-share';
 import FacebookIcon from '@/components/icons/facebook';
 import XIcon from '@/components/icons/twitter';
 import StarOutlineIcon from '@/components/icons/star-outline';
@@ -606,6 +606,25 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     const onShare = useCallback((url: string) => {
         try {
+            /*
+             <RWebShare
+                                data={{
+                                    text: summary,
+                                    url: shareUrls.share,
+                                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                                }}
+                                onClick={async () => await onShare(url)}
+                            >
+                            */
+
+            if (navigator.share) {
+                navigator.share({
+                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                    text: summary,
+                    url: shareUrls.share,
+                });
+            }
+
             if (!bot) {
                 actionRecordEvent(`mention-share`, `{"name":"${name}","url","${url}","params":"${params}"}`)
                     .then((r: any) => {
@@ -615,7 +634,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         } catch (x) {
             console.log('actionRecordEvent', x);
         }
-    }, [params]);
+    }, []);
 
     const onClick = useCallback((url: string) => {
         try {
@@ -854,16 +873,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     </Atmention>
                     <BottomLine>
                         <ShareGroup>
-                            <RWebShare
-                                data={{
-                                    text: summary,
-                                    url: shareUrls.share,
-                                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
-                                }}
-                                onClick={async () => await onShare(url)}
-                            >
-                                <ShareContainer><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
-                            </RWebShare>
+                            <ShareContainer onClick={() => onShare(url)}><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
+
                             <Link href={socialLinks.twitter} target="_blank">
                                 <ShareContainer><XIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>
@@ -1008,16 +1019,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     {renderPrompts("mobile")}
                     <BottomLine>
                         <ShareGroup>
-                            <RWebShare
-                                data={{
-                                    text: summary,
-                                    url: shareUrls.share,
-                                    title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
-                                }}
-                                onClick={async () => await onShare(url)}
-                            >
-                                <ShareContainer><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
-                            </RWebShare>
+                            <ShareContainer onClick={async () => await onShare(url)}><IosShareIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             <Link href={socialLinks.twitter} target="_blank">
                                 <ShareContainer><XIcon className="h-4 w-4 mr-2" /></ShareContainer>
                             </Link>

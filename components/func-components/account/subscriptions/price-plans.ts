@@ -4,7 +4,7 @@ import { FaBolt, FaChartLine, FaCreditCard, FaLock, FaRocket, FaUsers, FaCog, Fa
 export interface FeatureCard {
     title: string;
     description: string;
-    Icon: IconType;
+    Icon: any;
 }
 
 export interface PlanDetails {

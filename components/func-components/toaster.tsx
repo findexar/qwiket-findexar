@@ -17,6 +17,7 @@ const Toast: React.FC<ToastProps> = ({ message, icon, onClose }) => {
 
   return (
     <div className="fixed bottom-0 right-0 mb-4 mr-4 flex text-sm items-center justify-between bg-gray-800 text-white p-3 rounded-lg shadow-lg max-w-sm">
+      {/*@ts-ignore*/}
       {icon && <div className="mr-3">{icon}</div>}
       <span className="flex-1">{message}</span>
       <button onClick={onClose} className="ml-4 text-gray-300 hover:text-gray-100">

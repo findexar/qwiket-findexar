@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FaCopy } from 'react-icons/fa';
+import { FaCopy as FaCopyIcon } from 'react-icons/fa';
+const FaCopy: any = FaCopyIcon as any;
 
 //invite data:
 //cid, email, full_name, nickname, notes, self_invited,created (datetime),visited (datetime),account_created (datetime),subscribed (datetime),canceled (datetime)

@@ -22,11 +22,16 @@ import { actionRecordEvent } from "@lib/server-actions/event";
 import PlayerPhoto from "@components/util-components/player-photo";
 import saveSession from '@lib/server-actions/save-session';
 import { actionUserSubscription } from '@lib/server-actions/user-subscription';
-import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
+import { FaChartBar as FaChartBarIcon, FaArrowUp as FaArrowUpIcon, FaUserCog as FaUserCogIcon, FaCreditCard as FaCreditCardIcon, FaCode as FaCodeIcon } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
 import Image, { ImageProps } from 'next/image';
 import Head from 'next/head';
-
+import { Anybody } from "next/font/google";
+const FaChartBar = FaChartBarIcon as any;
+const FaArrowUp = FaArrowUpIcon as any;
+const FaUserCog = FaUserCogIcon as any;
+const FaCreditCard = FaCreditCardIcon as any;
+const FaCode = FaCodeIcon as any;
 interface HeaderProps {
   $scrolled: boolean;
 }
@@ -350,7 +355,7 @@ const LeaguesTab = styled(Tab) <LeaguesNavProps>`
     color: var(--mobile-leagues-highlight) !important;
   }
 `;
-
+//@ts-ignore
 const DashboardIcon = styled(FaChartBar)`
   font-size: 16px;
   opacity: 0.8;  // Reduce opacity to make it less bright
@@ -559,6 +564,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           type="image/png"
         />
       </Head>
+      {/*@ts-ignore*/}
       <Header $scrolled={scrollY != 0}>
         <HeaderTopline>
           <LeftContainer>
@@ -627,26 +633,31 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                 <UserButton.MenuItems>
                   <UserButton.Link
                     label="Dashboard"
+
                     labelIcon={<FaChartBar />}
                     href="/account/dashboard"
                   />
                   <UserButton.Link
                     label="Upgrade"
+
                     labelIcon={<FaArrowUp />}
                     href="/account/upgrade"
                   />
                   {false && <UserButton.Link
                     label="Admin"
+
                     labelIcon={<FaUserCog />}
                     href="/account/admin"
                   />}
                   {false && <UserButton.Link
                     label="Billing"
+
                     labelIcon={<FaCreditCard />}
                     href="/create-organization"
                   />}
                   {false && <UserButton.Link
                     label="Developer Portal"
+
                     labelIcon={<FaCode />}
                     href="/account/developer"
                   />}
