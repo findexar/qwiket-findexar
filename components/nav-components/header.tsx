@@ -537,15 +537,15 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link href={`/${l}${params}${tp}`} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} onClick={async () => { await onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link prefetch={true} href={`/${l}${params}${tp}`} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link prefetch={true} href={`/${l}${params}${tp}`} onClick={async () => { await onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} />
   })
   MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league ? " text-xl h-5 p-0 ml-4 " : "  text-xl h-5 p-0 ml-4 "} />} onClick={() => { onLeagueNavClick('', `/`) }}></LeaguesTab>)
-  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
-    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
+  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
+    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
@@ -594,9 +594,9 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
                 <Superhead $scrolled={scrollY != 0}>
                   {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                    <Link className="text-red bg-magenta-800" href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
+                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
                     !teamid ? `${league}` : player ?
-                      <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>
+                      <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}${params}`}>
                         <TeamNameGroup $scrolled={scrollY != 0}>
                           <div>{teamName}</div>
                           {teamLogo && <img src={teamLogo} alt={teamName} />}
