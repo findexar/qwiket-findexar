@@ -28,6 +28,7 @@ import TeamMentions from "@/components/func-components/team-mentions";
 import PlayerMentions from "@/components/func-components/player-mentions";
 import Chat from "@/components/func-components/chat";
 import LeagueMentions from "../func-components/league-mentions";
+import { isGenerator } from "framer-motion";
 
 const FadeTransition = styled.div<{ $isVisible: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -116,17 +117,17 @@ const Mobile: React.FC<Props> = () => {
           //console.log("==> mobile onTabNav", { option, level });
           // Wait for fade out
           await new Promise(resolve => setTimeout(resolve, 300));
-  
-          const tab = option.tab;
-          setTab(tab);
-          if (rtab !== '') {
-              setTimeout(() => setRtab(rtab), 0);
-          }
-          // setView("main");
-          let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
-          router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
-          window.history.pushState({}, "", league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
   */
+        const tab = option.tab;
+        setTab(tab);
+        if (rtab !== '') {
+            setTimeout(() => setRtab(rtab), 0);
+        }
+        /*      // setView("main");
+              let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
+              router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+              window.history.pushState({}, "", league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
+      */
         if (!bot) {
             await actionRecordEvent(
                 'tab-nav',
@@ -147,26 +148,31 @@ const Mobile: React.FC<Props> = () => {
         /* const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
          const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
          window.history.pushState({}, "", newPath);
-         // console.log("==> newPath", newPath);
-         setTimeout(() => setRtab(newTab), 0);
-         if (tab !== '') {
-             setTimeout(() => setTab(tab), 0);
-         }
-         //setView("mentions");
          */
+        // console.log("==> newPath", newPath);
+        setTimeout(() => setRtab(newTab), 0);
+        if (tab !== '') {
+            setTimeout(() => setTab(tab), 0);
+        }
+        //setView("mentions");
+
         if (!bot) {
             setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
         }
     }
     const onViewNav = React.useCallback(async (option: { name: string, access: string }) => {
         let name = option.name.toLowerCase();
+        if (name == 'main') {
+            name = '';
+        }
+
         /* if (name == 'main' || name == 'feed' || name == 'home') {
              name = 'mentions';
              if (currentView != 'mentions') {
                  setView('mentions');
              }
-         }
-         setView(name); */
+         }*/
+        setView(name);
         /*  if (!teamid) {
               window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
           }
@@ -196,7 +202,7 @@ const Mobile: React.FC<Props> = () => {
         const leaguePath = league ? `/${league}` : `/`;
         const teamPath = leaguePath + (teamid ? `/${teamid}` : ``);
         const playerPath = teamPath + (player ? `/${player}/${athleteUUId}` : ``);
-        const viewParam = view !== '' ? params ? `${params}&view=${encodeURIComponent(view)}` : `?view=${encodeURIComponent(view)}` : '';
+        const viewParam = view !== '' ? params ? `${params}&view=${encodeURIComponent(view)}` : `?view=${encodeURIComponent(view)}` : `${params ? params : ''}`;
         const newPath = playerPath + viewParam;
         console.log("==> viewPath", { leaguePath, teamPath, playerPath, viewParam, newPath });
         return newPath;
