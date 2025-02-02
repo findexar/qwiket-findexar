@@ -107,7 +107,7 @@ const Mobile: React.FC<Props> = () => {
 
     // Use useMemo to memoize complex calculations or derived values
     const currentTab = React.useMemo(() => tab || "all", [tab]);
-    const currentView = React.useMemo(() => view == 'main' ? 'mentions' : view || 'mentions', [view]);
+    const currentView = React.useMemo(() => view == '' ? 'mentions' : view || 'mentions', [view]);
     //console.log("==> mobile page", pagetype);
     // Use useCallback for event handlers
     const onTabNav = React.useCallback(async (option: any, level: number) => {
@@ -167,12 +167,12 @@ const Mobile: React.FC<Props> = () => {
              }
          }
          setView(name); */
-        if (!teamid) {
-            window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-        }
-        else {
-            window.history.replaceState({}, "", `/${league}/${teamid}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
-        }
+        /*  if (!teamid) {
+              window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+          }
+          else {
+              window.history.replaceState({}, "", `/${league}/${teamid}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
+          }*/
         await actionRecordEvent(
             'view-nav',
             `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
@@ -190,18 +190,22 @@ const Mobile: React.FC<Props> = () => {
     }
 
     const viewPath = (view: string) => {
+        if (view == 'main') {
+            view = '';
+        }
         const leaguePath = league ? `/${league}` : `/`;
-        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
-        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
-        const viewParam = view !== 'all' ? params ? `${params}&view=${encodeURIComponent(view)}` : `?view=${encodeURIComponent(view)}` : '';
+        const teamPath = leaguePath + (teamid ? `/${teamid}` : ``);
+        const playerPath = teamPath + (player ? `/${player}/${athleteUUId}` : ``);
+        const viewParam = view !== '' ? params ? `${params}&view=${encodeURIComponent(view)}` : `?view=${encodeURIComponent(view)}` : '';
         const newPath = playerPath + viewParam;
+        console.log("==> viewPath", { leaguePath, teamPath, playerPath, viewParam, newPath });
         return newPath;
     }
 
     const rtabPath = (tab: string, rtab: string) => {
         const leaguePath = league ? `/${league}` : `/`;
-        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
-        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
+        const teamPath = leaguePath + (teamid ? `/${teamid}` : ``);
+        const playerPath = teamPath + (player ? `/${player}/${athleteUUId}` : ``);
         const tabParam = (tab !== 'all' && tab != '') ? params ? `${params}&tab=${tab}&rtab=${rtab}` : `?tab=${tab}&rtab=${rtab}` : params ? `${params}&rtab=${rtab}` : `?rtab=${rtab}`;
         const newPath = playerPath + tabParam;
         return newPath;
@@ -216,13 +220,13 @@ const Mobile: React.FC<Props> = () => {
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
                 {pagetype == "league" && league &&
-                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" /> }, { name: "Main", icon: <MentionIcon fontSize="small" /> }, { name: "My Team", icon: <ListIcon fontSize="small" /> }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
+                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon fontSize="small" />, link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, link: viewPath('myteam') }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
 
                 {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub" }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub" }, { name: "About", icon: <ContactSupportIcon fontSize="small" />, access: "pub" }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub", link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub", link: viewPath('myteam') }, { name: "About", icon: <ContactSupportIcon fontSize="small" />, access: "pub", link: viewPath('about') }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
-                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon /> }, { name: "Main", icon: <MentionIcon /> }, { name: "Players", icon: <PlayerIcon /> }]} onChange={async (option: any) => {
+                {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon />, link: viewPath('') }, { name: "Players", icon: <PlayerIcon />, link: viewPath('players') }]} onChange={async (option: any) => {
                     //console.log(option);
                     await onViewNav(option);
                 }} selectedOptionName={view} />}
