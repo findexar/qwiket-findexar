@@ -444,7 +444,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
+  const { fallback, mode, userId, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
@@ -474,6 +474,9 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     console.log("onLeagueNavClick", l, url, 'params:', params, 'tp:', tp);
     setLeague(l);
     setPagetype('league');
+    if (tab == 'mentions') {
+      setTab('');
+    }
     if (view == 'teams') {
       setView('mentions');
       setTab('');

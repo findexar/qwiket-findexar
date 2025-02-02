@@ -20,6 +20,7 @@ import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
+import { ssrPrepParams } from "@/lib/ssr";
 
 // Migration to Next.js 15
 type Params = Promise<{}>;
@@ -128,99 +129,26 @@ export async function generateMetadata(
   };
 }
 
+
 export default async function Page({
   params,
-  searchParams,
+  searchParams
 }: {
   params: Params,
   searchParams: SearchParams
 }) {
-  console.log("searchParams=>");
-  let { id, story, tab = "all", fbclid = "", utm_content = "", view = "mentions", m, cid = "", aid = "" } = await searchParams as any;
-  const t1 = new Date().getTime();
-  let headerslist = await headers();
-  //console.log("headerslist", headerslist);
-  const ua = headerslist.get('user-agent') || "";
-  const botInfo = isbot({ ua });
-  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
-  if (!ua) {
-    bot = true;
-  }
-  let userId = "";
-  try {
-    let { userId: authId } = !bot ? await auth() : { userId: "" };
-    userId = authId || "";
-  } catch (x) {
-    console.log("error fetching userId", x);
-  }
-  if (!userId) {
-    userId = "";
-  }
-  let sessionid = "";
-  let dark = 0;
-  try {
-    const session = await fetchSession();
-    sessionid = session.sessionid;
-    dark = session.dark;
-  } catch (x) {
-    console.log("error fetching sessionid", x);
-  }
 
-  let fallback: { [key: string]: any } = {};
-  const leaguesKey = { type: "leagues" };
-  fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let findexarxid = id || "";
-  let pagetype = "league";
+  let { } = await params;
+  let { tab: tabParam = "", rtab: rtabParam = "", fbclid: fbclidParams = "", utm_content: utm_contentParams = "", view: viewParams = "", id: idParams = "", story: storyParams = "", m: mParams = "", cid: cidParams = "", aid: aidParams = "" }:
+    { fbclid: string, utm_content: string, view: string, tab: string, rtab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+  const { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
+    await ssrPrepParams({ leagueid: '', teamid: '', name: '', athleteUUId: '' }, { tab: tabParam, rtab: rtabParam, fbclid: fbclidParams, utm_content: utm_contentParams, view: viewParams, id: idParams, story: storyParams, m: mParams, cid: cidParams, aid: aidParams });
 
-  let isMobile = Boolean(ua.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-  ));
-  view = view.toLowerCase();
-  if (view == '' || view == 'main' || view == 'feed' || view == 'home') {
-    view = 'mentions';
-  }
-  let calls: { key: any, call: Promise<any> }[] = [];
-
-  let userInfo: { email: string } = { email: "" };
-  if (userId) {
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    userInfo.email = email || '';
-  }
-  if (userId) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
-  }
-
-  if (findexarxid) {
-    calls.push(await fetchMention({ type: "AMention", findexarxid }));
-    calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
-  }
-
-  if (story) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
-  }
-  if (m) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
-  }
-  if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchStories({ league: "", userId, sessionid, type: tab == 'podcasts' ? 'v' : '' }));
-      calls.push(await fetchLeagueMentions({ userId, sessionid, league: "" }));
-    }
-  }
-  if (tab == 'chat') {
-    calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: "", teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
-  }
-  calls.push(await fetchLeagueMentions({ userId, sessionid, league: "" }));
-
-  console.log("*** *** *** ==> home SSR", tab, view);
-  await fetchData(t1, fallback, calls);
-  // console.log("*** *** *** ==> home SSR AFTER FETCH DATA", JSON.stringify(fallback));
   return (
     <SWRProvider value={{ fallback }}>
-      <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} pagetype={pagetype} ua={ua} />
+      <main className="w-full h-full" >
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} />
       </main>
     </SWRProvider>
   );

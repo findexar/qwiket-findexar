@@ -1,6 +1,6 @@
 'use server';
 import { FavoritesKey } from "@/lib/keys";
-import { unstable_serialize } from 'swr'
+import { unstable_serialize as us } from 'swr/infinite'
 
 import { auth } from "@clerk/nextjs/server";
 import fetchSession from "./session";
@@ -10,7 +10,6 @@ interface FetchFavoritesProps {
     userId: string;
     sessionid: string;
     league: string;
-    page: number;
 }
 const fetchFavorites = async (key: FavoritesKey, userId: string, sessionid: string) => {
     const { league, page } = key;
@@ -21,9 +20,13 @@ const fetchFavorites = async (key: FavoritesKey, userId: string, sessionid: stri
     //  console.log("RET fetchFavorites", res.mentions);
     return res.mentions;
 }
-const promiseFavoites = async ({ userId, sessionid, league = "", page }: FetchFavoritesProps) => {
-    const key: FavoritesKey = { type: "favorites", league, page };
-    return { key: unstable_serialize(key), call: fetchFavorites(key, userId, sessionid) };
+const promiseFavoites = async ({ userId, sessionid, league = "", }: FetchFavoritesProps) => {
+    const fetchMentionsKey = (pageIndex: number): FavoritesKey => {
+        let key: FavoritesKey = { type: "favorites", page: pageIndex, league };
+
+        return key;
+    }
+    return { key: us(fetchMentionsKey), call: fetchFavorites(fetchMentionsKey(0), userId, sessionid) };
 }
 export const actionFavorites = async (key: FavoritesKey) => {
     'use server';

@@ -197,12 +197,12 @@ const Desktop: React.FC<Props> = () => {
     const newTab = option.tab;
     /* const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
      const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
-     window.history.pushState({}, "", newPath);
-     setTimeout(() => setTab(newTab), 0);
-     if (rtab !== '') {
-       setTimeout(() => setRtab(rtab), 0);
-     }
-     setView("mentions");*/
+     window.history.pushState({}, "", newPath);*/
+    setTimeout(() => setTab(newTab), 0);
+    if (rtab !== '') {
+      setTimeout(() => setRtab(rtab), 0);
+    }
+    setView("mentions");
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }
@@ -212,11 +212,11 @@ const Desktop: React.FC<Props> = () => {
     /* const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
      const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/${tabParam}`;
      window.history.pushState({}, "", newPath);
-     // console.log("==> newPath", newPath);*/
-    /*setTimeout(() => setRtab(newTab), 0);
+    */ // console.log("==> newPath", newPath);*/
+    setTimeout(() => setRtab(newTab), 0);
     if (tab !== '') {
       setTimeout(() => setTab(tab), 0);
-    }*/
+    }
     //setView("mentions");
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('rtab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","rtab":"${newTab}"}`), 1);
@@ -226,9 +226,9 @@ const Desktop: React.FC<Props> = () => {
     const newTab = option.tab;
     /*const tabParam = newTab !== 'mentions' ? params ? `&tab=${newTab}` : `?tab=${newTab}` : '';
     const newPath = player ? `/${league}/${teamid}/${player}/${athleteUUId}${params}${tabParam}` : params ? `/${league}/${teamid}/${params}${tabParam}` : `/${league}/${teamid}?tab=${newTab}`;
-    window.history.pushState({}, "", newPath);
+    window.history.pushState({}, "", newPath);*/
     setTimeout(() => setTab(newTab), 0);
-    setView("mentions");*/
+    setView("mentions");
     if (!bot) {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }

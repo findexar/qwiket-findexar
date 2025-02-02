@@ -25,13 +25,13 @@ async function handler(
         return;
     }
     let session = await getIronSession<SessionData>(req, res, sessionOptions);
-    console.log("********** EXIST SESSION",session)
+    console.log("********** EXIST SESSION", session)
     if (!session || !session.sessionid) {
-       // session=defaultSession;
+        // session=defaultSession;
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
-        session.dark=-1;
-        console.log("********** NEW SESSION",session)
+        session.dark = -1;
+        console.log("********** NEW SESSION3", session)
         await session.save();
     }
     res.status(200).json({ session })

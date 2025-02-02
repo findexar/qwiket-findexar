@@ -22,6 +22,7 @@ import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound, redirect } from 'next/navigation';
+import { ssrPrepParams } from "@/lib/ssr";
 
 // Migration to Next.js 15
 type Params = Promise<{ leagueid: string, teamid: string }>;
@@ -136,115 +137,23 @@ export async function generateMetadata(
 
 export default async function Page({
   params,
-  searchParams,
+  searchParams
 }: {
   params: Params,
   searchParams: SearchParams
 }) {
-  let { leagueid, teamid } = await params;
-  let { tab = "all", fbclid = "", utm_content = "", view = "mentions", id, story, m, cid = "", aid = "" } = await searchParams as any;
-  const t1 = new Date().getTime();
-  let headerslist = await headers();
-  const ua = headerslist.get('user-agent') || "";
-  const botInfo = isbot({ ua });
-  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
-  if (!ua) {
-    bot = true;
-  }
-  let userId = "";
-  try {
-    let { userId: authId } = !bot ? await auth() : { userId: "" };
-    userId = authId || "";
-  } catch (x) {
-    console.log("error fetching userId", x);
-  }
-  if (!userId) {
-    userId = "";
-  }
-  let sessionid = "";
-  let dark = 0;
-  try {
-    const session = await fetchSession();
-    sessionid = session.sessionid;
-    dark = session.dark;
-  } catch (x) {
-    console.log("error fetching sessionid", x);
-  }
 
-  let fallback: { [key: string]: any } = {};
-  const leaguesKey = { type: "leagues" };
-  fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
-  let findexarxid = id || "";
-  let pagetype = "team";
-  let league = leagueid.toUpperCase();
-  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
-    console.log("==> SSR PAGE.TSX FOUND invalid league");
-    notFound();
-  }
+  let { leagueid: leagueidParam, teamid: teamidParam } = await params;
+  let { tab: tabParam = "", rtab: rtabParam = "", fbclid: fbclidParams = "", utm_content: utm_contentParams = "", view: viewParams = "", id: idParams = "", story: storyParams = "", m: mParams = "", cid: cidParams = "", aid: aidParams = "" }:
+    { fbclid: string, utm_content: string, view: string, tab: string, rtab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+  const { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
+    await ssrPrepParams({ leagueid: leagueidParam, teamid: teamidParam, name: '', athleteUUId: '' }, { tab: tabParam, rtab: rtabParam, fbclid: fbclidParams, utm_content: utm_contentParams, view: viewParams, id: idParams, story: storyParams, m: mParams, cid: cidParams, aid: aidParams });
 
-  if (!teamid || teamid == 'null') {
-    // Forward to main page
-    return redirect(`/${league}`);
-  }
-  let isMobile = Boolean(ua.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-  ));
-  view = view.toLowerCase();
-  if (view == '' || view == 'main' || view == 'feed' || view == 'home') {
-    view = 'mentions';
-  }
-  let calls: { key: any, call: Promise<any> }[] = [];
-
-  calls.push(await fetchLeagueTeams({ league }));
-  let userInfo: { email: string } = { email: "" };
-  if (userId) {
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    userInfo.email = email || '';
-  }
-  if (userId) {
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
-  }
-
-  if (findexarxid) {
-    calls.push(await fetchMention({ type: "AMention", findexarxid }));
-    calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
-  }
-
-  if (story) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
-  }
-  if (m) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
-  }
-  if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchTeamMentions({ userId, sessionid, league, teamid }));
-    }
-  }
-  if (!story && !findexarxid) {
-    calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
-  }
-  if (tab == 'chat') {
-    calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
-  }
-  console.log("*** *** *** ==> team SSR", teamid, tab, view);
-  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
-    if (!story && !findexarxid) {
-      console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league, teamid: teamid, type: tab == 'podcasts' ? 'v' : '' }));
-    }
-  }
-  await fetchData(t1, fallback, calls);
-  const key = { type: "league-teams", league };
-  let teams = fallback[unstable_serialize(key)];
-  let { teamName, teamLogo } = { teamName: teams?.find((x: any) => x.id == teamid)?.name, teamLogo: teams?.find((x: any) => x.id == teamid)?.logo };
-  //console.log("teamLogo", teamLogo);
   return (
     <SWRProvider value={{ fallback }}>
-      <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} teamid={teamid} pagetype={pagetype} teamName={teamName} teamLogo={teamLogo} ua={ua} />
+      <main className="w-full h-full" >
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} />
       </main>
     </SWRProvider>
   );
