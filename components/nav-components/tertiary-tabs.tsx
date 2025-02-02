@@ -15,7 +15,7 @@ interface STabsProps {
   link?: string;
 }
 const STab = styled(Tab) <STabsProps>`
- //  color: green !important;
+    color: green !important;
   /* background-color: ${({ selected, level }) =>
     level === "secondary"
       ? `var(--${selected ? 'secondary-tabs-bg' : 'secondary-tabs-bg'})`
