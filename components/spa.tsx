@@ -245,7 +245,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   // console.log("==> pagetype", pagetype);
 
   return (
-    <StyledThemeProvider theme={palette}>
+    <StyledThemeProvider theme={palette} >
       <GlobalStyle $light={localMode === "light"} />
       <AppWrapper
         teamName={teamName}
@@ -294,7 +294,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setFeedback={setFeedback}
       >
 
-        <main className={roboto.className + " h-full "}>
+        <main className={roboto.className + " h-full " + (localMode === 'dark' ? 'dark' : '')}>
           <Head>
             {false && <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />}
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
