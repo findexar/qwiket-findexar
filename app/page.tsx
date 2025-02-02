@@ -212,6 +212,8 @@ export default async function Page({
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: "", teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
+  calls.push(await fetchLeagueMentions({ userId, sessionid, league: "" }));
+
   console.log("*** *** *** ==> home SSR", tab, view);
   await fetchData(t1, fallback, calls);
   // console.log("*** *** *** ==> home SSR AFTER FETCH DATA", JSON.stringify(fallback));

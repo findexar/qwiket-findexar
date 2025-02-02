@@ -22,9 +22,10 @@ const fetchMentions = async (key: LeagueMentionsKey, userId: string, sessionid: 
 
 const promiseLeagueMentions = async ({ userId, sessionid, league }: FetchMentionsProps) => {
     let keyMentions = (page: any) => {
-        const keyFetchedLeagueMentions: LeagueMentionsKey = { type: "fetch-league-mentions", page: page, league }
+        const keyFetchedLeagueMentions: LeagueMentionsKey = { type: "fetch-league-mentions", page: page, league: league.toUpperCase() }
         return keyFetchedLeagueMentions;
     };
+    console.log("keyMentions", keyMentions(0));
     return { key: us(keyMentions), call: fetchMentions(keyMentions(0), userId, sessionid) };
 }
 export const actionLeagueMentions = async (key: LeagueMentionsKey) => {

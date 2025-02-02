@@ -216,12 +216,13 @@ export default async function Page({
   if (view == 'mentions' && tab != 'myteam' && tab != 'fav' && tab != 'chat') {
     if (!story && !findexarxid) {
       calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
-      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
     }
   }
   if (tab == 'chat') {
     calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
   }
+  calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
+
   console.log("*** *** *** ==> league SSR", leagueid, tab, view);
   await fetchData(t1, fallback, calls);
   return (

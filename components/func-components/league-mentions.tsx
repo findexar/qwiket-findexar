@@ -15,10 +15,11 @@ const Stories: React.FC<Props> = () => {
     let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
     // const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): LeagueMentionsKey | null => {
-        let key: LeagueMentionsKey = { type: "fetch-league-mentions", league, page: pageIndex };
+        let key: LeagueMentionsKey = { type: "fetch-league-mentions", league: league?.toUpperCase() || '', page: pageIndex };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
+    console.log("CLIENT====> fetchMentionsKey", fetchMentionsKey(0, null));
     // now swrInfinite code:
     const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionLeagueMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
     /* useEffect(()=>{

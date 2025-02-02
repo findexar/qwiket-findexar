@@ -120,7 +120,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [toastIcon, setToastIcon] = useState(<></>);
     const [status, setStatus] = useState<string>('white');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false };
+    const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
     const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
     //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
     //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
