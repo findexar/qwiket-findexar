@@ -97,6 +97,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let dark = 0;
     try {
         const session = await fetchSession();
+        console.log("fetchSession============>", JSON.stringify(session))
         sessionid = session.sessionid;
         dark = session.dark;
     }
@@ -202,7 +203,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, fallback }));
+    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark }));
     return { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua };
 }
 

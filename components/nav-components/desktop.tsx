@@ -259,6 +259,7 @@ const Desktop: React.FC<Props> = () => {
   //console.log("==> pagetype", pagetype, tab, view);
   return (
     <div className="lg:block hidden h-full w-full">
+
       <ContainerWrap>
         {localFindexarxid && <MentionOverlay setDismiss={() => setView("mentions")} mutate={() => { }} />}
         {(slug || m) && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
@@ -336,7 +337,7 @@ const Desktop: React.FC<Props> = () => {
           </Page>
         </PageWrap>
       </ContainerWrap>
-    </div>
+    </div >
   )
 }
 export default Desktop;

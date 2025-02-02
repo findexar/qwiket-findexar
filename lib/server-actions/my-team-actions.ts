@@ -23,7 +23,7 @@ const fetchMyTeam = async (key: MyTeamKey, userId: string, sessionid: string) =>
     return res.members;
 }
 const promiseFetchMyTeam = async ({ league = "", userId = "", sessionid = "" }: FetchMyTeamProps) => {
-    const key: MyTeamKey = { type: "my-team", league };
+    const key: MyTeamKey = { type: "my-team-roster", league };
 
     return {
         key: unstable_serialize(key),

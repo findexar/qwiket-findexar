@@ -106,16 +106,19 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         });
     }
   }, []);
-  useEffect(() => {
-    document.body.setAttribute("data-theme", localMode);
-  }, [localMode]);
+
 
   useEffect(() => {
+    console.log("SET MODE &&& ==>", localMode)
+    document.body.setAttribute("data-theme", localMode);
+    console.log("AFTER SET MODE==>", localMode)
     const className = 'dark';
     const bodyClassList = document.body.classList;
     if (localMode === 'dark') {
+      console.log("SET MODE==> ADDING DARK CLASS", localMode)
       bodyClassList.add(className);
     } else {
+      console.log("SET MODE==> REMOVING DARK CLASS", localMode)
       bodyClassList.remove(className);
     }
   }, [localMode]);
@@ -239,7 +242,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   // console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
- // console.log("==> pagetype", pagetype);
+  // console.log("==> pagetype", pagetype);
 
   return (
     <StyledThemeProvider theme={palette}>
@@ -291,16 +294,15 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setFeedback={setFeedback}
       >
 
-        <main className={(localMode === "light" ? roboto.className : roboto.className + " dark") + " h-full "}>
+        <main className={roboto.className + " h-full "}>
           <Head>
-            <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
+            {false && <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />}
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
             <link rel="apple-touch-icon" href={process.env.NEXT_PUBLIC_APP_NAME === "Findexar" ? "/FiLogo.png" : "/QLogo.png"} />
             <link rel="shortcut icon" href={process.env.NEXT_PUBLIC_APP_NAME === "Findexar" ? "/FiLogo.png" : "/QLogo.png"} type="image/png" />
             <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-            {(pagetype !== 'league' || league || teamid || player) && <meta name="robots" content="noindex,nofollow" />}
             <link rel="shortcut icon" type="image/png" href={process.env.NEXT_PUBLIC_APP_NAME === "Findexar" ? "/FiLogo.png" : "/QLogo.png"} />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Head>
@@ -327,7 +329,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
                     </>}
         </main>
       </AppWrapper>
-    </StyledThemeProvider>
+    </StyledThemeProvider >
   );
 };
 

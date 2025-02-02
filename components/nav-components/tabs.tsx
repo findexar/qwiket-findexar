@@ -43,6 +43,7 @@ const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, ic
     else
       id = "tabs4";
   }
+  // console.log("TAB, id", id, { tabClasses })
   return (
     <button
       className={`${tabClasses[id as keyof typeof tabClasses][selected ? 1 : 0]} relative`}
@@ -83,7 +84,7 @@ const Tabs: React.FC<TabsProps> = ({ children, id = "tabs1", variant, value, onC
 
   const scrollable = variant === 'scrollable';
   const scrollClass = scrollable && scrollButtons ? 'overflow-x-auto' : '';
-
+  // console.log("TABS, id", id, { tabsClasses })
   return (
     <div className={tabsClasses[id as keyof typeof tabsClasses]}>
       {React.Children.map(children, (child, index) => {
