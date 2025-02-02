@@ -61,7 +61,7 @@ export const actionNotifications = async (key: NotificationsKey): Promise<Notifi
     'use server';
     const session = await fetchSession();
 
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     if (!userId) {
         userId = "";
@@ -73,7 +73,7 @@ export const actionNotifications = async (key: NotificationsKey): Promise<Notifi
 export const upsertNotification = async (notification: Notification): Promise<number | null> => {
     'use server';
     const session = await fetchSession();
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const adminSessionid = session.sessionid;
 
     try {
@@ -104,7 +104,7 @@ export const upsertNotification = async (notification: Notification): Promise<nu
 export const dismissNotification = async (xid: number): Promise<boolean> => {
     'use server';
     const session = await fetchSession();
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
 
     try {
@@ -127,7 +127,7 @@ export const dismissNotification = async (xid: number): Promise<boolean> => {
 export const removeNotification = async (xid: number): Promise<boolean> => {
     'use server';
     const session = await fetchSession();
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
 
     try {

@@ -15,10 +15,10 @@ interface FetchMyFeedProps {
 const fetchMyFeed = async (key: FetchMyFeedKey, userId: string, sessionid: string) => {
     const { league, page } = key;
     const url = `${lake_api}/api/v50/findexar/get-my-feed?api_key=${api_key}&userid=${userId || ""}&league=${league}&sessionid=${sessionid}&page=${page}`;
-    //console.log("fetching my feed:", url)
+    console.log("fetching my feed:", url)
     const fetchResponse = await fetch(url);
     const res = await fetchResponse.json();
-    // console.log("fetchMyFeed response", res);
+    console.log("fetchMyFeed response", res);
     return res.mentions;
 }
 
@@ -33,7 +33,7 @@ export const actionMyFeed = async (key: FetchMyFeedKey) => {
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     return fetchMyFeed(key, userId || "", sessionid);
 }

@@ -60,7 +60,7 @@ export const actionInvites = async (key: InvitesKey) => {
 
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
     return fetchInvites(key, userId || "", sessionid);
@@ -68,7 +68,7 @@ export const actionInvites = async (key: InvitesKey) => {
 export const actionUpdateInvite = async ({ cid, email, full_name, nickname, notes, tag }: UpdateInviteProps) => {
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
     return updateInvite({ cid, email, full_name, nickname, notes, tag }, userId || "", sessionid);

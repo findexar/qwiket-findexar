@@ -112,7 +112,7 @@ export const actionChat = async (key: ChatKey): Promise<Chat> => {
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
 
     if (!userId) {
@@ -124,7 +124,7 @@ export const actionUserDocuments = async (key: FetchUserDocumentsKey): Promise<U
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth();
+    const { userId } = await auth();
     const sessionid = session.sessionid || "";
     return fetchUserDocuments(key, userId || "", sessionid);
 }
@@ -132,7 +132,7 @@ export const actionDeleteUploadedDocument = async (uuid: string): Promise<boolea
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth();
+    const { userId } = await auth();
     const sessionid = session.sessionid || "";
     return deleteUploadedDocument(uuid, userId || "", sessionid);
 }
@@ -143,7 +143,7 @@ export const actionFlipCreatorMode = async (creator: boolean, chatUUId: string):
     }
     const session = await fetchSession();
 
-    const { userId } = auth();
+    const { userId } = await auth();
     const sessionid = session.sessionid || "";
     return flipCreatorMode(creator, chatUUId, userId || "", sessionid);
 }
@@ -151,7 +151,7 @@ export const actionSaveUploadedDocument = async (document: UserDocument, chatUUI
     'use server';
     const session = await fetchSession();
 
-    const { userId } = auth();
+    const { userId } = await auth();
     const sessionid = session.sessionid || "";
     return saveUploadedDocument(document, userId || "", sessionid, chatUUId);
 }
@@ -199,8 +199,7 @@ export const actionCreateChat = async (props: CreateChatProps) => {
     console.log("===================================>actionCreateChat", props)
     const session = await fetchSession();
 
-    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const { userId = "" } = auth() || {};
+    const { userId = "" } = await auth() || {};
 
     const sessionid = session.sessionid || "";
 
@@ -264,12 +263,8 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
 }
 export const actionChatInit = async (props: ChatInitProps) => {
     'use server';
-    // console.log("===================================>actionChatInit", props)
     const session = await fetchSession();
-
-    //let session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    const { userId = "" } = auth() || {};
-
+    const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
 
     console.log("=================>>>>>>actionChatInit", { userId, sessionid, session })
@@ -319,7 +314,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
 export const actionLoadLatestChat = async (key: CreateChatKey) => {
     'use server';
     const session = await fetchSession();
-    const { userId = "" } = auth() || {};
+    const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
     // console.log("!!!! actionLoadLatestChat", key, userId, sessionid)
     return await loadLatestChat(key, userId || "", sessionid);
@@ -341,7 +336,7 @@ export const actionChatName = async (props: ChatNameProps) => {
     'use server';
     // console.log("actionChatName", props)
     const session = await fetchSession();
-    const { userId = "" } = auth() || {};
+    const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
     return chatName(props, userId || "", sessionid);
 }
@@ -361,7 +356,7 @@ const feedback = async (props: FeedbackProps, userId: string, sessionid: string)
 export const actionFeedback = async (props: FeedbackProps) => {
     'use server';
     const session = await fetchSession();
-    let { userId } = auth() || { userId: session.sessionid };
+    let { userId } = await auth() || { userId: session.sessionid };
     const sessionid = session.sessionid || "";
     if (!userId) {
         userId = sessionid;

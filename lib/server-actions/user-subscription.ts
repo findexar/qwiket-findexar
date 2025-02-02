@@ -46,7 +46,7 @@ const promiseUserSubscription = async (key: UserSubscriptionKey, userId: string,
 }
 export const actionUserSubscription = async (key: UserSubscriptionKey): Promise<{ subscrLevel: number }> => {
     'use server';
-    let { userId } = auth();
+    let { userId } = await auth();
 
     if (!userId) {
         userId = "";

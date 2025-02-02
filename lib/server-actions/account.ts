@@ -86,7 +86,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     'use server';
     const session = await fetchSession();
 
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     if (!userId) {
         userId = "";
@@ -99,7 +99,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
 export const actionUser = async (key: UserAccountKey, utm_content?: string): Promise<UserAccount> => {
     'use server';
     const session = await fetchSession();
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     if (!userId || userId == "null") {
         userId = "";
     }
@@ -154,7 +154,7 @@ export const actionCidUsage = async (key: CidUsageAccountKey): Promise<CidUsage>
     'use server';
     const session = await fetchSession();
 
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
     if (!userId) {
         userId = "";

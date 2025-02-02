@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppContext } from '@/lib/context';
 
-export default function Success() {
-    const router = useRouter();
+function SearchParamsWrapper() {
     const searchParams = useSearchParams();
     const sessionId = searchParams?.get('session_id');
-    //  const { updateUser } = useAppContext();
+    const router = useRouter();
+    // const { updateUser } = useAppContext();
 
     useEffect(() => {
         if (sessionId) {
@@ -23,7 +23,6 @@ export default function Success() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-
                         // updateUser(data.user);
                         // Redirect to dashboard or show success message
                         router.push('/account/dashboard');
@@ -32,15 +31,20 @@ export default function Success() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
-
         }
-
     }, [sessionId, router]);
 
+    return null; // This component does not render anything
+}
+
+export default function Success() {
     return (
-        <div>
-            <h1>&quot;Thank you for your purchase!&quot;</h1>
-            <p>&quot;We&apos;re processing your payment. You&apos;ll be redirected shortly.&quot;</p>
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+            <SearchParamsWrapper />
+            <div>
+                <h1>&quot;Thank you for your purchase!&quot;</h1>
+                <p>&quot;We&apos;re processing your payment. You&apos;ll be redirected shortly.&quot;</p>
+            </div>
+        </Suspense>
     );
 }

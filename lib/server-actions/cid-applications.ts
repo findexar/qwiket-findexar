@@ -15,7 +15,7 @@ interface UpsertCidAppProps {
 
 export const actionUpsertCidApp = async ({ name, email, url, note }: UpsertCidAppProps) => {
     const session = await fetchSession();
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     const sessionid = session.sessionid;
 
     const apiUrl = `${lake_api}/api/v50/findexar/upsert-cid-app?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}`;

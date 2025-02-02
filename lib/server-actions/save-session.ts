@@ -5,7 +5,7 @@ import { sessionOptions, SessionData } from "@/lib/session";
 
 const saveSession = async (sessionData: any) => {
     'use server';
-    let session = await getIronSession<SessionData>(cookies(), sessionOptions);
+    let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();

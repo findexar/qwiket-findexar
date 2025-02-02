@@ -11,15 +11,15 @@ export async function createCheckoutSession(
   ui_mode: Stripe.Checkout.SessionCreateParams.UiMode
 ): Promise<string> {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: "2024-04-10",
+    apiVersion: "2025-01-27.acacia",
     appInfo: {
       name: "qwiket",
       url: "https://www.qwiket.com",
     },
   });
-
-  const origin: string = headers().get("origin") as string;
-  let { userId } = auth() || { userId: "" };
+  let headerslist = await headers();
+  const origin: string = headerslist.get('origin') || "";
+  let { userId } = await auth() || { userId: "" };
   if (!userId) {
     userId = "";
   }
@@ -98,14 +98,14 @@ export async function cancelSubscription(): Promise<{ success: boolean; error?: 
   try {
     console.log("+++++++++++++++++++++++ cancelSubscription")
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-      apiVersion: "2024-04-10",
+      apiVersion: "2025-01-27.acacia",
       appInfo: {
         name: "qwiket",
         url: "https://www.qwiket.com",
       },
     });
 
-    const { userId } = auth() || { userId: "" };
+    const { userId } = await auth() || { userId: "" };
     if (!userId) {
       throw new Error("User not authenticated");
     }

@@ -34,7 +34,7 @@ export const actionMyChats = async (key: MyChatsKey): Promise<ChatItem[]> => {
     'use server';
     const session = await fetchSession();
     const sessionid = session.sessionid;
-    let { userId } = auth() || { userId: "" };
+    let { userId } = await auth() || { userId: "" };
     if (!userId) {
         userId = sessionid;
     }

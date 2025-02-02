@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback, useRef, useMemo } from "react";
 import Link from 'next/link';
 import { styled, useTheme } from "styled-components";
-import { RWebShare } from "react-web-share";
 import XIcon from '@/components/icons/twitter';
 import FacebookIcon from '@/components/icons/facebook';
 import IosShareIcon from '@/components/icons/share';
@@ -347,6 +346,14 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     }, [createdTime])
 
     const onShare = useCallback((url: string) => {
+        if (navigator.share) {
+            navigator.share({
+                title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                text: prepDigest,
+                url: url,
+            });
+        }
+
         if (!bot) {
             try {
                 actionRecordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
@@ -474,18 +481,13 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 <br />
                 <Link style={{ marginLeft: 10 }} href={url} onClick={onStoryClick} target="_blank">{url?.substring(0, 50)}..</Link>
                 <BottomLine>
-                    <ShareGroup><RWebShare
-                        data={{
-                            text: prepDigest,
-                            url: shareUrls.share,
-                            title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
-                        }}
-                        onClick={async () => await onShare(shareUrls.share)}
-                    >
-                        <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
-                    </RWebShare>
-                        <Link href={socialLinks.twitter} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                        <Link href={socialLinks.facebook} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                    <ShareGroup>
+                        <ShareContainer onClick={async () => onShare(shareUrls.share)}>
+                            <ShareIcon><IosShareIcon /></ShareIcon>
+                        </ShareContainer>
+                        <Link href={socialLinks.twitter} target="_blank">
+                            <ShareContainer><XIcon /></ShareContainer>
+                        </Link>
                     </ShareGroup>
                 </BottomLine>
                 <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
@@ -521,23 +523,18 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 <br />
                 <Link href={url || ""} scroll={false} onClick={onStoryClick}> {url?.substring(0, 30)}...</Link>
                 <BottomLine>
-                    <ShareGroup><RWebShare
-                        data={{
-                            text: prepDigest,
-                            url: shareUrls.share,
-                            title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
-                        }}
-                        onClick={async () => await onShare(shareUrls.share)}
-                    >
-                        <ShareContainer><ShareIcon><IosShareIcon /></ShareIcon></ShareContainer>
-                    </RWebShare>
-                        <Link href={socialLinks.twitter} target="_blank"><ShareContainer><XIcon /></ShareContainer></Link>
-                        <Link href={socialLinks.facebook} target="_blank"><ShareContainer><FacebookIcon /></ShareContainer></Link>
+                    <ShareGroup>
+                        <ShareContainer onClick={async () => await onShare(shareUrls.share)}>
+                            <ShareIcon><IosShareIcon /></ShareIcon>
+                        </ShareContainer>
+                        <Link href={socialLinks.twitter} target="_blank">
+                            <ShareContainer><XIcon /></ShareContainer>
+                        </Link>
                     </ShareGroup>
                 </BottomLine>
                 <hr />
             </MobileWrap>
-        </div>
+        </div >
     );
 };
 

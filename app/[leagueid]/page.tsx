@@ -1,328 +1,59 @@
+'use server';
 import { headers } from "next/headers";
 import { unstable_serialize } from 'swr';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider';
 
-import fetchMyTeam from '@lib/server-actions/my-team-actions';
-import fetchMyFeed from '@lib/server-actions/myfeed';
 import fetchLeagues from '@lib/server-actions/leagues';
-import fetchFavorites from '@lib/server-actions/favorites';
 import fetchSession from '@lib/server-actions/session';
 import fetchSlugStory from '@lib/server-actions/slug-story';
 import fetchMention from '@lib/server-actions/mention';
 import fetchMetaLink from '@lib/server-actions/meta-link';
-import fetchStories from '@lib/server-actions/stories';
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
-import fetchUserAccount from "@lib/server-actions/account";
-import fetchLeagueMentions from "@lib/server-actions/league-mentions";
+import fetchStories from '@lib/server-actions/stories';
+import fetchLeagueMentions from '@lib/server-actions/league-mentions';
+import fetchChat from "@lib/server-actions/chat";
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot';
-import { getAMention } from '@lib/server-actions/mention';
 import SPALayout from '@/components/spa';
+import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
-import fetchChat from "@lib/server-actions/chat";
-import promiseUser from "@lib/server-actions/account";
-import { notFound } from 'next/navigation';
-type Props = {
-  params: { leagueid: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+import fetchUserAccount from "@lib/server-actions/account";
+import { notFound, redirect } from 'next/navigation';
+import { ssrPrepParams, generateMetadata as ssrGenerateMetadata } from "@/lib/ssr";
 
+// Migration to Next.js 15
+type Params = Promise<{ leagueid: string }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { searchParams }: { searchParams: SearchParams },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  let {
-    id,
-    m,
-    story,
-    tab,
-    view,
-    s
-  }: {
-    fbclid: string,
-    utm_content: string,
-    view: string,
-    tab: string,
-    id: string,
-    story: string,
-    m: string,
-    s: string
-  } = searchParams as any;
-  s = s || '0';
-  let findexarxid = id || "";
-  let league = params.leagueid.toUpperCase();
-  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
-    console.log("==> SSR PAGE.TSX FOUND invalid league");
-    notFound();
-  }
-  let amention, astory;
-
-  if (findexarxid) {
-    amention = await getAMention({ type: "AMention", findexarxid });
-  }
-
-  if (story) {
-    //console.log("==>*** *** ***story param:", story);
-    astory = await getASlugStory({ type: "ASlugStory", slug: story });
-  }
-  if (m) {
-    astory = await getASlugStory({ type: "ASlugStory", m });
-  }
-
-  const {
-    summary: amentionSummary = "",
-    league: amentionLeague = "",
-    type = "",
-    team: amentionTeam = "",
-    teamName: amentionTeamName = "",
-    name: amentionPlayer = "",
-    image: amentionImage = "",
-    date: amentionDate = ""
-  } = amention || {};
-
-  let {
-    title: astoryTitle = "",
-    site_name: astorySite_Name = "",
-    authors: astoryAuthors = "",
-    digest: astoryDigest = "",
-    image: astoryImage = "",
-    ogimage: astoryOgImage = "",
-    createdTime: astoryDate = "",
-    mentions: mentions = [],
-    image_width = 1200,
-    image_height = 1200
-  } = astory || {};
-  console.log("*** *** ***astory:", astory);
-  //astoryOgImage = ''; //DEBIG
-  const astoryImageOgUrl = astoryOgImage ? astoryOgImage : astoryImage ? `${process.env.NEXT_PUBLIC_SERVER}/api/og.png/${encodeURIComponent(astoryImage)}/${encodeURIComponent(astorySite_Name)}/${image_width}/${image_height}` : ``;
-  console.log("*** *** ***astoryImageOgUrl:", astoryImageOgUrl);
-  let ogUrl = '';
-  if (amention) {
-    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}/${amentionPlayer}?id=${findexarxid}`;
-  } else {
-    ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
-  }
-
-  let ogTarget = '';
-  if (amention && type == 'person') {
-    ogTarget = `${amentionPlayer} of ${amentionTeamName}`;
-  } else if (amention) {
-    ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
-  }
-  let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-  let ogTitle = ogTarget || `Qwiket AI`;
-  let ogDescription = amentionSummary || "Sport News Monitor and AI Chat.";
-
-  if (astory) {
-    ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
-    ogTitle = astoryTitle;
-    ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
-
-  }
-  ogImage = astoryImageOgUrl || `/q-logo-og-1200.png`;
-  if (!astoryImageOgUrl)
-    image_height = 630;
-  const indexable = findexarxid || story;
-  let noindex = +(process.env.NEXT_PUBLIC_NOINDEX || indexable ? "0" : "1");
-
-  return {
-    title: ogTitle,
-    openGraph: {
-      title: ogTitle,
-      description: ogDescription,
-      url: ogUrl,
-      images: [
-        {
-          url: ogImage,
-          width: image_width,
-          height: image_height,
-          alt: ogTitle,
-        }
-      ],
-      type: 'website'
-    },
-    robots: (noindex === 1 || s !== "1") ? 'noindex, follow' : 'index, follow',
-    alternates: {
-      canonical: ogUrl,
-    },
-    icons: {
-      icon: [
-        { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
-        { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
-      ],
-      shortcut: [
-        { url: "/q-logo-light-512.png", media: "(prefers-color-scheme: light)" },
-        { url: "/q-logo-dark-512.png", media: "(prefers-color-scheme: dark)" }
-      ],
-    },
-  };
+  const searchParamsSSR = await searchParams as any;
+  return ssrGenerateMetadata({ searchParams: searchParamsSSR }, parent);
 }
+
 
 export default async function Page({
   params,
-  searchParams,
+  searchParams
 }: {
-  params: { leagueid: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Params,
+  searchParams: SearchParams
 }) {
-  const t1 = new Date().getTime();
-  let headerslist = headers();
-  const ua = headerslist.get('user-agent') || "";
 
-  const botInfo = isbot({ ua });
-  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
-  if (!ua) {
-    bot = true;
-  }
-  let userId = "";
-  try {
-    let { userId: authId } = !bot ? auth() : { userId: "" };
-    userId = authId || "";
-  } catch (x) {
-    console.log("error fetching userId", x);
-  }
-  userId = userId || "";
-  console.log("userId", userId);
-  let sessionid = "";
-  let dark = 0;
 
-  try {
-    const session = await fetchSession();
-    sessionid = session.sessionid;
-    dark = session.dark;
-  } catch (x) {
-    console.log("error fetching sessionid", x);
-  }
+  let { leagueid: leagueidParam } = await params;
+  let { tab: tabParam = "", rtab: rtabParam = "", fbclid: fbclidParams = "", utm_content: utm_contentParams = "", view: viewParams = "", id: idParams = "", story: storyParams = "", m: mParams = "", cid: cidParams = "", aid: aidParams = "" }:
+    { fbclid: string, utm_content: string, view: string, tab: string, rtab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+  const { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
+    await ssrPrepParams({ leagueid: leagueidParam, teamid: '', name: '', athleteUUId: '' }, { tab: tabParam, rtab: rtabParam, fbclid: fbclidParams, utm_content: utm_contentParams, view: viewParams, id: idParams, story: storyParams, m: mParams, cid: cidParams, aid: aidParams });
 
-  let fallback: { [key: string]: any } = {};
-  const leaguesKey = { type: "leagues" };
-  fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
-
-  let {
-    tab,
-    rtab = "",
-    fbclid = "",
-    utm_content = "",
-    view = "mentions",
-    id,
-    m,
-    story,
-    prompt = '',
-    promptUUId = '',
-    cid = '',
-    aid = ''
-  }: {
-    fbclid: string,
-    utm_content: string,
-    view: string,
-    tab: string,
-    rtab: string,
-    id: string,
-    m: string,
-    story: string,
-    prompt: string,
-    promptUUId: string,
-    cid: string,
-    aid: string
-  } = searchParams as any;
-
-  let findexarxid = id || "";
-  let pagetype = "league";
-  let league = params.leagueid.toUpperCase();
-  if (!['NFL', 'MLB', 'NBA', 'NHL'].includes(league.toUpperCase())) {
-    console.log("==> SSR PAGE.TSX FOUND invalid league");
-    notFound();
-    return <h1>Not Found</h1>;
-  }
-  /// console.log("league->", league);
-  // console.log("utm_content->", utm_content);
-
-  let isMobile = Boolean(ua.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-  ));
-  view = view.toLowerCase();
-  if (view == 'main' || view == 'feed' || view == 'home') {
-    view = 'mentions';
-  }
-  //console.log("VIEW:", view, isMobile);
-  let calls: { key: any, call: Promise<any> }[] = [];
-
-  //console.log("***> view,tab", view, tab);
-  if (!story && !findexarxid) {
-    calls.push(await fetchLeagueTeams({ league }));
-  }
-
-  let userInfo: { email: string } = { email: "" };
-  if (userId) {
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    userInfo.email = email || '';
-  }
-  //console.log("==> isBot", bot);
-  //console.log("==> ua", ua);
-  if (userId) {
-    // console.log("SSR !isBot adding ==> fetchUserAccount", { type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid);
-    calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
-  }
-
-  if (findexarxid) {
-    calls.push(await fetchMention({ type: "AMention", findexarxid }));
-    calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
-  }
-  if (story) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
-  }
-  if (m) {
-    calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
-  }
-
-  if (rtab == 'fav' && view == 'mentions') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchFavorites({ userId, sessionid: sessionid || '', league, page: 0 }));
-    }
-  }
-  if (view == 'my team' || tab == 'myteam') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchMyTeam({ userId, sessionid: sessionid || '', league }));
-    }
-  }
-  if (tab == 'myfeed' || rtab == 'myfeed' || view == 'mentions') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchMyFeed({ userId, sessionid, league }));
-    }
-  }
-  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav' && (!isMobile || tab == 'allmentions') && rtab != 'fav' && rtab != 'myfeed') {
-    if (!story && !findexarxid) {
-      calls.push(await fetchLeagueMentions({ userId, sessionid, league }));
-    }
-  }
-  //  console.log("tab,view", tab, view);
-  if (tab == 'chat') {
-    // console.log("==> fetchChat", { type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" });
-    //email is to break the SWR cache when the user switches accounts
-    calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
-
-  }
-  //console.log("SSSSR  =====>view", { view, tab, rtab });
-  if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
-    if (!story && !findexarxid) {
-      console.log("fetchStories", userId, sessionid, league);
-      calls.push(await fetchStories({ userId, sessionid, league, type: tab == 'podcasts' ? 'v' : '' }));
-
-      //calls.push(await fetchStories({ userId, sessionid, league }));
-    }
-  }
-  // console.log("==> SSRfetchUserAccount", JSON.stringify({ type: "user-account", userId, sessionid, utm_content, ua, bot }));
-
-  await fetchData(t1, fallback, calls);
-  const t2 = new Date().getTime() - t1;
-  console.log("==> SSR PAGE.TSX", { t2 });
   return (
     <SWRProvider value={{ fallback }}>
-      <main className="w-full h-full">
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} prompt={prompt} promptUUId={promptUUId} ua={ua} />
+      <main className="w-full h-full" >
+        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} />
       </main>
     </SWRProvider>
   );

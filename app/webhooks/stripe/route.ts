@@ -4,14 +4,15 @@ import { headers } from 'next/headers';
 
 const api_key = process.env.LAKE_API_KEY;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: '2024-04-10',
+    apiVersion: '2025-01-27.acacia',
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
 export async function POST(req: Request) {
     const body = await req.text();
-    const signature = headers().get('stripe-signature') as string;
+    const headerslist = await headers();
+    const signature = headerslist.get('stripe-signature') as string;
 
     let event: Stripe.Event;
     console.log("==========  *** body webhook", body)

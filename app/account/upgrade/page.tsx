@@ -22,13 +22,15 @@ import fetchData from '@lib/server-actions/fetch-data';
 import { isbot } from '@/lib/is-bot';
 import type { Metadata, ResolvingMetadata } from 'next';
 
-type Props = {
-    params: {};
-    searchParams: { [key: string]: string | string[] | undefined };
-};
+//migration to Next.js 15
+type Params = Promise<{}>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-    let { id, story } = searchParams as any;
+export async function generateMetadata(
+    { params, searchParams }: { params: Params, searchParams: SearchParams },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    let { id, story } = await searchParams as any;
     let findexarxid = id || "";
     const league = '';
 
@@ -125,10 +127,18 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     };
 }
 
-export default async function Page({ searchParams }: { params: { slug: string }; searchParams: { [key: string]: string | string[] | undefined } }) {
+export default async function Page({
+    params,
+    searchParams
+}: {
+    params: Params,
+    searchParams: SearchParams
+}) {
+    let { tab = "", fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = await searchParams as any;
+
     const fetchSession = async () => {
         "use server";
-        let session = await getIronSession<SessionData>(cookies(), sessionOptions);
+        let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
         if (!session.sessionid) {
             var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             session.sessionid = randomstring();
@@ -142,8 +152,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
     let sessionid = "";
     let dark = 0;
 
-    let headerslist = headers();
-    let { tab = "", fbclid = "", utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = searchParams as any;
+    let headerslist = await headers();
 
     let findexarxid = id || "";
     let pagetype = "account-upgrade";
@@ -153,7 +162,7 @@ export default async function Page({ searchParams }: { params: { slug: string };
 
     let userId = "";
     try {
-        let { userId: authId } = !botInfo.bot ? auth() : { userId: "" };
+        let { userId: authId } = !botInfo.bot ? await auth() : { userId: "" };
         userId = authId || "";
     } catch (x) {
         console.log("error fetching userId", x);

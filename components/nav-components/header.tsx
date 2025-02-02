@@ -22,11 +22,16 @@ import { actionRecordEvent } from "@lib/server-actions/event";
 import PlayerPhoto from "@components/util-components/player-photo";
 import saveSession from '@lib/server-actions/save-session';
 import { actionUserSubscription } from '@lib/server-actions/user-subscription';
-import { FaChartBar, FaArrowUp, FaUserCog, FaCreditCard, FaCode } from 'react-icons/fa';
+import { FaChartBar as FaChartBarIcon, FaArrowUp as FaArrowUpIcon, FaUserCog as FaUserCogIcon, FaCreditCard as FaCreditCardIcon, FaCode as FaCodeIcon } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
 import Image, { ImageProps } from 'next/image';
 import Head from 'next/head';
-
+import { Anybody } from "next/font/google";
+const FaChartBar = FaChartBarIcon as any;
+const FaArrowUp = FaArrowUpIcon as any;
+const FaUserCog = FaUserCogIcon as any;
+const FaCreditCard = FaCreditCardIcon as any;
+const FaCode = FaCodeIcon as any;
 interface HeaderProps {
   $scrolled: boolean;
 }
@@ -350,7 +355,7 @@ const LeaguesTab = styled(Tab) <LeaguesNavProps>`
     color: var(--mobile-leagues-highlight) !important;
   }
 `;
-
+//@ts-ignore
 const DashboardIcon = styled(FaChartBar)`
   font-size: 16px;
   opacity: 0.8;  // Reduce opacity to make it less bright
@@ -439,7 +444,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
+  const { fallback, mode, userId, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
@@ -469,6 +474,9 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     console.log("onLeagueNavClick", l, url, 'params:', params, 'tp:', tp);
     setLeague(l);
     setPagetype('league');
+    if (tab == 'mentions') {
+      setTab('');
+    }
     if (view == 'teams') {
       setView('mentions');
       setTab('');
@@ -529,19 +537,20 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   }, []);
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
-    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link href={`/${l}${params}${tp}`} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link href={`/${l}${params}${tp}`} onClick={async () => { await onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></League>
+    return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} ><Link prefetch={true} href={`/${l}${params}${tp}`} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link prefetch={true} href={`/${l}${params}${tp}`} onClick={async () => { await onLeagueNavClick(l, `/${l}${params}${tp}`) }} >{l}</Link></League>
   });
 
   const MobileLeaguesNav = leagues?.map((l: string, i: number) => {
     return <LeaguesTab selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}${params}${tp}`) }} />
   })
   MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league ? " text-xl h-5 p-0 ml-4 " : "  text-xl h-5 p-0 ml-4 "} />} onClick={() => { onLeagueNavClick('', `/`) }}></LeaguesTab>)
-  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
-    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
+  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
+    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
   //console.log("teamLogo", teamLogo);
+  console.log("==> header", teamName, teamLogo, pagetype);
   return (
     <>
       <Head>
@@ -558,6 +567,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           type="image/png"
         />
       </Head>
+      {/*@ts-ignore*/}
       <Header $scrolled={scrollY != 0}>
         <HeaderTopline>
           <LeftContainer>
@@ -581,19 +591,21 @@ const HeaderNav: React.FC<Props> = ({ }) => {
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>
-                <Superhead $scrolled={scrollY != 0}>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                  <Link href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
-                  !teamid ? `${league}` : player ?
-                    <PlayerNameGroup><PlayerName><Link href={`/${league}/${teamid}${params}`}>
+
+                <Superhead $scrolled={scrollY != 0}>
+                  {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
+                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
+                    !teamid ? `${league}` : player ?
+                      <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}${params}`}>
+                        <TeamNameGroup $scrolled={scrollY != 0}>
+                          <div>{teamName}</div>
+                          {teamLogo && <img src={teamLogo} alt={teamName} />}
+                        </TeamNameGroup></Link></PlayerName> </PlayerNameGroup> :
                       <TeamNameGroup $scrolled={scrollY != 0}>
-                        <div>{teamName}</div>
+                        <div>{`${league} : ${teamName}`}</div>
                         {teamLogo && <img src={teamLogo} alt={teamName} />}
-                      </TeamNameGroup></Link></PlayerName> </PlayerNameGroup> :
-                    <TeamNameGroup $scrolled={scrollY != 0}>
-                      <div>{`${league} : ${teamName}`}</div>
-                      {teamLogo && <img src={teamLogo} alt={teamName} />}
-                    </TeamNameGroup>
-                }</Superhead>
+                      </TeamNameGroup>
+                  }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket AI : ${league}` : `Qwiket AI`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Interactive Sports Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts</Subhead><SubheadMobile>Interactive Sports Knowledge</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
@@ -624,26 +636,31 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                 <UserButton.MenuItems>
                   <UserButton.Link
                     label="Dashboard"
+
                     labelIcon={<FaChartBar />}
                     href="/account/dashboard"
                   />
                   <UserButton.Link
                     label="Upgrade"
+
                     labelIcon={<FaArrowUp />}
                     href="/account/upgrade"
                   />
                   {false && <UserButton.Link
                     label="Admin"
+
                     labelIcon={<FaUserCog />}
                     href="/account/admin"
                   />}
                   {false && <UserButton.Link
                     label="Billing"
+
                     labelIcon={<FaCreditCard />}
                     href="/create-organization"
                   />}
                   {false && <UserButton.Link
                     label="Developer Portal"
+
                     labelIcon={<FaCode />}
                     href="/account/developer"
                   />}

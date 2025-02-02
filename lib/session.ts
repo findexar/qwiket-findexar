@@ -16,8 +16,8 @@ export const sessionOptions: SessionOptions = {
   cookieName: "qwiket-session",
   cookieOptions: {
     httpOnly: true,
-    secure: true,//env.NODE_ENV == 'production', // set this to false in local (non-HTTPS) development
-    sameSite: "lax",// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite#lax
+    // secure: true,//env.NODE_ENV == 'production', // set this to false in local (non-HTTPS) development
+    sameSite: "strict",// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite#lax
     maxAge: 2147483647, // Expire cookie before the session expires.
     path: "/",
   }

@@ -31,6 +31,7 @@ interface Option {
   name: string;
   icon: any;
   access?: string;
+  link?: string;
 }
 interface Props {
   options: Option[];
@@ -55,7 +56,7 @@ const SecondaryTabs: React.FC<Props> = ({ options, onChange, selectedOptionName 
       selectedValue = i;
       //console.log("selectedValue", selectedValue)
     }
-    return <STab isnew={option.name == 'AI Chat'} iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} />;
+    return <STab isnew={option.name == 'AI Chat'} iconPosition="start" selected={selected} key={`tab-${option.name}`} label={option.name} link={option.link} />;
   });
   return <TabsWrap className="text-sm"><STabs id="tabs2" variant="fullWidth" value={selectedValue} onChange={(event, value) => { console.log("onChange-View", value); onChange(options[value]) }}>{IconTabs}</STabs></TabsWrap>;
 };

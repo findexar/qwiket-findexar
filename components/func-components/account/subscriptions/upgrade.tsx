@@ -48,10 +48,10 @@ const AccountUpgrade: React.FC<Props> = ({
     };
 
     const sharedFeatures = [
-        { icon: FaComments, text: "The first general availability AI chat assistant for sports. Gives you a competitive edge in fantasy sports decision making." },
-        { icon: FaLightbulb, text: "Specialized knowledge, insights, and recommendations for major leagues and fantasy sports." },
-        { icon: FaShieldAlt, text: "Secure and private conversations. Never shared, never retained outside of user's data, deleted on demand or after a set period." },
-        { icon: FaCheckCircle, text: "Trained on up-to-the-minute flow of sports news, athlete and team mentions available at Qwiket.com. Augmented with hard data from reliable real-time statistics sources." },
+        { icon: FaComments as any, text: "The first general availability AI chat assistant for sports. Gives you a competitive edge in fantasy sports decision making." },
+        { icon: FaLightbulb as any, text: "Specialized knowledge, insights, and recommendations for major leagues and fantasy sports." },
+        { icon: FaShieldAlt as any, text: "Secure and private conversations. Never shared, never retained outside of user's data, deleted on demand or after a set period." },
+        { icon: FaCheckCircle as any, text: "Trained on up-to-the-minute flow of sports news, athlete and team mentions available at Qwiket.com. Augmented with hard data from reliable real-time statistics sources." },
     ];
 
     return (

@@ -25,6 +25,7 @@ const NotificationIcon: React.FC<{ count: number; highestType: string }> = ({ co
 
     return (
         <div className="relative">
+            {/*@ts-ignore*/}
             <FaBell className={`text-sm ${getColorClass()} ${count === 0 ? 'opacity-70' : ''}`} />
             {count > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
@@ -91,16 +92,27 @@ const NotificationPopup: React.FC<{ notification: Notification; onDismiss: () =>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeRaw]}
+                        //@ts-ignore
                         components={{
+                            //@ts-ignore    
                             h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-8" {...props} />,
+                            //@ts-ignore
                             h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-4" {...props} />,
+                            //@ts-ignore
                             h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-2" {...props} />,
+                            //@ts-ignore
                             p: ({ node, ...props }) => <p className="mb-4" {...props} />,
+                            //@ts-ignore
                             ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-4" {...props} />,
+                            //@ts-ignore
                             ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+                            //@ts-ignore
                             li: ({ node, ...props }) => <li className="mb-2" {...props} />,
+                            //@ts-ignore
                             small: ({ node, ...props }) => <small className="text-sm block mt-4 text-gray-600 dark:text-gray-400" {...props} />,
+                            //@ts-ignore
                             i: ({ node, ...props }) => <i className="italic" {...props} />,
+                            //@ts-ignore
                             strong: ({ node, ...props }) => <strong className="font-bold" {...props} />,
                         }}
                         className="text-sm text-gray-800 dark:text-gray-200 text-left prose prose-sm dark:prose-invert max-w-none notification-content"

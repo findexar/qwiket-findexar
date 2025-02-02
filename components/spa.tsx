@@ -239,7 +239,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
   // console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
-  //console.log("==> pagetype", pagetype);
+ // console.log("==> pagetype", pagetype);
+
   return (
     <StyledThemeProvider theme={palette}>
       <GlobalStyle $light={localMode === "light"} />
