@@ -220,11 +220,11 @@ const Mobile: React.FC<Props> = () => {
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
                 {pagetype == "league" && league &&
-                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon fontSize="small" />, link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, link: viewPath('myteam') }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
+                    <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon fontSize="small" />, link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, link: viewPath('my team') }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
 
                 {pagetype == "landing" && <Landing />}
-                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub", link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub", link: viewPath('myteam') }, { name: "About", icon: <ContactSupportIcon fontSize="small" />, access: "pub", link: viewPath('about') }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
+                {pagetype == "league" && !league && <SecondaryTabs options={[{ name: "Main", icon: <MentionIcon fontSize="small" />, access: "pub", link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, access: "pub", link: viewPath('my team') }, { name: "About", icon: <ContactSupportIcon fontSize="small" />, access: "pub", link: viewPath('about') }]} onChange={async (option: any) => { await onViewNav(option); }} selectedOptionName={view} />
                 }
                 {(pagetype == "team" || pagetype == "player") && <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon />, link: viewPath('') }, { name: "Players", icon: <PlayerIcon />, link: viewPath('players') }]} onChange={async (option: any) => {
                     //console.log(option);
