@@ -181,14 +181,14 @@ const Mobile: React.FC<Props> = () => {
 
     const tabPath = (tab: string) => {
         const leaguePath = league ? `/${league}` : `/`;
-        const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
-        const playerPath = teamPath + player ? `/${player}/${athleteUUId}` : ``;
+        const teamPath = leaguePath + (teamid ? `/${teamid}` : ``);
+        const playerPath = teamPath + (player ? `/${player}/${athleteUUId}` : ``);
         const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
         const newPath = playerPath + tabParam;
+        console.log("==> tabPath", { leaguePath, teamPath, playerPath, tabParam, newPath });
         return newPath;
-
-
     }
+
     const viewPath = (view: string) => {
         const leaguePath = league ? `/${league}` : `/`;
         const teamPath = leaguePath + teamid ? `/${teamid}` : ``;
