@@ -109,16 +109,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
 
 
   useEffect(() => {
-    console.log("SET MODE &&& ==>", localMode)
     document.body.setAttribute("data-theme", localMode);
-    console.log("AFTER SET MODE==>", localMode)
     const className = 'dark';
     const bodyClassList = document.body.classList;
     if (localMode === 'dark') {
-      console.log("SET MODE==> ADDING DARK CLASS", localMode)
       bodyClassList.add(className);
     } else {
-      console.log("SET MODE==> REMOVING DARK CLASS", localMode)
       bodyClassList.remove(className);
     }
   }, [localMode]);

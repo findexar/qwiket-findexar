@@ -533,18 +533,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
   const updateMode = useCallback(async (mode: string) => {
     setMode(mode);
-    //console.log("SET MODE==>", mode)
     await saveSession({ dark: mode == 'dark' ? 1 : 0 })
-    console.log("SET MODE &&& ==>", mode)
     document.body.setAttribute("data-theme", mode);
-    console.log("AFTER SET MODE==>", mode)
     const className = 'dark';
     const bodyClassList = document.body.classList;
     if (mode === 'dark') {
-      console.log("SET MODE==> ADDING DARK CLASS", mode)
       bodyClassList.add(className);
     } else {
-      console.log("SET MODE==> REMOVING DARK CLASS", mode)
       bodyClassList.remove(className);
     }
   }, []);
