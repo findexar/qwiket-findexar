@@ -67,9 +67,9 @@ export const fetchUser = async (
         // console.log("fetching user", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
-        // console.log("return fetching user", url, data);
+        //  console.log("return fetching user", url, data);
         if (data.success) {
-            // console.log("===>GET USER", data.account);
+            //console.log("===>GET USER", data.account);
             return data.account as UserAccount;
         }
         console.log("FAILED TO GET USER", data);
@@ -113,9 +113,9 @@ export const actionUser = async (key: UserAccountKey, utm_content?: string): Pro
 
 const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string, cid?: string, aid?: string) => {
     'use server';
-    // console.log("promiseUser", key, userId, sessionid, utm_content, ua, cid, aid)
+    // console.log("===============>SSR promiseUser", key, userId, sessionid, utm_content, ua, cid, aid)
     let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content, ua, cid, aid) };
-    //console.log("AFTER promiseUser", key, userId, sessionid)
+    // console.log("===============>SSR AFTER promiseUser", key, ret)
     return ret;
 }
 
@@ -163,7 +163,7 @@ export const actionCidUsage = async (key: CidUsageAccountKey): Promise<CidUsage>
     return fetchCidUsage(key, userId, sessionid);
 }
 
-const promiseCidUsage = async (key: CidUsageAccountKey, userId: string, sessionid: string) => {
+export const promiseCidUsage = async (key: CidUsageAccountKey, userId: string, sessionid: string) => {
     'use server';
     console.log("promiseCidUsage", key, userId, sessionid)
     let ret = { key: unstable_serialize(key), call: fetchCidUsage(key, userId, sessionid) };
@@ -173,6 +173,3 @@ const promiseCidUsage = async (key: CidUsageAccountKey, userId: string, sessioni
 
 export default promiseUser;
 
-export {
-    promiseCidUsage
-};

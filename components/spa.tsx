@@ -21,6 +21,7 @@ import Invites from './func-components/invites';
 import RevenueSharedContent from './func-components/revenue-sharing-content';
 import { actionRecordEvent } from '@/lib/server-actions/event';
 
+
 interface LeagueLayoutProps {
   fallback: any,
   isMobile: boolean,
@@ -234,9 +235,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   }, [query]);
 
   const user = userInfo || { email: "" };
-  const userAccountKey: UserAccountKey = { type: "user-account", email: user.email, bot };
+  const userAccountKey: UserAccountKey = {
+    type: "user-account", email: user.email || "", bot: bot || false
+  };
   const { data: userAccount, error, isLoading, mutate: userAccountMutate } = useSWR(userAccountKey, actionUser, { fallback });
-  // console.log("==> SPA userAccount", { userAccountKey, userAccount });
   //console.log(`==> spa`, { teamName, league, teamid, player, athleteUUId });
   // console.log("==> pagetype", pagetype);
 

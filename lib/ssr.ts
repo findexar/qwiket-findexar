@@ -20,7 +20,7 @@ import SPALayout from '@/components/spa';
 import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
-import fetchChat from "@lib/server-actions/chat";
+import fetchChat, { promisePromptChatResponse } from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 import fetchLeagueMentions from '@lib/server-actions/league-mentions';
@@ -70,8 +70,8 @@ type ssrResult = {
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
-    let { tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
-        { fbclid: string, utm_content: string, view: string, tab: string, rtab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+    let { prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
+        { prompt: string, promptUUId: string, tab: string, rtab: string, fbclid: string, utm_content: string, view: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
     console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
     let headerslist = await headers();
@@ -93,6 +93,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (!userId) {
         userId = "";
     }
+    console.log("===============>SSR userId", userId);
     let sessionid = "";
     let dark = 0;
     try {
@@ -126,7 +127,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
      * note: view - only on mobile, tab - on both
      * 
      */
-    calls.push(await fetchLeagueTeams({ league }));
+    if (league)
+        calls.push(await fetchLeagueTeams({ league }));
 
     let userInfo: { email: string } = { email: "" };
     if (userId) {
@@ -134,8 +136,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         const email = user?.emailAddresses[0]?.emailAddress;
         userInfo.email = email || '';
     }
-    if (userId) {
-        calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
+    if (sessionid) {
+        calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email || '', bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
     }
 
 
@@ -163,7 +165,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
         //TODO: get credits
     }
-    console.log("*** *** *** ==> player SSR", teamid, athleteUUId, tab, view);
+    if (tab == 'chat' && promptUUId && prompt) {
+        calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
+    }
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
         if (!story && !findexarxid) {
             console.log("**********fetchStories", userId, sessionid, league);
