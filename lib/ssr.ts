@@ -225,6 +225,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             author: 'Qwiket AI',
             publisher: 'Qwiket AI',
             articleBody: responseText,
+
         }
     }
     let jsonld = articleStructuredData ? JSON.stringify(articleStructuredData) : null;
@@ -265,12 +266,12 @@ export async function generateMetadata(
     if (m) {
         astory = await getASlugStory({ type: "ASlugStory", m });
     }
-    let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number } | null = null;
+    let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: Date } | null = null;
     if (promptUUId && tab == 'chat') {
         const response = await ssrPromptChatResponse(promptUUId);
         console.log("==> SSR PROMPT CHAT RESPONSE", response);
-        const { prompt, response: responseText, slug, image, image_width, image_height } = response || {};
-        promptResponse = { prompt, response: responseText, slug, image, image_width, image_height };
+        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime } = response || {};
+        promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
     }
 
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention || {};
@@ -298,7 +299,7 @@ export async function generateMetadata(
     } else if (amention && amentionLeague) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}?id=${findexarxid}`;
     } else if (amention) {
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/?id=${findexarxid}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
     } else {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
     }
@@ -331,7 +332,13 @@ export async function generateMetadata(
         image_height = promptResponse.image_height;
         ogAuthors = 'Qwiket AI';
         ogSiteName = 'Qwiket AI';
-        noindex = 0;
+        // Update noindex based on publishedTime being older than 1 week
+        const publishedDate = new Date(promptResponse.publishedTime);
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        if (publishedDate < oneWeekAgo) {
+            noindex = 1;
+        }
     }
     return {
         title: ogTitle,
