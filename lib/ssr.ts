@@ -20,7 +20,7 @@ import SPALayout from '@/components/spa';
 import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
-import fetchChat, { promisePromptChatResponse } from "@lib/server-actions/chat";
+import fetchChat, { ssrPromptChatResponse } from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 import fetchLeagueMentions from '@lib/server-actions/league-mentions';
@@ -28,6 +28,7 @@ import fetchTeamMentions from '@lib/server-actions/team-mentions';
 import fetchMyTeam from '@lib/server-actions/my-team-actions';
 import fetchMyFeed from '@lib/server-actions/myfeed';
 import fetchFavorites from '@lib/server-actions/favorites';
+import type { Article, WithContext } from 'schema-dts';
 export type SSRParams = {
     leagueid?: string;
     teamid?: string;
@@ -71,6 +72,7 @@ export type ssrResult = {
     ua: string;
     prompt: string;
     promptUUId: string;
+    jsonld: string | null;
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
@@ -200,6 +202,32 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         console.log("********** fetchFav", userId, sessionid, league);
         calls.push(await fetchFavorites({ userId, sessionid, league }));
     }
+
+    let articleStructuredData: WithContext<Article> | undefined = undefined;
+    //  let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: string } | null = null;
+    if (promptUUId && tab == 'chat') {
+        const response = await ssrPromptChatResponse(promptUUId);
+        console.log("==> SSR PROMPT CHAT RESPONSE", response);
+        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime } = response || {};
+        // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
+        // Update expiryDate to be publishedTime + 1 week
+        const expiryDate = new Date(publishedTime);
+        expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
+        articleStructuredData = {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: prompt,
+            image: image,
+            description: responseText,
+            dateCreated: publishedTime,
+            datePublished: publishedTime,
+            expires: expiryDate.toISOString(),
+            author: 'Qwiket AI',
+            publisher: 'Qwiket AI',
+            articleBody: responseText,
+        }
+    }
+    let jsonld = articleStructuredData ? JSON.stringify(articleStructuredData) : null;
     /* SSR FETCHES */
 
     let fallback: { [key: string]: any } = {}; // Add index signature
@@ -212,8 +240,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark }));
-    return { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld }));
+    return { jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(
@@ -236,6 +264,13 @@ export async function generateMetadata(
     }
     if (m) {
         astory = await getASlugStory({ type: "ASlugStory", m });
+    }
+    let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number } | null = null;
+    if (promptUUId && tab == 'chat') {
+        const response = await ssrPromptChatResponse(promptUUId);
+        console.log("==> SSR PROMPT CHAT RESPONSE", response);
+        const { prompt, response: responseText, slug, image, image_width, image_height } = response || {};
+        promptResponse = { prompt, response: responseText, slug, image, image_width, image_height };
     }
 
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention || {};
@@ -267,7 +302,8 @@ export async function generateMetadata(
     } else {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}`;
     }
-
+    let ogAuthors = '';
+    let ogSiteName = '';
     let ogTarget = '';
     if (amention && amentionLeague && amentionTeam && amentionPlayer && type == 'person') {
         ogTarget = `${amentionPlayer} of ${amentionTeamName}`;
@@ -286,7 +322,15 @@ export async function generateMetadata(
         ogImage = astoryImageOgUrl;
     }
     let noindex = !leagueid && !teamid && !athleteUUId && !tab && !view ? 0 : 1;
-    if (tab == 'chat' && promptUUId) {
+
+    if (promptResponse && promptUUId) {
+        ogTitle = promptResponse.prompt;
+        ogDescription = promptResponse.response;
+        ogImage = promptResponse.image;
+        image_width = promptResponse.image_width;
+        image_height = promptResponse.image_height;
+        ogAuthors = 'Qwiket AI';
+        ogSiteName = 'Qwiket AI';
         noindex = 0;
     }
     return {
@@ -303,7 +347,8 @@ export async function generateMetadata(
                     alt: ogTitle,
                 }
             ],
-            type: 'website'
+            type: 'website',
+            siteName: ogSiteName,
         },
         robots: (noindex === 1) ? 'noindex, follow' : 'index, follow',
         alternates: {

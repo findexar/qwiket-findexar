@@ -371,18 +371,14 @@ const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: 
     // console.log("AFTER promiseCreateChat", key, userId, sessionid)
     return ret;
 }
-const getPromptChatResponse = async (userId: string, sessionid: string, promptUUId: string, prompt: string) => {
+const getPromptChatResponse = async (promptUUId: string, prompt?: string) => {
     'use server';
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/prompt-response?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/prompt-response?api_key=${api_key}&promptUUId=${promptUUId}`;
     const fetchResponse = await fetch(url);
     const data = await fetchResponse.json();
     if (data.success) {
-        const response = {
-            promptUUId,
-            prompt,
-            response: data.response
-        }
-        return response;
+
+        return data.response;
     }
     return null;
 }
@@ -394,18 +390,19 @@ export const promiseUserDocuments = async (key: FetchUserDocumentsKey, userId: s
 }
 export const promptChatResponseAction = async (key: PromptChatResponseKey) => {
     'use server';
-    const session = await fetchSession();
-    const { userId = "" } = await auth() || {};
-    const sessionid = session.sessionid || "";
     if (!key.promptUUId || !key.prompt) {
         return { promptUUId: key.promptUUId, prompt: key.prompt, response: '' };
     }
-    return getPromptChatResponse(userId || "", sessionid, key.promptUUId, key.prompt);
+    return getPromptChatResponse(key.promptUUId, key.prompt);
 }
 export const promisePromptChatResponse = async (userId: string, sessionid: string, promptUUId: string, prompt: string) => {
     'use server';
     let key: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
-    let ret = { key: unstable_serialize(key), call: getPromptChatResponse(userId, sessionid, promptUUId, prompt) };
+    let ret = { key: unstable_serialize(key), call: getPromptChatResponse(promptUUId, prompt) };
     return ret;
+}
+export const ssrPromptChatResponse = async (promptUUId: string) => {
+    'use server';
+    return getPromptChatResponse(promptUUId);
 }
 export default promiseCreateChat;

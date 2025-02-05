@@ -5,7 +5,7 @@ import { unstable_serialize } from 'swr'
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps, promptChatResponseAction } from "@lib/server-actions/chat";
+import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane as FaPaperPlaneIcon, FaChevronDown as FaChevronDownIcon, FaChevronUp as FaChevronUpIcon, FaCopy as FaCopyIcon, FaCheck as FaCheckIcon, FaInfoCircle as FaInfoCircleIcon, FaPaperclip as FaPaperclipIcon, FaRedo as FaRedoIcon } from 'react-icons/fa';
 
