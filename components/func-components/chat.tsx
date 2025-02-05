@@ -175,10 +175,18 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         if (loadedChat) {
             setCreator(loadedChat.chat.creator || isCid);
-
         }
     }, [loadedChat]);
 
+    useEffect(() => {
+        if (!bot && promptUUId) {
+            if (loadedChat && loadedChat.chat?.messages && loadedChat.chat?.messages?.length == 0) {
+                if (loadedChat?.chat?.name == "New Prompt Chat") {
+                    recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                }
+            }
+        }
+    }, [promptUUId, loadedChat]);
     const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
 
     // Update the ref whenever pumpUUId changes
