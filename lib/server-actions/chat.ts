@@ -235,7 +235,7 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
     userId = userId || sessionid;
     const insiderParam = insider ? '1' : '0';
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/init?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&insider=${insiderParam}&styleDocument=${styleDocument}&dataDocumentsString=${dataDocumentsString}&creator=${creator ? '1' : '0'}&promptUUId=${promptUUId}`;
-    console.log("chatInit", url);
+    console.log("********** *************** ************** chatInit", url, JSON.stringify({ chatUUId, userRequest }));
 
     const res = await fetch(url, {
         method: 'POST',
@@ -272,15 +272,15 @@ export const actionChatInit = async (props: ChatInitProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
-    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, email } = props;
+    const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, email, promptUUId = '' } = props;
     // email is to break the SWR cache when the user switches accounts
-    if (chatUUId == "_new") {
+    if (chatUUId == "_new" && !promptUUId) {
         return { success: false, chat: {} as Chat, error: '' };
     }
 
     //console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
-    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}`;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
 
     const res = await fetch(url, {
         method: 'POST',
@@ -316,7 +316,9 @@ export const actionLoadLatestChat = async (key: CreateChatKey) => {
     const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
     // console.log("!!!! actionLoadLatestChat", key, userId, sessionid)
-    return await loadLatestChat(key, userId || "", sessionid);
+    let response = await loadLatestChat(key, userId || "", sessionid);
+    //console.log("======================>!!!! actionLoadLatestChat", key, userId, sessionid, response)
+    return response;
 }
 interface ChatNameProps {
     chatUUId: string;
@@ -395,6 +397,9 @@ export const promptChatResponseAction = async (key: PromptChatResponseKey) => {
     const session = await fetchSession();
     const { userId = "" } = await auth() || {};
     const sessionid = session.sessionid || "";
+    if (!key.promptUUId || !key.prompt) {
+        return { promptUUId: key.promptUUId, prompt: key.prompt, response: '' };
+    }
     return getPromptChatResponse(userId || "", sessionid, key.promptUUId, key.prompt);
 }
 export const promisePromptChatResponse = async (userId: string, sessionid: string, promptUUId: string, prompt: string) => {

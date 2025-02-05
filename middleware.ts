@@ -32,7 +32,7 @@ type Config = {
 export const config = {
     matcher: [
         '/((?!static|.*\\..*|_next|favicon.ico).*)', // Old config for PROD
-        '/',
+        '/(.*)',
         '/(api|trpc)(.*)'
     ],
 };

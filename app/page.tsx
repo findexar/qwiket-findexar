@@ -20,18 +20,19 @@ import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next';
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
-import { ssrPrepParams, generateMetadata as ssrGenerateMetadata } from "@/lib/ssr";
+import { ssrPrepParams, generateMetadata as ssrGenerateMetadata, SSRParams, SSRSearchParams } from "@/lib/ssr";
 
 // Migration to Next.js 15
 type Params = Promise<{}>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export async function generateMetadata(
-  { searchParams }: { searchParams: SearchParams },
+  { params, searchParams }: { params: Params, searchParams: SearchParams },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const searchParamsSSR = await searchParams as any;
-  return ssrGenerateMetadata({ searchParams: searchParamsSSR }, parent);
+  const paramsSSR: SSRParams = await params;
+  const searchParamsSSR: SSRSearchParams = await searchParams as any;
+  return ssrGenerateMetadata({ params: paramsSSR, searchParams: searchParamsSSR }, parent);
 }
 
 export default async function Page({
@@ -43,16 +44,20 @@ export default async function Page({
 }) {
 
 
-  let { } = await params;
-  let { tab: tabParam = "", rtab: rtabParam = "", fbclid: fbclidParams = "", utm_content: utm_contentParams = "", view: viewParams = "", id: idParams = "", story: storyParams = "", m: mParams = "", cid: cidParams = "", aid: aidParams = "" }:
-    { fbclid: string, utm_content: string, view: string, tab: string, rtab: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
-  const { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
-    await ssrPrepParams({ leagueid: '', teamid: '', name: '', athleteUUId: '' }, { tab: tabParam, rtab: rtabParam, fbclid: fbclidParams, utm_content: utm_contentParams, view: viewParams, id: idParams, story: storyParams, m: mParams, cid: cidParams, aid: aidParams });
-
+  /*let { } = await params;
+  let { tab: tabParam = "", rtab: rtabParam = "", prompt: promptParam = "", promptUUId: promptUUIdParam = "", fbclid: fbclidParams = "", utm_content: utm_contentParams = "", view: viewParams = "", id: idParams = "", story: storyParams = "", m: mParams = "", cid: cidParams = "", aid: aidParams = "" }:
+    SSRSearchParams = await searchParams as any;
+  const { prompt, promptUUId, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
+    await ssrPrepParams({ leagueid: '', teamid: '', name: '', athleteUUId: '' }, { tab: tabParam, rtab: rtabParam, prompt: promptParam, promptUUId: promptUUIdParam, fbclid: fbclidParams, utm_content: utm_contentParams, view: viewParams, id: idParams, story: storyParams, m: mParams, cid: cidParams, aid: aidParams });
+*/
+  const paramsSSR: SSRParams = await params;
+  const searchParamsSSR: SSRSearchParams = await searchParams as any;
+  const { prompt, promptUUId, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua } =
+    await ssrPrepParams(paramsSSR, searchParamsSSR);
   return (
     <SWRProvider value={{ fallback }}>
       <main className="w-full h-full" >
-        <SPALayout userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} />
+        <SPALayout prompt={prompt} promptUUId={promptUUId} userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} />
       </main>
     </SWRProvider>
   );

@@ -1,16 +1,17 @@
 'use client';
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import useSWR from 'swr';
+import { unstable_serialize } from 'swr'
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chat, Message, UserDocument } from "@lib/types/chat";
-import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps } from "@lib/server-actions/chat";
+import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat, CreateChatProps, promptChatResponseAction } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane as FaPaperPlaneIcon, FaChevronDown as FaChevronDownIcon, FaChevronUp as FaChevronUpIcon, FaCopy as FaCopyIcon, FaCheck as FaCheckIcon, FaInfoCircle as FaInfoCircleIcon, FaPaperclip as FaPaperclipIcon, FaRedo as FaRedoIcon } from 'react-icons/fa';
 
 import { actionChatStream } from "@lib/client-actions/chat-stream";
 import MyChats from "@components/func-components/mychats";
-import { MyChatsKey, CreateChatKey } from "@lib/keys";
+import { MyChatsKey, CreateChatKey, PromptChatResponseKey } from "@lib/keys";
 import { HiOutlinePencilAlt as HiOutlinePencilAltIcon } from "react-icons/hi";
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { UserAccount } from '@lib/types/user';
@@ -22,6 +23,7 @@ import { actionRecordEvent, actionRecordEvent as recordEvent } from "@lib/server
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 import Toast from './toaster'; // Import your Toast component
+
 const FaPaperPlane: any = FaPaperPlaneIcon as any;
 const FaChevronDown: any = FaChevronDownIcon as any;
 const FaChevronUp: any = FaChevronUpIcon as any;
@@ -89,12 +91,12 @@ const ChatsComponent: React.FC<Props> = ({
     const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [userInput, setUserInput] = useState<string>(prompt || '');
+    const [userInput, setUserInput] = useState<string>('');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const feedbackTextareaRef = useRef<HTMLTextAreaElement>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const responseSetRef = useRef(false);
-    const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '_new' : (chatUUIdProp || ""));
+    const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '' : (chatUUIdProp || ""));
     const [lastMessageUUID, setLastMessageUUID] = useState<string>('');
     const [pumpUUId, setPumpUUId] = useState<string>('');
     const [chatName, setChatName] = useState<string>('');
@@ -120,16 +122,20 @@ const ChatsComponent: React.FC<Props> = ({
     const [toastIcon, setToastIcon] = useState(<></>);
     const [status, setStatus] = useState<string>('white');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const createChatKey: CreateChatKey = { email: user.email, type: "create-chat", chatUUId: chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
-    const { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback });
-    //console.log('==> CHAT.TSX isLoadingChat', isLoadingChat, createChatKey);
-    //console.log("==> CHAT.TSX loadedChat", JSON.stringify(loadedChat));
+    const [localFallback, setLocalFallback] = useState<any>(fallback);
+
+    /* DATA FETCHING */
+    const createChatKey: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
+    let { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
+
+    /****************/
+
+
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
         return !subscriptionType || subscriptionType === "trial" ? "trial" : subscriptionType;
     }, [subscriptionType]);
-    // console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
 
     const totalCredits = (creditsRemaining || 0) + (extraCreditsRemaining || 0);
 
@@ -147,7 +153,6 @@ const ChatsComponent: React.FC<Props> = ({
     const tag = useMemo(() => {
         return userAccount?.tag || "base";
     }, [userAccount]);
-    //console.log("==> CHAT.TSX tag", tag);
     useEffect(() => {
         if (isCid) {
             setCreator(true);
@@ -164,7 +169,7 @@ const ChatsComponent: React.FC<Props> = ({
     const searchParams = useSearchParams();
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
-    const initialPromptUUIdRef = useRef<string | null>(null); // Create a ref for initialPromptUUId
+    const initialPromptUUIdRef = useRef<string | null>(promptUUId); // Initialize with promptUUId
 
     //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
@@ -173,20 +178,23 @@ const ChatsComponent: React.FC<Props> = ({
 
         }
     }, [loadedChat]);
-    //console.log("==> CHAT.TSX $$$$ pumpUUId", pumpUUId);
+
     const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
 
     // Update the ref whenever pumpUUId changes
     useEffect(() => {
-        //console.log("==> CHAT.TSX setting pumpUUIdRef", pumpUUId);
         pumpUUIdRef.current = pumpUUId;
     }, [pumpUUId]);
     useEffect(() => {
+        if (chatUUId == '' && loadedChat && loadedChat.chat && loadedChat.chat.chatUUId != '') {
+            const createChatKey2: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: loadedChat.chat.chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
+            const updatedFallback = { ...fallback, [unstable_serialize(createChatKey2)]: loadedChat };
+            setLocalFallback(updatedFallback);
+        }
         if (status == 'red') {
             setStatus('yellow');
         }
         if (pumpUUIdRef.current && chatUUId && chatUUId !== '_new') {
-            // console.log("==> CHAT.TSX pumpUUId", pumpUUIdRef.current, chatUUId);
             if (status == 'yellow') {
                 setStatus('green');
             }
@@ -195,7 +203,6 @@ const ChatsComponent: React.FC<Props> = ({
                 pumpUUId: pumpUUIdRef.current,
                 onUpdate: (content: string) => {
                     setUpdateMessage('');
-                    //console.log("==> CHAT.TSX onUpdate", content);
                     if (status != 'white') {
                         setStatus('white');
                     }
@@ -216,7 +223,7 @@ const ChatsComponent: React.FC<Props> = ({
                     userAccountMutate();
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
-                    // console.log("==> CHAT.TSX onDone0", chatUUId, pumpUUId);
+
                     if (!bot) {
                         actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
                             .then((r: any) => {
@@ -226,18 +233,14 @@ const ChatsComponent: React.FC<Props> = ({
                     setPumpUUId((prev) => {
                         return '';
                     });
-                    //setTimeout(() => {
-                    //console.log("==> CHAT.TSX onDone1 setting userInput to ''");
+
                     setUserInput('');
                     if (textareaRef.current) {
                         textareaRef.current.value = '';
-                        // console.log("==> CHAT.TSX onDone2 setting textareaRef.current.value to ''");
                         responseSetRef.current = false;
                     }
-                    // }, 100);
                 },
                 onMetaUpdate: (content: string) => {
-                    //console.log("==> CHAT.TSX onMetaUpdate", content);
                     setUpdateMessage(content);
                 },
                 onFollowupPromptsUpdate: (content: string[]) => {
@@ -250,7 +253,7 @@ const ChatsComponent: React.FC<Props> = ({
                     setLastMessageUUID(content);
                 },
                 onError: (content: string) => {
-                    //console.log("==> CHAT.TSX onError", content);
+                    console.log("==> CHAT.TSX onError", content);
                     setStatus('red');
                     setUpdateMessage(content);
                     /*  setMessages(prevMessages => {
@@ -330,17 +333,8 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         const prompt = searchParams?.get('prompt') || "";
         const promptUUId = searchParams?.get('promptUUId') || "";
-        // console.log("==> CHAT.TSX useEffect promptUUId", promptUUId);
-        if (prompt) setInitialPrompt(prompt);
         if (promptUUId) {
             initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
-        }
-
-        if (prompt || promptUUId) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('prompt');
-            url.searchParams.delete('promptUUId');
-            window.history.replaceState({}, '', url.toString());
         }
     }, [searchParams]);
 
@@ -351,11 +345,11 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [league, utm_content]);
 
-    useEffect(() => {
-        if (initialPrompt) {
-            setUserInput(initialPrompt);
-        }
-    }, [initialPrompt]);
+    /*   useEffect(() => {
+           if (initialPrompt) {
+               setUserInput(initialPrompt);
+           }
+       }, [initialPrompt]);*/
 
     /*useEffect(() => {
         if (!loadedChat) {
@@ -377,26 +371,21 @@ const ChatsComponent: React.FC<Props> = ({
     }, []);
 
     useEffect(() => {
-        // setIsLoading(false);
         if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
-                // console.log('==> CHAT.TSX loadedChat.chat.messages', loadedChat.chat.messages);
                 setMessages(loadedChat.chat.messages);
                 setIsLoading(false);
 
             }
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
-                // console.log("==> CHAT.TSX setting chat name1 loadedChat?.chat?.name", loadedChat?.chat?.name);
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
                 if (loadedChat?.chat?.name != "New Chat" && loadedChat?.chat?.name != chatName) {
-                    // console.log("==> CHAT.TSX setting chat name2 loadedChat?.chat?.name", loadedChat?.chat?.name);
                     setChatName(loadedChat?.chat?.name || 'New Chat');
                 }
             }
-            // console.log("==> CHAT.TSX loadedChat?.chat?.lastMessageUUID", loadedChat?.chat?.lastMessageUUID);
             setLastMessageUUID(loadedChat?.chat?.lastMessageUUID || '');
         }
     }, [loadedChat]);
@@ -410,8 +399,6 @@ const ChatsComponent: React.FC<Props> = ({
         setFeedback({ messageUUId: "", feedback: "", stars: 0, open: false });
         setStatus('green');
         const currentUserInput = textareaRef.current?.value.trim() || lastUserInput;
-        // console.log("==> CHAT.TSX handleSubmit", { tag, currentUserInput, chatUUId, pumpUUId });
-
         if (!currentUserInput) return;
         setIsMessageSubmitted(true);
         setIsPromptSelected(false);  // Reset prompt selection on submit
@@ -450,7 +437,6 @@ const ChatsComponent: React.FC<Props> = ({
                 setPendingUserRequest(true);
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
-                        //console.log("==> CHAT.TSX handleSubmit actionChatInit", data);
                         if (!bot) {
                             actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
                                 .then((r: any) => {
@@ -464,8 +450,6 @@ const ChatsComponent: React.FC<Props> = ({
                             return;
                         }
                         if (pumpUUIdRef.current != newPumpUUId) {
-                            // console.log("==> CHAT.TSX handleSubmit setting pumpUUId", newPumpUUId);
-
                             setPumpUUId((prev) => {
                                 return newPumpUUId;
                             });
@@ -635,14 +619,12 @@ const ChatsComponent: React.FC<Props> = ({
 
 
     const handleRetry = () => {
-        // console.log("==> CHAT.TSX  handleRetry", componentId, textareaRef.current);
         if (textareaRef.current) {
             if (textareaRef.current) {
                 textareaRef.current.value = prompt; // Load prompt into textarea
                 const formEvent = new Event('submit', { bubbles: true }); // Create a new event
                 handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
                 hasSubmittedPromptRef.current = true; // Mark as submitted
-                // console.log("==> CHAT.TSX useEffect555 handleRetry tag === 'expA' && prompt submitted", { componentId, source, tag, prompt });
             }
 
         }
@@ -650,19 +632,19 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [componentId, setComponentId] = useState(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
     let singularity = 0;
-    useEffect(() => {
-        if (prompt && !singularity && !bot) {
-            singularity++;
-            recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
-            setTimeout(() => {
-                //console.log("==> CHAT.TSX useEffect333 handleRetry prompt", { chatUUId, componentId, prompt, isMobile });
-                setTimeout(() => {
-                    singularity = 0;
-                }, 2000);
-                handleRetry();
-            }, 2000);
-        }
-    }, [prompt]);
+    /* useEffect(() => {
+         if (prompt && !singularity && !bot) {
+             singularity++;
+             recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+             setTimeout(() => {
+                 //console.log("==> CHAT.TSX useEffect333 handleRetry prompt", { chatUUId, componentId, prompt, isMobile });
+                 setTimeout(() => {
+                     singularity = 0;
+                 }, 2000);
+                 handleRetry();
+             }, 2000);
+         }
+     }, [prompt]);*/
     // const [starRating, setStarRating] = useState<number>(0);
     // const [feedbackText, setFeedbackText] = useState<string>('');
 
@@ -673,21 +655,18 @@ const ChatsComponent: React.FC<Props> = ({
 
         const stars = index + 1;
         setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: stars, open: feedback.open });
-        //console.log("==> CHAT.TSX handleStarClick", lastMessage);
         actionFeedback({ stars: stars, feedback: feedback.feedback, messageUUId: lastMessageUUID }).then(() => {
-            //console.log("==> star rating submitted", stars);
         });
         recordEvent(`chat-stars-click`, `{"stars":${stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
             .then((r: any) => {
                 //console.log("recordEvent", r);
             })
     };
-
+    const starsTrigger = loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user'
     // Function to handle feedback submission
     const handleFeedbackSubmit = () => {
         const feedbackText = feedbackTextareaRef.current?.value || '';
 
-        //console.log("==> CHAT.TSX handleFeedbackSubmit", feedbackText, lastMessageUUID);
         if (feedbackText) {
             const lastMessage = drawMessages[drawMessages.length - 1]; // Get the last message
 
@@ -711,7 +690,6 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     let lastMessage = drawMessages[drawMessages.length - 1];
-    // console.log("==> CHAT.TSX teamid,player,athleteUUId", teamid, player, athleteUUId);
     return (
         <>
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
@@ -757,6 +735,12 @@ const ChatsComponent: React.FC<Props> = ({
                                 <button
                                     onClick={() => {
                                         setChatUUId("_new");
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.delete('prompt');
+                                        url.searchParams.delete('promptUUId');
+                                        window.history.replaceState({}, '', url.toString());
+                                        initialPromptUUIdRef.current = '';
+
                                         setMessages([]);
                                         setChatName('New Chat');
                                         setOpenMyChats(false);
@@ -868,7 +852,6 @@ const ChatsComponent: React.FC<Props> = ({
                                                 chatUUId={chatUUId}
                                                 selectedDocuments={selectedDocuments}
                                                 onSelectedDocumentsChange={(documents: UserDocument[]) => {
-                                                    //console.log("==> CHAT.TSX onSelectedDocumentsChange", documents);
                                                     setSelectedDocuments(documents)
                                                 }}
                                             />
@@ -929,7 +912,7 @@ const ChatsComponent: React.FC<Props> = ({
 
                                                 </>
                                             )}
-                                            <span className="font-bold ml-0.5">Qwiket AI</span>
+                                            <span className="font-bold ml-0.5">Qwiket AI:</span>
                                         </div>
                                     )}
                                     {message.role !== 'user' && message.content.length >= 20 && (
@@ -947,6 +930,21 @@ const ChatsComponent: React.FC<Props> = ({
                                 <ReactMarkdown components={MarkdownComponents}>
                                     {message?.content || ''}
                                 </ReactMarkdown>
+                                {promptUUId && index === drawMessages.length - 1 && drawMessages.length < 3 && <div className=" mb-4  flex justify-center">
+                                    <button className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300" onClick={() => {
+                                        if (textareaRef.current) {
+                                            if (textareaRef.current) {
+                                                textareaRef.current.value = 'Please expand the answer'; // Load prompt into textarea
+                                                const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                                                handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                                                hasSubmittedPromptRef.current = true; // Mark as submitted
+                                            }
+
+                                        }
+                                    }}>
+                                        Expand the answer
+                                    </button>
+                                </div>}
                                 {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
                                     <>
                                         <BlinkingDot />
@@ -958,8 +956,11 @@ const ChatsComponent: React.FC<Props> = ({
                             </div>
                         </div>
                     ))}
-                    {!isLoading && lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user' && (
+
+                    {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user' && (
                         <div className="mt-4 mb-4 ml-4 mr-4">
+                            <hr className="w-full border-gray-300 dark:border-gray-700" ></hr>
+
                             <div className="flex items-center">
                                 Rate the QwiketAI response:&nbsp;{[...Array(5)].map((_, index) => (
                                     <span

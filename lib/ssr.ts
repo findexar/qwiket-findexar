@@ -28,13 +28,13 @@ import fetchTeamMentions from '@lib/server-actions/team-mentions';
 import fetchMyTeam from '@lib/server-actions/my-team-actions';
 import fetchMyFeed from '@lib/server-actions/myfeed';
 import fetchFavorites from '@lib/server-actions/favorites';
-type SSRParams = {
+export type SSRParams = {
     leagueid?: string;
     teamid?: string;
     name?: string;
     athleteUUId?: string;
 }
-type SSRSearchParams = {
+export type SSRSearchParams = {
     fbclid?: string;
     utm_content?: string;
     view?: string;
@@ -45,8 +45,10 @@ type SSRSearchParams = {
     m?: string;
     cid?: string;
     aid?: string;
+    prompt?: string;
+    promptUUId?: string;
 }
-type ssrResult = {
+export type ssrResult = {
     userInfo: { email: string };
     dark: number;
     view: string;
@@ -67,11 +69,13 @@ type ssrResult = {
     athleteUUId: string;
     teamName: string;
     ua: string;
+    prompt: string;
+    promptUUId: string;
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
     let { prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
-        { prompt: string, promptUUId: string, tab: string, rtab: string, fbclid: string, utm_content: string, view: string, id: string, story: string, m: string, cid: string, aid: string } = await searchParams as any;
+        SSRSearchParams = searchParams as any;
     console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
     let headerslist = await headers();
@@ -162,12 +166,13 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }*/
     // console.log("tab,view", tab, view);
     if (tab == 'chat') {
-        calls.push(await fetchChat({ email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid: "", athleteUUId: "", fantasyTeam: false, chatUUId: "" }, userId, sessionid));
-        //TODO: get credits
+        calls.push(await fetchChat({ promptUUId, email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
-    if (tab == 'chat' && promptUUId && prompt) {
+    console.log("==> testing SSR PROMPT CHAT ADD fetch", tab, promptUUId, prompt);
+    /* if (tab == 'chat' && promptUUId && prompt) {
+        console.log("==> SSR PROMPT CHAT ADD fetch", promptUUId, prompt);
         calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
-    }
+    }*/
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
         if (!story && !findexarxid) {
             console.log("**********fetchStories", userId, sessionid, league);
@@ -208,15 +213,16 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark }));
-    return { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua };
+    return { userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(
-    { searchParams }: { searchParams: SSRSearchParams },
+    { params, searchParams }: { params: SSRParams, searchParams: SSRSearchParams },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     // Read route params
-    const { id, story, tab, view, m, s = '0' } = await searchParams as any;
+    const { id, story, tab, view, m, promptUUId } = searchParams as any;
+    let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
     //console.log("META searchParams", { id, story, tab, view, m, s });
 
     let findexarxid = id || "";
@@ -279,8 +285,10 @@ export async function generateMetadata(
         ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
         ogImage = astoryImageOgUrl;
     }
-    const noindex = 1;
-
+    let noindex = !leagueid && !teamid && !athleteUUId && !tab && !view ? 0 : 1;
+    if (tab == 'chat' && promptUUId) {
+        noindex = 0;
+    }
     return {
         title: ogTitle,
         openGraph: {
@@ -297,7 +305,7 @@ export async function generateMetadata(
             ],
             type: 'website'
         },
-        robots: (noindex === 1 || s !== "1") ? 'noindex, follow' : 'index, follow',
+        robots: (noindex === 1) ? 'noindex, follow' : 'index, follow',
         alternates: {
             canonical: ogUrl,
         },

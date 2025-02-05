@@ -407,7 +407,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         key={`prompt-${index}`}
                         href={`/${p.league}${teamid ? `/${teamid}` : ''}${player ? `/${player}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
-                        rel="nofollow"
+
                     >
                         {p.prompt} <span className="ask-ai"></span>
                     </PromptTag>

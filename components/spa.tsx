@@ -45,7 +45,10 @@ interface LeagueLayoutProps {
   userInfo?: any,
   prompt?: string,
   promptUUId?: string,
-  ua?: string
+  ua?: string;
+  cid?: string;
+  aid?: string;
+
 }
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
