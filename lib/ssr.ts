@@ -261,6 +261,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }
     if (tab == 'prompts') {
         const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId: null, search_key: `${athleteUUId ? athleteUUId : teamid ? teamid : ''}` };
+        console.log("==> SSR PROMPT PAGE KEY", promptPageKey);
         calls.push(await promiseGetPromptPage(promptPageKey));
     }
     /* SSR FETCHES */

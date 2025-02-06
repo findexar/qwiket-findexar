@@ -37,10 +37,11 @@ const PromptsComponent: React.FC<Props> = ({
 }) => {
     const { fallback, league, teamid, athleteUUId, page } = useAppContext();
     const [localFallback, setLocalFallback] = useState(fallback);
-    const [direction, setDirection] = useState<'here' | 'next' | 'prev'>('here');
+
     const [pageUUId, setPageUUId] = useState(page || null);
     const search_key = athleteUUId ? athleteUUId : teamid ? teamid : '';
-    const promptPageKey: PromptPageKey = { type: 'prompt-page', search_key, pageUUId };
+    const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId, search_key };
+    console.log("=====> PROMPT PAGE KEY", { page, pageUUId, promptPageKey });
     let { data: loadedPage, error: loadedPageError, isLoading: isLoadingPage, mutate: mutateLoadedPage }: {
         data: PromptPage,
         error: any,
@@ -50,10 +51,14 @@ const PromptsComponent: React.FC<Props> = ({
     useEffect(() => {
         if (loadedPage && loadedPage.pageUUId != page) {
             const promptPageKey: PromptPageKey = { type: 'prompt-page', search_key, pageUUId };
+            console.log("==> INSERTPROMPT PAGE KEY", promptPageKey);
             const updatedFallback = { ...fallback, [unstable_serialize(promptPageKey)]: loadedPage };
-            setLocalFallback(updatedFallback);
-            setDirection('here');
-            setPageUUId(loadedPage.pageUUId);
+
+            setTimeout(() => {
+                setLocalFallback(updatedFallback);
+                setPageUUId(loadedPage.pageUUId);
+
+            }, 2000);
         }
     }, [loadedPage]);
     const { prompts, next, prev }: PromptPage = loadedPage || { prompts: [], next: null, prev: null, pageUUId: null };

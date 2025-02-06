@@ -88,7 +88,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
+    const { relatedContent, fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -630,7 +630,7 @@ const ChatsComponent: React.FC<Props> = ({
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-
+    const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
 
     const handleRetry = () => {
         if (textareaRef.current) {
