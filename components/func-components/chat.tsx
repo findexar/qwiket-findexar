@@ -123,13 +123,18 @@ const ChatsComponent: React.FC<Props> = ({
     const [status, setStatus] = useState<string>('white');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [localFallback, setLocalFallback] = useState<any>(fallback);
+    const [autoPrompt, setAutoPrompt] = useState<boolean>(false);
 
     /* DATA FETCHING */
     const createChatKey: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
-    let { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
+    let { data: loadedChat, error: loadedChatError, isLoading: isLoadingChat, mutate: mutateLoadedChat }: {
+        data: any,
+        error: any,
+        isLoading: boolean,
+        mutate: any
+    } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
 
     /****************/
-
 
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
@@ -180,8 +185,9 @@ const ChatsComponent: React.FC<Props> = ({
 
     useEffect(() => {
         if (!bot && promptUUId) {
-            if (loadedChat && loadedChat.chat?.messages && loadedChat.chat?.messages?.length == 0) {
-                if (loadedChat?.chat?.name == "New Prompt Chat") {
+            if (loadedChat && loadedChat.chat?.messages && loadedChat.chat?.messages?.length == 2) {
+                if (!autoPrompt && loadedChat?.chat?.name == "New Prompt Chat") {
+                    setAutoPrompt(true);
                     recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
                 }
             }
