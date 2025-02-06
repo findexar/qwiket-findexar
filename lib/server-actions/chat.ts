@@ -1,6 +1,6 @@
 'use server';
 import { unstable_serialize } from 'swr'
-import { ChatKey, CreateChatKey, FetchUserDocumentsKey, PromptChatResponseKey } from '@/lib/keys';
+import { ChatKey, CreateChatKey, FetchUserDocumentsKey, PromptChatResponseKey, PromptPageKey } from '@/lib/keys';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import fetchSession from "@lib/server-actions/session";
 import { Chat, UserDocument, UserDocuments } from "@/lib/types/chat";
@@ -404,5 +404,29 @@ export const promisePromptChatResponse = async (userId: string, sessionid: strin
 export const ssrPromptChatResponse = async (promptUUId: string) => {
     'use server';
     return getPromptChatResponse(promptUUId);
+}
+
+const getPromptPage = async (search_key: string, pageUUId: string | null) => {
+    'use server';
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/get-prompt-page?api_key=${api_key}&search_key=${search_key}&pageUUId=${pageUUId ? pageUUId : ''}`;
+    const fetchResponse = await fetch(url);
+    const data = await fetchResponse?.json();
+    if (data) {
+        if (data.success) {
+            return data.prompts;
+        }
+        return null;
+    }
+    return null;
+}
+export const actionGetPromptPage = async (key: PromptPageKey) => {
+    'use server';
+    const { search_key, pageUUId } = key;
+    return getPromptPage(search_key, pageUUId);
+}
+export const promiseGetPromptPage = async (key: PromptPageKey) => {
+    'use server';
+    let ret = { key: unstable_serialize(key), call: getPromptPage(key.search_key, key.pageUUId) };
+    return ret;
 }
 export default promiseCreateChat;

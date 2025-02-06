@@ -32,3 +32,8 @@ export type NotificationsKey = {
     page: number;
     limit: number;
 };
+export type PromptPageKey = {
+    type: "prompt-page";
+    search_key: string;
+    pageUUId: string | null;
+};

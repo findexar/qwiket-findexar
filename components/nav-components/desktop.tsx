@@ -19,7 +19,7 @@ import MentionOverlay from "@/components/func-components/mention-overlay";
 import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent } from "@lib/server-actions/event";
 import LeagueMentions from "../func-components/league-mentions";
-
+import PromptsComponent from "../func-components/prompts";
 const PageWrap = styled.div`
   width: 100%;
   display: flex;
@@ -239,6 +239,7 @@ const Desktop: React.FC<Props> = () => {
     const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
     //const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${tab}&rtab=${rtab}`;
     const newPath = `/${league}/${teamid}/${pagetype === "player" ? `/${player}/${athleteUUId}` : ""}${tabParam}`;
+    console.log("==> teamPlayerTabPath", { tab, tabParam, newPath });
     return newPath;
   }
   const tabPath = (tab: string) => {
@@ -278,7 +279,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                         { name: `AI Chat`, tab: 'chat', disabled: false, link: tabPath('chat') },
                         { name: "MyTeam", tab: "myteam", disabled: false, link: tabPath('myteam') },
-                        // { name: "FAQ", tab: "faq", disabled: false, link: tabPath('faq') },
+                        //   { name: "?", tab: "faq", disabled: false, link: tabPath('faq') },
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
@@ -291,7 +292,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: teamPlayerTabPath('podcasts') },
                         { name: `AI Chat`, tab: 'chat', disabled: false, link: teamPlayerTabPath('chat') },
                         { name: `@`, tab: 'mentions', disabled: false, link: teamPlayerTabPath('mentions') },
-                        // { name: "FAQ", tab: "faq", disabled: false, link: teamPlayerTabPath('faq') },
+                        { name: "?", tab: "prompts", disabled: false, link: teamPlayerTabPath('prompts') },
                       ]}
                       onChange={onTeamPlayerTabNav}
                       selectedOptionName={tab}
@@ -311,6 +312,7 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
                   {(pagetype === 'league' && tab === 'myteam') && <MyTeam />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'prompts') && <PromptsComponent />}
 
                 </CenterPanel>
                 <RightPanel>

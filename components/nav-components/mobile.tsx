@@ -29,6 +29,7 @@ import PlayerMentions from "@/components/func-components/player-mentions";
 import Chat from "@/components/func-components/chat";
 import LeagueMentions from "../func-components/league-mentions";
 import { isGenerator } from "framer-motion";
+import Prompts from "../func-components/prompts";
 
 const FadeTransition = styled.div<{ $isVisible: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -244,7 +245,7 @@ const Mobile: React.FC<Props> = () => {
                             { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                             { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
-                            { name: `Mentions`, tab: "mentions", disabled: false, link: tabPath('mentions') }
+                            { name: `@`, tab: "mentions", disabled: false, link: tabPath('mentions') }
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 0); }}
                         selectedOptionName={tab}
@@ -259,7 +260,7 @@ const Mobile: React.FC<Props> = () => {
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                             { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
                             { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
-
+                            { name: `?`, tab: 'prompts', disabled: false, link: tabPath('prompts') }
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 1); }}
                         selectedOptionName={tab}
@@ -274,7 +275,7 @@ const Mobile: React.FC<Props> = () => {
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                             { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
                             { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
-
+                            { name: `?`, tab: 'prompts', disabled: false, link: tabPath('prompts') }
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 2); }}
                         selectedOptionName={tab}
@@ -312,7 +313,8 @@ const Mobile: React.FC<Props> = () => {
                     {pagetype === "league" && tab == "mentions" && rtab === "myfeed" && <MyfeedMentions league={league} />}
                     {pagetype === "league" && tab == "mentions" && rtab === "fav" && <FavMentions />}
                     {pagetype === "league" && tab == "mentions" && rtab === "" && <LeagueMentions />}
-
+                    {pagetype === "team" && tab == "prompts" && <Prompts />}
+                    {pagetype === "player" && tab == "prompts" && <Prompts />}
 
                     {false && pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
                     {false && pagetype == "league" && tab == "fav" ? <FavMentions /> : null}

@@ -20,7 +20,7 @@ import SPALayout from '@/components/spa';
 import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
-import fetchChat, { ssrPromptChatResponse } from "@lib/server-actions/chat";
+import fetchChat, { actionGetPromptPage, promiseGetPromptPage, ssrPromptChatResponse } from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 import fetchLeagueMentions from '@lib/server-actions/league-mentions';
@@ -29,6 +29,8 @@ import fetchMyTeam from '@lib/server-actions/my-team-actions';
 import fetchMyFeed from '@lib/server-actions/myfeed';
 import fetchFavorites from '@lib/server-actions/favorites';
 import type { Article, WithContext } from 'schema-dts';
+import { RelatedContent } from './types/chat';
+import { PromptPageKey } from "./keys";
 export type SSRParams = {
     leagueid?: string;
     teamid?: string;
@@ -48,6 +50,7 @@ export type SSRSearchParams = {
     aid?: string;
     prompt?: string;
     promptUUId?: string;
+    page?: string;
 }
 export type ssrResult = {
     userInfo: { email: string };
@@ -72,11 +75,13 @@ export type ssrResult = {
     ua: string;
     prompt: string;
     promptUUId: string;
-    jsonld: string | null;
+    jsonld: string[];
+    page: string;
+    relatedContent: RelatedContent | null;
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
-    let { prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
+    let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
         SSRSearchParams = searchParams as any;
     console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
@@ -205,8 +210,11 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let articleStructuredData: WithContext<Article> | undefined = undefined;
     //  let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: string } | null = null;
+    let relatedContent: RelatedContent | null = null;
+    let jsonld: string[] = [];
     if (promptUUId && tab == 'chat') {
         const response = await ssrPromptChatResponse(promptUUId);
+        relatedContent = response;
         console.log("==> SSR PROMPT CHAT RESPONSE", response);
         const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime } = response || {};
         // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
@@ -216,6 +224,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         articleStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'Article',
+            '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat`,
             headline: prompt,
             image: image,
             description: responseText,
@@ -225,10 +234,35 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             author: 'Qwiket AI',
             publisher: 'Qwiket AI',
             articleBody: responseText,
-
         }
+        jsonld.push(JSON.stringify(articleStructuredData));
+        const qaStructuredData = {
+            '@context': 'https://schema.org',
+            '@type': 'QAPage',
+            '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat&prompt=${promptUUId}`,
+
+            "mainEntity": {
+                "@type": "Question",
+                "name": prompt,
+                "text": `Question:${prompt}`,
+                "answerCount": 1,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": responseText,
+                    "dateCreated": publishedTime,
+                    "datePublished": publishedTime,
+                    "expires": expiryDate.toISOString(),
+                    "author": 'Qwiket AI',
+                    "publisher": 'Qwiket AI',
+                }
+            }
+        }
+        jsonld.push(JSON.stringify(qaStructuredData));
     }
-    let jsonld = articleStructuredData ? JSON.stringify(articleStructuredData) : null;
+    if (tab == 'prompts') {
+        const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId: null, search_key: `${athleteUUId ? athleteUUId : teamid ? teamid : ''}` };
+        calls.push(await promiseGetPromptPage(promptPageKey));
+    }
     /* SSR FETCHES */
 
     let fallback: { [key: string]: any } = {}; // Add index signature
@@ -242,7 +276,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld }));
-    return { jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(
@@ -312,7 +346,7 @@ export async function generateMetadata(
         ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
     }
 
-    let ogDescription = amentionSummary || "Interactive Sports Knowledge for Fantasy Sports Fans.";
+    let ogDescription = amentionSummary || "Interactive Sports Knowledge for Fantasy Sports Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
     let ogTitle = ogTarget || `Qwiket AI`;
@@ -339,6 +373,15 @@ export async function generateMetadata(
         if (publishedDate < oneWeekAgo) {
             noindex = 1;
         }
+    }
+    if (tab == 'prompts') {
+        noindex = 0;
+        ogTitle = `Qwiket ${name ? name : ''} AI FAQ`;
+        ogDescription = "Qwiket AI Frequently Asked Questions";
+        ogImage = "/q-logo-og-1200.png";
+        image_width = 1200;
+        image_height = 1200;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=prompts`;
     }
     return {
         title: ogTitle,

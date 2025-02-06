@@ -66,5 +66,13 @@ export type UserDocument = {
     selected: number;
     type: 'STYLE' | 'DATA';
 }
-
+export type RelatedContent = {
+    prompt: string,
+    response: string,
+    slug: string,
+    image: string,
+    image_width: number,
+    image_height: number,
+    publishedTime: string
+}
 export type UserDocuments = UserDocument[];

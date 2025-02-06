@@ -20,6 +20,7 @@ import Dashboard from './func-components/account/dashboard';
 import Invites from './func-components/invites';
 import RevenueSharedContent from './func-components/revenue-sharing-content';
 import { actionRecordEvent } from '@/lib/server-actions/event';
+import { RelatedContent } from '@/lib/types/chat';
 
 
 interface LeagueLayoutProps {
@@ -48,7 +49,8 @@ interface LeagueLayoutProps {
   ua?: string;
   cid?: string;
   aid?: string;
-
+  page?: string;
+  relatedContent?: RelatedContent;
 }
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
@@ -76,7 +78,9 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   userInfo,
   prompt: startPrompt = '',
   promptUUId: startPromptUUId = '',
-  ua
+  ua,
+  page: startPage = "",
+  relatedContent: startRelatedContent = null
 }) => {
   const [tab, setTab] = useState(startTab || "");
   const [rtab, setRtab] = useState(startRtab || "");
@@ -99,6 +103,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
   const [feedback, setFeedback] = useState({ messageUUId: "", feedback: "", stars: 0, open: false });
+  const [page, setPage] = useState(startPage);
+  const [relatedContent, setRelatedContent] = useState(startRelatedContent);
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
@@ -274,6 +280,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         view={view}
         tab={tab}
         rtab={rtab}
+        page={page}
         teamid={teamid}
         player={player}
         athleteUUId={athleteUUId}
@@ -293,6 +300,9 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         promptUUId={promptUUId}
         feedback={feedback}
         setFeedback={setFeedback}
+        setPage={setPage}
+        setRelatedContent={setRelatedContent}
+        relatedContent={relatedContent}
       >
 
         <main className={roboto.className + " h-full " + (localMode === 'dark' ? 'dark' : '')}>
