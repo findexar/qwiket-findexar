@@ -630,7 +630,7 @@ const ChatsComponent: React.FC<Props> = ({
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-    const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
+   // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
 
     const handleRetry = () => {
         if (textareaRef.current) {
