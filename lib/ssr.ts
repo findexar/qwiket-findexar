@@ -246,6 +246,11 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 "name": prompt,
                 "text": `Question:${prompt}`,
                 "answerCount": 1,
+                "dateCreated": publishedTime,
+                "datePublished": publishedTime,
+                "expires": expiryDate.toISOString(),
+                "author": 'Qwiket AI',
+                "publisher": 'Qwiket AI',
                 "acceptedAnswer": {
                     "@type": "Answer",
                     "text": responseText,
