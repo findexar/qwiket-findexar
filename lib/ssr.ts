@@ -243,7 +243,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
             "mainEntity": {
                 "@type": "Question",
-                "name": prompt,
+                "name": 'Qwiket AI: Interactive Sports Knowledge',
                 "text": `${prompt}`,
                 "answerCount": 1,
                 "dateCreated": publishedTime,
