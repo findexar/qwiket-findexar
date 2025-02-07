@@ -347,7 +347,7 @@ export async function generateMetadata(
         ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
     }
 
-    let ogDescription = amentionSummary || "Interactive Sports Knowledge for Fantasy Sports Fans";
+    let ogDescription = amentionSummary || promptResponse || "Interactive Sports Knowledge for Fantasy Sports Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
     let ogTitle = ogTarget || `Qwiket AI`;
@@ -360,7 +360,7 @@ export async function generateMetadata(
     let noindex = !leagueid && !teamid && !athleteUUId && !tab && !view ? 0 : 1;
 
     if (promptResponse && promptUUId) {
-        ogTitle = promptResponse.prompt;
+        ogTitle = ogTitle + ' - ' + promptResponse.prompt;
         ogDescription = promptResponse.response;
         ogImage = promptResponse.image;
         image_width = promptResponse.image_width;
@@ -371,6 +371,7 @@ export async function generateMetadata(
         const publishedDate = new Date(promptResponse.publishedTime);
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        noindex = 0;
         if (publishedDate < oneWeekAgo) {
             noindex = 1;
         }
