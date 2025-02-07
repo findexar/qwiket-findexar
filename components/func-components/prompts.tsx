@@ -41,28 +41,28 @@ const PromptsComponent: React.FC<Props> = ({
     const [pageUUId, setPageUUId] = useState(page || null);
     const search_key = athleteUUId ? athleteUUId : teamid ? teamid : '';
     const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId, search_key };
-    console.log("=====> PROMPT PAGE KEY", { page, pageUUId, promptPageKey });
+    // console.log("=====> PROMPT PAGE KEY", { page, pageUUId, promptPageKey });
     let { data: loadedPage, error: loadedPageError, isLoading: isLoadingPage, mutate: mutateLoadedPage }: {
         data: PromptPage,
         error: any,
         isLoading: boolean,
         mutate: any
     } = useSWR(promptPageKey, actionGetPromptPage, { fallback: localFallback });
-    useEffect(() => {
-        if (loadedPage && loadedPage.pageUUId != page) {
-            const promptPageKey: PromptPageKey = { type: 'prompt-page', search_key, pageUUId };
-            console.log("==> INSERTPROMPT PAGE KEY", promptPageKey);
-            const updatedFallback = { ...fallback, [unstable_serialize(promptPageKey)]: loadedPage };
-
-            setTimeout(() => {
-                setLocalFallback(updatedFallback);
-                setPageUUId(loadedPage.pageUUId);
-
-            }, 2000);
-        }
-    }, [loadedPage]);
+    /* useEffect(() => {
+         if (loadedPage && loadedPage.pageUUId != page) {
+             const promptPageKey: PromptPageKey = { type: 'prompt-page', search_key, pageUUId };
+             console.log("==> INSERTPROMPT PAGE KEY", promptPageKey);
+             const updatedFallback = { ...fallback, [unstable_serialize(promptPageKey)]: loadedPage };
+ 
+             setTimeout(() => {
+                 setLocalFallback(updatedFallback);
+                 // setPageUUId(loadedPage.pageUUId);
+ 
+             }, 2000);
+         }
+     }, [loadedPage]);*/
     const { prompts, next, prev }: PromptPage = loadedPage || { prompts: [], next: null, prev: null, pageUUId: null };
-    console.log("==> PromptsComponent", { prompts, next, prev, pageUUId });
+    //console.log("==> PromptsComponent", { prompts, next, prev, pageUUId });
     const isLoadingMore = isLoadingPage;
     let isEmpty = prompts?.length === 0;
     let isReachingEnd = isEmpty || (prompts?.length < 5);
