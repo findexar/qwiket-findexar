@@ -244,7 +244,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             "mainEntity": {
                 "@type": "Question",
                 "name": prompt,
-                "text": `Question:${prompt}`,
+                "text": `${prompt}`,
                 "answerCount": 1,
                 "dateCreated": publishedTime,
                 "datePublished": publishedTime,
