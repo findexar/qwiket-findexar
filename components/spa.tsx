@@ -310,7 +310,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         relatedContent={relatedContent}
       >
 
-        <main className={roboto.className + " h-full " + (localMode === 'dark' ? 'dark' : '')}>
+        <main className={roboto.className + " h-full " + (localMode == 'dark' ? 'dark' : localMode == 'light' ? 'light' : 'dark')}>
           <Head>
             {false && <meta name="theme-color" content={localMode === 'dark' ? palette.dark.colors.background : palette.light.colors.background} />}
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
