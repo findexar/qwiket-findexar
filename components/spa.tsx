@@ -115,8 +115,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
           //console.log("recordEvent", r);
         });
     }
+    else {
+      actionRecordEvent(`bot-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
+        .then((r: any) => {
+          //console.log("recordEvent", r);
+        });
+    }
   }, []);
-
 
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
