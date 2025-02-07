@@ -35,7 +35,7 @@ type PromptResponse = {
 const PromptsComponent: React.FC<Props> = ({
 
 }) => {
-    const { fallback, league, teamid, athleteUUId, page } = useAppContext();
+    const { fallback, league, teamid, athleteUUId, page, name } = useAppContext();
     const [localFallback, setLocalFallback] = useState(fallback);
 
     const [pageUUId, setPageUUId] = useState(page || null);
@@ -66,8 +66,7 @@ const PromptsComponent: React.FC<Props> = ({
     const isLoadingMore = isLoadingPage;
     let isEmpty = prompts?.length === 0;
     let isReachingEnd = isEmpty || (prompts?.length < 5);
-    const baseUrl = `/${league}/${teamid}/${athleteUUId ? athleteUUId : ''}?tab=chat`;
-
+    const baseUrl = `/${league}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/athleteUUId` : ''}?tab=chat`;
 
     const promptRows = prompts ? prompts.map((prompt: Prompt, i: number) => (
         <section key={prompt.promptUUId} className="m-2" role="region" aria-labelledby={`faq-${i}`}>
