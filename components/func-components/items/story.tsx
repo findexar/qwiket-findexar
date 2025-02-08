@@ -459,7 +459,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <ImageWrapper>
                         <Link href={url} scroll={false} onClick={onStoryClick}>
                             {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) &&
-                                <CustomImage
+                                <img
                                     src={image}
                                     alt={title}
                                     width={image_width}
@@ -513,7 +513,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 <HorizontalContainer>
                     <Link href={url} scroll={false} onClick={onStoryClick}>
                         <ImageWrapper>
-                            <CustomImage
+                            <img
                                 src={image}
                                 alt={title}
                                 width={image_width}

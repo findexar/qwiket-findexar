@@ -133,34 +133,34 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       bodyClassList.remove(className);
     }
   }, [localMode]);
-  /*
-    useEffect(() => {
-      let params = '';
-      let params2 = '';
-      let p = [];
-      let p2 = [];
-      if (fbclid) p.push(`fbclid=${fbclid}`);
-      if (utm_content) p.push(`utm_content=${utm_content}`);
-      p2 = [...p];
-      if (p.length > 0) {
-        params = `?${p.join('&')}`;
-      }
-      if (p2.length > 0) {
-        params2 = `&${p2.join('&')}`;
-      }
-      let tp = tab  ? `&tab=${tab}` : '';
-  
-      let tp2 = tp;
-      if (!params2) tp2 = tp.replace(/&/g, '?');
-      if (!params) tp = tp.replace(/&/g, '?');
-      //console.log("==> view", view);
-  
-      setParams(params);
-      setParams2(params2);
-      setTp(tp);
-      setTp2(tp2);
-    }, [fbclid, utm_content, tab, view]);
-  */
+
+  useEffect(() => {
+    let params = '';
+    let params2 = '';
+    let p = [];
+    let p2 = [];
+    if (fbclid) p.push(`fbclid=${fbclid}`);
+    if (utm_content) p.push(`utm_content=${utm_content}`);
+    p2 = [...p];
+    if (p.length > 0) {
+      params = `?${p.join('&')}`;
+    }
+    if (p2.length > 0) {
+      params2 = `&${p2.join('&')}`;
+    }
+    let tp = tab ? `&tab=${tab}` : '';
+
+    let tp2 = tp;
+    if (!params2) tp2 = tp.replace(/&/g, '?');
+    if (!params) tp = tp.replace(/&/g, '?');
+    //console.log("==> view", view);
+
+    setParams(params);
+    setParams2(params2);
+    setTp(tp);
+    setTp2(tp2);
+  }, [fbclid, utm_content, tab, view]);
+
   useEffect(() => {
     if (localMode === 'unknown') {
       const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -173,81 +173,81 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
 
   const query = useSearchParams();
   const pathname = usePathname();
-  /*
-    useEffect(() => {
-      const id = query?.get('id') || "";
-      const qtab = query?.get('tab') || "";
-      const qrtab = query?.get('rtab') || "";
-      const qview = query?.get('view') || "mentions";
-      const ssr = query?.getAll('ssr') || [];
-      const top = query?.get('top') || "";
-      const story = query?.get('story');
-      const qprompt = query?.get('prompt') || '';
-      const qpromptUUId = query?.get('promptUUId') || '';
-      // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
+
+  useEffect(() => {
+    const id = query?.get('id') || "";
+    const qtab = query?.get('tab') || "";
+    const qrtab = query?.get('rtab') || "";
+    const qview = query?.get('view') || "mentions";
+    const ssr = query?.getAll('ssr') || [];
+    const top = query?.get('top') || "";
+    const story = query?.get('story');
+    const qprompt = query?.get('prompt') || '';
+    const qpromptUUId = query?.get('promptUUId') || '';
+    // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
+    if (story !== slug) {
       if (story !== slug) {
-        if (story !== slug) {
-          setSlug(story || "");
-        }
-        if (findexarxid !== id) {
-          setFindexarxid(id);
-        }
-        if (top) {
-          setTimeout(() => {
-            window.scrollTo(0, 0);
-          }, 0);
-        }
-        if (qtab !== tab) {
-          // console.log("==> setTab", qtab);
-          setTab(qtab);
-        }
-        if (qrtab !== rtab) {
-          // console.log("==> setRtab", qrtab);
-          setRtab(qrtab);
-        }
-        if (qview !== view) {
-          // console.log("==> setView", qview);
-          setView(qview);
-        }
-        if (qprompt !== prompt) setPrompt(qprompt);
-        if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
-        let parts = pathname?.split("/") || [];
-        let qpagetype = 'league';
-        let qleague = parts && parts.length > 1 ? parts[1] : '';
-        let isAccount = false;
-  
-        let qteam = parts && parts.length > 2 ? parts[2] : '';
-        if (qleague === "account") {
-  
-          isAccount = true;
-          if (startPagetype === 'admin-invite') {
-            qpagetype = 'admin-invite';
-          } else {
-            qpagetype = `account-${qteam}`;
-          }
-        }
-        let qplayer = parts && parts.length > 3 ? parts[3] : '';
-        let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
-        qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ').replace('!', '.');
-        qleague = qleague.toUpperCase();
-        if (view === 'landing') qpagetype = "landing";
-  
-        if (qteam && !isAccount) {
-          qpagetype = "team";
-          if (qplayer) {
-            qpagetype = "player";
-          }
-        }
-        if (!isAccount) {
-          setLeague(qleague);
-          setTeamid(qteam);
-          setPlayer(qplayer);
-          setAthleteUUId(qathleteUUId);
-        }
-        setPagetype(qpagetype);
+        setSlug(story || "");
       }
-    }, [query]);
-  */
+      if (findexarxid !== id) {
+        setFindexarxid(id);
+      }
+      if (top) {
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 0);
+      }
+      if (qtab !== tab) {
+        // console.log("==> setTab", qtab);
+        setTab(qtab);
+      }
+      if (qrtab !== rtab) {
+        // console.log("==> setRtab", qrtab);
+        setRtab(qrtab);
+      }
+      if (qview !== view) {
+        // console.log("==> setView", qview);
+        setView(qview);
+      }
+      if (qprompt !== prompt) setPrompt(qprompt);
+      if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
+      let parts = pathname?.split("/") || [];
+      let qpagetype = 'league';
+      let qleague = parts && parts.length > 1 ? parts[1] : '';
+      let isAccount = false;
+
+      let qteam = parts && parts.length > 2 ? parts[2] : '';
+      if (qleague === "account") {
+
+        isAccount = true;
+        if (startPagetype === 'admin-invite') {
+          qpagetype = 'admin-invite';
+        } else {
+          qpagetype = `account-${qteam}`;
+        }
+      }
+      let qplayer = parts && parts.length > 3 ? parts[3] : '';
+      let qathleteUUId = parts && parts.length > 4 ? parts[4] : '';
+      qplayer = qplayer.replaceAll('%20', ' ').replaceAll('_', ' ').replace('!', '.');
+      qleague = qleague.toUpperCase();
+      if (view === 'landing') qpagetype = "landing";
+
+      if (qteam && !isAccount) {
+        qpagetype = "team";
+        if (qplayer) {
+          qpagetype = "player";
+        }
+      }
+      if (!isAccount) {
+        setLeague(qleague);
+        setTeamid(qteam);
+        setPlayer(qplayer);
+        setAthleteUUId(qathleteUUId);
+      }
+      setPagetype(qpagetype);
+    }
+  }, [query]);
+
   const user = userInfo || { email: "" };
   const userAccountKey: UserAccountKey = {
     type: "user-account", email: user.email || "", bot: bot || false

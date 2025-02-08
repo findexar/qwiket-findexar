@@ -162,7 +162,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (m) {
         calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
     }
-    if (!story && !findexarxid && !m)
+    //  if (!story && !findexarxid && !m)
+    if (teamid)
         calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
     //if (!story && !findexarxid && !m)
@@ -208,7 +209,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         calls.push(await fetchFavorites({ userId, sessionid, league }));
     }
     if (teamid && athleteUUId) {
-        console.log("********** SSR fetchPlayerPhoto", name, teamid);
+        console.log("********** fetchPlayerPhoto", name, teamid);
         calls.push(await promiseGetPlayerPhoto({ name, teamid }));
     }
     let articleStructuredData: WithContext<Article> | undefined = undefined;
