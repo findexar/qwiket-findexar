@@ -401,6 +401,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     let { league, type, team, teamName, name, athleteUUId, date, url, findex, summary, findexarxid, fav, tracked, image, prompts, timecode, uuid } = mention;
+    athleteUUId = athleteUUId || "inactive";
     linkType = linkType || 'final';
     mini = mini || false;
     const [expanded, setExpanded] = React.useState(startExtended);
@@ -522,10 +523,10 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     //prepare urls:
     const prepName = encodeURIComponent(name.replace(/\./g, '!'));//name?.replaceAll(' ', '_') || "";
-    let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink`);
+    let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
 
-    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink`);
-    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink`);
+    const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
+    const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
 
     console.log("====Mention    ", mention);
     const renderPrompts = (device: string) => {
@@ -534,7 +535,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         return (
             <PromptsContainer>
                 {prompts.map((p: any, index: number) => {
-                    const promptUrl = (type == 'person' ? `/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `${league}/${encodeURIComponent(team)}/${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
+                    const promptUrl = (type == 'person' ? `/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `${league}/${encodeURIComponent(team)}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
                     console.log("promptUrl", promptUrl, name, athleteUUId);
                     return (
                         <PromptTag
@@ -801,6 +802,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         };
     }, []);
     let img = meta?.image || image
+    console.log("====Mention  localLink   ", localUrl);
     return (
         <>
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
