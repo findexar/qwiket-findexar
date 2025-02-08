@@ -419,6 +419,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [isVisible, setIsVisible] = useState(false);
     const mentionRef = useRef<HTMLDivElement | null>(null);
     const mobileMentionRef = useRef<HTMLDivElement | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
@@ -578,16 +579,17 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [date])
 
     const onMentionNav = useCallback(async (name: string, athleteUUId: string, team: string, teamName: string, url: string) => {
+        setLoading(true);
         if (!mini) {
             console.log("onMentionNav", { name, athleteUUId, team, teamName, url });
-            setTeamid(team);
-            if (athleteUUId) {
-                setAthleteUUId(athleteUUId);
-                setName(name);
-            }
-            setTeamName(teamName);
-            window.history.replaceState({}, "", url);
-
+            /* setTeamid(team);
+             if (athleteUUId) {
+                 setAthleteUUId(athleteUUId);
+                 setName(name);
+             }
+             setTeamName(teamName);
+             window.history.replaceState({}, "", url);
+ */
         }
         let pgt = type == 'person' ? 'player' : 'team';
         if (!bot) {
@@ -596,16 +598,20 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
             );
         }
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
     }, [league, team, type, params]);
     const onPromptNav = useCallback(async (name: string, athleteUUId: string, team: string, teamName: string, url: string) => {
+        setLoading(true);
         if (!mini) {
             console.log("onPromptNav", { name, athleteUUId, team, teamName, url });
-            setTeamid(team);
-            if (athleteUUId) {
-                setAthleteUUId(athleteUUId);
-                setName(name);
-            }
-            setTeamName(teamName);
+            //  setTeamid(team);
+            /* if (athleteUUId) {
+             setAthleteUUId(athleteUUId);
+             setName(name);
+         }*/
+            //  setTeamName(teamName);
             window.history.replaceState({}, "", url);
 
         }
@@ -616,6 +622,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                 `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
             );
         }
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
     }, [league, team, type, params]);
 
 
@@ -838,6 +847,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     console.log("====Mention  localLink   ", localUrl);
     return (
         <>
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
+                </div>
+            )}
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
             {/* {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />} */}
             <MentionWrap ref={mentionRef} onMouseEnter={() => onHover('desktop')}>
@@ -883,7 +897,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     </ErrorBoundary>
                                 ) : (
                                     (timecode && url.includes("youtube")) && img &&
-                                    <div style={{ width: '100%', height: 'auto' }} >Loading video frame...</div>
+                                    <div style={{ width: '100%', height: 'auto' }} >Loading video fram...</div>
                                 )}
                             </div>}
                             {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
