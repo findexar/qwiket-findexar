@@ -24,7 +24,8 @@ import saveSession from '@lib/server-actions/save-session';
 import { actionUserSubscription } from '@lib/server-actions/user-subscription';
 import { FaChartBar as FaChartBarIcon, FaArrowUp as FaArrowUpIcon, FaUserCog as FaUserCogIcon, FaCreditCard as FaCreditCardIcon, FaCode as FaCodeIcon } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
-import Image, { ImageProps } from 'next/image';
+//import Image, { ImageProps } from 'next/image';
+import CustomImage from '@/components/util-components/custom-image';
 import Head from 'next/head';
 import { Anybody } from "next/font/google";
 const FaChartBar = FaChartBarIcon as any;
@@ -419,7 +420,7 @@ const LogoContainer = styled.div`
   }
 `;
 
-const LogoImg = styled.img<{ $scrolled: boolean }>`
+const LogoImg = styled(CustomImage) <{ $scrolled: boolean }>`
   height: auto;
   width: ${props => props.$scrolled ? '32px' : '42px'}; // Half of 64 or 128
   opacity: 0.6;
@@ -585,6 +586,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                   <LogoImg
                     src={mode === 'dark' ? '/q-logo-dark-128.png' : '/q-logo-light-128.png'}
                     alt="Qwiket Logo"
+                    width={128}
+                    height={128}
                     $scrolled={scrollY !== 0}
                   />
                 </Link>

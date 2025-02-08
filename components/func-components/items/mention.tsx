@@ -28,6 +28,7 @@ import { actionAddFavorite, actionRemoveFavorite } from "@lib/server-actions/fav
 import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/lib/keys';
 import Toast from '@/components/func-components/toaster';
 import ErrorBoundary from '@/components/util-components/error-boundary';
+import CustomImage from '@/components/util-components/custom-image';
 declare global {
     interface Window {
         Clerk: any;
@@ -207,7 +208,7 @@ const Topline = styled.div`
     margin-bottom:4px; 
 `;
 
-const Image = styled.img`
+const ImageStyled = styled.img`
     width:100%;
     height: auto;
     object-fit: cover;
@@ -960,7 +961,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <HorizontalContainer>
                             <Link href={url} onClick={() => onClick(url)}>
                                 <ImageWrapper>
-                                    <Image src={meta.image} alt={meta.title} />
+                                    <CustomImage src={meta.image} alt={meta.title} width={meta.image_width} height={meta.image_height} />
                                 </ImageWrapper>
                             </Link>
                             <Body>
@@ -1095,7 +1096,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <HorizontalContainer>
                             <Link href={url} onClick={() => onClick(url)}>
                                 <ImageWrapper>
-                                    <Image src={meta.image} width={100} height={100} alt={meta.title} />
+                                    <CustomImage src={meta.image} width={meta.image_width} height={meta.image_height} alt={meta.title} />
                                 </ImageWrapper>
                             </Link>
                             <Body>

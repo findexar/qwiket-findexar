@@ -11,6 +11,7 @@ import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import MiniMention from '@/components/func-components/items/mini-mention';
 import { useAppContext } from '@/lib/context';
 import { useInView } from 'react-intersection-observer';
+import CustomImage from '@/components/util-components/custom-image';
 declare global {
     interface Window {
         Clerk: any;
@@ -82,6 +83,7 @@ const ImageWrapper = styled.div`
     flex: 1 1 auto;
     max-width: 100%;
     width:100%;
+    margin-bottom: 20px;
 `;
 
 const Topline = styled.div`
@@ -93,7 +95,7 @@ const Topline = styled.div`
     margin-bottom:4px; 
 `;
 
-const Image = styled.img`
+const ImageStyled = styled.img`
     width:100%;
     height: auto;
     object-fit: cover;
@@ -271,7 +273,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot, teamid, name, athleteUUId, m } = useAppContext();
     const isDarkMode = mode === 'dark';
 
-    let { title, url, digest, site_name, image, authors, createdTime, mentions, xid, slug, prompts } = story || {};
+    let { title, url, digest, site_name, image, image_width, image_height, authors, createdTime, mentions, xid, slug, prompts } = story || {};
     url = url || "";
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
@@ -281,7 +283,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
-
+    console.log("==> STORY.TSX", { image, image_width, image_height });
     const prepDigest = useMemo(() => {
         return digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "";
     }, [digest]);
@@ -456,7 +458,15 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
                     <ImageWrapper>
                         <Link href={url} scroll={false} onClick={onStoryClick}>
-                            {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) && <Image src={image} alt={title} />}
+                            {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) &&
+                                <CustomImage
+                                    src={image}
+                                    alt={title}
+                                    width={image_width}
+                                    height={image_height}
+
+                                />
+                            }
                         </Link>
                     </ImageWrapper>
 
@@ -503,7 +513,13 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 <HorizontalContainer>
                     <Link href={url} scroll={false} onClick={onStoryClick}>
                         <ImageWrapper>
-                            <Image src={image} width={100} height={100} alt={title} />
+                            <CustomImage
+                                src={image}
+                                alt={title}
+                                width={image_width}
+                                height={image_height}
+
+                            />
                         </ImageWrapper>
                     </Link>
                     <Body>

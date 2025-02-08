@@ -45,6 +45,10 @@ const nextConfig = {
       middleware: 'clerkMiddleware', // Replace with the actual middleware function if needed
     },
   ],
+  images: {
+    loader: 'custom',
+    path: '',
+  },
 };
 
 export default nextConfig;
