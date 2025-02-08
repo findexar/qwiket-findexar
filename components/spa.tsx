@@ -108,7 +108,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
-  /*DEBIG useEffect(() => {
+  useEffect(() => {
     if (!bot) {
       actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
         .then((r: any) => {
@@ -121,19 +121,19 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
           //console.log("recordEvent", r);
         });
     }
-  }, []);*/
-  /*DEBIG
-    useEffect(() => {
-      document.body.setAttribute("data-theme", localMode);
-      const className = 'dark';
-      const bodyClassList = document.body.classList;
-      if (localMode === 'dark') {
-        bodyClassList.add(className);
-      } else {
-        bodyClassList.remove(className);
-      }
-    }, [localMode]);
-  
+  }, []);
+
+  useEffect(() => {
+    document.body.setAttribute("data-theme", localMode);
+    const className = 'dark';
+    const bodyClassList = document.body.classList;
+    if (localMode === 'dark') {
+      bodyClassList.add(className);
+    } else {
+      bodyClassList.remove(className);
+    }
+  }, [localMode]);
+  /*
     useEffect(() => {
       let params = '';
       let params2 = '';
@@ -148,19 +148,19 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       if (p2.length > 0) {
         params2 = `&${p2.join('&')}`;
       }
-      let tp = tab  ?`&tab=${tab}` : '';
+      let tp = tab  ? `&tab=${tab}` : '';
   
-  let tp2 = tp;
-  if (!params2) tp2 = tp.replace(/&/g, '?');
-  if (!params) tp = tp.replace(/&/g, '?');
-  //console.log("==> view", view);
+      let tp2 = tp;
+      if (!params2) tp2 = tp.replace(/&/g, '?');
+      if (!params) tp = tp.replace(/&/g, '?');
+      //console.log("==> view", view);
   
-  setParams(params);
-  setParams2(params2);
-  setTp(tp);
-  setTp2(tp2);
+      setParams(params);
+      setParams2(params2);
+      setTp(tp);
+      setTp2(tp2);
     }, [fbclid, utm_content, tab, view]);
-  
+  */
   useEffect(() => {
     if (localMode === 'unknown') {
       const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -170,11 +170,10 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       saveSession({ dark: matches ? 1 : 0 });
     }
   }, []);
-    */
+
+  const query = useSearchParams();
+  const pathname = usePathname();
   /*
-    const query = useSearchParams();
-    const pathname = usePathname();
-  
     useEffect(() => {
       const id = query?.get('id') || "";
       const qtab = query?.get('tab') || "";
