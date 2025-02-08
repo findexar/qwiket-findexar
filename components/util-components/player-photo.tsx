@@ -2,8 +2,12 @@ import React from "react";
 import useSWR from 'swr';
 import { styled } from "styled-components";
 import Skeleton from '@/components/util-components/skeleton';
-import { PlayerPhotoKey, getPlayerPhoto } from '@/lib/api';
+//import { PlayerPhotoKey, getPlayerPhoto } from '@/lib/api';
+
+import { PlayerPhotoKey, actionGetPlayerPhoto } from '@/lib/server-actions/meta-link';
+
 import Avatar from '@/components/util-components/avatar';
+import { useAppContext } from "@/lib/context";
 
 const Photo = styled.div`
     height:60px;
@@ -28,15 +32,16 @@ interface Props {
 
 const PlayerPhoto: React.FC<Props> = (props) => {
     const { teamid, name } = props;
-    const photoKey: PlayerPhotoKey = { func: "photo", teamid: teamid || "", name: name || "" };
-    const { data: photo, error, isLoading } = useSWR(photoKey, getPlayerPhoto);
+    const { fallback } = useAppContext();
+    const photoKey: PlayerPhotoKey = { type: "get-player-photo", teamid: teamid || "", name: name || "" };
+    const { data: photo, error, isLoading } = useSWR(photoKey, actionGetPlayerPhoto, { fallback });
 
     /*if (isLoading || !photo) return (
         <Skeleton variant="circular" height="40px" width="40px" />
     )*/
     return (<>
-        {!isLoading && photo && <Photo className="text-xs"><Avatar size="large" alt={name}><img src={photo} alt={name} /></Avatar></Photo>}
-        {!isLoading && photo && <MobilePhoto className="text-xs"><Avatar size="medium" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>}
+         <Photo className="text-xs"><Avatar size="large" alt={name}><img src={photo} alt={name} /></Avatar></Photo>
+        <MobilePhoto className="text-xs"><Avatar size="medium" alt={name}><img src={photo} alt={name} /></Avatar></MobilePhoto>
     </>
     );
 };

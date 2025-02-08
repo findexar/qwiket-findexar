@@ -119,7 +119,7 @@ export const getMetaLink = async ({ func, findexarxid, long = 0 }: MetaLinkKey) 
 
 // SWR get player photo
 export type PlayerPhotoKey = { func: string, name: string, teamid: string };
-export const getPlayerPhoto = async ({ func, name, teamid }: PlayerPhotoKey) => {
+export const getPlayerPhotoOld = async ({ func, name, teamid }: PlayerPhotoKey) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-player-photo?name=${encodeURIComponent(name)}&teamid=${encodeURIComponent(teamid)}`;
     const fetchResponse = await fetch(url);

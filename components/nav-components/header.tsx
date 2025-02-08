@@ -410,20 +410,24 @@ const IconContainer = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ $scrolled: boolean }>`
   display: none; // Hidden by default
   @media screen and (min-width: 1025px) {
+    height: ${props => props.$scrolled ? '32px' : '42px'};
+   width: ${props => props.$scrolled ? '32px' : '42px'}; // Half of 64 or 128
     display: flex; // Show only on desktop
     align-items: center;
     margin-right: 2px;
     margin-left:8px;
+    opacity: 0.6;
+    transition: width 0.2s ease;
   }
 `;
 
 const LogoImg = styled(CustomImage) <{ $scrolled: boolean }>`
-  height: auto;
-  width: ${props => props.$scrolled ? '32px' : '42px'}; // Half of 64 or 128
-  opacity: 0.6;
+ // height: ${props => props.$scrolled ? '32px' : '42px'};
+ // width: ${props => props.$scrolled ? '32px' : '42px'}; // Half of 64 or 128
+ // opacity: 0.6;
   transition: width 0.2s ease;
 `;
 const TeamNameGroup = styled.div<HeaderProps>`
@@ -581,24 +585,16 @@ const HeaderNav: React.FC<Props> = ({ }) => {
         <HeaderTopline>
           <LeftContainer>
             <HeaderLeft>
-              <LogoContainer>
+              <LogoContainer $scrolled={scrollY !== 0}>
                 <Link href={`/${params}`}>
-                  <LogoImg
-                    src={mode === 'dark' ? '/q-logo-dark-128.png' : '/q-logo-light-128.png'}
+                  <img
+                    src='/q-logo-dark-128.png'//src={`/${mode === 'dark' ? 'q-logo-dark-128.png' : 'q-logo-light-128.png'}`}
                     alt="Qwiket Logo"
-                    width={128}
-                    height={128}
-                    $scrolled={scrollY !== 0}
+                    width={42}
+                    height={42}
                   />
                 </Link>
               </LogoContainer>
-              {false && <FLogoMobile>
-                <Link href={`/${params}`}>
-                  <Avatar className="text-white bg-cyan-800">
-                    {process.env.NEXT_PUBLIC_APP_NAME == 'Findexar' ? "Fi" : "Q"}
-                  </Avatar>
-                </Link>
-              </FLogoMobile>}
             </HeaderLeft>
             <ContainerCenter>
               <HeaderCenter>

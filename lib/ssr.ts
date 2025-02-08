@@ -8,7 +8,7 @@ import fetchLeagues from '@lib/server-actions/leagues';
 import fetchSession from '@lib/server-actions/session';
 import fetchSlugStory from '@lib/server-actions/slug-story';
 import fetchMention from '@lib/server-actions/mention';
-import fetchMetaLink from '@lib/server-actions/meta-link';
+import fetchMetaLink, { promiseGetPlayerPhoto } from '@lib/server-actions/meta-link';
 
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
 import fetchPlayerMentions from '@lib/server-actions/player-mentions';
@@ -207,7 +207,10 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         console.log("********** fetchFav", userId, sessionid, league);
         calls.push(await fetchFavorites({ userId, sessionid, league }));
     }
-
+    if (teamid && athleteUUId) {
+        console.log("********** SSR fetchPlayerPhoto", name, teamid);
+        calls.push(await promiseGetPlayerPhoto({ name, teamid }));
+    }
     let articleStructuredData: WithContext<Article> | undefined = undefined;
     //  let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: string } | null = null;
     let relatedContent: RelatedContent | null = null;
