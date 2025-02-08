@@ -536,7 +536,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         return (
             <PromptsContainer>
                 {prompts.map((p: any, index: number) => {
-                    const promptUrl = (type == 'person' ? `/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `${league}/${encodeURIComponent(team)}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
+                    const promptUrl = (type == 'person' ? `/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `/${league}/${encodeURIComponent(team)}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
                     console.log("promptUrl", promptUrl, name, athleteUUId);
                     return (
                         <PromptTag
