@@ -396,7 +396,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
-    const { setFindexarxid, setSlug, fallback, bot, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
+    const { setAthleteUUId, setName, setFindexarxid, setSlug, fallback, bot, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
@@ -544,12 +544,14 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                             $isDarkMode={isDarkMode}
                             style={{ textDecoration: 'none', fontSize: 11 }}
                             scroll={true}
+                            onClick={async () => { await onPromptNav(name, athleteUUId, team, teamName, promptUrl) }}
                         >
                             {p.prompt}
                         </PromptTag>
                     )
-                })}
-            </PromptsContainer>
+                })
+                }
+            </PromptsContainer >
         );
     };
 
@@ -575,7 +577,38 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         }
     }, [date])
 
-    const onMentionNav = useCallback(async (name: string, athleteUUId: string, url: string) => {
+    const onMentionNav = useCallback(async (name: string, athleteUUId: string, team: string, teamName: string, url: string) => {
+        if (!mini) {
+            console.log("onMentionNav", { name, athleteUUId, team, teamName, url });
+            setTeamid(team);
+            if (athleteUUId) {
+                setAthleteUUId(athleteUUId);
+                setName(name);
+            }
+            setTeamName(teamName);
+            window.history.replaceState({}, "", url);
+
+        }
+        let pgt = type == 'person' ? 'player' : 'team';
+        if (!bot) {
+            await actionRecordEvent(
+                'mention-nav',
+                `{"params":"${params}","league":"${league}","team":"${team}","name":"${name}", "athleteUUId":"${athleteUUId}", "pagetype":"${pgt}"}`
+            );
+        }
+    }, [league, team, type, params]);
+    const onPromptNav = useCallback(async (name: string, athleteUUId: string, team: string, teamName: string, url: string) => {
+        if (!mini) {
+            console.log("onPromptNav", { name, athleteUUId, team, teamName, url });
+            setTeamid(team);
+            if (athleteUUId) {
+                setAthleteUUId(athleteUUId);
+                setName(name);
+            }
+            setTeamName(teamName);
+            window.history.replaceState({}, "", url);
+
+        }
         let pgt = type == 'person' ? 'player' : 'team';
         if (!bot) {
             await actionRecordEvent(
@@ -829,7 +862,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                             }} style={{ color: "FFA000" }} />}</Topline>
                     <SummaryWrap>
-                        <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
+                        <Link scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, team, teamName, mini ? bottomLink : localUrl) }}>
                             <ImageTextWrapper>
                                 {showImage && image && <img src={image} alt={name} />}
                                 {summary}
@@ -850,7 +883,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     </ErrorBoundary>
                                 ) : (
                                     (timecode && url.includes("youtube")) && img &&
-                                    <img src={img} alt="Static representation" style={{ width: '100%', height: 'auto' }} />
+                                    <div style={{ width: '100%', height: 'auto' }} >Loading video frame...</div>
                                 )}
                             </div>}
                             {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
@@ -863,7 +896,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     {renderPrompts("desktop")}
                     <br />
                     <hr />
-                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
+                    <Atmention ><Link scroll={linkType == 'final' ? false : true} href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, team, teamName, bottomLink) }}><b className={localTracked ? "bg-teal-50 dark:bg-teal-950 " : ""}>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} |` : ""} {league} </Link>
 
                         {type == "person" && <div>
                             <div className="mt-2"
@@ -978,7 +1011,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </Topline>
 
                         <SummaryWrap>
-                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, mini ? bottomLink : localUrl) }}>
+                            <Link prefetch={false} scroll={linkType == 'final' ? false : true} href={mini ? bottomLink : localUrl} onClick={async () => { await onMentionNav(name, athleteUUId, team, teamName, mini ? bottomLink : localUrl) }}>
                                 <ImageTextWrapper>
                                     {showImage && image && <img src={image} alt={name} />}
                                     {summary}
@@ -1006,7 +1039,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         </div>)}
 
                         <hr />
-                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
+                        <Atmention ><Link href={bottomLink} onClick={async () => { await onMentionNav(name, athleteUUId, team, teamName, bottomLink) }}><div className="text-sm "><b>{(type == "person") && '@'}{name}</b> | {type == "person" ? `${teamName} ` : ""} </div></Link>
                             {type == "person" && <div>
                                 <div className="mt-2"
                                     onClick={async () => await iconClick()} aria-label="Add player to fantasy team">
