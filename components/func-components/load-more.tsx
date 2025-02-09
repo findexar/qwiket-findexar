@@ -17,7 +17,7 @@ const LoadMore: React.FC<Props> = ({ isLoadingMore, isReachingEnd, setSize, size
     const [visible, setVisible] = useState(false);
     const ref = useRef<HTMLDivElement | null>(null);
     const entry = useIntersectionObserver(ref, {
-        rootMargin: '50px',
+        rootMargin: '500px',
         threshold: 0
     });
     const isVisible = !!entry?.isIntersecting;
