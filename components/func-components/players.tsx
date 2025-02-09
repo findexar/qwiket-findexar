@@ -176,7 +176,7 @@ const Players: React.FC<Props> = () => {
         setTeamLogo('');
         setView("mentions");
         setTab("");
-        name = name.replace(/\./g, '');
+        //name = name.replace(/\./g, '');
         console.log("onPlayerNav", name)
         const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
         //  console.log("replaceState", url)
@@ -190,7 +190,7 @@ const Players: React.FC<Props> = () => {
     }
 
     const PlayersNav = players && players?.map((p: { name: string, athleteUUId: string, findex: string, mentions: string, tracked: boolean }, i: number) => {
-        let name = p.name.replace(/\./g, '!');
+        let name = p.name//.replace(/\./g, '');
         // console.log("PlayersNav", p, name)
         // console.log("athleteUUId", athleteUUId)
         // console.log("Name=", name)
