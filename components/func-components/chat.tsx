@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { unstable_serialize } from 'swr'
 import { useAppContext } from '@lib/context';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Chat, Message, UserDocument } from "@lib/types/chat";
+import { Chat, Message, UserDocument, RelatedContent } from "@lib/types/chat";
 import { actionFeedback, actionChat, actionChatName, actionCreateChat, actionChatInit, actionFlipCreatorMode, actionLoadLatestChat } from "@lib/server-actions/chat";
 import ReactMarkdown from 'react-markdown';
 import { FaPaperPlane as FaPaperPlaneIcon, FaChevronDown as FaChevronDownIcon, FaChevronUp as FaChevronUpIcon, FaCopy as FaCopyIcon, FaCheck as FaCheckIcon, FaInfoCircle as FaInfoCircleIcon, FaPaperclip as FaPaperclipIcon, FaRedo as FaRedoIcon } from 'react-icons/fa';
@@ -23,6 +23,7 @@ import { actionRecordEvent, actionRecordEvent as recordEvent } from "@lib/server
 import { MarkdownComponents } from '@components/shared/markdown-components';
 import { ChatMessage } from "@/lib/types/chat";  // Make sure this import exists
 import Toast from './toaster'; // Import your Toast component
+import { actionPromptChatResponse } from "@lib/server-actions/chat";
 
 const FaPaperPlane: any = FaPaperPlaneIcon as any;
 const FaChevronDown: any = FaChevronDownIcon as any;
@@ -88,7 +89,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    const { relatedContent, fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
+    let { relatedContent, fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -133,7 +134,14 @@ const ChatsComponent: React.FC<Props> = ({
         isLoading: boolean,
         mutate: any
     } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
-
+    const promptChatResponseKey: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
+    const { data: promptResponse, error: promptResponseError, isLoading: isLoadingPromptResponse, mutate: mutatePromptResponse }: {
+        data: any,
+        error: any,
+        isLoading: boolean,
+        mutate: any
+    } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback: localFallback });
+    relatedContent = relatedContent || promptResponse;
     /****************/
 
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
@@ -630,7 +638,7 @@ const ChatsComponent: React.FC<Props> = ({
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-   // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
+    // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
 
     const handleRetry = () => {
         if (textareaRef.current) {
@@ -698,12 +706,42 @@ const ChatsComponent: React.FC<Props> = ({
                         console.log("recordEvent", r);
                     })
             }, 2000);
-
-            //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
-
         }
     };
+    /*
+    *
+     prompt: string,
+    response: string,
+    slug: string,
+    image: string,
+    image_width: number,
+    image_height: number,
+    publishedTime: string,
+    title: string,
+    digest: string
+    */
     let lastMessage = drawMessages[drawMessages.length - 1];
+    let relatedUrl = relatedContent ? `${league}${teamid ? `/${teamid}` : ''}${player ? `/${encodeURIComponent(player)}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}?story=${encodeURIComponent(relatedContent.slug)}` : '';
+    const renderedRelatedContent = relatedContent && (
+        <div className="flex justify-center">
+            <div className="related-content flex flex-col mt-4 p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800 w-full sm:w-1 md:w-1 lg:w-1/2 xl:w-1/2">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Related Content:</h2>
+                <Link href={`/${relatedUrl}`} className="w-full">
+                    <img src={relatedContent.image} width={relatedContent.image_width} height={relatedContent.image_height} alt={relatedContent.title} className="w-full h-auto rounded-md mb-2" />
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">{relatedContent.title}</h3>
+                </Link>
+                <div
+                    className="text-gray-600 dark:text-gray-400"
+                    dangerouslySetInnerHTML={{
+                        __html: relatedContent.digest.replace(/<p>/g, '<p class="mt-4">').substring(0, 160) + '...'
+                    }}
+                />
+                <Link href={`/${relatedUrl}`} className="text-blue-500 hover:underline mt-2">
+                    Read more
+                </Link>
+            </div>
+        </div>
+    )
     return (
         <>
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
@@ -1098,11 +1136,14 @@ const ChatsComponent: React.FC<Props> = ({
                                 )}
                             </button>
                         </form>
+                        {renderedRelatedContent}
                     </div>
+
                 </div>
 
                 <div className="flex-shrink-0 fixed bottom-0 w-full max-w-[600px] bg-white dark:bg-black border-gray-200 dark:border-gray-700">
                 </div>
+
             </div >
 
         </>

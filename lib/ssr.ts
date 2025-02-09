@@ -20,7 +20,7 @@ import SPALayout from '@/components/spa';
 import { getAMention } from '@lib/server-actions/mention';
 import fetchData from '@lib/server-actions/fetch-data';
 import type { Metadata, ResolvingMetadata } from 'next'
-import fetchChat, { actionGetPromptPage, promiseGetPromptPage, ssrPromptChatResponse } from "@lib/server-actions/chat";
+import fetchChat, { actionGetPromptPage, promiseGetPromptPage, promisePromptChatResponse, ssrPromptChatResponse } from "@lib/server-actions/chat";
 import fetchUserAccount from "@lib/server-actions/account";
 import { notFound } from 'next/navigation';
 import fetchLeagueMentions from '@lib/server-actions/league-mentions';
@@ -218,11 +218,16 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let jsonld: string[] = [];
     if (promptUUId && tab == 'chat') {
         const response = await ssrPromptChatResponse(promptUUId);
-        relatedContent = response;
-        console.log("==> SSR PROMPT CHAT RESPONSE", response);
-        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime } = response || {};
+        if (response) {
+            relatedContent = response;
+        }
+        // console.log("==> SSR PROMPT CHAT RESPONSE", response);
+        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest } = response || {};
+        calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
+
         // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
         // Update expiryDate to be publishedTime + 1 week
+      //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
         const expiryDate = new Date(publishedTime);
         expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
         articleStructuredData = {

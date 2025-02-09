@@ -73,6 +73,8 @@ export type RelatedContent = {
     image: string,
     image_width: number,
     image_height: number,
-    publishedTime: string
+    publishedTime: string,
+    title: string,
+    digest: string
 }
 export type UserDocuments = UserDocument[];

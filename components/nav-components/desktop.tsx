@@ -239,7 +239,6 @@ const Desktop: React.FC<Props> = () => {
     const tabParam = tab !== 'all' ? params ? `${params}&tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : `?tab=${tab}${rtab ? `&rtab=${rtab}` : ""}` : '';
     //const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${tab}&rtab=${rtab}`;
     const newPath = `/${league}/${teamid}/${pagetype === "player" ? `/${player}/${athleteUUId}` : ""}${tabParam}`;
-    console.log("==> teamPlayerTabPath", { tab, tabParam, newPath });
     return newPath;
   }
   const tabPath = (tab: string) => {

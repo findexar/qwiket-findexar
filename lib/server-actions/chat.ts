@@ -388,10 +388,10 @@ export const promiseUserDocuments = async (key: FetchUserDocumentsKey, userId: s
     let ret = { key: unstable_serialize(key), call: fetchUserDocuments(key, userId, sessionid) };
     return ret;
 }
-export const promptChatResponseAction = async (key: PromptChatResponseKey) => {
+export const actionPromptChatResponse = async (key: PromptChatResponseKey) => {
     'use server';
     if (!key.promptUUId || !key.prompt) {
-        return { promptUUId: key.promptUUId, prompt: key.prompt, response: '' };
+        return { promptUUId: key.promptUUId, prompt: key.prompt, response: null };
     }
     return getPromptChatResponse(key.promptUUId, key.prompt);
 }
