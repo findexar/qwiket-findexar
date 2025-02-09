@@ -227,7 +227,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
         // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
         // Update expiryDate to be publishedTime + 1 week
-      //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
+        //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
         const expiryDate = new Date(publishedTime);
         expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
         articleStructuredData = {
@@ -410,6 +410,7 @@ export async function generateMetadata(
 
         noindex = 0;
         if (athleteUUId) {
+            name = decodeURIComponent(name);
             ogTitle = `${name} - ${teamName} : Qwiket Interactive Sports Knowledge`;
         }
         else {
