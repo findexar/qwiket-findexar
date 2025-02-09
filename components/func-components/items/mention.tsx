@@ -463,6 +463,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [summary, shareUrls]);
 
     const localUrl = useMemo(() => {
+        team = team || "external";
         const prepName = encodeURIComponent(name);
         return uuid ? type == 'person'
             ? `/${league}/${team}/${prepName}/${athleteUUId}?m=${uuid}`
@@ -473,6 +474,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     }, [type, league, team, name, athleteUUId, findexarxid]);
 
     const bottomLink = useMemo(() => {
+        team = team || "external";
         let link = type == 'person'
             ? `/${league}/${team}/${encodeURIComponent(name)}/${athleteUUId}`
             : `/${league}/${team}`;
@@ -525,6 +527,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
     //prepare urls:
     const prepName = encodeURIComponent(name.replace(/\./g, '!'));//name?.replaceAll(' ', '_') || "";
+    team = team || "external";
     let shareUrl = (type == 'person' ? `${process.env.NEXT_PUBLIC_SERVER}/${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=sharelink` : `${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=sharelink`);
 
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
