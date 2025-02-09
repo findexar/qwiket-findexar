@@ -43,7 +43,7 @@ const Teams: React.FC<Props> = () => {
     const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
     // console.log("RENDER teams:", teamid, teamName)
     const onTeamNav = useCallback(async (id: string, name: string, logo: string) => {
-        setPagetype("team");
+        /*setPagetype("team");
         setPlayer("");
         setTeamid(id);
         setTeamName(name);
@@ -53,7 +53,7 @@ const Teams: React.FC<Props> = () => {
         //  const url = `/${league}/${teamid}/${encodeURIComponent(name)}${params}${tp}`;
         const url = `/${league}/${id}${params}${tp}`;
         console.log("replaceState", url)
-        window.history.replaceState({}, "", url);
+        window.history.replaceState({}, "", url); */
 
         if (!bot) {
             await actionRecordEvent(
@@ -62,16 +62,16 @@ const Teams: React.FC<Props> = () => {
             );
         }
     }, []);
-    useEffect(() => {
-        if (teams && teams.length > 0) {
-            teams.find((t: { id: string, name: string }) => {
-                if (t.id == teamid) {
-                    setTeamName(t.name);
-                    return true;
-                }
-            });
-        }
-    }, [teams, teamid]);
+    /* useEffect(() => {
+         if (teams && teams.length > 0) {
+             teams.find((t: { id: string, name: string }) => {
+                 if (t.id == teamid) {
+                     setTeamName(t.name);
+                     return true;
+                 }
+             });
+         }
+     }, [teams, teamid]); */
 
     let TeamsNav = null;
     if (teams && teams.length > 0)
