@@ -12,7 +12,7 @@ import fetchMetaLink, { promiseGetPlayerPhoto } from '@lib/server-actions/meta-l
 
 import fetchLeagueTeams from '@lib/server-actions/league-teams';
 import fetchPlayerMentions from '@lib/server-actions/player-mentions';
-import fetchTeamPlayers from '@lib/server-actions/team-players';
+import fetchTeamPlayers, { actionGetTeamName } from '@lib/server-actions/team-players';
 import fetchStories from '@lib/server-actions/stories';
 import { getASlugStory } from '@lib/server-actions/slug-story';
 import { isbot } from '@/lib/is-bot'
@@ -393,6 +393,28 @@ export async function generateMetadata(
         image_width = 1200;
         image_height = 1200;
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=prompts`;
+        ogImage = "/q-logo-og-1200.png";
+        image_width = 1200;
+        image_height = 1200;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
+    }
+
+    if ((athleteUUId || teamid) && !tab && !view) {
+
+        let teamName = await actionGetTeamName(teamid);
+
+        noindex = 0;
+        if (athleteUUId) {
+            ogTitle = `${name} - ${teamName} : Qwiket Interactive Sports Knowledge`;
+        }
+        else {
+            ogTitle = `${teamName} : Qwiket Interactive Sports Knowledge`;
+        }
+        ogDescription = `For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
+        ogImage = "/q-logo-og-1200.png";
+        image_width = 1200;
+        image_height = 1200;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
     }
     return {
         title: ogTitle,

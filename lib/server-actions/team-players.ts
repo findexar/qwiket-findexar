@@ -1,5 +1,5 @@
 'use server';
-import { TeamPlayersKey } from "@/lib/keys";
+import { TeamPlayersKey, TeamNameKey } from "@/lib/keys";
 import { unstable_serialize } from 'swr'
 
 import { auth } from "@clerk/nextjs/server";
@@ -14,7 +14,6 @@ const fetchTeamPlayers = async (key: TeamPlayersKey, userId: string, sessionid: 
     const { teamid } = key;
     userId = userId || sessionid;
     // const url = `${process.env.NEXT_PUBLIC_SERVER}/api/user/get-team-players?league=${encodeURIComponent(league)}&teamid=${encodeURIComponent(teamid)}`;
-
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-team-roster?api_key=${api_key}&teamid=${teamid}&userid=${userId}`;
     // console.log("fetching team players:", url)
     const fetchResponse = await fetch(url);
@@ -37,3 +36,19 @@ export const actionFetchLeagueTeams = async (key: TeamPlayersKey) => {
 }
 export default promiseFetchLeagueTeams;
 
+export const fetchTeamName = async (key: TeamNameKey, userId: string, sessionid: string) => {
+    const { teamid } = key;
+    userId = userId || sessionid;
+    const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/get-team-name?api_key=${api_key}&teamid=${teamid}&userid=${userId}`;
+    const fetchResponse = await fetch(url);
+    const res = await fetchResponse.json();
+    return res.teamName;
+}
+
+export const actionGetTeamName = async (teamid: string) => {
+    const session = await fetchSession();
+    const { userId } = await auth() || { userId: "" };
+    const sessionid = session.sessionid;
+    const key: TeamNameKey = { type: "team-name", teamid };
+    return fetchTeamName(key, userId || "", sessionid);
+}
