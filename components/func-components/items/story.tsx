@@ -84,6 +84,8 @@ const ImageWrapper = styled.div`
     max-width: 100%;
     width:100%;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
 `;
 
 const Topline = styled.div`
