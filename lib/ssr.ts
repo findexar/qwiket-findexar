@@ -381,7 +381,7 @@ export async function generateMetadata(
         image_height = promptResponse.image_height;
         ogAuthors = 'Qwiket AI';
         ogSiteName = 'Qwiket AI';
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${prompt}&promptUUId=${promptUUId}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${promptResponse.prompt}&promptUUId=${promptUUId}`;
         // Update noindex based on publishedTime being older than 1 week
         const publishedDate = new Date(promptResponse.publishedTime);
         const oneWeekAgo = new Date();
