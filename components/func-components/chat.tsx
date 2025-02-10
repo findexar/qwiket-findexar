@@ -426,7 +426,7 @@ const ChatsComponent: React.FC<Props> = ({
         setIsPromptSelected(false);  // Reset prompt selection on submit
         update(`Loading ...`);
         const insider = currentUserInput.toLowerCase().indexOf("qw:") == 0;
-        const userInputCleaned = currentUserInput.replace(/qw:/i, "");
+        const userInputCleaned = currentUserInput?.replace(/qw:/i, "");
 
         const newMessage: Message = {
             role: 'user',
@@ -733,7 +733,7 @@ const ChatsComponent: React.FC<Props> = ({
                 <div
                     className="text-gray-600 dark:text-gray-400"
                     dangerouslySetInnerHTML={{
-                        __html: relatedContent.digest.replace(/<p>/g, '<p class="mt-4">').substring(0, 160) + '...'
+                        __html: relatedContent?.digest?.replace(/<p>/g, '<p class="mt-4">').substring(0, 160) + '...'
                     }}
                 />
                 <Link href={`/${relatedUrl}`} className="text-blue-500 hover:underline mt-2">
