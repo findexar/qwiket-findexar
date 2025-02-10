@@ -722,7 +722,7 @@ const ChatsComponent: React.FC<Props> = ({
     */
     let lastMessage = drawMessages[drawMessages.length - 1];
     let relatedUrl = relatedContent ? `${league}${teamid ? `/${teamid}` : ''}${player ? `/${encodeURIComponent(player)}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}?story=${encodeURIComponent(relatedContent.slug)}` : '';
-    const renderedRelatedContent = relatedContent && (
+    const renderedRelatedContent = relatedContent && relatedContent.digest && relatedContent.image && (
         <div className="flex justify-center">
             <div className="related-content flex flex-col mt-4 p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800 w-full sm:w-1 md:w-1 lg:w-1/2 xl:w-1/2">
                 <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Related Content:</h2>
