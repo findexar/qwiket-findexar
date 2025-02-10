@@ -405,7 +405,7 @@ export async function generateMetadata(
         // ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
     }
 
-    if ((athleteUUId || teamid) && !tab && !view && !findexarxid && !story) {
+    if ((athleteUUId || teamid) && (!tab || tab == 'podcasts') && !view && !findexarxid && !story) {
 
         let teamName = await actionGetTeamName(teamid);
 
@@ -421,7 +421,7 @@ export async function generateMetadata(
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}${tab ? `?tab=${tab}&utm_content=${encodeURIComponent(tab)}` : ''}`;
     }
     return {
         title: ogTitle,
@@ -441,9 +441,9 @@ export async function generateMetadata(
             siteName: ogSiteName,
         },
         robots: (noindex === 1) ? 'noindex, follow' : 'index, follow',
-        alternates: {
-            canonical: ogUrl,
-        },
+        /* alternates: {
+             canonical: ogUrl,
+         },*/
         icons: {
             icon: [
                 { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
