@@ -342,7 +342,7 @@ export async function generateMetadata(
     // Prepare meta data for amention
     let ogUrl = '';
     if (amention && amentionLeague && amentionTeam && amentionPlayer) {
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/${amentionTeam}/player/${amentionPlayer}?id=${findexarxid}`;
     } else if (amention && amentionLeague && amentionTeam) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${amentionLeague}/team/${amentionTeam}?id=${findexarxid}`;
     } else if (amention && amentionLeague) {
@@ -361,12 +361,12 @@ export async function generateMetadata(
         ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
     }
 
-    let ogDescription = amentionSummary || promptResponse || "Interactive Sports Knowledge for Fantasy Sports Fans";
+    let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
     let ogTitle = ogTarget || `Qwiket AI`;
     if (astory) {
-        ogUrl = story ? `${process.env.NEXT_PUBLIC_SERVER}/?story=${story}` : `${process.env.NEXT_PUBLIC_SERVER}/`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
         ogTitle = astoryTitle;
         ogDescription = astoryDigest.replaceAll('<p>', '').replaceAll('</p>', "\n\n");
         ogImage = astoryImageOgUrl;
@@ -381,6 +381,7 @@ export async function generateMetadata(
         image_height = promptResponse.image_height;
         ogAuthors = 'Qwiket AI';
         ogSiteName = 'Qwiket AI';
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${prompt}&promptUUId=${promptUUId}`;
         // Update noindex based on publishedTime being older than 1 week
         const publishedDate = new Date(promptResponse.publishedTime);
         const oneWeekAgo = new Date();
@@ -397,14 +398,14 @@ export async function generateMetadata(
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=prompts`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=prompts`;
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
+        // ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
     }
 
-    if ((athleteUUId || teamid) && !tab && !view) {
+    if ((athleteUUId || teamid) && !tab && !view && !findexarxid && !story) {
 
         let teamName = await actionGetTeamName(teamid);
 
@@ -420,7 +421,7 @@ export async function generateMetadata(
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}`;
     }
     return {
         title: ogTitle,
