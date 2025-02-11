@@ -9,7 +9,7 @@ import { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] })
 export const metadata: Metadata = {
-  title: "Qwiket AI",
+  title: "Qwiket",
   description: "Elevate your fantasy game with Qwiket AI: Interactive sports knowledge and decision support for Fantasy Sports and Betting Enthusiasts.",
 };
 

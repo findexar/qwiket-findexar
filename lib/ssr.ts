@@ -240,8 +240,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             dateCreated: publishedTime,
             datePublished: publishedTime,
             expires: expiryDate.toISOString(),
-            author: 'Qwiket AI',
-            publisher: 'Qwiket AI',
+            author: 'Qwiket',
+            publisher: 'Qwiket',
             articleBody: responseText,
         }
         jsonld.push(JSON.stringify(articleStructuredData));
@@ -252,22 +252,22 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
             "mainEntity": {
                 "@type": "Question",
-                "name": 'Elevate your fantasy game with Qwiket AI: Interactive Sports Knowledge',
+                "name": 'Elevate your fantasy game with Qwiket: Interactive Sports Knowledge Platform.',
                 "text": `${prompt}`,
                 "answerCount": 1,
                 "dateCreated": publishedTime,
                 "datePublished": publishedTime,
                 "expires": expiryDate.toISOString(),
-                "author": 'Qwiket AI',
-                "publisher": 'Qwiket AI',
+                "author": 'Qwiket',
+                "publisher": 'Qwiket',
                 "acceptedAnswer": {
                     "@type": "Answer",
                     "text": responseText,
                     "dateCreated": publishedTime,
                     "datePublished": publishedTime,
                     "expires": expiryDate.toISOString(),
-                    "author": 'Qwiket AI',
-                    "publisher": 'Qwiket AI',
+                    "author": 'Qwiket',
+                    "publisher": 'Qwiket',
                 }
             }
         }
@@ -364,7 +364,7 @@ export async function generateMetadata(
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
-    let ogTitle = ogTarget || `Qwiket AI`;
+    let ogTitle = ogTarget || `Qwiket`;
     if (astory) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
         ogTitle = astoryTitle;
@@ -379,8 +379,8 @@ export async function generateMetadata(
         ogImage = promptResponse.image;
         image_width = promptResponse.image_width;
         image_height = promptResponse.image_height;
-        ogAuthors = 'Qwiket AI';
-        ogSiteName = 'Qwiket AI';
+        ogAuthors = 'Qwiket';
+        ogSiteName = 'Qwiket';
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${encodeURIComponent(promptResponse.prompt)}&promptUUId=${promptUUId}`;
         // Update noindex based on publishedTime being older than 1 week
         const publishedDate = new Date(promptResponse.publishedTime);
@@ -393,8 +393,8 @@ export async function generateMetadata(
     }
     if (tab == 'prompts') {
         noindex = 0;
-        ogTitle = `Qwiket ${name ? name : ''} AI FAQ`;
-        ogDescription = "Qwiket AI Frequently Asked Questions";
+        ogTitle = `Qwiket ${name ? name : ''} FAQ`;
+        ogDescription = "Qwiket Frequently Asked Questions";
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
@@ -417,7 +417,7 @@ export async function generateMetadata(
         else {
             ogTitle = `${teamName} : Qwiket Interactive Sports Knowledge`;
         }
-        ogDescription = `Elevate your fantasy game with Qwiket AI! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
+        ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;

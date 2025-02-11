@@ -83,7 +83,7 @@ export async function generateMetadata(
 
     let ogDescription = amentionSummary || "Elevate your fantasy game with Qwiket AI: Interactive Sports Knowledge and Reasoning Support for Fantasy Sports and Betting Enthusiasts that cuts time and effort required to make winning decisions.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-    let ogTitle = ogTarget || `Qwiket AI`;
+    let ogTitle = ogTarget || `Qwiket`;
 
     if (astory) {
         ogUrl = league ? `${process.env.NEXT_PUBLIC_SERVER}/${league}?${story ? `story=${story}` : ``}` : `${process.env.NEXT_PUBLIC_SERVER}/?${story ? `story=${story}` : ``}`;
