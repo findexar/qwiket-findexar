@@ -71,7 +71,7 @@ const Welcome: React.FC<Props> = () => {
 
         <p>While tools like ChatGPT are very good at providing access to generic and static knowledge, they are completely inadequate in areas such as sports, where content is added daily and the information is very specific and real-time. That&apos;s where Qwiket AI comes in&mdash;it &quot;reads&quot; hundreds of articles daily, &quot;listens&quot; to dozens of knowledgeable podcasts, and adds the resulting knowledge to its AI model. It also augments it with real-time data feeds&mdash;stats, schedules, rosters, etc. And it provides interactive access to all this knowledge, which would require our users to spend hours and hours daily consuming and processing raw content and still get only a fraction of the value. It also uses its knowledge to structure the access to source content in the most efficient form.</p>
 
-        <p>Take a look and explore Qwiket AI. You can also use its AI Chat to ask questions about Qwiket itself. Let us know if it elevates your fantasy or betting game; after all, this is why we created Qwiket AI.</p>
+        <p>Take a look and explore Qwiket. You can also use its AI Chat to ask questions about Qwiket itself. Let us know if it elevates your fantasy or betting game; after all, this is why we created Qwiket.</p>
 
 
     </WelcomeWrap>
