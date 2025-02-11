@@ -206,13 +206,16 @@ const SuperheadMobile = styled.div`
 `;
 
 const Subhead = styled.div<HeaderProps>`
-  font-size: ${({ $scrolled }) => $scrolled ? 12 : 16}px;
+  font-size: ${({ $scrolled }) => $scrolled ? 12 : 14}px;
   margin-bottom: 8px;
   text-align: left;
   color: var(--subheader-color);
   transition: font-size 0.2s ease;
   @media screen and (max-width: 1024px) {
     display: none;
+  }
+  @media screen and (min-width: 1600px) {
+    font-size: ${({ $scrolled }) => $scrolled ? 12 : 16}px;
   }
 `;
 
@@ -614,7 +617,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                       </TeamNameGroup>
                   }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket : ${league}` : `Qwiket`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0} className="text-xs ">Elevate your fantasy game! Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
+                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Elevate your fantasy game! Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
