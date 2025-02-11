@@ -35,10 +35,10 @@ const Page = styled.div`
   @media screen and (max-width: 1800px) {
     max-width: 1300px;
   }
-  @media screen and (mox-width: 1400px) {
+  @media screen and (max-width: 1400px) {
     max-width: 1200px;
   }
-  @media screen and (mox-width: 1300px) {
+  @media screen and (max-width: 1300px) {
     max-width: 900px;
   }
 `;
@@ -54,7 +54,8 @@ const ContainerWrap = styled.div`
   margin-top: 12px;
   color: var(--text);
   @media screen and (max-width: 1023px) {
-    display: none;
+    //display: none;
+
   }
   @media screen and (min-width: 1600px) {
     font-size: 18px;
