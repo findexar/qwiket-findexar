@@ -134,6 +134,7 @@ const ChatsComponent: React.FC<Props> = ({
         isLoading: boolean,
         mutate: any
     } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
+    let immediateFollowupPrompts = followupPrompts || loadedChat?.chat?.messages[1]?.prompts || [];
     const promptChatResponseKey: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
     const { data: promptResponse, error: promptResponseError, isLoading: isLoadingPromptResponse, mutate: mutatePromptResponse }: {
         data: any,
@@ -197,6 +198,10 @@ const ChatsComponent: React.FC<Props> = ({
                 if (!autoPrompt && loadedChat?.chat?.name == "New Prompt Chat") {
                     setAutoPrompt(true);
                     recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
+                }
+                const followupPrompts = loadedChat?.chat?.messages[1]?.prompts || [];
+                if (followupPrompts && followupPrompts.length > 0) {
+                    setFollowupPrompts(followupPrompts);
                 }
             }
         }
@@ -994,7 +999,7 @@ const ChatsComponent: React.FC<Props> = ({
 
                                         }
                                     }}>
-                                        Expand the answer
+                                        More details...
                                     </button>
                                 </div>}
                                 {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
@@ -1071,11 +1076,11 @@ const ChatsComponent: React.FC<Props> = ({
                     <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                         {updateMessage || "***"}
                     </div>
-                    {chatName !== "New Chat" && followupPrompts.length > 0 && (
+                    {chatName !== "New Chat" && immediateFollowupPrompts.length > 0 && (
                         <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
                             {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
                             <div className="flex flex-wrap gap-2">
-                                {followupPrompts.map((prompt: string | { prompt: string }, index: number) => (
+                                {immediateFollowupPrompts.map((prompt: string | { prompt: string }, index: number) => (
                                     <button
                                         key={index}
                                         onClick={() => handlePromptClick(typeof prompt === 'string' ? prompt : prompt.prompt)}
