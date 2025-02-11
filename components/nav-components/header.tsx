@@ -614,7 +614,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                       </TeamNameGroup>
                   }</Superhead>
                 <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket : ${league}` : `Qwiket`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
-                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0} className="text-xs lg:text-sm">Elevate your fantasy game! Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
+                {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0} className="text-xs ">Elevate your fantasy game! Knowledge, Reasoning and Decision Support for Fantasy Sports and Betting Enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
               {pagetype == "player" && player && <Photo><PlayerPhoto teamid={teamid || ""} name={player || ""} /></Photo>}
