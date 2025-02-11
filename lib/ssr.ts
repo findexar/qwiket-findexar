@@ -252,7 +252,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
             "mainEntity": {
                 "@type": "Question",
-                "name": 'Qwiket AI: Interactive Sports Knowledge',
+                "name": 'Elevate your fantasy game with Qwiket AI: Interactive Sports Knowledge',
                 "text": `${prompt}`,
                 "answerCount": 1,
                 "dateCreated": publishedTime,
@@ -417,7 +417,7 @@ export async function generateMetadata(
         else {
             ogTitle = `${teamName} : Qwiket Interactive Sports Knowledge`;
         }
-        ogDescription = `For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
+        ogDescription = `Elevate your fantasy game with Qwiket AI! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
