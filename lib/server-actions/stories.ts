@@ -28,11 +28,11 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
 
     const res = await fetchResponse.json();
     //console.log("fetchStories fetchResponse", res?.stories?.length);
+    if (page == 0) {
+        console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
 
-    // console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
-
-    // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
-
+        console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
+    }
     return res.stories;
 }
 

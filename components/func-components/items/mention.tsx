@@ -533,7 +533,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const twitterShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=xlink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=xlink`);
     const fbShareUrl = `${process.env.NEXT_PUBLIC_SERVER}/` + (type == 'person' ? `${league}/${encodeURIComponent(team)}/${encodeURIComponent(prepName)}/${athleteUUId}?id=${findexarxid}&utm_content=fblink` : `/${league}/${encodeURIComponent(team)}?id=${findexarxid}&utm_content=fblink`);
 
-    console.log("====Mention    ", mention);
+    //console.log("====Mention    ", mention);
     const renderPrompts = (device: string) => {
         if (!prompts || prompts.length === 0) return null;
         const param = "?tab=chat";
@@ -541,7 +541,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             <PromptsContainer>
                 {prompts.map((p: any, index: number) => {
                     const promptUrl = (type == 'person' ? `/${league}/${encodeURIComponent(team)}/${encodeURIComponent(name)}/${athleteUUId}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}` : `/${league}/${encodeURIComponent(team)}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`);
-                    console.log("promptUrl", promptUrl, name, athleteUUId);
+                    // console.log("promptUrl", promptUrl, name, athleteUUId);
                     return (
                         <PromptTag
                             key={`prompt-${index}`}
@@ -848,7 +848,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         };
     }, []);
     let img = meta?.image || image
-    console.log("====Mention  localLink   ", localUrl);
+    //console.log("====Mention  localLink   ", localUrl);
     return (
         <>
             {loading && (
