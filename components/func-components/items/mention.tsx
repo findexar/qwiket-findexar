@@ -901,7 +901,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                                     </ErrorBoundary>
                                 ) : (
                                     (timecode && url.includes("youtube")) && img &&
-                                    <div style={{ width: '100%', height: 'auto' }} >Loading video fram...</div>
+                                    <div style={{ width: '100%', height: 'auto' }} >Loading video frame...</div>
                                 )}
                             </div>}
                             {isVisible && timecode && url.includes("youtube") && (<div style={{ fontSize: '12px', color: '#ccc', marginTop: '5px', textAlign: 'center', fontStyle: 'italic' }}>
