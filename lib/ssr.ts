@@ -274,7 +274,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 }
             }
         }
-        if (prompt && responseText)
+        if (prompt && responseText && publishedTime)
             jsonld.push(JSON.stringify(qaStructuredData));
     }
     if (tab == 'prompts') {
