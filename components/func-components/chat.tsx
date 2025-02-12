@@ -729,7 +729,7 @@ const ChatsComponent: React.FC<Props> = ({
     let relatedUrl = relatedContent ? `${league}${teamid ? `/${teamid}` : ''}${player ? `/${encodeURIComponent(player)}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}?story=${encodeURIComponent(relatedContent.slug)}` : '';
     const renderedRelatedContent = relatedContent && relatedContent.digest && relatedContent.image && (
         <div className="flex justify-center">
-            <div className="related-content flex flex-col mt-4 p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800 w-full sm:w-1 md:w-1 lg:w-1/2 xl:w-1/2">
+            <div className="related-content flex flex-col mt-6 p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800 w-full sm:w-1 md:w-1 lg:w-1/2 xl:w-1/2">
                 <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Related Content:</h2>
                 <Link href={`/${relatedUrl}`} className="w-full">
                     <img src={relatedContent.image} width={relatedContent.image_width} height={relatedContent.image_height} alt={relatedContent.title} className="w-full h-auto rounded-md mb-2" />
