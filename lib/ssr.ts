@@ -183,7 +183,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }*/
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
         if (!story && !findexarxid) {
-            console.log("**********fetchStories", userId, sessionid, league);
+            // console.log("**********fetchStories", userId, sessionid, league);
             calls.push(await fetchStories({ userId, sessionid, league, teamid, athleteUUId, type: tab == 'podcasts' ? 'v' : '' }));
 
             //calls.push(await fetchStories({ userId, sessionid, league }));
@@ -228,7 +228,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
         // Update expiryDate to be publishedTime + 1 week
         //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
-        const expiryDate = new Date(publishedTime);
+        console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
+        const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
+        console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
         expiryDate.setDate(expiryDate.getDate() + 1); // Add 7 days
         articleStructuredData = {
             '@context': 'https://schema.org',
