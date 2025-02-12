@@ -387,11 +387,11 @@ export async function generateMetadata(
         ogSiteName = 'Qwiket';
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${encodeURIComponent(promptResponse.prompt)}&promptUUId=${promptUUId}`;
         // Update noindex based on publishedTime being older than 1 week
-        const publishedDate = new Date(promptResponse.publishedTime);
+        const publishedDate = promptResponse.publishedTime ? new Date(promptResponse.publishedTime) : new Date();
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 1);
         noindex = 0;
-        if (publishedDate < oneWeekAgo) {
+        if (publishedDate < oneWeekAgo || !promptResponse.publishedTime) {
             noindex = 1;
         }
     }
