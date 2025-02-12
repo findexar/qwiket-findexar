@@ -221,7 +221,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         if (response) {
             relatedContent = response;
         }
-        // console.log("==> SSR PROMPT CHAT RESPONSE", response);
+        console.log("==> SSR PROMPT CHAT RESPONSE", response);
         const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest } = response || {};
         calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
 
@@ -242,9 +242,10 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             expires: expiryDate.toISOString(),
             author: 'Qwiket',
             publisher: 'Qwiket',
-            articleBody: responseText,
+            articleBody: digest,
         }
-        jsonld.push(JSON.stringify(articleStructuredData));
+        if (digest && prompt && responseText)
+            jsonld.push(JSON.stringify(articleStructuredData));
         const qaStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'QAPage',
@@ -271,7 +272,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 }
             }
         }
-        jsonld.push(JSON.stringify(qaStructuredData));
+        if (prompt && responseText)
+            jsonld.push(JSON.stringify(qaStructuredData));
     }
     if (tab == 'prompts') {
         const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId: null, search_key: `${athleteUUId ? athleteUUId : teamid ? teamid : ''}` };
@@ -315,12 +317,12 @@ export async function generateMetadata(
     if (m) {
         astory = await getASlugStory({ type: "ASlugStory", m });
     }
-    let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: Date } | null = null;
+    let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: Date, digest: string } | null = null;
     if (promptUUId && tab == 'chat') {
         const response = await ssrPromptChatResponse(promptUUId);
         console.log("==> SSR PROMPT CHAT RESPONSE", response);
-        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime } = response || {};
-        promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
+        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, digest } = response || {};
+        promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, digest };
     }
 
     const { summary: amentionSummary = "", league: amentionLeague = "", type = "", team: amentionTeam = "", teamName: amentionTeamName = "", name: amentionPlayer = "", image: amentionImage = "", date: amentionDate = "" } = amention || {};
@@ -375,7 +377,7 @@ export async function generateMetadata(
 
     if (promptResponse && promptUUId) {
         ogTitle = ogTitle + ' - ' + promptResponse.prompt;
-        ogDescription = promptResponse.response;
+        ogDescription = promptResponse.response || promptResponse.digest;
         ogImage = promptResponse.image;
         image_width = promptResponse.image_width;
         image_height = promptResponse.image_height;
