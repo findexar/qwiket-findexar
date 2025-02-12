@@ -142,7 +142,7 @@ const ChatsComponent: React.FC<Props> = ({
         isLoading: boolean,
         mutate: any
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback: localFallback });
-    relatedContent = relatedContent || promptResponse;
+    relatedContent = promptResponse;
     /****************/
 
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
