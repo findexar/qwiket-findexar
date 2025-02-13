@@ -183,7 +183,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }*/
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
         if (!story && !findexarxid) {
-            console.log("**********fetchStories", userId, sessionid, league);
+            // console.log("**********fetchStories", userId, sessionid, league);
             calls.push(await fetchStories({ userId, sessionid, league, teamid, athleteUUId, type: tab == 'podcasts' ? 'v' : '' }));
 
             //calls.push(await fetchStories({ userId, sessionid, league }));
@@ -228,7 +228,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
         // Update expiryDate to be publishedTime + 1 week
         //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
-        const expiryDate = new Date(publishedTime);
+        console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
+        const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
+        console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
         expiryDate.setDate(expiryDate.getDate() + 1); // Add 7 days
         articleStructuredData = {
             '@context': 'https://schema.org',
@@ -244,7 +246,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             publisher: 'Qwiket',
             articleBody: digest,
         }
-        if (digest && prompt && responseText)
+        if (digest && prompt && responseText && publishedTime)
             jsonld.push(JSON.stringify(articleStructuredData));
         const qaStructuredData = {
             '@context': 'https://schema.org',
@@ -272,7 +274,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 }
             }
         }
-        if (prompt && responseText)
+        if (prompt && responseText && publishedTime)
             jsonld.push(JSON.stringify(qaStructuredData));
     }
     if (tab == 'prompts') {
@@ -385,11 +387,11 @@ export async function generateMetadata(
         ogSiteName = 'Qwiket';
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=chat&prompt=${encodeURIComponent(promptResponse.prompt)}&promptUUId=${promptUUId}`;
         // Update noindex based on publishedTime being older than 1 week
-        const publishedDate = new Date(promptResponse.publishedTime);
+        const publishedDate = promptResponse.publishedTime ? new Date(promptResponse.publishedTime) : new Date();
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 1);
         noindex = 0;
-        if (publishedDate < oneWeekAgo) {
+        if (publishedDate < oneWeekAgo || !promptResponse.publishedTime) {
             noindex = 1;
         }
     }
