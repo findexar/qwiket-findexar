@@ -10,8 +10,11 @@ import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 interface Props {
     league: string
 }
+
+
+
 const MyFeed: React.FC<Props> = ({ league }) => {
-    let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    let { fallback, teamid } = useAppContext();
     //const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {
         let key: FetchMyFeedKey = { type: "fetch-my-feed", page: pageIndex, league };
@@ -19,7 +22,11 @@ const MyFeed: React.FC<Props> = ({ league }) => {
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
+        fetchMentionsKey,
+        actionMyFeed,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
     //  useEffect(() => {
     //    setMentions(data ? [].concat(...data) : []);
     //}, [data])
@@ -28,7 +35,11 @@ const MyFeed: React.FC<Props> = ({ league }) => {
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
     //console.log("team-mentions teamPlayersKey", teamPlayersKey)
-    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
+    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(
+        teamPlayersKey,
+        actionFetchLeagueTeams,
+        {  fallback }
+    );
 
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined") || false;

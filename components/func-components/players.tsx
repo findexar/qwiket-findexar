@@ -129,12 +129,19 @@ const RightScroll = styled.div<ScrollProps>`
 `;
 interface Props {
 }
+
+
+
 const Players: React.FC<Props> = () => {
 
-    const { fallback, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamNae, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName, setTeamLogo, bot } = useAppContext();
+    const { fallback, isMobile, setLeague, setView, setTab, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, athleteUUId, setAthleteUUId, teamName, setTeamName, setTeamLogo, bot } = useAppContext();
     const teamPlayersKey: TeamPlayersKey = { type: 'team-players', teamid };
     //console.log("players teamPlayersKey", teamPlayersKey)
-    const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams, { fallback });
+    const { data: players, error: playersError, isLoading: playersLoading, mutate: mutatePlayers } = useSWR(
+        teamPlayersKey,
+        actionFetchLeagueTeams,
+        { fallback }
+    );
     const theme = useTheme();
     //this is to be able to mutate team mentions
     const fetchTeamMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
@@ -142,7 +149,11 @@ const Players: React.FC<Props> = () => {
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
-    const { data: mentions, error: mentionsError, mutate: mutateMentions, size: mentionsSize, setSize: setMentionsSize, isValidating: mentionsIsValidating, isLoading: mentionsIsLoading } = useSWRInfinite(fetchTeamMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data: mentions, ...rest } = useSWRInfinite(
+        fetchTeamMentionsKey,
+        actionTeamMentions,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
     //this is to be able to mutate player mentions
     const fetchPlayerMentionsKey = (pageIndex: number, previousPageData: any): PlayerMentionsKey | null => {
         let key: PlayerMentionsKey = { type: "fetch-player-mentions", teamid, page: pageIndex, league, name: player, athleteUUId };
@@ -150,7 +161,11 @@ const Players: React.FC<Props> = () => {
         return key;
     }
     // now swrInfinite code for player mentions:
-    const { data: playerMentionsData, error: playerMentionsError, mutate: mutatePlayerMentions, size: playerMentionsSize, setSize: setPlayerMentionsSize, isValidating: playerMentionsIsValidating, isLoading: playerMentionsIsLoading } = useSWRInfinite(fetchPlayerMentionsKey, actionPlayerMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data: playerMentionsData, ...rest2 } = useSWRInfinite(
+        fetchPlayerMentionsKey,
+        actionPlayerMentions,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
 
     // Function to fetch my feed with pagination:
     const fetchMyFeedKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {
@@ -159,10 +174,18 @@ const Players: React.FC<Props> = () => {
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate: mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data, error, ...rest3 } = useSWRInfinite(
+        fetchMyFeedKey,
+        actionMyFeed,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
 
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, { fallback });
+    const { data: trackerListMembers, ...rest4 } = useSWR(
+        trackerListMembersKey,
+        actionFetchMyTeam,
+        { fallback }
+    );
 
     //@ts-ignore
     //const mode = theme.palette.mode;
@@ -228,10 +251,10 @@ const Players: React.FC<Props> = () => {
                                     `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                                 );
                             }
-                            mutateMentions();
-                            mutateMyFeed();
-                            mutatePlayerMentions();
-                            trackerListMutate();
+                            // mutateMentions();
+                            // mutateMyFeed();
+                            // mutatePlayerMentions();
+                            // trackerListMutate();
                         }
                         else {
 
@@ -253,10 +276,10 @@ const Players: React.FC<Props> = () => {
                                         `{"params":"${params}","team":"${teamid}","player":"${p.name}"}`
                                     );
                                 }
-                                mutateMentions();
-                                mutateMyFeed();
-                                mutatePlayerMentions();
-                                trackerListMutate();
+                                //  mutateMentions();
+                                //  mutateMyFeed();
+                                //  mutatePlayerMentions();
+                                //  trackerListMutate();
                             }
 
                         }

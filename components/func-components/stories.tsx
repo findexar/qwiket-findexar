@@ -73,7 +73,11 @@ const Stories: React.FC<Props> = ({ type }) => {
         return key;
     };
     //console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchStoriesKey, actionStories, { initialSize: 1, revalidateAll: true, parallel: true, fallback, /*revalidateFirstPage: true*/ });
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
+        fetchStoriesKey,
+        actionStories,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
 
     let stories = data ? [].concat(...data) : [];
     //console.log("stories", stories);

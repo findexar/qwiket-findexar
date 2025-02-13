@@ -47,7 +47,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isOpen, onConfirm, onCancel
 };
 
 const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocumentsChange, selectedDocuments }) => {
-    const { fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content } = useAppContext();
+    const { fallback, prompt, promptUUId, mode, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content } = useAppContext();
 
     const [styleDocuments, setStyleDocuments] = useState<UserDocument[]>([]);
     const [dataDocuments, setDataDocuments] = useState<UserDocument[]>([]);
@@ -106,7 +106,11 @@ const CreatorMode: React.FC<CreatorModeProps> = ({ chatUUId, onSelectedDocuments
 
     // Fetch user documents with fallback
     const key: FetchUserDocumentsKey = { type: 'fetch-user-documents', chatUUId: chatUUId || '' };
-    const { data: userDocuments, mutate } = useSWR(key, actionUserDocuments, fallback);
+    const { data: userDocuments, mutate } = useSWR(
+        key,
+        actionUserDocuments,
+        { fallback }
+    );
     console.log(`userDocuments: ${JSON.stringify(userDocuments)}`);
 
     console.log(`selectedDocuments: ${JSON.stringify(selectedDocuments)}`);

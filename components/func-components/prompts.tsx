@@ -32,22 +32,22 @@ type PromptResponse = {
     prev: string | null;
     pageUUId: string;
 }
+
 const PromptsComponent: React.FC<Props> = ({
 
 }) => {
     const { fallback, league, teamid, athleteUUId, page, player } = useAppContext();
     const [localFallback, setLocalFallback] = useState(fallback);
 
-    const [pageUUId, setPageUUId] = useState(page || null);
+    const [pageUUId, setPageUUId] = useState(page || '');
     const search_key = athleteUUId ? athleteUUId : teamid ? teamid : '';
     const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId, search_key };
     // console.log("=====> PROMPT PAGE KEY", { page, pageUUId, promptPageKey });
-    let { data: loadedPage, error: loadedPageError, isLoading: isLoadingPage, mutate: mutateLoadedPage }: {
-        data: PromptPage,
-        error: any,
-        isLoading: boolean,
-        mutate: any
-    } = useSWR(promptPageKey, actionGetPromptPage, { fallback: localFallback });
+    let { data: loadedPage, error: loadedPageError, isLoading: isLoadingPage, mutate: mutateLoadedPage } = useSWR(
+        promptPageKey,
+        actionGetPromptPage,
+        { fallback: localFallback }
+    );
     /* useEffect(() => {
          if (loadedPage && loadedPage.pageUUId != page) {
              const promptPageKey: PromptPageKey = { type: 'prompt-page', search_key, pageUUId };

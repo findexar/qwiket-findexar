@@ -62,7 +62,7 @@ interface Props {
     showImage: boolean;
 }
 const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidating, isEmpty, isReachingEnd, isLoadingMore, mutate, mutatePlayers, showImage }) => {
-    let { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    let { mode, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, player, teamName, setTeamName } = useAppContext();
 
     if (!view)
         view = "mentions";

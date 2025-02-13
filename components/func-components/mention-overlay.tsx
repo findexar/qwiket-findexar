@@ -101,11 +101,15 @@ interface Props {
 
 const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
 
-  let { fallback, tab, view, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamName, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, findexarxid } = useAppContext();
+  let { fallback, params, findexarxid } = useAppContext();
   const [xid, setXid] = React.useState<string>(findexarxid || "");
   const [open, setOpen] = React.useState(findexarxid ? true : false);
   const key: AMentionKey = { type: "AMention", findexarxid: xid };
-  const { data: amention, error, isLoading } = useSWR(key, actionAMention, { fallback })
+  const { data: amention, error, isLoading } = useSWR(
+    key,
+    actionAMention,
+    { fallback }
+  );
   const { date, url, summary, fav, type, league, team, teamName, name } = amention || {};
   //const theme = useTheme();
   //const fullScreen = useMediaQuery(theme.breakpoints.down('md'));

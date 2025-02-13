@@ -6,6 +6,7 @@ import { useAppContext } from '@/lib/context';
 import { LeagueTeamsKey } from '@/lib/keys';
 import { actionFetchLeagueTeams } from '@lib/server-actions/league-teams';
 import { actionRecordEvent } from "@lib/server-actions/event";
+
 const SideLeagueName = styled.div`
     height: 40px;
     width: 200px; 
@@ -37,10 +38,14 @@ const SelectedSideTeam = styled.div`
 interface Props {
 }
 const Teams: React.FC<Props> = () => {
-    const { fallback, bot, mode, userId, isMobile, setLeague, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, setTeamName, setTeamLogo } = useAppContext();
+    const { fallback, bot, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, params, tp, league, teamid, setTeamName, setTeamLogo } = useAppContext();
 
     const leagueTeamsKey: LeagueTeamsKey = { type: "league-teams", league };
-    const { data: teams, error, isLoading } = useSWR(leagueTeamsKey, actionFetchLeagueTeams, { fallback });
+    const { data: teams, error, isLoading } = useSWR(
+        leagueTeamsKey,
+        actionFetchLeagueTeams,
+        { fallback }
+    );
     // console.log("RENDER teams:", teamid, teamName)
     const onTeamNav = useCallback(async (id: string, name: string, logo: string) => {
         setPagetype("team");

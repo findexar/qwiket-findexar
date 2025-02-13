@@ -56,7 +56,11 @@ const Dashboard: React.FC = () => {
             });
     }, []);
     const dailyUsageAccountKey: UserUsageAccountKey = { type: "daily-usage", periods };
-    const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
+    const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(
+        dailyUsageAccountKey,
+        actionUserUsage,
+        { fallback }
+    );
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
     const chartData: ChartData<'bar'> = {
@@ -129,7 +133,11 @@ const Dashboard: React.FC = () => {
     const [copiedUrl, setCopiedUrl] = useState(false);
 
     const cidUsageAccountKey: CidUsageAccountKey = { cid: userAccount?.cid || '', periods };
-    const { data: cidUsageAccount, error: cidError, isLoading: cidIsLoading } = useSWR<CidUsage>(cidUsageAccountKey, actionCidUsage, { fallback });
+    const { data: cidUsageAccount, error: cidError, isLoading: cidIsLoading } = useSWR<CidUsage>(
+        cidUsageAccountKey,
+        actionCidUsage,
+        { fallback }
+    );
 
     // Prepare data for the CID usage chart
     const cidChartData: ChartData<'bar'> = {

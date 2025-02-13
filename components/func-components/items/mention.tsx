@@ -397,7 +397,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
-    const { setAthleteUUId, setName, setFindexarxid, setSlug, fallback, bot, league: ll, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
+    const { setAthleteUUId, setFindexarxid, setSlug, fallback, bot, league: ll, mode, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
@@ -416,7 +416,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const [value, copy] = useCopyToClipboard();
     const theme = useTheme();
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league: ll };
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, fallback);
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: myTeamMutate } = useSWR(
+        trackerListMembersKey,
+        actionFetchMyTeam,
+        { fallback }
+    );
     const [isVisible, setIsVisible] = useState(false);
     const mentionRef = useRef<HTMLDivElement | null>(null);
     const mobileMentionRef = useRef<HTMLDivElement | null>(null);
@@ -567,7 +571,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     const fbLink = `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(fbShareUrl)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`;
     const tgLink = `${process.env.NEXT_PUBLIC_SERVER}` + localUrl;
     const mentionsKey: MetaLinkKey = { func: "meta", findexarxid, long: startExtended ? 1 : 1 };
-    const meta: any = useSWR(mentionsKey, getMetaLink, { fallback }).data;
+    const meta: any = useSWR(
+        mentionsKey,
+        getMetaLink,
+        { fallback }
+    ).data;
     let digest = meta?.digest || "";
     const { isLoaded, isSignedIn, user } = useUser();
     const [openLimitAccountModal, setOpenLimitAccountModal] = useState(false);
@@ -863,7 +871,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
                         {!localFav ? <StarOutlineIcon className="h-4 w-4"
                             onClick={async () => {
-                                if (noUser) return;
+                                //if (noUser) return;
                                 setLocalFav(1);
                                 await actionAddFavorite({ findexarxid });
                                 if (mutate) mutate();
@@ -872,7 +880,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                             }} style={{ color: "#888" }} /> :
                             <StarIcon className="h-4 w-4" onClick={async () => {
-                                if (noUser) return;
+                                // if (noUser) return;
                                 setLocalFav(0);
                                 await actionRemoveFavorite({ findexarxid }); mutate();
                                 setToastMessage("Removed from Favorites.");
@@ -1008,7 +1016,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>
                             {!localFav ? <StarOutlineIcon className="h-4 w-4"
                                 onClick={async () => {
-                                    if (noUser) return;
+                                    //if (noUser) return;
                                     setLocalFav(1);
                                     await actionAddFavorite({ findexarxid });
                                     if (mutate) mutate();
@@ -1019,7 +1027,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
 
                                 }} style={{ color: "#888" }} /> :
                                 <StarIcon className="h-4 w-4" onClick={async () => {
-                                    if (noUser) return;
+                                    // if (noUser) return;
                                     setLocalFav(0);
                                     await actionRemoveFavorite({ findexarxid }); mutate();
                                     setToastMessage("Removed from Favorites.");

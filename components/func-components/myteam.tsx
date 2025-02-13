@@ -152,13 +152,19 @@ const RightScroll = styled.div`
 `;
 interface Props {
 }
+
+
 const MyTeam: React.FC<Props> = () => {
-    const { fallback, bot, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    const { fallback, bot, isMobile, setLeague, setView, setPlayer, params, league, setTeamid } = useAppContext();
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
     const trackerListMembersKey: MyTeamRosterKey = { type: "my-team-roster", league };
     // console.log("MyTeam:trackerListMemebrsKey", trackerListMembersKey)
-    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(trackerListMembersKey, actionFetchMyTeam, { fallback });
+    const { data: trackerListMembers, error: trackerListError, isLoading: trackerListLoading, mutate: trackerListMutate } = useSWR(
+        trackerListMembersKey,
+        actionFetchMyTeam,
+        { fallback }
+    );
     //to get mutateMyFeed
     // Function to fetch my feed with pagination:
     const fetchMyFeedKey = (pageIndex: number, previousPageData: any): FetchMyFeedKey | null => {
@@ -167,9 +173,11 @@ const MyTeam: React.FC<Props> = () => {
         return key;
     }
     // now swrInfinite code, only for mutateMyFeed:
-    const { data, error, mutate: mutateMyFeed, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMyFeedKey, actionMyFeed, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
-
-
+    const { mutate: mutateMyFeed, setSize, isValidating, isLoading } = useSWRInfinite(
+        fetchMyFeedKey,
+        actionMyFeed,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
     // const theme = useTheme();
     //@ts-ignore
     //const mode = theme.palette.mode;
@@ -188,7 +196,7 @@ const MyTeam: React.FC<Props> = () => {
                 {trackerListMembers && trackerListMembers.map(({ member, athleteUUId, teamid, league }: { member: string, athleteUUId: string, teamid: string, league: string }, i: number) => {
                     return <SideGroup key={`3fdsdvb-${member}`}>
                         <SidePlayer>
-                            <Link onClick={() => { setLeague(league); setTeam(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}/${athleteUUId}}${params}`}>
+                            <Link onClick={() => { setLeague(league); setTeamid(teamid); setPlayer(member); setView("mentions"); }} href={`/${league}/${teamid}/${encodeURIComponent(member)}/${athleteUUId}}${params}`}>
                                 {member}
                             </Link>
                         </SidePlayer>

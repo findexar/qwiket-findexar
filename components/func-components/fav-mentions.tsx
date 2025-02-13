@@ -9,17 +9,27 @@ import Mentions from '@/components/func-components/mentions';
 import { FavoritesKey } from '@/lib/keys';
 import { actionFavorites } from '@lib/server-actions/favorites';
 import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
+
 interface Props {
 }
 const Fav: React.FC<Props> = () => {
-    let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    let { fallback, league, teamid, } = useAppContext();
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): FavoritesKey | null => {
         let key: FavoritesKey = { type: "favorites", page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionFavorites, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
+        fetchMentionsKey,
+        actionFavorites,
+        {
+            initialSize: 1,
+            revalidateAll: true,
+            parallel: true,
+            fallback
+        }
+    );
     let mentions = data ? [].concat(...data) : [];
     console.log("mentions", mentions)
     // console.log("client side data",{data})
@@ -28,7 +38,11 @@ const Fav: React.FC<Props> = () => {
     //for mutate function
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
     // console.log("team-mentions teamPlayersKey",teamPlayersKey)
-    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
+    const { mutate: mutatePlayers } = useSWR(
+        teamPlayersKey,
+        actionFetchLeagueTeams,
+        { fallback }
+    );
 
 
     const isLoadingMore =

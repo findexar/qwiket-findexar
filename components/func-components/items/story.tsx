@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef, useMemo } from "react";
 import Link from 'next/link';
 import { styled, useTheme } from "styled-components";
 import XIcon from '@/components/icons/twitter';
-import FacebookIcon from '@/components/icons/facebook';
+//import FacebookIcon from '@/components/icons/facebook';
 import IosShareIcon from '@/components/icons/share';
 import ContentCopyIcon from '@/components/icons/content-copy';
 import { actionRecordEvent } from "@lib/server-actions/event";
@@ -11,6 +11,10 @@ import useCopyToClipboard from '@/lib/copy-to-clipboard';
 import MiniMention from '@/components/func-components/items/mini-mention';
 import { useAppContext } from '@/lib/context';
 import { useInView } from 'react-intersection-observer';
+import { FaFacebook as FacebookIcon, FaComments as CommentsIcon } from 'react-icons/fa';
+import { LiaCommentDots } from "react-icons/lia";
+import { BiCommentDots } from "react-icons/bi";
+import { BiCommentAdd } from "react-icons/bi";
 import CustomImage from '@/components/util-components/custom-image';
 declare global {
     interface Window {
@@ -192,7 +196,8 @@ const LocalDate = styled.div`
 
 const ShareIcon = styled.div`
     margin-top:-1px;
-    padding-bottom:4px;
+    padding-bottom:1px;
+    font-size:16px;
 `;
 
 const DesktopWrap = styled.div`
@@ -272,7 +277,7 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName, userAccount, bot, teamid, name, athleteUUId, m } = useAppContext();
+    const { mode, fbclid, utm_content, params, tp, league, player, userAccount, bot, teamid, athleteUUId, m } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, image_width, image_height, authors, createdTime, mentions, xid, slug, prompts } = story || {};
@@ -442,7 +447,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
     // if (image && image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0)
     //    return null;
-    console.log("==> STORY.TSX RENDER", { title });
+    // console.log("==> STORY.TSX RENDER", { title });
     return (
         <div ref={ref}>
             <DesktopWrap>
@@ -480,8 +485,14 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                             <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
                                 <div dangerouslySetInnerHTML={{ __html: digest }} />
                             </Link>
-                            <ContentCopyIcon style={{ cursor: 'pointer', color: digestCopied ? 'green' : '' }} fontSize="medium" onClick={() => onDigestCopyClick()} />
+                            <div className="flex flex-row justify-center mt-2 mb-2">
+                                <ContentCopyIcon className={digestCopied ? "cursor-pointer text-green-500 w-10" : "cursor-pointer w-10"} fontSize="medium" onClick={() => onDigestCopyClick()} />
 
+                                <BiCommentDots className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
+                                <BiCommentAdd className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
+
+
+                            </div>
                         </Digest>
                     </Body>
                 </HorizontalContainer>
@@ -495,8 +506,11 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 <BottomLine>
                     <ShareGroup>
                         <ShareContainer onClick={async () => onShare(shareUrls.share)}>
-                            <ShareIcon><IosShareIcon /></ShareIcon>
+                            <ShareIcon><IosShareIcon style={{ fontSize: 17 }} /></ShareIcon>
                         </ShareContainer>
+                        <Link href={socialLinks.facebook} target="_blank">
+                            <ShareContainer><FacebookIcon /></ShareContainer>
+                        </Link>
                         <Link href={socialLinks.twitter} target="_blank">
                             <ShareContainer><XIcon /></ShareContainer>
                         </Link>
@@ -545,6 +559,9 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         <ShareContainer onClick={async () => await onShare(shareUrls.share)}>
                             <ShareIcon><IosShareIcon /></ShareIcon>
                         </ShareContainer>
+                        <Link href={socialLinks.facebook} target="_blank">
+                            <ShareContainer><FacebookIcon /></ShareContainer>
+                        </Link>
                         <Link href={socialLinks.twitter} target="_blank">
                             <ShareContainer><XIcon /></ShareContainer>
                         </Link>

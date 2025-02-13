@@ -89,7 +89,7 @@ const ChatsComponent: React.FC<Props> = ({
     isFantasyTeam,
     source
 }) => {
-    let { relatedContent, fallback, prompt, promptUUId, mode, isMobile, noUser, setLeague, setView, setPagetype, setTeam, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, name, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback } = useAppContext();
+    let { relatedContent, fallback, prompt, promptUUId, mode, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback, setCstory, setCm } = useAppContext();
     const [response, setResponse] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -123,7 +123,10 @@ const ChatsComponent: React.FC<Props> = ({
     const [toastIcon, setToastIcon] = useState(<></>);
     const [status, setStatus] = useState<string>('white');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const [localFallback, setLocalFallback] = useState<any>(fallback);
+    // Update where fallback is used
+    const [localFallback, setLocalFallback] = useState<{ [key: string]: any }>(
+        typeof fallback === 'object' ? fallback : {}
+    );
     const [autoPrompt, setAutoPrompt] = useState<boolean>(false);
 
     /* DATA FETCHING */
@@ -215,7 +218,11 @@ const ChatsComponent: React.FC<Props> = ({
     useEffect(() => {
         if (chatUUId == '' && loadedChat && loadedChat.chat && loadedChat.chat.chatUUId != '') {
             const createChatKey2: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: loadedChat.chat.chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
-            const updatedFallback = { ...fallback, [unstable_serialize(createChatKey2)]: loadedChat };
+            // Update where fallback is spread
+            const updatedFallback = {
+                ...fallback,
+                [unstable_serialize(createChatKey2)]: loadedChat
+            };
             setLocalFallback(updatedFallback);
         }
         if (status == 'red') {

@@ -7,12 +7,13 @@ import Mentions from '@/components/func-components/mentions';
 import { LeagueMentionsKey } from '@/lib/keys';
 import { actionLeagueMentions } from '@lib/server-actions/league-mentions';
 import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
+
 interface Props {
 }
 let lastMutate = 0;
 let scrollY = 0;
 const Stories: React.FC<Props> = () => {
-    let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    let { fallback, league, teamid, } = useAppContext();
     // const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): LeagueMentionsKey | null => {
         let key: LeagueMentionsKey = { type: "fetch-league-mentions", league: league?.toUpperCase() || '', page: pageIndex };
@@ -21,7 +22,11 @@ const Stories: React.FC<Props> = () => {
     }
     // console.log("CLIENT====> fetchMentionsKey", fetchMentionsKey(0, null));
     // now swrInfinite code:
-    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionLeagueMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
+        fetchMentionsKey,
+        actionLeagueMentions,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    )
     /* useEffect(()=>{
          setMentions(data ? [].concat(...data) : []);
      },[data])*/
@@ -67,7 +72,11 @@ const Stories: React.FC<Props> = () => {
 
     const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
     //console.log("team-mentions teamPlayersKey",teamPlayersKey)
-    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
+    const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(
+        teamPlayersKey,
+        actionFetchLeagueTeams,
+        { fallback }
+    );
 
     if (playersError) {
         console.log("playersError", playersError)
@@ -77,20 +86,7 @@ const Stories: React.FC<Props> = () => {
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
         isEmpty || (data && data[data.length - 1]?.length < 5) || false;
-    //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
-    //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
 
-    /* if (tab == "fav") {
-         mentions = favoritesMentions;
-         if (!favoritesMentions || favoritesMentions.length == 0) {
-             isReachingEnd = true;
-             isEmpty = true;
-         }
-     }
-     if (!view)
-         view = "mentions";
- 
-    */
     return <>
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} showImage={true} />
     </>

@@ -46,8 +46,10 @@ export type SSRSearchParams = {
     id?: string;
     story?: string;
     m?: string;
-    cid?: string;
-    aid?: string;
+    cstory?: string;    //comments story
+    cm?: string;        //comments mention
+    cid?: string;       //creator id
+    aid?: string;       //invited author id
     prompt?: string;
     promptUUId?: string;
     page?: string;
@@ -66,6 +68,8 @@ export type ssrResult = {
     story: string;
     findexarxid: string;
     m: string;
+    cstory: string;
+    cm: string;
     league: string;
     pagetype: string;
     teamid: string;
@@ -81,7 +85,7 @@ export type ssrResult = {
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
-    let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cid = "", aid = "" }:
+    let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cstory = "", cm = "", cid = "", aid = "" }:
         SSRSearchParams = searchParams as any;
     console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
@@ -156,33 +160,23 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         calls.push(await fetchMention({ type: "AMention", findexarxid }));
         calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
     }
-    if (story) { // if a digest story is opened
-        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story }));
+    if (story || cstory) { // if a digest story is opened
+        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story || cstory }));
     }
-    if (m) {
-        calls.push(await fetchSlugStory({ type: "ASlugStory", m }));
+    if (m || cm) {
+        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: m || cm }));
     }
     //  if (!story && !findexarxid && !m)
     if (teamid)
         calls.push(await fetchTeamPlayers({ userId, sessionid, teamid }));
 
-    //if (!story && !findexarxid && !m)
-    //   calls.push(await fetchPlayerMentions({ userId, sessionid, league, teamid, name, athleteUUId }));
-
-    /*if (tab == 'chat') {
-        calls.push(await fetchChat({ type: "create-chat", league, teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
-    }*/
-    // console.log("tab,view", tab, view);
     if (tab == 'chat') {
         calls.push(await fetchChat({ promptUUId, email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
     console.log("==> testing SSR PROMPT CHAT ADD fetch", tab, promptUUId, prompt);
-    /* if (tab == 'chat' && promptUUId && prompt) {
-        console.log("==> SSR PROMPT CHAT ADD fetch", promptUUId, prompt);
-        calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
-    }*/
+
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
-        if (!story && !findexarxid) {
+        if (!story && !findexarxid && !cstory) {
             // console.log("**********fetchStories", userId, sessionid, league);
             calls.push(await fetchStories({ userId, sessionid, league, teamid, athleteUUId, type: tab == 'podcasts' ? 'v' : '' }));
 
@@ -295,7 +289,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld }));
-    return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(
@@ -303,7 +297,7 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     // Read route params
-    const { id, story, tab, view, m, promptUUId } = searchParams as any;
+    const { id, story, tab, view, m, cstory, cm, promptUUId } = searchParams as any;
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
     //console.log("META searchParams", { id, story, tab, view, m, s });
 
@@ -313,11 +307,11 @@ export async function generateMetadata(
     if (findexarxid) {
         amention = await getAMention({ type: "AMention", findexarxid });
     }
-    if (story) {
-        astory = await getASlugStory({ type: "ASlugStory", slug: story });
+    if (story || cstory) {
+        astory = await getASlugStory({ type: "ASlugStory", slug: story || cstory });
     }
-    if (m) {
-        astory = await getASlugStory({ type: "ASlugStory", m });
+    if (m || cm) {
+        astory = await getASlugStory({ type: "ASlugStory", slug: m || cm });
     }
     let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: Date, digest: string } | null = null;
     if (promptUUId && tab == 'chat') {

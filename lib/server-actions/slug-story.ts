@@ -6,10 +6,10 @@ export const getASlugStory = async ({ slug, m }: ASlugStoryKey) => {
   try {
     let url = '';
     url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/get-slug-story?${slug ? `slug=${slug}` : `m=${m}`}&api_key=${api_key}`;
-    console.log("getASlugStory", url)
+    // console.log("getASlugStory", url)
     const fetchResponse = await fetch(url);
     const data = await fetchResponse.json();
-    console.log("==> getASlugStory", JSON.stringify(data))
+    // console.log("==> getASlugStory", JSON.stringify(data))
     return data.story;
   }
   catch (e) {

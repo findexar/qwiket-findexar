@@ -254,7 +254,7 @@ const chatInit = async (props: ChatInitProps, userId: string, sessionid: string)
     });
 
     if (!res.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok ${res.statusText}: ${url}`);
     }
     const data = await res.json();
     //console.log("RET create chat:", JSON.stringify({ success: data.success, chatUUId: data.chatUUId, error: data.error }, null, 2))
@@ -281,7 +281,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     //console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
-
+    console.log("====================> loadLatestChat", url)
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -297,7 +297,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     });
 
     if (!res.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok ${res.statusText}: ${url}`);
     }
     const data = await res.json();
     if (!data.success) {
@@ -366,7 +366,7 @@ export const actionFeedback = async (props: FeedbackProps) => {
 }
 const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: string) => {
     'use server';
-    //  console.log("promiseCreateChat", key, userId, sessionid)
+    console.log("SSR promiseCreateChat", key, userId, sessionid)
     let ret = { key: unstable_serialize(key), call: loadLatestChat(key, userId, sessionid) };
     // console.log("AFTER promiseCreateChat", key, userId, sessionid)
     return ret;

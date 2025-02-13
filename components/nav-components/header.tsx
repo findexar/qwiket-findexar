@@ -307,7 +307,7 @@ const FLogo = styled.div`
 const FLogoMobile = styled.div`
   margin-left: 10px;
   margin-right: 20px;
-  @media screen and (min-width: 1025px) {
+  @media screen and (min-width: 1025px) { 
     display: none;
   }
 `;
@@ -452,10 +452,15 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
+  const { fallback, mode, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
-  const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
+  const { data: leagues = [], error } = useSWR(
+    key,
+    fetchLeagues,
+    { fallback }
+  );
+  console.log("==============> leagues", leagues);
   const { getToken } = useAuth();
   // console.log("===>teamLogo", teamLogo);
   useEffect(() => {

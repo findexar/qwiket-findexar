@@ -7,10 +7,11 @@ import Mentions from '@/components/func-components/mentions';
 import { TeamMentionsKey } from '@/lib/keys';
 import { actionTeamMentions } from '@lib/server-actions/team-mentions';
 import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
+
 interface Props {
 }
 const Stories: React.FC<Props> = () => {
-    let { fallback, mode, userId, noUser, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
+    let { fallback, mode, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
     // const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
         let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid, page: pageIndex, league };
@@ -18,7 +19,11 @@ const Stories: React.FC<Props> = () => {
         return key;
     }
     // now swrInfinite code:
-    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(fetchMentionsKey, actionTeamMentions, { initialSize: 1, revalidateAll: true, parallel: true, fallback })
+    const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
+        fetchMentionsKey,
+        actionTeamMentions,
+        { initialSize: 1, revalidateAll: true, parallel: true, fallback }
+    );
     /* useEffect(()=>{
          setMentions(data ? [].concat(...data) : []);
      },[data])*/
@@ -36,20 +41,7 @@ const Stories: React.FC<Props> = () => {
     let isEmpty = data?.[0]?.length === 0;
     let isReachingEnd =
         isEmpty || (data && data[data.length - 1]?.length < 5) || false;
-    //const favoritesKey: FavoritesKey = { type: "Favorites", noUser, noLoad: tab != "fav" };
-    //const { data: favoritesMentions, mutate: mutateFavorites } = useSWR(favoritesKey, getFavorites);
 
-    /* if (tab == "fav") {
-         mentions = favoritesMentions;
-         if (!favoritesMentions || favoritesMentions.length == 0) {
-             isReachingEnd = true;
-             isEmpty = true;
-         }
-     }
-     if (!view)
-         view = "mentions";
- 
-    */
     return <>
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} showImage={true} />
     </>

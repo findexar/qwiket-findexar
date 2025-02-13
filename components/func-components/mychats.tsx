@@ -34,7 +34,11 @@ const ChatsComponent: React.FC<Props> = ({
         return { type: "fetch-mychats", page: pageIndex, league, teamid, athleteUUId };
     };
 
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchMyChatsKey, actionMyChats, { fallback });
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
+        fetchMyChatsKey,
+        actionMyChats,
+        { fallback }
+    );
     //console.log(`==> raw data`, { data, size, isLoading });
     let chats: ChatItem[] = data ? ([] as ChatItem[]).concat(...(data as ChatItem[][])) : [];
     //console.log(`==> chats`, chats);

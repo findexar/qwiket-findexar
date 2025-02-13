@@ -32,6 +32,8 @@ interface LeagueLayoutProps {
   story: string,
   findexarxid: string,
   m?: string,
+  cstory?: string,
+  cm?: string,
   league?: string,
   teamid?: string,
   name?: string,
@@ -67,6 +69,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   story,
   findexarxid: startFindexarxid,
   m: startM,
+  cstory: startCstory,
+  cm: startCm,
   league: startLeague,
   teamid: startTeamid = "",
   name: startName = "",
@@ -96,14 +100,16 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [teamLogo, setTeamLogo] = useState(startTeamLogo);
   const [findexarxid, setFindexarxid] = useState(startFindexarxid);
   const [m, setM] = useState(startM || "");
-  const [slug, setSlug] = useState(story);
+  const [cstory, setCstory] = useState(startCstory || "");
+  const [cm, setCm] = useState(startCm || "");
+  const [slug, setSlug] = useState(story || cstory);
   const [localMode, setLocalMode] = useState(dark === -1 ? 'unknown' : dark === 1 ? 'dark' : 'light');
   const [params, setParams] = useState("");
   const [params2, setParams2] = useState("");
   const [tp, setTp] = useState("");
   const [tp2, setTp2] = useState("");
   const [feedback, setFeedback] = useState({ messageUUId: "", feedback: "", stars: 0, open: false });
-  const [page, setPage] = useState(startPage);
+  const [page, setPage] = useState(startPage || '');
   const [relatedContent, setRelatedContent] = useState(startRelatedContent);
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
@@ -198,15 +204,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         }, 0);
       }
       if (qtab !== tab) {
-        // console.log("==> setTab", qtab);
         setTab(qtab);
       }
       if (qrtab !== rtab) {
-        // console.log("==> setRtab", qrtab);
         setRtab(qrtab);
       }
       if (qview !== view) {
-        // console.log("==> setView", qview);
         setView(qview);
       }
       if (qprompt !== prompt) setPrompt(qprompt);
@@ -280,12 +283,16 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         slug={slug}
         findexarxid={findexarxid}
         m={m}
+        cstory={cstory}
+        cm={cm}
         setM={setM}
-        league={league}
+        setCstory={setCstory}
+        setCm={setCm}
+        league={league || ""}
         view={view}
         tab={tab}
         rtab={rtab}
-        page={page}
+        page={page || ''}
         teamid={teamid}
         player={player}
         athleteUUId={athleteUUId}

@@ -44,7 +44,11 @@ const Invites: React.FC<Props> = () => {
         return key;
     };
 
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(fetchInvitesKey, actionInvites, { revalidateAll: true, fallback });
+    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
+        fetchInvitesKey,
+        actionInvites,
+        { revalidateAll: true, fallback }
+    );
 
     let invites = data ? [].concat(...data) : [];
 

@@ -9,6 +9,7 @@ import { PlayerPhotoKey, actionGetPlayerPhoto } from '@/lib/server-actions/meta-
 import Avatar from '@/components/util-components/avatar';
 import { useAppContext } from "@/lib/context";
 
+
 const Photo = styled.div`
     height:60px;
     width:60px;
@@ -34,7 +35,11 @@ const PlayerPhoto: React.FC<Props> = (props) => {
     const { teamid, name } = props;
     const { fallback } = useAppContext();
     const photoKey: PlayerPhotoKey = { type: "get-player-photo", teamid: teamid || "", name: name || "" };
-    const { data: photo, error, isLoading } = useSWR(photoKey, actionGetPlayerPhoto, { fallback });
+    const { data: photo, error, isLoading } = useSWR(
+        photoKey,
+        actionGetPlayerPhoto,
+        { fallback }
+    );
 
     /*if (isLoading || !photo) return (
         <Skeleton variant="circular" height="40px" width="40px" />

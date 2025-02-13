@@ -60,9 +60,9 @@ interface Props {
 }
 const Welcome: React.FC<Props> = () => {
     const router = useRouter();
-    const { view, params2, tp2, noUser, mode, userId, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
+    //  const { view, params2, tp2, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, team, player, teamName, setTeamName } = useAppContext();
     return <> <WelcomeWrap className="text-left">
-        <span style={{ fontSize: 22 }}> Welcome to Qwiket AI!</span><br /><br /><hr />
+        <span style={{ fontSize: 22 }}> Welcome to Qwiket!</span><br /><br /><hr />
         {false && <span><em>That&apos;s the ticket!</em> <br /><br /><br /></span>}
 
         <p>We believe that knowledge elevates the quality of our reasoning, improves our productivity and decision-making, and creates wealth and fulfillment in every endeavor we pursue.</p>
