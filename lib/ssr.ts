@@ -246,8 +246,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             publisher: 'Qwiket',
             articleBody: digest,
         }
-        if (digest && prompt && responseText && publishedTime)
-            jsonld.push(JSON.stringify(articleStructuredData));
+        //if (digest && !prompt && responseText && publishedTime)
+        //    jsonld.push(JSON.stringify(articleStructuredData));
         const qaStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'QAPage',
