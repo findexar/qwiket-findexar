@@ -231,7 +231,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
         const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
         console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
-        expiryDate.setDate(expiryDate.getDate() + 1); // Add 7 days
+        expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
         articleStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'Article',
@@ -389,7 +389,7 @@ export async function generateMetadata(
         // Update noindex based on publishedTime being older than 1 week
         const publishedDate = promptResponse.publishedTime ? new Date(promptResponse.publishedTime) : new Date();
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 1);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
         noindex = 0;
         if (publishedDate < oneWeekAgo || !promptResponse.publishedTime) {
             noindex = 1;
