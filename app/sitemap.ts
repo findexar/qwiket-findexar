@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         let url = `${process.env.NEXT_PUBLIC_SERVER}/${item.league}/${item.team}/${item.athleteUUId ? `${item.name}/${item.athleteUUId}/` : ''}?tab=prompts`;
         console.log(url)
         return {
-            url: url,
+            url: encodeURI(url),
             lastModified: new Date(item.updatedTime),
             changeFrequency: 'always' as const,
             priority: 1,
