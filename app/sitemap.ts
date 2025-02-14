@@ -27,10 +27,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.log(`end sitemap fetch`, res.success)
     const items = res.items as SourceItem[];
     const sitemap = items.map((item: SourceItem) => {
-        let url = `${process.env.NEXT_PUBLIC_SERVER}/${item.league}/${item.team}/${item.athleteUUId ? `${item.name}/${item.athleteUUId}/` : ''}?tab=prompts`;
+        let url = `${process.env.NEXT_PUBLIC_SERVER}/${item.league}/${encodeURIComponent(item.team)}/${item.athleteUUId ? `${encodeURIComponent(item.name)}/${item.athleteUUId}/` : ''}?tab=prompts`;
         console.log(url)
         return {
-            url: encodeURI(url),
+            url,
             lastModified: new Date(item.updatedTime),
             changeFrequency: 'always' as const,
             priority: 1,
