@@ -171,10 +171,11 @@ const LogoImg = styled.img`
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
-    idx: string
+    idx: string;
+    incolumn?: boolean;
 }
 
-const StoryOverlay = ({ setDismiss, mutate, idx, ...props }: Props) => {
+const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) => {
     const [promptUUId, setPromptUUId] = useState('');
     let { fallback, league, teamName, utm_content, params, slug, m, setSlug, setM, bot } = useAppContext();
     console.log("StoryOverlay", slug, m)

@@ -288,7 +288,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld }));
+    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm }));
     return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 

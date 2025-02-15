@@ -173,7 +173,7 @@ interface Props { }
 const Desktop: React.FC<Props> = () => {
   const {
     teamid,
-    slug, m, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
+    slug, m, cm, cstory, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
   } = useAppContext();
 
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
@@ -257,7 +257,8 @@ const Desktop: React.FC<Props> = () => {
 
   };
   // tab = tab || 'all';
-  //console.log("==> pagetype", pagetype, tab, view);
+  console.log("==> pagetype", pagetype, tab, view, cstory, cm);
+  let noshow = (cstory || cm);
   return (
     <div className="lg:block hidden h-full w-full">
 
@@ -298,21 +299,21 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
+                  {(cstory || cm) && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} incolumn={true} />}
+                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") && !noshow ? <TeamMentions /> : null}
+                  {pagetype === "player" && (tab === "mentions" || tab === "") && !noshow ? <PlayerMentions /> : null}
+                  {pagetype === "league" && view !== 'about' && (tab === 'all' || tab === '') && !noshow ? <Stories /> : null}
+                  {pagetype === "team" && view !== 'about' && (tab === 'all' || tab === '') && !noshow ? <Stories /> : null}
+                  {pagetype === "player" && view !== 'about' && (tab === 'all' || tab === '') && !noshow ? <Stories /> : null}
+                  {pagetype === "league" && view !== 'about' && (tab === 'podcasts' || tab === '') && !noshow ? <Stories type="v" /> : null}
+                  {pagetype === "team" && view !== 'about' && (tab === 'podcasts' || tab === '') && !noshow ? <Stories type="v" /> : null}
+                  {pagetype === "player" && view !== 'about' && (tab === 'podcasts' || tab === '') && !noshow ? <Stories type="v" /> : null}
 
-                  {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") ? <TeamMentions /> : null}
-                  {pagetype === "player" && (tab === "mentions" || tab === "") && <PlayerMentions />}
-                  {pagetype === "league" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "team" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "player" && view !== 'about' && (tab === 'all' || tab === '') && <Stories />}
-                  {pagetype === "league" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
-                  {pagetype === "team" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
-                  {pagetype === "player" && view !== 'about' && (tab === 'podcasts' || tab === '') && <Stories type="v" />}
-
-                  {view === 'about' && <Readme />}
-                  {(pagetype === 'league' && tab === 'chat') && <Chat source="desktop" />}
-                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && <Chat source="desktop" />}
-                  {(pagetype === 'league' && tab === 'myteam') && <MyTeam />}
-                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'prompts') && <PromptsComponent />}
+                  {view === 'about' && !noshow && <Readme />}
+                  {(pagetype === 'league' && tab === 'chat') && !noshow && <Chat source="desktop" />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && !noshow && <Chat source="desktop" />}
+                  {(pagetype === 'league' && tab === 'myteam') && !noshow && <MyTeam />}
+                  {(pagetype === 'team' || pagetype === 'player') && (tab === 'prompts') && !noshow && <PromptsComponent />}
 
                 </CenterPanel>
                 <RightPanel>

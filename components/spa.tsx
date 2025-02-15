@@ -114,6 +114,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
+  console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
   useEffect(() => {
     if (!bot) {
       actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
@@ -191,6 +192,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     const qprompt = query?.get('prompt') || '';
     const qpromptUUId = query?.get('promptUUId') || '';
     // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
+    console.log("==> query", { story, slug, cstory, cm });
     if (story !== slug) {
       if (story !== slug) {
         setSlug(story || "");
