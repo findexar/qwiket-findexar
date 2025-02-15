@@ -189,13 +189,16 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     const ssr = query?.getAll('ssr') || [];
     const top = query?.get('top') || "";
     const story = query?.get('story');
+    const qcstory = query?.get('cstory');
+    const qcm = query?.get('cm');
     const qprompt = query?.get('prompt') || '';
     const qpromptUUId = query?.get('promptUUId') || '';
     // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
-    console.log("==> query", { story, slug, cstory, cm });
-    if (story !== slug) {
-      if (story !== slug) {
-        setSlug(story || "");
+    console.log("==> query", { story, slug, qcstory, cm });
+    if (story !== slug && qcstory != slug) {
+      const s = story || qcstory;
+      if (s !== slug) {
+        setSlug(s || "");
       }
       if (findexarxid !== id) {
         setFindexarxid(id);
@@ -204,6 +207,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setTimeout(() => {
           window.scrollTo(0, 0);
         }, 0);
+      }
+      if (qcstory !== cstory) {
+        setCstory(qcstory || "");
+      }
+      if (cm !== qcm) {
+        setCm(qcm || "");
       }
       if (qtab !== tab) {
         setTab(qtab);

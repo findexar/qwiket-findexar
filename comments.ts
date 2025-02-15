@@ -1,0 +1,73 @@
+'use server';
+import { CommentsKey } from "@/lib/keys";
+import { unstable_serialize } from 'swr'
+import { cookies } from "next/headers";
+import { getIronSession } from "iron-session";
+import { sessionOptions, SessionData } from "@/lib/session";
+import { auth } from "@clerk/nextjs/server";
+
+const lake_api = process.env.NEXT_PUBLIC_LAKEAPI
+const api_key = process.env.LAKE_API_KEY;;
+interface FetchCommentsProps {
+    userId: string;
+    sessionid: string;
+    context: string;
+    unionId: string;
+    tags?: string[];
+    type: string;
+}
+
+const fetchComments = async (key: CommentsKey, userId: string, sessionid: string) => {
+    let { page, context, unionId} = key;
+     unionId = unionId || "";
+  
+    const url = `${lake_api}/api/v50/qwiket/fetch?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&athleteUUId=${athleteUUId}&sessionid=${sessionid}&page=${page}&type=${t}`;
+    const t1 = Date.now();
+    // console.log("fetchStories", url);
+    const fetchResponse = await fetch(url);
+    const t2 = Date.now();
+
+    const res = await fetchResponse.json();
+    //console.log("fetchStories fetchResponse", res?.stories?.length);
+    if (page == 0) {
+        //console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
+
+        // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
+    }
+    return res.stories;
+}
+
+const promiseStories = async ({ userId, sessionid, league, teamid, athleteUUId, type }: FetchStoriesProps) => {
+    //  console.log("promiseStories", userId, sessionid, league);
+    let keyStories = (page: any) => {
+        const keyFetchedStories: StoriesKey = { type: type == 'v' ? "fetch-stories-v" : "fetch-stories", page: page, league: league || "", teamid: teamid || "", athleteUUId: athleteUUId || "" }
+        return keyFetchedStories;
+    };
+    // console.log("StoriesKey:", keyStories(0));
+    return { key: us(keyStories), call: fetchStories(keyStories(0), userId, sessionid) };
+}
+export const actionStories = async (key: StoriesKey) => {
+
+    const session = await fetchSession();
+
+    const { userId } = await auth() || { userId: "" };
+
+    const sessionid = session.sessionid;
+    /* setTimeout(async () => {
+         try {
+             const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
+             const cacheResponse = await fetch(cacheInitUrl);
+             const cacheResult = await cacheResponse.json();
+             if (cacheResult.success) {
+                 console.log("Cache initialization for rosters started in background");
+             } else {
+                 console.error("Failed to initialize cache:", cacheResult.message);
+             }
+         } catch (error) {
+             console.error("Error making API call to initialize rosters cache:", error);
+         }
+     }, 0);*/
+    return fetchStories(key, userId || "", sessionid);
+}
+
+export default promiseStories;

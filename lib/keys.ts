@@ -24,6 +24,7 @@ export type UserAccountKey = { type: string, email: string, bot?: boolean };
 export type UserUsageAccountKey = { type: string, periods: { year: string, month: string }[] };
 export type FetchUserDocumentsKey = { type: string, chatUUId?: string };
 export type PromptChatResponseKey = { type: string, promptUUId: string, prompt: string };
+
 export type CidUsageAccountKey = {
     cid: string;
     periods: { year: string; month: string }[];
@@ -38,3 +39,11 @@ export type PromptPageKey = {
     search_key: string;
     pageUUId: string | null;
 };
+
+export type CommentsKey = {
+    type: "fetch-comments";
+    context: 'story' | 'mention' | 'message' | 'league' | 'team' | 'player';
+    unionId: string;
+    page: number;
+};
+

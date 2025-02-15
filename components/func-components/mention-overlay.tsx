@@ -176,7 +176,7 @@ const MentionOverlay = ({ setDismiss, mutate, ...props }: Props) => {
       <div className="fixed inset-0 overflow-y-auto">
         <div className="flex min-h-full items-center justify-center md:p-4 text-center">
           <div className="relative bg-slate-600 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full md:max-w-2xl md:w-full">
-            <div className="md:hidden text-white px-4 py-1"> QWIKET </div>
+            <div className="md:hidden text-white px-4 py-1"> QWIKET AI </div>
             <div className="bg-black bg-opacity-25 md:px-4 md:pt-4 md:pb-4 pt-2 pb-2">
               <div className="sm:flex sm:items-start">
                 <div className="lg:mt-3 text-left sm:mt-0 sm:ml-0 sm:text-left">

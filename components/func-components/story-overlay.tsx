@@ -167,7 +167,17 @@ const LogoImg = styled.img`
   width: 32px;
   opacity: 0.6;
 `;
-
+const MentionsOuterContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    padding-right: 20px;
+    z-index: 100;
+    
+`;
 interface Props {
     mutate: () => void;
     setDismiss: (dismiss: boolean) => void;
@@ -177,7 +187,7 @@ interface Props {
 
 const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) => {
     const [promptUUId, setPromptUUId] = useState('');
-    let { fallback, league, teamName, utm_content, params, slug, m, setSlug, setM, bot } = useAppContext();
+    let { cstory, cm, fallback, league, teamName, utm_content, params, slug, m, setSlug, setM, bot } = useAppContext();
     console.log("StoryOverlay", slug, m)
     const aSlugStoryKey: ASlugStoryKey = slug ? { type: "ASlugStory", slug: slug } : { type: "AMentionStory", m: m };
     let { data: aSlugStory } = useSWR(
@@ -256,56 +266,68 @@ const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) =>
 
     if (!astory)
         return null;
+    const innerStory = (
+        <div className="relative dark:bg-slate-900 bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all py-0 my-2 max-w-lg  md:max-w-2xl w-full ">
+            <HeaderContainer>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <LogoContainer>
+                        <Link href={`/${league}${params ? `?${params}` : ''}`}>
+                            <LogoImg
+                                src={'/q-logo-dark-128.png'}
+                                alt="Qwiket Logo"
+                            />
 
-    return <>{open &&
-        <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
-            <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
-                    <div className="relative dark:bg-slate-900 bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all py-0 my-2 max-w-lg  md:max-w-2xl w-full ">
-                        <HeaderContainer>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <LogoContainer>
-                                    <Link href={`/${league}${params ? `?${params}` : ''}`}>
-                                        <LogoImg
-                                            src={'/q-logo-dark-128.png'}
-                                            alt="Qwiket Logo"
-                                        />
+                        </Link>
+                    </LogoContainer>
+                    <QwiketText>STORY IN-FOCUS</QwiketText>
+                </div>
+                {false && <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
+                    <AskAIButton>Ask AI</AskAIButton>
+                </Link>}
+                <XElement onClick={() => handleClose()}>&#x2715;</XElement>
+            </HeaderContainer>
+            <div className="bg-transparent  p-0 pb-0 ">
+                <div className="flex items-start">
+                    <div className=" text-center mt-0 ml-0 text-left">
+                        <div className="mt-0 mb-0 pb-0 h-full">
+                            <ContentWrap>
+                                <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
 
-                                    </Link>
-                                </LogoContainer>
-                                <QwiketText>QWIKET AI</QwiketText>
-                            </div>
-                            {false && <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
-                                <AskAIButton>Ask AI</AskAIButton>
-                            </Link>}
-                            <XElement onClick={() => handleClose()}>&#x2715;</XElement>
-                        </HeaderContainer>
-                        <div className="bg-transparent  p-0 pb-0 ">
-                            <div className="flex items-start">
-                                <div className=" text-center mt-0 ml-0 text-left">
-                                    <div className="mt-0 mb-0 pb-0 h-full">
-                                        <ContentWrap>
-                                            <GotoFeed onClick={() => handleClose()}>Go To Full {league} Digest</GotoFeed>
-
-                                            {admin && <div autoFocus onClick={() => { remove(); }}>
-                                                <XContainer><RElement>R</RElement></XContainer>
-                                            </div>}
-                                        </ContentWrap>
-                                        <ContentWrap>
-                                            <MentionWrap>
-                                                <Story story={astory} handleClose={handleClose} />
-                                            </MentionWrap>
-                                        </ContentWrap>
-                                    </div>
-                                </div>
-                            </div>
+                                {admin && <div autoFocus onClick={() => { remove(); }}>
+                                    <XContainer><RElement>R</RElement></XContainer>
+                                </div>}
+                            </ContentWrap>
+                            <ContentWrap>
+                                <MentionWrap>
+                                    <Story story={astory} handleClose={handleClose} />
+                                </MentionWrap>
+                            </ContentWrap>
                         </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>)
+    return (<div>
+        {open && !cstory &&
+            <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
+                <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
+
+                        {innerStory}
                     </div>
                 </div>
             </div>
-        </div>
-    }
-    </>
+        }
+        {open && cstory &&
+            <div>
+                <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
+
+                    {innerStory}
+                </div>
+            </div >
+        }
+    </div >)
 };
 
 export default StoryOverlay;
