@@ -402,8 +402,8 @@ export async function generateMetadata(
     }
     if (tab == 'prompts') {
         noindex = 0;
-        ogTitle = `Qwiket ${name ? name : ''} FAQ`;
-        ogDescription = "Qwiket Frequently Asked Questions";
+        ogTitle = `Qwiket AI: ${name ? name : ''} FAQ`;
+        ogDescription = "Qwiket AI: Frequently Asked Questions";
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
@@ -421,10 +421,10 @@ export async function generateMetadata(
         noindex = 0;
         if (athleteUUId) {
             name = decodeURIComponent(name);
-            ogTitle = `${name} - ${teamName} : Qwiket: Interactive Sports Knowledge`;
+            ogTitle = `${name} - ${teamName} : Qwiket AI: Interactive Sports Knowledge`;
         }
         else {
-            ogTitle = `${teamName} : Qwiket: Interactive Sports Knowledge`;
+            ogTitle = `${teamName} : Qwiket AI: Interactive Sports Knowledge`;
         }
         ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";
