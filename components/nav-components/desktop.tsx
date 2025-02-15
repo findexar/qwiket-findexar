@@ -20,6 +20,7 @@ import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent } from "@lib/server-actions/event";
 import LeagueMentions from "../func-components/league-mentions";
 import PromptsComponent from "../func-components/prompts";
+
 const PageWrap = styled.div`
   width: 100%;
   display: flex;

@@ -31,6 +31,8 @@ import fetchFavorites from '@lib/server-actions/favorites';
 import type { Article, WithContext } from 'schema-dts';
 import { RelatedContent } from './types/chat';
 import { PromptPageKey } from "./keys";
+import { actionRecordEvent } from "@lib/server-actions/event";
+
 export type SSRParams = {
     leagueid?: string;
     teamid?: string;
@@ -92,6 +94,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
     if (!ua) {
         bot = true;
+    }
+    if (bot) {
+        await actionRecordEvent("bot-ssr", `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
     }
     let userId = "";
     try {
