@@ -373,7 +373,7 @@ export async function generateMetadata(
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
-    let ogTitle = ogTarget || `Qwiket`;
+    let ogTitle = ogTarget || `Qwiket AI: Helping Fantasy Sports and Sports Betting Fans to Elevate their Game`;
     if (astory) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
         ogTitle = astoryTitle;
@@ -421,10 +421,10 @@ export async function generateMetadata(
         noindex = 0;
         if (athleteUUId) {
             name = decodeURIComponent(name);
-            ogTitle = `${name} - ${teamName} : Qwiket Interactive Sports Knowledge`;
+            ogTitle = `${name} - ${teamName} : Qwiket: Interactive Sports Knowledge`;
         }
         else {
-            ogTitle = `${teamName} : Qwiket Interactive Sports Knowledge`;
+            ogTitle = `${teamName} : Qwiket: Interactive Sports Knowledge`;
         }
         ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";
