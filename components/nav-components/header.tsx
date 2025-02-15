@@ -452,7 +452,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, userId, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
+  const { fallback, mode, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(key, fetchLeagues, { fallback });
@@ -604,7 +604,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
                 <Superhead $scrolled={scrollY != 0}>
                   {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/${params}`}>{`Qwiket` + (league ? ` : ${league}` : ``)}</Link> :
+                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
                     !teamid ? `${league}` : player ?
                       <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}${params}`}>
                         <TeamNameGroup $scrolled={scrollY != 0}>
