@@ -7,17 +7,18 @@ import fetchSession from './session';
 
 const api_key = process.env.LAKE_API_KEY;
 
-export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, sessionid: string): Promise<UserUsage> => {
+export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, sessionid: string, debug?: string): Promise<UserUsage> => {
     'use server';
     try {
         console.log("fetchUserUsage params", key, userId, sessionid)
-        const { periods = [] } = key;
+        let { periods = [] } = key;
 
         if (!Array.isArray(periods) || periods.length === 0) {
-            console.log("Invalid periods", periods)
+            // console.log("Invalid periods", periods)
             //return {} as UserUsage;
             // throw new Error("Invalid periods");
-            return {} as UserUsage;
+            //return {} as UserUsage;
+            periods = [{ year: "2025", month: "02" }];
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
@@ -97,7 +98,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     }
     // console.log("===>actionUserUsage", key, userId, sessionid)
 
-    return fetchUserUsage(key, userId, sessionid);
+    return fetchUserUsage(key, userId, sessionid, 'actionUserUsage');
 }
 
 export const actionUser = async (key: UserAccountKey, utm_content?: string): Promise<UserAccount> => {
