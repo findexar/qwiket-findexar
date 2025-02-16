@@ -10,6 +10,7 @@ const api_key = process.env.LAKE_API_KEY;
 export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, sessionid: string): Promise<UserUsage> => {
     'use server';
     try {
+        console.log("fetchUserUsage params", key, userId, sessionid)
         const { periods = [] } = key;
 
         if (!Array.isArray(periods) || periods.length === 0) {
