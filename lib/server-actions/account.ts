@@ -123,12 +123,15 @@ export const fetchCidUsage = async (key: CidUsageAccountKey, userId: string, ses
     'use server';
     try {
         const { cid, periods = [] } = key;
-
+        console.log("fetchCidUsage", key, userId, sessionid)
         if (!cid || !Array.isArray(periods) || periods.length === 0) {
-            throw new Error("Invalid CID or periods");
+            console.log("Invalid CID or periods", cid, periods)
+            return {} as CidUsage;
+            // throw new Error("Invalid CID or periods");
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-cid-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&cid=${cid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
+        console.log("fetchCidUsage", url)
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
 

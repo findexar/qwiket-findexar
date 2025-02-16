@@ -104,6 +104,7 @@ export default async function Page({
         userInfo.email = email || '';
     }
     if (!bot) {
+        console.log("fetching user-account", userInfo.email, userId, sessionid, utm_content, ua, cid, aid)
         calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
     }
 
