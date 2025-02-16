@@ -26,15 +26,15 @@ const AccountUpgrade: React.FC<Props> = ({
     // const { data, error, isLoading } = useSWR(userAccountKey, actionUser, { fallback });
     //  const { subscriptionType } = userAccount;
     let level = userAccount?.subscriptionType || "trial";
-    console.log("level", level);
+    //console.log("level", level);
     const isLoading = false;
-    console.log("userAccount", userAccount);
+    // console.log("userAccount", userAccount);
 
     const plans: PlanDetails[] = getPricePlans(level);
     useEffect(() => {
         recordEvent(`dashboard-upgrade-load`, `{}`)
             .then((r: any) => {
-                console.log("recordEvent", r);
+                // console.log("recordEvent", r);
             });
     }, []);
     const handleSeeAllFeatures = (planLevel: string) => {
