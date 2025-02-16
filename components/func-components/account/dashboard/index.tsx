@@ -57,6 +57,7 @@ const Dashboard: React.FC = () => {
             });
     }, []);
     const dailyUsageAccountKey: UserUsageAccountKey = { type: "daily-usage", periods };
+    console.log(`Dashboard==>dailyUsageAccountKey: ${JSON.stringify(dailyUsageAccountKey, null, 2)}`);
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
