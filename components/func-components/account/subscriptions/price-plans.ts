@@ -19,7 +19,7 @@ export interface PlanDetails {
 }
 
 export function getPricePlans(currentPlan: string): PlanDetails[] {
-    //console.log("currentPlan", currentPlan);
+    console.log("currentPlan", currentPlan);
     const isCurrentPlan = (planLevel: string) => currentPlan === planLevel;
 
     return [
