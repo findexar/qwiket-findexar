@@ -1,10 +1,12 @@
 // ./lib/context.js
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
 const AppContext = createContext();
 //params={params} params2={params2} tp={tp} findexarxid={localFindexarxid} view={view} tab={tab}
 //sessionid={sessionid} league={localLeague} team={localTeam} player={localPlayer} setLocalLeague={setLocalLeague} setLocalTeam={setLocalTeam} setLocalPlayer={setLocalPlayer} setLocalPageType={setLocalPageType} setLocalView={setLocalView} setLocalTab={setLocalTab}
-export function AppWrapper({ children,
+export function AppWrapper({
+  children,
+  today,
   isMobile,
   params,
   params2,
@@ -52,17 +54,62 @@ export function AppWrapper({ children,
   feedback,
   setFeedback,
   relatedContent,
-  setRelatedContent
-
-
+  setRelatedContent,
 }) {
-
-  let sharedState = { page, setPage, fallback, isMobile, params, params2, tp, tp2, findexarxid, m, slug, view, tab, rtab, league, setView, setTab, setRtab, fbclid, utm_content, bot, setLeague, teamid, player, athleteUUId, setAthleteUUId, setTeamid, setPlayer, pagetype, setPagetype, mode, setMode, teamName, teamLogo, setTeamName, setTeamLogo, setFindexarxid, setM, setSlug, user, userAccount, userAccountMutate, prompt, promptUUId, feedback, setFeedback, relatedContent, setRelatedContent };
+  let sharedState = {
+    today,
+    page,
+    setPage,
+    fallback,
+    isMobile,
+    params,
+    params2,
+    tp,
+    tp2,
+    findexarxid,
+    m,
+    slug,
+    view,
+    tab,
+    rtab,
+    league,
+    setView,
+    setTab,
+    setRtab,
+    fbclid,
+    utm_content,
+    bot,
+    setLeague,
+    teamid,
+    player,
+    athleteUUId,
+    setAthleteUUId,
+    setTeamid,
+    setPlayer,
+    pagetype,
+    setPagetype,
+    mode,
+    setMode,
+    teamName,
+    teamLogo,
+    setTeamName,
+    setTeamLogo,
+    setFindexarxid,
+    setM,
+    setSlug,
+    user,
+    userAccount,
+    userAccountMutate,
+    prompt,
+    promptUUId,
+    feedback,
+    setFeedback,
+    relatedContent,
+    setRelatedContent,
+  };
 
   return (
-    <AppContext.Provider value={sharedState}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={sharedState}>{children}</AppContext.Provider>
   );
 }
 

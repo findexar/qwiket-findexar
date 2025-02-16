@@ -109,11 +109,11 @@ export default async function Page({
     }
 
     await fetchData(t1, fallback, calls);
-
+    const today = new Date();
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout dark={dark || 0} view={view} tab={tab} fbclid={fbclid} utm_content={utm_content} fallback={fallback} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
+                <SPALayout today={today} dark={dark || 0} view={view} tab={tab} fbclid={fbclid} utm_content={utm_content} fallback={fallback} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
             </main>
         </SWRProvider>
     );

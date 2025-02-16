@@ -18,14 +18,14 @@ import { actionRecordEvent as recordEvent } from "@lib/server-actions/event";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard: React.FC = () => {
-    const { userAccount, fallback } = useAppContext();
-    const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
-    const [selectedMonth, setSelectedMonth] = useState<string>((new Date().getMonth() + 1).toString().padStart(2, '0'));
+    const { userAccount, fallback, today } = useAppContext();
+    const [selectedYear, setSelectedYear] = useState<string>(today.getFullYear().toString());
+    const [selectedMonth, setSelectedMonth] = useState<string>((today.getMonth() + 1).toString().padStart(2, '0'));
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
     // Determine if we need to show the previous month
-    const today = new Date();
+
     const isFirstWeekOfMonth = useMemo(() => {
         const currentYear = today.getFullYear().toString();
         const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
             today.getDate() <= 7;
     }, [selectedYear, selectedMonth]);
 
-    const [periods, setPeriods] = useState<{ year: string; month: string }[]>([]);
+    const [periods, setPeriods] = useState<{ year: string; month: string }[]>([{ year: today.getFullYear().toString(), month: (today.getMonth() + 1).toString().padStart(2, '0') }]);
     console.log(`Dashboard==>periods: ${JSON.stringify(periods, null, 2)}`, `isFirstWeekOfMonth: ${isFirstWeekOfMonth}`, `selectedYear: ${selectedYear}`, `selectedMonth: ${selectedMonth}`);
     useEffect(() => {
         let newPeriods = [];
@@ -61,9 +61,7 @@ const Dashboard: React.FC = () => {
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
-    if (!dailyUsageAccount || !Array.isArray(dailyUsageAccount)) {
-        return <div>No data available</div>;
-    }
+
 
 
 
