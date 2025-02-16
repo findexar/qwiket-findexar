@@ -29,7 +29,8 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
         if (data.success) {
             return data.usage as UserUsage;
         }
-        throw new Error("Failed to fetchUserUsage");
+        // throw [] as UserUsage;
+        return [] as UserUsage;
     }
     catch (e) {
         console.log("fetchUserUsage", e);

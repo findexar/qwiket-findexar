@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
-    if (!Array.isArray(dailyUsageAccount) || dailyUsageAccount?.length === 0) {
+    if (!dailyUsageAccount || !Array.isArray(dailyUsageAccount)) {
         return <div>No data available</div>;
     }
 
