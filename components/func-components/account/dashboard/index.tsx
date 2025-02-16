@@ -61,6 +61,13 @@ const Dashboard: React.FC = () => {
     const { data: dailyUsageAccount, error, isLoading } = useSWR<UserUsage>(dailyUsageAccountKey, actionUserUsage, { fallback });
     // console.log(`Dashboard==>dailyUsageAccount: ${JSON.stringify(dailyUsageAccount, null, 2)}`);
     // Prepare data for the chart
+    if (dailyUsageAccount?.length === 0) {
+        return <div>No data available</div>;
+    }
+
+
+
+
     const chartData: ChartData<'bar'> = {
         labels: dailyUsageAccount?.flatMap(monthData =>
             monthData.usage.map(item => parseInt(item.usageDate.split('-')[2], 10))
