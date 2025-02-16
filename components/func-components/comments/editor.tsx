@@ -2,7 +2,7 @@ type Feedback = {
     open: boolean;
     feedback: string;
 }
-const Editor = ({ feedback }: Feedback) => {
+export const Editor = ({ feedback }: Feedback) => {
     return (
         <div>
             <h1>Editor</h1>

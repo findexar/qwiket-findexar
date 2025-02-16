@@ -7,7 +7,7 @@ type PanelProps = {
     unionId?: string; //slug,mentionUUId,messageUUId, qwiketUUId,null (root for league, team, player)
     tags?: string[];  //length: league? 1, team? 2, player? 3
 }
-const Panel = ({ context, unionId, tags }: PanelProps) => {
+export const Panel = ({ context, unionId, tags }: PanelProps) => {
     const { fallback, league, teamid, athleteUUId } = useAppContext();
     /*
         const fetchCommentsKey = (pageIndex: number, previousPageData: any): CommentsKey | null => {

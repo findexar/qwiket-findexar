@@ -18,25 +18,26 @@ interface FetchCommentsProps {
 }
 
 const fetchComments = async (key: CommentsKey, userId: string, sessionid: string) => {
-    let { page, context, unionId} = key;
-     unionId = unionId || "";
-  
-    const url = `${lake_api}/api/v50/qwiket/fetch?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&athleteUUId=${athleteUUId}&sessionid=${sessionid}&page=${page}&type=${t}`;
-    const t1 = Date.now();
-    // console.log("fetchStories", url);
-    const fetchResponse = await fetch(url);
-    const t2 = Date.now();
-
-    const res = await fetchResponse.json();
-    //console.log("fetchStories fetchResponse", res?.stories?.length);
-    if (page == 0) {
-        //console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
-
-        // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
-    }
-    return res.stories;
+    let { page, context, unionId } = key;
+    unionId = unionId || "";
+    /*  
+        const url = `${lake_api}/api/v50/qwiket/fetch?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&athleteUUId=${athleteUUId}&sessionid=${sessionid}&page=${page}&type=${t}`;
+        const t1 = Date.now();
+        // console.log("fetchStories", url);
+        const fetchResponse = await fetch(url);
+        const t2 = Date.now();
+    
+        const res = await fetchResponse.json();
+        //console.log("fetchStories fetchResponse", res?.stories?.length);
+        if (page == 0) {
+            //console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
+    
+            // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
+        }
+        return res.stories;
+        */
 }
-
+/*
 const promiseStories = async ({ userId, sessionid, league, teamid, athleteUUId, type }: FetchStoriesProps) => {
     //  console.log("promiseStories", userId, sessionid, league);
     let keyStories = (page: any) => {
@@ -44,8 +45,9 @@ const promiseStories = async ({ userId, sessionid, league, teamid, athleteUUId, 
         return keyFetchedStories;
     };
     // console.log("StoriesKey:", keyStories(0));
-    return { key: us(keyStories), call: fetchStories(keyStories(0), userId, sessionid) };
-}
+    // return { key: us(keyStories), call: fetchStories(keyStories(0), userId, sessionid) };
+}*/
+/*
 export const actionStories = async (key: StoriesKey) => {
 
     const session = await fetchSession();
@@ -53,7 +55,7 @@ export const actionStories = async (key: StoriesKey) => {
     const { userId } = await auth() || { userId: "" };
 
     const sessionid = session.sessionid;
-    /* setTimeout(async () => {
+     setTimeout(async () => {
          try {
              const cacheInitUrl = `${lake_api}/api/v50/findexar/init-cache?userid=${encodeURIComponent(userId || sessionid)}`;
              const cacheResponse = await fetch(cacheInitUrl);
@@ -66,8 +68,8 @@ export const actionStories = async (key: StoriesKey) => {
          } catch (error) {
              console.error("Error making API call to initialize rosters cache:", error);
          }
-     }, 0);*/
+     }, 0);
     return fetchStories(key, userId || "", sessionid);
 }
-
-export default promiseStories;
+*/
+//export default promiseStories;
