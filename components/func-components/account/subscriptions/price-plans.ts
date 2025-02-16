@@ -36,7 +36,7 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
             buttonText: isCurrentPlan("trial") ? "Current Plan" : "Select",
             featureCards: [
                 {
-                    title: "Basic AI Chat",
+                    title: "Trial AI Chat",
                     description: "Experience the core functionality of Qwiket AI Chat with limited credits.",
                     Icon: FaBolt
                 },
@@ -54,9 +54,9 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
         },
         {
             planLevel: "basic",
-            title: "Basic",
+            title: "Introductory Plan",
             description: "Ideal for most fans and Fantasy Sports users.",
-            price: 20,
+            price: 9.99,
             features: [
                 "Includes 1000 Qwiket AI Chat credits per month.",
                 "Additional credits available in blocks of 1000 credits per $20"
@@ -65,7 +65,7 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
             buttonText: isCurrentPlan("basic") ? "Current Plan" : "Subscribe",
             featureCards: [
                 {
-                    title: "Enhanced AI Chat",
+                    title: "Basic AI Chat",
                     description: "Enjoy extended conversations and more in-depth analysis with increased credits.",
                     Icon: FaBolt
                 },
