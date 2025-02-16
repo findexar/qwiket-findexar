@@ -26,6 +26,7 @@ const AccountUpgrade: React.FC<Props> = ({
     // const { data, error, isLoading } = useSWR(userAccountKey, actionUser, { fallback });
     //  const { subscriptionType } = userAccount;
     let level = userAccount?.subscriptionType || "trial";
+    console.log("level", level);
     const isLoading = false;
     console.log("userAccount", userAccount);
 
