@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
     }, [selectedYear, selectedMonth]);
 
     const [periods, setPeriods] = useState<{ year: string; month: string }[]>([]);
-
+    console.log(`Dashboard==>periods: ${JSON.stringify(periods, null, 2)}`, `isFirstWeekOfMonth: ${isFirstWeekOfMonth}`, `selectedYear: ${selectedYear}`, `selectedMonth: ${selectedMonth}`);
     useEffect(() => {
         let newPeriods = [];
         if (isFirstWeekOfMonth) {
