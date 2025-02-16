@@ -47,6 +47,7 @@ const Dashboard: React.FC = () => {
             });
         }
         newPeriods.push({ year: selectedYear, month: selectedMonth });
+        console.log(`Dashboard==>newPeriods: ${JSON.stringify(newPeriods, null, 2)}`);
         setPeriods(newPeriods);
     }, [selectedYear, selectedMonth, isFirstWeekOfMonth]);
     useEffect(() => {
