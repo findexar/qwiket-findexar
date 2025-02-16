@@ -2,9 +2,15 @@ type Feedback = {
     open: boolean;
     feedback: string;
 }
-const Editor =({})
+const Editor = ({ feedback }: Feedback) => {
+    return (
+        <div>
+            <h1>Editor</h1>
+        </div>
+    )
+}
 
-
+/*
 ({ feedback, handleFeedbackKeyDown, handleFeedbackSubmit, feedbackTextareaRef, isLoading, openMyChats }) => {
 {feedback.open && (
     <div className={`mt-2 ${feedback.feedback ? 'opacity-50' : ''}`}>
@@ -29,4 +35,4 @@ const Editor =({})
             </button>
         </div>
     </div>
-)}
+)}*/

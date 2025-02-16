@@ -24,7 +24,8 @@ export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, s
         if (data.success) {
             return data.usage as UserUsage;
         }
-        throw new Error("Failed to fetchUserUsage");
+        //throw new Error("Failed to fetchUserUsage");
+        return [] as UserUsage;
     }
     catch (e) {
         console.log("fetchUserUsage", e);
@@ -125,7 +126,14 @@ export const fetchCidUsage = async (key: CidUsageAccountKey, userId: string, ses
         const { cid, periods = [] } = key;
 
         if (!cid || !Array.isArray(periods) || periods.length === 0) {
-            throw new Error("Invalid CID or periods");
+            return {
+                usage: [],
+                totals: [],
+                currentTotalVisitors: 0,
+                currentTotalSubscribers: 0,
+                payments: [],
+                totalPayments: 0
+            } as CidUsage;
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-cid-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&cid=${cid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;

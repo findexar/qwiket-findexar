@@ -1,5 +1,5 @@
 import { useAppContext } from "@/lib/context";
-import { CommentsKey } from "@/lib/keys";
+//import { CommentsKey } from "@/lib/keys";
 import useSWRInfinite from 'swr/infinite';
 
 type PanelProps = {
@@ -9,17 +9,17 @@ type PanelProps = {
 }
 const Panel = ({ context, unionId, tags }: PanelProps) => {
     const { fallback, league, teamid, athleteUUId } = useAppContext();
-
-    const fetchCommentsKey = (pageIndex: number, previousPageData: any): CommentsKey | null => {
-        let key: CommentsKey = { type: `fetch-comments`, page: pageIndex, context, unionId: unionId || "" };
-        if (previousPageData && !previousPageData.length) return null; // reached the end
-        return key;
-    };
-    const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
+    /*
+        const fetchCommentsKey = (pageIndex: number, previousPageData: any): CommentsKey | null => {
+            let key: CommentsKey = { type: `fetch-comments`, page: pageIndex, context, unionId: unionId || "" };
+            if (previousPageData && !previousPageData.length) return null; // reached the end
+            return key;
+        };*/
+    /*const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
         fetchCommentsKey,
         actionComments,
         { initialSize: 1, revalidateAll: true, parallel: true, fallback }
-    );
+    );*/
 
     return (
         <div>
