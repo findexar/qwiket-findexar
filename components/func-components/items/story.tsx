@@ -287,6 +287,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const [selectedXid, setSelectedXid] = React.useState("");
     const [value, copy] = useCopyToClipboard();
     const [visible, setVisible] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
@@ -416,9 +417,9 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         key={`prompt-${index}`}
                         href={`/${p.league}${teamid ? `/${teamid}` : ''}${player ? `/${player}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
-
+                        onClick={() => setLoading(true)}
                     >
-                        {p.prompt} <span className="ask-ai"></span>
+                        {p.prompt}
                     </PromptTag>
                 ))}
             </PromptsContainer>
@@ -449,23 +450,92 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     //    return null;
     // console.log("==> STORY.TSX RENDER", { title });
     return (
-        <div ref={ref}>
-            <DesktopWrap>
-                <Link href={url} scroll={false} onClick={onStoryClick}>
+        <>
+            {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
+                </div>
+            )}
+            <div ref={ref}>
+                <DesktopWrap>
+                    <Link href={url} scroll={false} onClick={onStoryClick}>
+                        <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
+                        <Title>{title}</Title>
+                    </Link>
+                    <Link href={url} scroll={false} onClick={onStoryClick}>
+                        <Byline>
+                            {authors && <Authors>{authors}</Authors>}
+                            <SiteName>{site_name}</SiteName>
+                        </Byline>
+                    </Link>
+                    <HorizontalContainer>
+
+                        <ImageWrapper>
+                            <Link href={url} scroll={false} onClick={onStoryClick}>
+                                {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) &&
+                                    <img
+                                        src={image}
+                                        alt={title}
+                                        width={image_width}
+                                        height={image_height}
+
+                                    />
+                                }
+                            </Link>
+                        </ImageWrapper>
+
+                        <Body>
+                            {false && <Link href={url} onClick={onStoryClick} target="_blank"><ArticleDigest>
+                                <b>{true ? 'Digest:' : 'Short Digest:'}</b>
+                            </ArticleDigest></Link>}
+                            <Digest>
+                                <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
+                                    <div dangerouslySetInnerHTML={{ __html: digest }} />
+                                </Link>
+                                <div className="flex flex-row justify-center mt-2 mb-2">
+                                    <ContentCopyIcon className={digestCopied ? "cursor-pointer text-green-500 w-10" : "cursor-pointer w-10"} fontSize="medium" onClick={() => onDigestCopyClick()} />
+
+                                    <BiCommentDots className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
+                                    <BiCommentAdd className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
+
+
+                                </div>
+                            </Digest>
+                        </Body>
+                    </HorizontalContainer>
+                    {renderPrompts("desktop")}
+                    <ArticleMentions>
+                        <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
+                        {Mentions}
+                    </ArticleMentions>
+                    <br />
+                    <Link style={{ marginLeft: 10 }} href={url} onClick={onStoryClick} target="_blank">{url?.substring(0, 50)}..</Link>
+                    <BottomLine>
+                        <ShareGroup>
+                            <ShareContainer onClick={async () => onShare(shareUrls.share)}>
+                                <ShareIcon><IosShareIcon style={{ fontSize: 17 }} /></ShareIcon>
+                            </ShareContainer>
+                            <Link href={socialLinks.facebook} target="_blank">
+                                <ShareContainer><FacebookIcon /></ShareContainer>
+                            </Link>
+                            <Link href={socialLinks.twitter} target="_blank">
+                                <ShareContainer><XIcon /></ShareContainer>
+                            </Link>
+                        </ShareGroup>
+                    </BottomLine>
+                    <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
+                </DesktopWrap>
+                <MobileWrap>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
-                    <Title>{title}</Title>
-                </Link>
-                <Link href={url} scroll={false} onClick={onStoryClick}>
-                    <Byline>
+                    <Link href={url} scroll={false} onClick={onStoryClick}><Title>{title}</Title></Link>
+                    <Link href={url} scroll={false} onClick={onStoryClick}><Byline>
                         {authors && <Authors>{authors}</Authors>}
                         <SiteName>{site_name}</SiteName>
                     </Byline>
-                </Link>
-                <HorizontalContainer>
-
-                    <ImageWrapper>
+                    </Link>
+                    <HorizontalContainer>
                         <Link href={url} scroll={false} onClick={onStoryClick}>
-                            {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) &&
+                            <ImageWrapper>
                                 <img
                                     src={image}
                                     alt={title}
@@ -473,103 +543,41 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                                     height={image_height}
 
                                 />
-                            }
+                            </ImageWrapper>
                         </Link>
-                    </ImageWrapper>
+                        <Body>
 
-                    <Body>
-                        {false && <Link href={url} onClick={onStoryClick} target="_blank"><ArticleDigest>
-                            <b>{true ? 'Digest:' : 'Short Digest:'}</b>
-                        </ArticleDigest></Link>}
-                        <Digest>
-                            <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
-                                <div dangerouslySetInnerHTML={{ __html: digest }} />
+                            <Digest>
+                                <Link href={url || ""} scroll={false} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
+                                <ShareContainerInline>
+                                    <ContentCopyIcon style={{ paddingTop: 0, marginBottom: 0, color: digestCopied ? 'green' : '' }} fontSize="medium" onClick={() => onDigestCopyClick()} />
+                                </ShareContainerInline>
+                            </Digest>
+                        </Body>
+                    </HorizontalContainer>
+                    {renderPrompts("mobile")}
+                    <ArticleMentions>
+                        <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
+                        {Mentions}</ArticleMentions>
+                    <br />
+                    <Link href={url || ""} scroll={false} onClick={onStoryClick}> {url?.substring(0, 30)}...</Link>
+                    <BottomLine>
+                        <ShareGroup>
+                            <ShareContainer onClick={async () => await onShare(shareUrls.share)}>
+                                <ShareIcon><IosShareIcon /></ShareIcon>
+                            </ShareContainer>
+                            <Link href={socialLinks.facebook} target="_blank">
+                                <ShareContainer><FacebookIcon /></ShareContainer>
                             </Link>
-                            <div className="flex flex-row justify-center mt-2 mb-2">
-                                <ContentCopyIcon className={digestCopied ? "cursor-pointer text-green-500 w-10" : "cursor-pointer w-10"} fontSize="medium" onClick={() => onDigestCopyClick()} />
-
-                                <BiCommentDots className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
-                                <BiCommentAdd className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
-
-
-                            </div>
-                        </Digest>
-                    </Body>
-                </HorizontalContainer>
-                {renderPrompts("desktop")}
-                <ArticleMentions>
-                    <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
-                    {Mentions}
-                </ArticleMentions>
-                <br />
-                <Link style={{ marginLeft: 10 }} href={url} onClick={onStoryClick} target="_blank">{url?.substring(0, 50)}..</Link>
-                <BottomLine>
-                    <ShareGroup>
-                        <ShareContainer onClick={async () => onShare(shareUrls.share)}>
-                            <ShareIcon><IosShareIcon style={{ fontSize: 17 }} /></ShareIcon>
-                        </ShareContainer>
-                        <Link href={socialLinks.facebook} target="_blank">
-                            <ShareContainer><FacebookIcon /></ShareContainer>
-                        </Link>
-                        <Link href={socialLinks.twitter} target="_blank">
-                            <ShareContainer><XIcon /></ShareContainer>
-                        </Link>
-                    </ShareGroup>
-                </BottomLine>
-                <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
-            </DesktopWrap>
-            <MobileWrap>
-                <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
-                <Link href={url} scroll={false} onClick={onStoryClick}><Title>{title}</Title></Link>
-                <Link href={url} scroll={false} onClick={onStoryClick}><Byline>
-                    {authors && <Authors>{authors}</Authors>}
-                    <SiteName>{site_name}</SiteName>
-                </Byline>
-                </Link>
-                <HorizontalContainer>
-                    <Link href={url} scroll={false} onClick={onStoryClick}>
-                        <ImageWrapper>
-                            <img
-                                src={image}
-                                alt={title}
-                                width={image_width}
-                                height={image_height}
-
-                            />
-                        </ImageWrapper>
-                    </Link>
-                    <Body>
-
-                        <Digest>
-                            <Link href={url || ""} scroll={false} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
-                            <ShareContainerInline>
-                                <ContentCopyIcon style={{ paddingTop: 0, marginBottom: 0, color: digestCopied ? 'green' : '' }} fontSize="medium" onClick={() => onDigestCopyClick()} />
-                            </ShareContainerInline>
-                        </Digest>
-                    </Body>
-                </HorizontalContainer>
-                {renderPrompts("mobile")}
-                <ArticleMentions>
-                    <ArticleMentionsTitle><b>Mentions:</b></ArticleMentionsTitle>
-                    {Mentions}</ArticleMentions>
-                <br />
-                <Link href={url || ""} scroll={false} onClick={onStoryClick}> {url?.substring(0, 30)}...</Link>
-                <BottomLine>
-                    <ShareGroup>
-                        <ShareContainer onClick={async () => await onShare(shareUrls.share)}>
-                            <ShareIcon><IosShareIcon /></ShareIcon>
-                        </ShareContainer>
-                        <Link href={socialLinks.facebook} target="_blank">
-                            <ShareContainer><FacebookIcon /></ShareContainer>
-                        </Link>
-                        <Link href={socialLinks.twitter} target="_blank">
-                            <ShareContainer><XIcon /></ShareContainer>
-                        </Link>
-                    </ShareGroup>
-                </BottomLine>
-                <hr />
-            </MobileWrap>
-        </div >
+                            <Link href={socialLinks.twitter} target="_blank">
+                                <ShareContainer><XIcon /></ShareContainer>
+                            </Link>
+                        </ShareGroup>
+                    </BottomLine>
+                    <hr />
+                </MobileWrap>
+            </div>
+        </>
     );
 };
 

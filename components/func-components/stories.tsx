@@ -73,6 +73,8 @@ const Stories: React.FC<Props> = ({ type }) => {
         return key;
     };
     console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
+    const savedFallback = JSON.parse(JSON.stringify(fallback));
+    console.log("Stories ==> savedFallback", savedFallback);
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
         fetchStoriesKey,
         actionStories,

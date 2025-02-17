@@ -114,7 +114,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (!userId) {
         userId = "";
     }
-    console.log("===============>SSR userId", userId);
+    //  console.log("===============>SSR userId", userId);
     let sessionid = "";
     let dark = 0;
     try {
@@ -186,7 +186,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (tab == 'chat') {
         calls.push(await fetchChat({ promptUUId, email: userInfo.email, type: "create-chat", league: league.toUpperCase(), teamid, athleteUUId, fantasyTeam: false, chatUUId: "" }, userId, sessionid));
     }
-    console.log("==> testing SSR PROMPT CHAT ADD fetch", tab, promptUUId, prompt);
+    // console.log("==> testing SSR PROMPT CHAT ADD fetch", tab, promptUUId, prompt);
 
     if (view == 'mentions' && tab != 'myfeed' && tab != 'fav') {
         if (!story && !findexarxid && !cstory) {
@@ -223,75 +223,84 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     //  let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: string } | null = null;
     let relatedContent: RelatedContent | null = null;
     let jsonld: string[] = [];
+    let response;
+    let promptChatKey;
     if (promptUUId && tab == 'chat') {
-        const response = await ssrPromptChatResponse(promptUUId);
+        response = await ssrPromptChatResponse(promptUUId);
         if (response) {
             relatedContent = response;
-        }
-        console.log("==> SSR PROMPT CHAT RESPONSE", response);
-        const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest } = response || {};
-        calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
+            promptChatKey = { type: "prompt-chat", promptUUId };
+            console.log("==> SSR PROMPT CHAT IMMEDIATE RESPONSE", response);
+            const { prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest } = response || {};
+            // calls.push(await promisePromptChatResponse(userId, sessionid, promptUUId, prompt));
+            // const promptChatKey = { type: "prompt-chat", promptUUId };
+            // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
+            // Update expiryDate to be publishedTime + 1 week
+            //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
+            // console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
+            const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
+            // console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
+            expiryDate.setDate(expiryDate.getDate() + 1); // Add 7 days
+            articleStructuredData = {
+                '@context': 'https://schema.org',
+                '@type': 'Article',
+                '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat`,
+                headline: prompt,
+                image: image,
+                description: responseText,
+                dateCreated: publishedTime,
+                datePublished: publishedTime,
+                expires: expiryDate.toISOString(),
+                author: 'Qwiket',
+                publisher: 'Qwiket',
+                articleBody: digest,
+            }
+            if (digest && prompt && responseText && publishedTime)
+                jsonld.push(JSON.stringify(articleStructuredData));
+            const qaStructuredData = {
+                '@context': 'https://schema.org',
+                '@type': 'QAPage',
+                '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat&prompt=${promptUUId}`,
 
-        // promptResponse = { prompt, response: responseText, slug, image, image_width, image_height, publishedTime };
-        // Update expiryDate to be publishedTime + 1 week
-        //  console.log("==> SSR PROMPT CHAT RELATED CONTENT", JSON.stringify({ prompt, response: responseText, slug, image, image_width, image_height, publishedTime, title, digest }));
-        console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
-        const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
-        console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
-        expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
-        articleStructuredData = {
-            '@context': 'https://schema.org',
-            '@type': 'Article',
-            '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat`,
-            headline: prompt,
-            image: image,
-            description: responseText,
-            dateCreated: publishedTime,
-            datePublished: publishedTime,
-            expires: expiryDate.toISOString(),
-            author: 'Qwiket',
-            publisher: 'Qwiket',
-            articleBody: digest,
-        }
-        //if (digest && !prompt && responseText && publishedTime)
-        //    jsonld.push(JSON.stringify(articleStructuredData));
-        const qaStructuredData = {
-            '@context': 'https://schema.org',
-            '@type': 'QAPage',
-            '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat&prompt=${promptUUId}`,
-
-            "mainEntity": {
-                "@type": "Question",
-                "name": 'Elevate your fantasy game with Qwiket: Interactive Sports Knowledge Platform.',
-                "text": `${prompt}`,
-                "answerCount": 1,
-                "dateCreated": publishedTime,
-                "datePublished": publishedTime,
-                "expires": expiryDate.toISOString(),
-                "author": 'Qwiket',
-                "publisher": 'Qwiket',
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": responseText,
+                "mainEntity": {
+                    "@type": "Question",
+                    "name": 'Elevate your fantasy game with Qwiket: Interactive Sports Knowledge Platform.',
+                    "text": `${prompt}`,
+                    "answerCount": 1,
                     "dateCreated": publishedTime,
                     "datePublished": publishedTime,
                     "expires": expiryDate.toISOString(),
                     "author": 'Qwiket',
                     "publisher": 'Qwiket',
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": responseText,
+                        "dateCreated": publishedTime,
+                        "datePublished": publishedTime,
+                        "expires": expiryDate.toISOString(),
+                        "author": 'Qwiket',
+                        "publisher": 'Qwiket',
+                    }
                 }
             }
+            if (prompt && responseText && publishedTime)
+                jsonld.push(JSON.stringify(qaStructuredData));
         }
-        if (prompt && responseText && publishedTime)
-            jsonld.push(JSON.stringify(qaStructuredData));
+
     }
     if (tab == 'prompts') {
         const promptPageKey: PromptPageKey = { type: 'prompt-page', pageUUId: null, search_key: `${athleteUUId ? athleteUUId : teamid ? teamid : ''}` };
-        console.log("==> SSR PROMPT PAGE KEY", promptPageKey);
+        // console.log("==> SSR PROMPT PAGE KEY", promptPageKey);
         calls.push(await promiseGetPromptPage(promptPageKey));
     }
     /* SSR FETCHES */
 
     let fallback: { [key: string]: any } = {}; // Add index signature
+    if (promptChatKey && response) {
+        fallback[unstable_serialize(promptChatKey)] = response
+    }
+
+
     const leaguesKey = { type: "leagues" };
     fallback[unstable_serialize(leaguesKey)] = fetchLeagues(leaguesKey);
 
@@ -301,7 +310,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
-    console.log("==> common SSR", JSON.stringify({ teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm }));
+    const t3 = new Date().getTime();
+    console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm }));
     return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
