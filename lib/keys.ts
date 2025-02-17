@@ -47,3 +47,12 @@ export type CommentsKey = {
     page: number;
 };
 
+export type BlogArticlesKey = {
+    type: "fetch-blog-articles";
+    page: number;
+};
+export type BlogArticleKey = {
+    type: "fetch-blog-article";
+    slug: string;
+};
+

@@ -31,6 +31,7 @@ import fetchFavorites from '@lib/server-actions/favorites';
 import type { Article, WithContext } from 'schema-dts';
 import { RelatedContent } from './types/chat';
 import { PromptPageKey } from "./keys";
+import promiseFetchBlogArticle, { promiseFetchBlogArticles } from "./server-actions/blog";
 export type SSRParams = {
     leagueid?: string;
     teamid?: string;
@@ -154,13 +155,20 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (sessionid) {
         calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email || '', bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
     }
-
+    if (tab == 'blog') {
+        if (cstory) {
+            calls.push(await promiseFetchBlogArticle({ type: "fetch-blog-article", slug: cstory }));
+        }
+        else {
+            calls.push(await promiseFetchBlogArticles({ type: "fetch-blog-articles", page: 0 }));
+        }
+    }
 
     if (findexarxid) {  // if a mention story is opened
         calls.push(await fetchMention({ type: "AMention", findexarxid }));
         calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
     }
-    if (story || cstory) { // if a digest story is opened
+    if ((story || cstory) && tab != 'blog') { // if a digest story is opened
         calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story || cstory }));
     }
     if (m || cm) {

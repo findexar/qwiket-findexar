@@ -20,6 +20,8 @@ import StoryOverlay from "@/components/func-components/story-overlay";
 import { actionRecordEvent } from "@lib/server-actions/event";
 import LeagueMentions from "../func-components/league-mentions";
 import PromptsComponent from "../func-components/prompts";
+import Blog from "@/components/func-components/blog";
+import BlogArticle from "@/components/func-components/blog-article";
 const PageWrap = styled.div`
   width: 100%;
   display: flex;
@@ -258,7 +260,7 @@ const Desktop: React.FC<Props> = () => {
   };
   // tab = tab || 'all';
   console.log("==> pagetype", pagetype, tab, view, cstory, cm);
-  let noshow = (cstory || cm);
+  let noshow = (cstory || cm) && tab !== 'blog';
   return (
     <div className="lg:block hidden h-full w-full">
 
@@ -280,7 +282,7 @@ const Desktop: React.FC<Props> = () => {
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
                         { name: `AI Chat`, tab: 'chat', disabled: false, link: tabPath('chat') },
                         { name: "MyTeam", tab: "myteam", disabled: false, link: tabPath('myteam') },
-                        //   { name: "?", tab: "faq", disabled: false, link: tabPath('faq') },
+                        { name: "Founders Blog", tab: "blog", disabled: false, link: tabPath('blog') },
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
@@ -299,7 +301,7 @@ const Desktop: React.FC<Props> = () => {
                       selectedOptionName={tab}
                     />
                   )}
-                  {(cstory || cm) && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} incolumn={true} />}
+                  {(cstory || cm) && tab !== 'blog' && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} incolumn={true} />}
                   {(pagetype === "team" || (pagetype === "league" && tab === "myteam")) && (tab === "mentions" || tab === "") && !noshow ? <TeamMentions /> : null}
                   {pagetype === "player" && (tab === "mentions" || tab === "") && !noshow ? <PlayerMentions /> : null}
                   {pagetype === "league" && view !== 'about' && (tab === 'all' || tab === '') && !noshow ? <Stories /> : null}
@@ -314,6 +316,8 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && !noshow && <Chat source="desktop" />}
                   {(pagetype === 'league' && tab === 'myteam') && !noshow && <MyTeam />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'prompts') && !noshow && <PromptsComponent />}
+                  {(pagetype === 'league' && tab === 'blog' && !cstory) && !noshow && <Blog />}
+                  {(pagetype === 'league' && tab === 'blog' && cstory) && !noshow && <BlogArticle />}
 
                 </CenterPanel>
                 <RightPanel>
