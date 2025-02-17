@@ -147,7 +147,7 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
-
+    console.log("==> CHATS.TSX loadedChat", loadedChat);
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
