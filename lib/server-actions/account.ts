@@ -44,6 +44,7 @@ export const fetchUser = async (
 ): Promise<UserAccount> => {
     'use server';
     try {
+        const t1 = new Date().getTime();
         const { email = '', bot = false } = key;
         if (bot) {
             return {
@@ -71,9 +72,13 @@ export const fetchUser = async (
         //  console.log("return fetching user", url, data);
         if (data.success) {
             //console.log("===>GET USER", data.account);
+            const t2 = new Date().getTime();
+            // console.log("===>GET USER TIME", t2 - t1);
             return data.account as UserAccount;
         }
         console.log("FAILED TO GET USER", data);
+        const t3 = new Date().getTime();
+        console.log("===>FAILED TO GET USER TIME", t3 - t1);
         return {} as UserAccount;
         // throw new Error("Failed to fetchUser");
     }

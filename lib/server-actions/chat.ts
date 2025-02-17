@@ -272,6 +272,7 @@ export const actionChatInit = async (props: ChatInitProps) => {
 
 const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: string): Promise<{ success: boolean, chat: Chat, error: string }> => {
     'use server';
+    const t1 = new Date().getTime();
     const { chatUUId, athleteUUId, teamid, league, fantasyTeam = false, email, promptUUId = '' } = props;
     // email is to break the SWR cache when the user switches accounts
     if (chatUUId == "_new" && !promptUUId) {
@@ -281,7 +282,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     //console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
-    console.log("====================> loadLatestChat", url)
+    //  console.log("====================> loadLatestChat", url)
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -307,6 +308,8 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
         return { success: false, chat: {} as Chat, error: data.error || 'Failed to loadLatestChat' };
     }
     // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
+    const t2 = new Date().getTime();
+    //  console.log("==> LOAD LATEST CHAT TIME", t2 - t1);
     return { success: true, chat: data.chat, error: '' };
 }
 
@@ -373,11 +376,13 @@ const promiseCreateChat = async (key: CreateChatKey, userId: string, sessionid: 
 }
 const getPromptChatResponse = async (promptUUId: string, prompt?: string) => {
     'use server';
+    const t1 = new Date().getTime();
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/prompt-response?api_key=${api_key}&promptUUId=${promptUUId}`;
     const fetchResponse = await fetch(url);
     const data = await fetchResponse.json();
     if (data.success) {
-
+        const t2 = new Date().getTime();
+        console.log("==> PROMPT CHAT RESPONSE TIME", t2 - t1);
         return data.response;
     }
     return null;
