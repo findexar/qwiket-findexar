@@ -52,7 +52,7 @@ const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, ic
       disabled={disabled}
     // Ensures that the button size doesn't change when selected
     >
-      {link ? <Link prefetch={true} href={link}>{label}</Link> : label}
+      {link ? <Link href={link}>{label}</Link> : label}
     </button>
   );
 };
