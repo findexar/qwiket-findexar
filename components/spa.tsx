@@ -224,7 +224,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setView(qview);
       }
       if (qprompt !== prompt) setPrompt(qprompt);
-      if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
+      // if (qpromptUUId !== promptUUId) setPromptUUId(qpromptUUId);
       let parts = pathname?.split("/") || [];
       let qpagetype = 'league';
       let qleague = parts && parts.length > 1 ? parts[1] : '';
