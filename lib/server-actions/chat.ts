@@ -295,6 +295,9 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
             fantasyTeam,
             chatUUId,
         }),
+        next: {
+            revalidate: 0,
+        },
     });
 
     if (!res.ok) {
