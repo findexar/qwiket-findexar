@@ -282,7 +282,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     //console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
-    //  console.log("====================> loadLatestChat", url)
+    console.log("====================> loadLatestChat", promptUUId, url)
     const res = await fetch(url, {
         method: 'POST',
         headers: {
