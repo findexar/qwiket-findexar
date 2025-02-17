@@ -24,6 +24,7 @@ import { RelatedContent } from '@/lib/types/chat';
 
 
 interface LeagueLayoutProps {
+  today?: Date,
   fallback: any,
   isMobile: boolean,
   fbclid: string,
@@ -58,6 +59,7 @@ interface LeagueLayoutProps {
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
 
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({
+  today,
   view: startView,
   tab: startTab,
   rtab: startRtab,
@@ -326,6 +328,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setPage={setPage}
         setRelatedContent={setRelatedContent}
         relatedContent={relatedContent}
+        today={today}
       >
         <main className={roboto.className + " h-full " + (localMode == 'dark' ? 'dark' : localMode == 'light' ? 'light' : 'dark')}>
           <Head>

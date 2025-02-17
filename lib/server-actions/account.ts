@@ -7,17 +7,22 @@ import fetchSession from './session';
 
 const api_key = process.env.LAKE_API_KEY;
 
-export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, sessionid: string): Promise<UserUsage> => {
+export const fetchUserUsage = async (key: UserUsageAccountKey, userId: string, sessionid: string, debug?: string): Promise<UserUsage> => {
     'use server';
     try {
-        const { periods = [] } = key;
+        console.log("fetchUserUsage params", key, userId, sessionid)
+        let { periods = [] } = key;
 
         if (!Array.isArray(periods) || periods.length === 0) {
-            throw new Error("Invalid periods");
+            // console.log("Invalid periods", periods)
+            //return {} as UserUsage;
+            // throw new Error("Invalid periods");
+            //return {} as UserUsage;
+            periods = [{ year: "2025", month: "02" }];
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
-        //  console.log("fetching usage", url);
+        console.log("fetching usage", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
         //console.log("return fetching usage", url, JSON.stringify(data, null, 2));
@@ -94,7 +99,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     }
     // console.log("===>actionUserUsage", key, userId, sessionid)
 
-    return fetchUserUsage(key, userId, sessionid);
+    return fetchUserUsage(key, userId, sessionid, 'actionUserUsage');
 }
 
 export const actionUser = async (key: UserAccountKey, utm_content?: string): Promise<UserAccount> => {
@@ -124,7 +129,7 @@ export const fetchCidUsage = async (key: CidUsageAccountKey, userId: string, ses
     'use server';
     try {
         const { cid, periods = [] } = key;
-
+        console.log("fetchCidUsage", key, userId, sessionid)
         if (!cid || !Array.isArray(periods) || periods.length === 0) {
             return {
                 usage: [],
@@ -137,6 +142,7 @@ export const fetchCidUsage = async (key: CidUsageAccountKey, userId: string, ses
         }
 
         const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-cid-usage?api_key=${api_key}&userid=${userId || ""}&sessionid=${sessionid}&cid=${cid}&periods=${encodeURIComponent(JSON.stringify(periods))}`;
+        console.log("fetchCidUsage", url)
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
 

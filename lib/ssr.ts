@@ -31,6 +31,8 @@ import fetchFavorites from '@lib/server-actions/favorites';
 import type { Article, WithContext } from 'schema-dts';
 import { RelatedContent } from './types/chat';
 import { PromptPageKey } from "./keys";
+import { actionRecordEvent } from "@lib/server-actions/event";
+
 import promiseFetchBlogArticle, { promiseFetchBlogArticles } from "./server-actions/blog";
 export type SSRParams = {
     leagueid?: string;
@@ -97,6 +99,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
     if (!ua) {
         bot = true;
+    }
+    if (bot) {
+        await actionRecordEvent("bot-ssr", `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
     }
     let userId = "";
     try {
@@ -233,7 +238,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         console.log("==> SSR PROMPT CHAT PUBLISHED TIME", publishedTime);
         const expiryDate = publishedTime ? new Date(publishedTime) : new Date();
         console.log("==> SSR PROMPT CHAT EXPIRY DATE", expiryDate);
-        expiryDate.setDate(expiryDate.getDate() + 1); // Add 7 days
+        expiryDate.setDate(expiryDate.getDate() + 7); // Add 7 days
         articleStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'Article',
@@ -248,8 +253,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             publisher: 'Qwiket',
             articleBody: digest,
         }
-        if (digest && prompt && responseText && publishedTime)
-            jsonld.push(JSON.stringify(articleStructuredData));
+        //if (digest && !prompt && responseText && publishedTime)
+        //    jsonld.push(JSON.stringify(articleStructuredData));
         const qaStructuredData = {
             '@context': 'https://schema.org',
             '@type': 'QAPage',
@@ -370,7 +375,7 @@ export async function generateMetadata(
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
-    let ogTitle = ogTarget || `Qwiket`;
+    let ogTitle = ogTarget || `Qwiket AI: Helping Fantasy Sports and Sports Betting Fans to Elevate their Game`;
     if (astory) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
         ogTitle = astoryTitle;
@@ -391,7 +396,7 @@ export async function generateMetadata(
         // Update noindex based on publishedTime being older than 1 week
         const publishedDate = promptResponse.publishedTime ? new Date(promptResponse.publishedTime) : new Date();
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 1);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
         noindex = 0;
         if (publishedDate < oneWeekAgo || !promptResponse.publishedTime) {
             noindex = 1;
@@ -399,8 +404,8 @@ export async function generateMetadata(
     }
     if (tab == 'prompts') {
         noindex = 0;
-        ogTitle = `Qwiket ${name ? name : ''} FAQ`;
-        ogDescription = "Qwiket Frequently Asked Questions";
+        ogTitle = `Qwiket AI: ${name ? name : ''} FAQ`;
+        ogDescription = "Qwiket AI: Frequently Asked Questions";
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
         image_height = 1200;
@@ -418,10 +423,10 @@ export async function generateMetadata(
         noindex = 0;
         if (athleteUUId) {
             name = decodeURIComponent(name);
-            ogTitle = `${name} - ${teamName} : Qwiket Interactive Sports Knowledge`;
+            ogTitle = `${name} - ${teamName} : Qwiket AI: Interactive Sports Knowledge`;
         }
         else {
-            ogTitle = `${teamName} : Qwiket Interactive Sports Knowledge`;
+            ogTitle = `${teamName} : Qwiket AI: Interactive Sports Knowledge`;
         }
         ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";
