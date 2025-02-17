@@ -139,6 +139,8 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
     let immediateFollowupPrompts = followupPrompts || loadedChat?.chat?.messages[1]?.prompts || [];
     const promptChatResponseKey: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
+    const savedFallback = JSON.parse(JSON.stringify(fallback));
+    const savedPromptUUId = promptUUId;
     const { data: promptResponse, error: promptResponseError, isLoading: isLoadingPromptResponse, mutate: mutatePromptResponse }: {
         data: any,
         error: any,
@@ -147,7 +149,7 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
-    console.log("==> CHATS.TSX loadedChat", { promptUUId, loadedChat, fallback });
+    console.log("==> CHATS.TSX loadedChat", { promptUUId, savedPromptUUId, loadedChat, savedFallback, fallback });
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
