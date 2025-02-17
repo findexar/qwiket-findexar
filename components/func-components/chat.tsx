@@ -144,7 +144,7 @@ const ChatsComponent: React.FC<Props> = ({
         error: any,
         isLoading: boolean,
         mutate: any
-    } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback: localFallback });
+    } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
 
