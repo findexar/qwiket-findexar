@@ -234,7 +234,11 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 description: blogArticle.summary,
                 dateCreated: blogArticle.date,
                 datePublished: blogArticle.date,
-                author: blogArticle.authorName,
+                author: {
+                    '@type': 'Person',
+                    'name': blogArticle.authorName,
+                    'email': `support@qwiket.com`
+                },
                 publisher: 'QwiketAI',
                 articleBody: blogArticle.markdown,
             }
