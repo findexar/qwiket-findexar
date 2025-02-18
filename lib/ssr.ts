@@ -228,13 +228,12 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             articleStructuredData = {
                 '@context': 'https://schema.org',
                 '@type': 'Article',
-                '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/tab=blog&cstory=${cstory}`,
+                '@id': `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&cstory=${cstory}`,
                 headline: blogArticle.title,
                 image: blogArticle.articleImage.url,
                 description: blogArticle.summary,
                 dateCreated: blogArticle.date,
                 datePublished: blogArticle.date,
-                expires: blogArticle.date,
                 author: blogArticle.authorName,
                 publisher: 'QwiketAI',
                 articleBody: blogArticle.markdown,
@@ -473,7 +472,7 @@ export async function generateMetadata(
         ogTitle = blogArticle.title;
         ogDescription = blogArticle.summary;
         ogImage = blogArticle.articleImage.url;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/tab=blog&cstory=${cstory}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&cstory=${cstory}`;
         ogSiteName = 'QwiketAI';
         ogAuthors = blogArticle.authorName;
         //image_width = blogArticle.articleImage.width;
@@ -498,9 +497,9 @@ export async function generateMetadata(
             siteName: ogSiteName,
         },
         robots: (noindex === 1) ? 'noindex, follow' : 'index, follow',
-        /* alternates: {
-             canonical: ogUrl,
-         },*/
+        alternates: {
+            canonical: tab == 'blog' && cstory ? ogUrl : null,
+        },
         icons: {
             icon: [
                 { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
