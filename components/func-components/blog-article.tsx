@@ -1,4 +1,4 @@
-import React, { ReactNode, Suspense } from 'react';
+import React, { ReactNode, Suspense, useCallback } from 'react';
 import { styled } from 'styled-components';
 import { getAllArticles } from "@/lib/contentful-api";
 import Image from 'next/image';
@@ -14,6 +14,53 @@ import { MarkdownComponents } from '@components/shared/markdown-components';
 import useSWR from 'swr';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES } from "@contentful/rich-text-types";
+import IosShareIcon from '@/components/icons/share';
+import { FaFacebook as FacebookIcon, FaComments as CommentsIcon } from 'react-icons/fa';
+import { useMemo } from 'react';
+import XIcon from '@/components/icons/twitter';
+const ShareGroup = styled.div`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-start;
+    width:78px;
+    height:40px;
+    margin-top:10px;
+`;
+const ShareIcon = styled.div`
+    margin-top:-1px;
+    padding-bottom:1px;
+    font-size:16px;
+`;
+
+const ShareContainer = styled.div`
+    font-size: 28x;  
+    height:38px;
+    opacity:0.6;
+    cursor:pointer;
+    color:var(--mention-text);
+    :hover{
+        opacity:1;
+        color: var(--highlight);
+    }
+    :hover:active{
+        opacity:1;
+        color:var(--highlight);
+    }
+`;
+
+const BottomLine = styled.div`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:10px;
+    width:100%;
+    @media screen and (max-width: 1199px) {
+        margin-left:-4px;
+    }
+`;
+
 const WelcomeWrap = styled.div`
     paddWelcomeWraping-top:18px;
     padding-right:40px;
@@ -158,6 +205,45 @@ const Readme = () => {
             },
         };
     }
+    const shareUrls = useMemo(() => {
+        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}?tab=blog&cstory=${cstory}`;
+        // const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
+        return {
+            share: `${baseUrl}&utm_content=bloglink`,
+            twitter: `${baseUrl}&utm_content=xslink`,
+            facebook: `${baseUrl}&utm_content=fbslink`,
+        };
+    }, [cstory]);
+
+    const socialLinks = useMemo(() => {
+        return {
+            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.summary.substring(0, 230) + '...')}&url=${shareUrls.twitter}&via=findexar`,
+            facebook: `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(shareUrls.facebook)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(article.summary.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`,
+        };
+    }, [article, shareUrls]);
+
+    const onShare = useCallback((url: string) => {
+        if (navigator.share) {
+            navigator.share({
+                title: `${process.env.NEXT_PUBLIC_APP_NAME}`,
+                text: article.summary,
+                url: url,
+            });
+        }
+
+        if (!bot) {
+            try {
+                actionRecordEvent(`blog-share`, `{"url":"${url}","params":"${params}"}`)
+                    .then((r: any) => {
+                        //console.log("recordEvent", r);
+                    });
+            } catch (x) {
+                console.log('recordEvent', x);
+            }
+        }
+    }, [article]);
+
+
     console.log("markdown", markdown)
     return (
         <Container>
@@ -176,6 +262,19 @@ const Readme = () => {
                             <p className="text-sm text-gray-800 dark:text-gray-200">Copyright &#169; 2024, 2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.</p>
 
                         </article>
+                        <BottomLine>
+                            <ShareGroup>
+                                <ShareContainer onClick={async () => onShare(shareUrls.share)}>
+                                    <ShareIcon><IosShareIcon style={{ fontSize: 17 }} /></ShareIcon>
+                                </ShareContainer>
+                                <Link href={socialLinks.facebook} target="_blank">
+                                    <ShareContainer><FacebookIcon /></ShareContainer>
+                                </Link>
+                                <Link href={socialLinks.twitter} target="_blank">
+                                    <ShareContainer><XIcon /></ShareContainer>
+                                </Link>
+                            </ShareGroup>
+                        </BottomLine>
                     </main>
                 </Suspense>
             </WelcomeWrap>
