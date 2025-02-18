@@ -514,7 +514,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <BottomLine>
                         <ShareGroup>
                             <ShareContainer onClick={async () => onShare(shareUrls.share)}>
-                                <ShareIcon><IosShareIcon style={{ fontSize: 17 }} /></ShareIcon>
+                                <ShareIcon><IosShareIcon style={{ fontSize: 16 }} /></ShareIcon>
                             </ShareContainer>
                             <Link href={socialLinks.facebook} target="_blank">
                                 <ShareContainer><FacebookIcon /></ShareContainer>
