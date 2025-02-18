@@ -63,7 +63,7 @@ const BottomLine = styled.div`
 
 const WelcomeWrap = styled.div`
     paddWelcomeWraping-top:18px;
-    padding-right:40px;
+   // padding-right:40px;
     width:100%;
     a{
         text-decoration: none;
@@ -244,7 +244,7 @@ const Readme = () => {
     }, [article]);
 
 
-    console.log("markdown", markdown)
+    //  console.log("markdown", markdown)
     return (
         <Container>
             <WelcomeWrap className="text-left">
