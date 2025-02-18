@@ -158,7 +158,7 @@ const Readme = () => {
             },
         };
     }
-
+    console.log("markdown", markdown)
     return (
         <Container>
             <WelcomeWrap className="text-left">
@@ -168,7 +168,7 @@ const Readme = () => {
                             <h1 className="text-3xl font-bold mb-4 ">{article?.title}</h1>
                             <img src={article?.articleImage.url} alt={article?.title} width="100%" />
                             <p className="text-sm text-gray-800 dark:text-gray-200 mt-4">by {article?.authorName} on {formattedDate}</p>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} components={MarkdownComponents}>
                                 {markdown || ''}
                             </ReactMarkdown>
 

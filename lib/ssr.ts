@@ -31,9 +31,10 @@ import fetchFavorites from '@lib/server-actions/favorites';
 import type { Article, WithContext } from 'schema-dts';
 import { RelatedContent } from './types/chat';
 import { PromptPageKey } from "./keys";
+import { BlogArticleKey } from "./keys";
 import { actionRecordEvent } from "@lib/server-actions/event";
 
-import promiseFetchBlogArticle, { promiseFetchBlogArticles } from "./server-actions/blog";
+import promiseFetchBlogArticle, { promiseFetchBlogArticles, actionFetchBlogArticle } from "./server-actions/blog";
 export type SSRParams = {
     leagueid?: string;
     teamid?: string;
@@ -161,14 +162,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (sessionid) {
         calls.push(await fetchUserAccount({ type: "user-account", email: userInfo.email || '', bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
     }
-    if (tab == 'blog') {
-        if (cstory) {
-            calls.push(await promiseFetchBlogArticle({ type: "fetch-blog-article", slug: cstory }));
-        }
-        else {
-            calls.push(await promiseFetchBlogArticles({ type: "fetch-blog-articles", page: 0 }));
-        }
-    }
+
 
     if (findexarxid) {  // if a mention story is opened
         calls.push(await fetchMention({ type: "AMention", findexarxid }));
@@ -223,7 +217,35 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let articleStructuredData: WithContext<Article> | undefined = undefined;
     //  let promptResponse: { prompt: string, response: string, slug: string, image: string, image_width: number, image_height: number, publishedTime: string } | null = null;
     let relatedContent: RelatedContent | null = null;
+    let fallback: { [key: string]: any } = {}; // Add index signature
+
     let jsonld: string[] = [];
+    if (tab == 'blog') {
+        if (cstory) {
+            const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: cstory };
+            const blogArticle = await actionFetchBlogArticle(blogArticleKey);
+            fallback[unstable_serialize(blogArticleKey)] = blogArticle;
+            articleStructuredData = {
+                '@context': 'https://schema.org',
+                '@type': 'Article',
+                '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/tab=blog&cstory=${cstory}`,
+                headline: blogArticle.title,
+                image: blogArticle.articleImage.url,
+                description: blogArticle.summary,
+                dateCreated: blogArticle.date,
+                datePublished: blogArticle.date,
+                expires: blogArticle.date,
+                author: blogArticle.authorName,
+                publisher: 'QwiketAI',
+                articleBody: blogArticle.markdown,
+            }
+            jsonld.push(JSON.stringify(articleStructuredData));
+        }
+        else {
+            calls.push(await promiseFetchBlogArticles({ type: "fetch-blog-articles", page: 0 }));
+        }
+    }
+
     let response;
     let promptChatKey;
     if (promptUUId && tab == 'chat') {
@@ -245,7 +267,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
             articleStructuredData = {
                 '@context': 'https://schema.org',
                 '@type': 'Article',
-                '@id': `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat`,
+                '@id': `${process.env.NEXT_PUBLIC_SERVER} /${leagueid}/${teamid} /${athleteUUId ? `${athleteUUId}/` : ''}?tab=chat`,
                 headline: prompt,
                 image: image,
                 description: responseText,
@@ -296,7 +318,6 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }
     /* SSR FETCHES */
 
-    let fallback: { [key: string]: any } = {}; // Add index signature
     if (promptChatKey && response) {
         fallback[unstable_serialize(promptChatKey)] = response
     }
@@ -446,6 +467,19 @@ export async function generateMetadata(
         image_height = 1200;
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}${tab ? `?tab=${tab}&utm_content=${encodeURIComponent(tab)}` : ''}`;
     }
+    if (tab == 'blog' && cstory) {
+        const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: cstory };
+        const blogArticle = await actionFetchBlogArticle(blogArticleKey);
+        ogTitle = blogArticle.title;
+        ogDescription = blogArticle.summary;
+        ogImage = blogArticle.articleImage.url;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/tab=blog&cstory=${cstory}`;
+        ogSiteName = 'QwiketAI';
+        ogAuthors = blogArticle.authorName;
+        //image_width = blogArticle.articleImage.width;
+        //image_height = blogArticle.articleImage.height;
+        noindex = 0;
+    }
     return {
         title: ogTitle,
         openGraph: {
@@ -455,8 +489,8 @@ export async function generateMetadata(
             images: [
                 {
                     url: ogImage,
-                    width: image_width,
-                    height: image_height,
+                    width: image_width ? image_width : 0,
+                    height: image_height ? image_height : 0,
                     alt: ogTitle,
                 }
             ],

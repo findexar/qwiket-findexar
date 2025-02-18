@@ -3,7 +3,7 @@ import { Components } from 'react-markdown';
 
 export const MarkdownComponents: Partial<Components> = {
     h1: ({ node, ...props }: any) => <h1 className="text-2xl font-bold my-8" {...props} />,
-    h2: ({ node, ...props }: any) => <h2 className="text-xl font-semibold my-4" {...props} />,
+    h2: ({ node, ...props }: any) => <h2 className="text-xl font-semibold my-8 " {...props} />,
     h3: ({ node, ...props }: any) => <h3 className="text-lg font-medium my-2 mt-8" {...props} />,
     p: ({ node, ...props }: any) => <p className="my-2" {...props} />,
     ul: ({ node, ...props }: any) => <ul className="list-disc list-inside my-2" {...props} />,
