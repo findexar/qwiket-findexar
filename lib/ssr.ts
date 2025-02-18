@@ -58,6 +58,7 @@ export type SSRSearchParams = {
     page?: string;
 }
 export type ssrResult = {
+    today: Date;
     userInfo: { email: string };
     dark: number;
     view: string;
@@ -312,7 +313,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     const t3 = new Date().getTime();
     console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm }));
-    return { relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    const today = new Date();
+    return { today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(

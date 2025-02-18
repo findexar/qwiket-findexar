@@ -328,7 +328,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         setPage={setPage}
         setRelatedContent={setRelatedContent}
         relatedContent={relatedContent}
-        today={today}
+        today={today || new Date()}
       >
         <main className={roboto.className + " h-full " + (localMode == 'dark' ? 'dark' : localMode == 'light' ? 'light' : 'dark')}>
           <Head>
