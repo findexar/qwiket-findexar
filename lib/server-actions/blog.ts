@@ -24,7 +24,7 @@ const fetchArticles = async (key: BlogArticlesKey) => {
     return articles;
 }
 
-export const promiseFetchBlogArticles = async (key: BlogArticlesKey) => {
+export const promiseFetchBlogArticles = async (key: BlogArticlesKey): Promise<any> => {
     //  console.log("promiseStories", userId, sessionid, league);
     let keyFetchBlogArticles = (page: any) => {
         const keyFetchedStories: BlogArticlesKey = { type: "fetch-blog-articles", page: page }
@@ -46,7 +46,7 @@ export const actionFetchBlogArticles = async (key: BlogArticlesKey) => {
     console.log("CLIENTactionFetchBlogArticles", key)
     return fetchArticles(key);
 }
-const fetchArticle = async (key: BlogArticleKey) => {
+const fetchArticle = async (key: BlogArticleKey): Promise<any> => {
     let { slug } = key;
     const article = await getArticle(slug);
     console.log("fetchArticle", article);

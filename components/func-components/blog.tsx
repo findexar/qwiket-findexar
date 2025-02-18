@@ -56,16 +56,15 @@ const Readme = () => {
             <WelcomeWrap className="text-left">
 
                 <main className="flex min-h-screen flex-col items-center justify-between p-2">
-                    <section className="w-full pt-2">
-                        <div className="mx-auto container space-y-12 px-4 md:px-6">
+                    <section className="w-full pt-0">
+                        <div className="mx-auto container space-y-12 px-0 md:px-0">
                             <div className="flex flex-col items-center justify-center space-y-4 text-left">
                                 <div className="space-y-2">
                                     <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                                         The Founders Blog
                                     </h1>
                                     <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
-                                        Discover our latest articles and stay up to date with the newest
-                                        technologies, features, and trends.
+                                        Discover our latest articles and stay up to date with Qwiket AI updates, thoughts on fantasy sports future and technology.
                                     </p>
                                 </div>
                             </div>
@@ -88,15 +87,16 @@ const Readme = () => {
                                                             {article.title}
                                                         </h3>
                                                     </Link>
-                                                    <div className="inline-block rounded-full bg-zinc-100 px-3 py-1 text-sm font-semibold text-zinc-800">
-                                                        {article.categoryName}
-                                                    </div>
+
                                                     <p className="max-w-none text-zinc-500 mt-4 mb-2 text-sm dark:text-zinc-400">
                                                         {article.summary}
                                                     </p>
                                                     <p className="max-w-none text-zinc-600 mt-2 mb-2 text-sm font-bold dark:text-zinc-400">
-                                                        Written by: {article.authorName}
+                                                        By: {article.authorName}
                                                     </p>
+                                                    <div className="inline-block rounded-full px-0 py-1 text-xs font-semibold text-zinc-800 dark:text-zinc-400">
+                                                        {article.categoryName}
+                                                    </div>
                                                     <div className="flex justify-end">
                                                         <Link
                                                             className="inline-flex h-10 items-center justify-center text-sm font-medium"

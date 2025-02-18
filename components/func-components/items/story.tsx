@@ -418,6 +418,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         href={`/${p.league}${teamid ? `/${teamid}` : ''}${player ? `/${player}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}${param}&prompt=${encodeURIComponent(p.prompt)}&promptUUId=${p.promptUUId}`}
                         $isDarkMode={isDarkMode}
                         onClick={() => setLoading(true)}
+                        scroll={true}
                     >
                         {p.prompt}
                     </PromptTag>

@@ -30,6 +30,8 @@ import Chat from "@/components/func-components/chat";
 import LeagueMentions from "../func-components/league-mentions";
 import { isGenerator } from "framer-motion";
 import Prompts from "../func-components/prompts";
+import Blog from "@/components/func-components/blog";
+import BlogArticle from "@/components/func-components/blog-article";
 
 const FadeTransition = styled.div<{ $isVisible: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0};
@@ -102,7 +104,7 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, rtab, view, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, m, findexarxid, bot, player, athleteUUId } = useAppContext();
+    const { tab, rtab, view, cm, cstory, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, m, findexarxid, bot, player, athleteUUId } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -223,6 +225,7 @@ const Mobile: React.FC<Props> = () => {
           // Preload components or data here
       }, [tab, view]);*/
     // console.log("==> pagetype", pagetype, view, tab);
+    let noshow = (cstory || cm) && tab !== 'blog';
     return (
         <div className="block lg:hidden h-full">
             <MobileContainerWrap>
@@ -244,8 +247,9 @@ const Mobile: React.FC<Props> = () => {
                         options={[
                             { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
-                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
-                            { name: `@`, tab: "mentions", disabled: false, link: tabPath('mentions') }
+                            { name: "AI", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: `@`, tab: "mentions", disabled: false, link: tabPath('mentions') },
+                            { name: "Blog", tab: "blog", disabled: false, link: tabPath('blog') },
                         ]}
                         onChange={async (option: any) => { await onTabNav(option, 0); }}
                         selectedOptionName={tab}
@@ -258,7 +262,7 @@ const Mobile: React.FC<Props> = () => {
                         options={[
                             { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
-                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: "AI", tab: "chat", disabled: false, link: tabPath('chat') },
                             { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
                             { name: `?`, tab: 'prompts', disabled: false, link: tabPath('prompts') }
                         ]}
@@ -273,7 +277,7 @@ const Mobile: React.FC<Props> = () => {
                         options={[
                             { name: `Stories`, tab: 'all', disabled: false, link: tabPath('all') },
                             { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
-                            { name: "AI Chat", tab: "chat", disabled: false, link: tabPath('chat') },
+                            { name: "AI", tab: "chat", disabled: false, link: tabPath('chat') },
                             { name: `@`, tab: 'mentions', disabled: false, link: tabPath('mentions') },
                             { name: `?`, tab: 'prompts', disabled: false, link: tabPath('prompts') }
                         ]}
@@ -306,6 +310,8 @@ const Mobile: React.FC<Props> = () => {
                 }
 
                 {currentView == 'mentions' && <CenterPanel>
+                    {(cstory || cm) && tab !== 'blog' && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} incolumn={true} />}
+
                     {pagetype == "team" && tab == "mentions" ? <TeamMentions /> : null}
                     {pagetype == "player" && tab == "mentions" && <PlayerMentions />}
                     {(pagetype == "league" || pagetype == "team" || pagetype == "player") && currentTab == "all" ? <Stories /> : null}
@@ -319,6 +325,8 @@ const Mobile: React.FC<Props> = () => {
                     {false && pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
                     {false && pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                     {tab == 'chat' && <Chat source="mobile" />}
+                    {(pagetype === 'league' && tab === 'blog' && !cstory) && !noshow && <Blog />}
+                    {(pagetype === 'league' && tab === 'blog' && cstory) && !noshow && <BlogArticle />}
 
                 </CenterPanel>}
                 {view == 'about' && <Readme />}
@@ -326,7 +334,7 @@ const Mobile: React.FC<Props> = () => {
                 {view == 'players' && <Players />}
 
                 {localFindexarxid && <MentionOverlay setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
-                {(slug || m) && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
+                {(slug || m) && !cstory && !cm && tab !== 'blog' && <StoryOverlay idx="mobile" setDismiss={(dismiss: boolean) => { setView("mentions"); }} mutate={() => { }} />}
             </MobileContainerWrap >
         </div>
     )

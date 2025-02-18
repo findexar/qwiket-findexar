@@ -118,7 +118,7 @@ const CenterPanel = styled.div`
   height: auto;
   flex-grow: 2;
   width: 400px;
-  min-width: 400px;
+  min-width: 420px;
   
   @media screen and (min-width: 1200px) {
     width: 600px;
@@ -280,9 +280,9 @@ const Desktop: React.FC<Props> = () => {
                       options={[
                         { name: `Articles`, tab: 'all', disabled: false, link: tabPath('all') },
                         { name: `Podcasts`, tab: 'podcasts', disabled: false, link: tabPath('podcasts') },
-                        { name: `AI Chat`, tab: 'chat', disabled: false, link: tabPath('chat') },
+                        { name: `AI`, tab: 'chat', disabled: false, link: tabPath('chat') },
                         { name: "MyTeam", tab: "myteam", disabled: false, link: tabPath('myteam') },
-                        { name: "Founders Blog", tab: "blog", disabled: false, link: tabPath('blog') },
+                        { name: "Blog", tab: "blog", disabled: false, link: tabPath('blog') },
                       ]}
                       onChange={onTabNav}
                       selectedOptionName={tab}
