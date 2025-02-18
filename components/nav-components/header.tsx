@@ -452,7 +452,7 @@ interface Props {
 let s = false;
 
 const HeaderNav: React.FC<Props> = ({ }) => {
-  const { fallback, mode, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
+  const { fallback, mode, setLeague, tab, view, setView, setTab, setPagetype, setTeamid, setPlayer, setMode, fbclid, utm_content, league, pagetype, teamid, player, teamName, teamLogo, bot } = useAppContext();
   const leaguesKey = { type: "leagues" };
   const key: LeaguesKey = { type: "leagues" };
   const { data: leagues = [], error } = useSWR(
@@ -484,7 +484,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const onLeagueNavClick = useCallback((l: string, url: string) => {
-    console.log("onLeagueNavClick", l, url, 'params:', params, 'tp:', tp);
+    console.log("onLeagueNavClick", l, url);
     setLeague(l);
     setPagetype('league');
     if (tab == 'mentions') {
@@ -559,7 +559,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
   const LeaguesNav = leagues?.map((l: string, i: number) => {
     return l == league ? <SelectedLeague $scrolled={scrollY != 0} key={`league-${l}`} >
-      <Link prefetch={false} href={`/${l}`} onClick={() => { onLeagueNavClick(l, `/${l}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link prefetch={true} href={`/${l}${params}${tp}`}
+      <Link prefetch={false} href={`/${l}`} onClick={() => { onLeagueNavClick(l, `/${l}`) }} >{l}</Link></SelectedLeague> : <League $scrolled={scrollY != 0} key={`league-${i}`}><Link prefetch={false} href={`/${l}`}
         onClick={async () => { await onLeagueNavClick(l, `/${l}`) }} >{l}</Link></League>
   });
 
@@ -567,8 +567,8 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     return <LeaguesTab link={`/${l}`} selected={l == league} key={`league-${l}`} label={l} onClick={() => { onLeagueNavClick(l, `/${l}`) }} />
   })
   MobileLeaguesNav.unshift(<LeaguesTab selected={!league} key={`league-${leagues?.length}`} label={<HomeIcon className={!league ? " text-xl h-5 p-0 ml-4 " : "  text-xl h-5 p-0 ml-4 "} />} onClick={() => { onLeagueNavClick('', `/`) }}></LeaguesTab>)
-  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
-    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link prefetch={true} href={`/${params}${tp}`} onClick={() => { onLeagueNavClick('', `/${params}${tp}`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
+  LeaguesNav?.unshift(league ? <div key={`league-home`}><Link prefetch={true} href={`/`} onClick={() => { onLeagueNavClick('', `/`) }}><LeagueIcon $scrolled={scrollY != 0} ><HomeIcon className={(scrollY != 0 ? `text-sm ` : `text-xl`)} /></LeagueIcon></Link></div>
+    : <SelectedHome $scrolled={scrollY != 0} key={`league-home`}><Link prefetch={true} href={`/`} onClick={() => { onLeagueNavClick('', `/`) }}><LeagueIcon $scrolled={scrollY != 0}><HomeIcon className={(scrollY != 0 ? `text-sm` : `text-xl`)} /></LeagueIcon></Link></SelectedHome>)
   const selectedLeague = leagues?.findIndex((l: string) => l == league) + 1;
   if (error) return <div>failed to load leagues</div>
   if (!leagues) return <div>loading leagues...</div>
@@ -596,7 +596,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
           <LeftContainer>
             <HeaderLeft>
               <LogoContainer $scrolled={scrollY !== 0}>
-                <Link href={`/${params}`}>
+                <Link href={`/`}>
                   <img
                     src='/q-logo-dark-128.png'//src={`/${mode === 'dark' ? 'q-logo-dark-128.png' : 'q-logo-light-128.png'}`}
                     alt="Qwiket Logo"
@@ -611,9 +611,9 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
                 <Superhead $scrolled={scrollY != 0}>
                   {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/${params}`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
+                    <Link className="text-red bg-magenta-800" prefetch={true} href={`/`}>{`Qwiket AI` + (league ? ` : ${league}` : ``)}</Link> :
                     !teamid ? `${league}` : player ?
-                      <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}${params}`}>
+                      <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}`}>
                         <TeamNameGroup $scrolled={scrollY != 0}>
                           <div>{teamName}</div>
                           {teamLogo && <img src={teamLogo} alt={teamName} />}
@@ -623,7 +623,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                         {teamLogo && <img src={teamLogo} alt={teamName} />}
                       </TeamNameGroup>
                   }</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/${params}`}>{league ? `Qwiket : ${league}` : `Qwiket`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}${params}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/`}>{league ? `Qwiket : ${league}` : `Qwiket`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Elevate your fantasy game! Knowledge, reasoning and decision support for fantasy sports enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
