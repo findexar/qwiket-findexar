@@ -18,6 +18,7 @@ import IosShareIcon from '@/components/icons/share';
 import { FaFacebook as FacebookIcon, FaComments as CommentsIcon } from 'react-icons/fa';
 import { useMemo } from 'react';
 import XIcon from '@/components/icons/twitter';
+import { actionRecordEvent } from "@lib/server-actions/event";
 const ShareGroup = styled.div`
     display:flex;
     flex-direction:row;
@@ -259,7 +260,7 @@ const Readme = () => {
                             </ReactMarkdown>
 
                             <hr className="my-8" />
-                            <p className="text-sm text-gray-800 dark:text-gray-200">Copyright &#169; 2024, 2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.</p>
+                            <p className="text-sm text-gray-800 dark:text-gray-200">Copyright &#169; 2024, 2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.</p><p>Contact: support @ qwiket.com</p>
 
                         </article>
                         <BottomLine>
