@@ -279,7 +279,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) =>
 
                         </Link>
                     </LogoContainer>
-                    <QwiketText>STORY IN-FOCUS</QwiketText>
+                    <QwiketText>IN-FOCUS</QwiketText>
                 </div>
                 {false && <Link href={`/${league}${params ? `?${params}` : ''}&tab=chat&prompt=&promptUUId=${promptUUId}`}>
                     <AskAIButton>Ask AI</AskAIButton>
