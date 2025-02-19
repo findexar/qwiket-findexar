@@ -26,11 +26,11 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
         {
             planLevel: "trial",
             title: "Trial",
-            description: "25 free credits to try Qwiket Chat AI.",
+            description: "25 free credits to try fully-featured interactive sports knowledge platform.",
             price: 0,
             features: [
-                "25 free Qwiket AI Chat credits. Not refillable.",
-                "Fully-featured Qwiket AI Chat."
+                "25 free credits. Not refillable.",
+                "Fully-featured interactive sports knowledge platform."
             ],
             isDisabled: true,
             buttonText: isCurrentPlan("trial") ? "Current Plan" : "Select",
@@ -58,7 +58,7 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
             description: "Ideal for most fans and Fantasy Sports users.",
             price: 9.99,
             features: [
-                "Includes 1000 Qwiket AI Chat credits per month.",
+                "Includes 500 AI Chat credits per month.",
                 "Additional credits available in blocks of 1000 credits per $20"
             ],
             isDisabled: isCurrentPlan("basic"),
@@ -82,12 +82,41 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
             ]
         },
         {
+            planLevel: "pro",
+            title: "Pro",
+            description: "For sophisticated users who need more AI interaction.",
+            price: 19.99,
+            features: [
+                "Includes 1200 AI Chat credits per month.",
+                "Additional credits available in blocks of 1000 credits per $20"
+            ],
+            buttonText: isCurrentPlan("pro") ? "Current Plan" : "Coming Soon",
+            isDisabled: true,
+            featureCards: [
+                {
+                    title: "Advanced AI Chat",
+                    description: "Enjoy extended conversations and more in-depth analysis with increased credits.",
+                    Icon: FaBolt
+                },
+                {
+                    title: "Fantasy Sports Insights",
+                    description: "Get AI-powered insights and recommendations for your fantasy sports teams.",
+                    Icon: FaChartLine
+                },
+                {
+                    title: "Flexible Credit System",
+                    description: "Purchase additional credits as needed to suit your usage patterns.",
+                    Icon: FaCreditCard
+                }
+            ]
+        },
+        {
             planLevel: "creator",
             title: "Creator",
             description: "Allow customization and upload of documents.",
-            price: 40,
+            price: 39.99,
             features: [
-                "Includes 2000 Qwiket AI Chat credits per month.",
+                "Includes 2000 AI Chat credits per month.",
                 "Additional credits available in blocks of 1000 credits per $20",
                 "Customization options and document upload features"
             ],
@@ -108,36 +137,6 @@ export function getPricePlans(currentPlan: string): PlanDetails[] {
                     title: "Expanded Credit Limit",
                     description: "Enjoy a higher monthly credit allocation for more extensive usage.",
                     Icon: FaCreditCard
-                }
-            ]
-        },
-        {
-            planLevel: "enterprise",
-            title: "Enterprise",
-            description: "Multiple users and advanced integration features.",
-            price: 80,
-            features: [
-                "Supports white label embedding of AI Chat.",
-                "Supports custom data sources by the customer.",
-                "Multiple user accounts and advanced team collaboration features"
-            ],
-            buttonText: isCurrentPlan("enterprise") ? "Current Plan" : "Coming Soon",
-            isDisabled: true,
-            featureCards: [
-                {
-                    title: "White Label Integration",
-                    description: "Seamlessly embed Qwiket AI Chat into your own platforms and services.",
-                    Icon: FaUsers
-                },
-                {
-                    title: "Custom Data Sources",
-                    description: "Integrate your own data sources to power the AI chat with your specific information.",
-                    Icon: FaDatabase
-                },
-                {
-                    title: "Team Collaboration",
-                    description: "Enable multiple users to work together efficiently using advanced collaboration tools.",
-                    Icon: FaUsers
                 }
             ]
         }

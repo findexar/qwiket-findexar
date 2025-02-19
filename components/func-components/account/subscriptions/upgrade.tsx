@@ -91,7 +91,7 @@ const AccountUpgrade: React.FC<Props> = ({
                 {/* Use Cases Section */}
                 <div className="my-16 max-w-4xl mx-auto">
                     <h2 className="text-xl font-semibold text-center mb-6 text-gray-600 dark:text-gray-400">
-                        How Qwiket AI Chat Improves Your Game
+                        How Qwiket AI Improves Your Game
                     </h2>
                     <div className="space-y-4 text-base text-gray-600 dark:text-gray-400">
                         <p>
