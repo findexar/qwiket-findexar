@@ -234,6 +234,7 @@ const ChatsComponent: React.FC<Props> = ({
             if (status == 'yellow') {
                 setStatus('green');
             }
+            console.log("==> CHAT.TSX actionChatStream", provisionalChatUUId || chatUUId, pumpUUIdRef.current);
             actionChatStream({
                 chatUUId: provisionalChatUUId || chatUUId,
                 pumpUUId: pumpUUIdRef.current,
@@ -244,6 +245,7 @@ const ChatsComponent: React.FC<Props> = ({
                     }
                     setResponse(prev => {
                         const updatedContent = prev + content;
+                        console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
                         setMessages(prevMessages => {
                             const updatedMessages = [...prevMessages];
                             if (updatedMessages.length > 0) {
@@ -519,7 +521,7 @@ const ChatsComponent: React.FC<Props> = ({
                     );
 
 
-                }, 1);
+                }, 100);
             }
             /* else {
                 userRequest();
