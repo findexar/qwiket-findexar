@@ -461,6 +461,7 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'Qwiket AI',
             content: ''
         };
+        console.log("==> CHAT.TSX handleSubmit newMessage", messages, newMessage, assistantMessage);
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         try {
@@ -471,51 +472,54 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
-                    (data) => {
-                        if (!bot) {
-                            actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
-                                .then((r: any) => {
-                                    //console.log("recordEvent", r);
+                setTimeout(() => {
+                    actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
+                        (data) => {
+                            if (!bot) {
+                                actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                                    .then((r: any) => {
+                                        //console.log("recordEvent", r);
+                                    });
+                            }
+                            const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
+                            if (nocredits) {
+                                setIsLoading(false);
+                                setUpdateMessage("No credits remaining");
+                                return;
+                            }
+                            if (pumpUUIdRef.current != newPumpUUId) {
+                                setPumpUUId((prev) => {
+                                    return newPumpUUId;
                                 });
-                        }
-                        const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
-                        if (nocredits) {
-                            setIsLoading(false);
-                            setUpdateMessage("No credits remaining");
-                            return;
-                        }
-                        if (pumpUUIdRef.current != newPumpUUId) {
-                            setPumpUUId((prev) => {
-                                return newPumpUUId;
-                            });
-                        }
-                        if (chatUUId != newChatUUId) {
-                            setChatUUId((prev) => {
-                                return newChatUUId;
-                            });
-                        }
-                        if (chatName != newName) {
-                            setChatName(newName);
-                        }
-                        if (league != newLeague) {
-                            if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
-                                setToastMessage(`Switching to ${newLeague} tab...`);
-                                // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
+                            }
+                            if (chatUUId != newChatUUId) {
+                                setChatUUId((prev) => {
+                                    return newChatUUId;
+                                });
+                            }
+                            if (chatName != newName) {
+                                setChatName(newName);
+                            }
+                            if (league != newLeague) {
+                                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
+                                    setToastMessage(`Switching to ${newLeague} tab...`);
+                                    // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
-                                // Automatically clear the toast message after 3 seconds
-                                setTimeout(() => {
-                                    setToastMessage("");
-                                }, 3000);
+                                    // Automatically clear the toast message after 3 seconds
+                                    setTimeout(() => {
+                                        setToastMessage("");
+                                    }, 3000);
 
-                                // Navigate to the new league view
-                                window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}?tab=chat`);
-                                // console.log('*********************** CHAT onLeagueUpdate:', content);
+                                    // Navigate to the new league view
+                                    window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}?tab=chat`);
+                                    // console.log('*********************** CHAT onLeagueUpdate:', content);
+                                }
                             }
                         }
-                    }
-                );
+                    );
 
+
+                }, 1);
             }
             /* else {
                 userRequest();
