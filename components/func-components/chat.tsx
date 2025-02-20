@@ -463,8 +463,8 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'Qwiket AI',
             content: ''
         };
-        console.log("==> CHAT.TSX handleSubmit newMessage", drawMessages, newMessage, assistantMessage);
-        setMessages(prevMessages => [...drawMessages, newMessage, assistantMessage]);
+        console.log("==> CHAT.TSX handleSubmit newMessage", messages, newMessage, assistantMessage);
+        setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         try {
             if (!pumpUUIdRef.current) {
@@ -657,7 +657,7 @@ const ChatsComponent: React.FC<Props> = ({
         />
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
-    const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
+    const drawMessages = loadedChat?.chat?.messages || (messages && messages.length > 0) ? messages : [];
     // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
 
     const handleRetry = () => {
