@@ -463,8 +463,8 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'Qwiket AI',
             content: ''
         };
-        console.log("==> CHAT.TSX handleSubmit newMessage", messages, newMessage, assistantMessage);
-        setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
+        console.log("==> CHAT.TSX handleSubmit newMessage", drawMessages, newMessage, assistantMessage);
+        setMessages(prevMessages => [...drawMessages, newMessage, assistantMessage]);
 
         try {
             if (!pumpUUIdRef.current) {
