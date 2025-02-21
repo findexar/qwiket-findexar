@@ -499,7 +499,7 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-
+                console.log("==> CHAT.TSX handleSubmit actionChatInit", { userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' });
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
                     (data) => {
                         if (!bot) {
@@ -518,6 +518,7 @@ const ChatsComponent: React.FC<Props> = ({
                             setPumpUUId((prev) => {
                                 return newPumpUUId;
                             });
+                            console.log("==> CHAT.TSX handleSubmit actionChatInit mutateLoadedChat", { newPumpUUId, newChatUUId });
                             mutateLoadedChat();
                         }
                         if (chatUUId != newChatUUId) {
