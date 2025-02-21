@@ -95,12 +95,12 @@ const ChatsComponent: React.FC<Props> = ({
     const [userInput, setUserInput] = useState<string>('');
     const responseTextareaRef = useRef<HTMLDivElement>(null);
     const feedbackTextareaRef = useRef<HTMLTextAreaElement>(null);
-    const [messages, setMessages] = useState<Message[]>([]);
+
     const responseSetRef = useRef(false);
     const [chatUUId, setChatUUId] = useState<string>(promptUUId ? '' : (chatUUIdProp || ""));
-    const [lastMessageUUID, setLastMessageUUID] = useState<string>('');
+
     const [pumpUUId, setPumpUUId] = useState<string>('');
-    const [chatName, setChatName] = useState<string>('');
+
     const [openMyChats, setOpenMyChats] = useState<boolean>(false);
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [pendingUserRequest, setPendingUserRequest] = useState<boolean>(false);
@@ -115,7 +115,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [showCreditsInfo, setShowCreditsInfo] = useState<boolean>(false);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
     const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
-    const [followupPrompts, setFollowupPrompts] = useState<string[]>([]);
+
     const [isPromptSelected, setIsPromptSelected] = useState(false);
     const [isMessageSubmitted, setIsMessageSubmitted] = useState(false);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -137,6 +137,31 @@ const ChatsComponent: React.FC<Props> = ({
         isLoading: boolean,
         mutate: any
     } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
+    /*
+    if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
+            setChatUUId(loadedChat.chat.chatUUId);
+            if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
+                setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
+                setMessages(loadedChat.chat.messages);
+                setIsLoading(false);
+
+            }
+            if (loadedChat?.chat?.name?.includes("ChatGPT")) {
+                setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
+            } else {
+                if (loadedChat?.chat?.name != "New Chat" && loadedChat?.chat?.name != chatName) {
+                    setChatName(loadedChat?.chat?.name || 'New Chat');
+                }
+            }
+            setLastMessageUUID(loadedChat?.chat?.lastMessageUUID || '');
+            */
+
+    const [lastMessageUUID, setLastMessageUUID] = useState<string>(loadedChat?.chat?.lastMessageUUID || '');
+
+    const [messages, setMessages] = useState<Message[]>(loadedChat?.chat?.messages || []);
+    const [followupPrompts, setFollowupPrompts] = useState<string[]>(loadedChat?.chat?.messages[1]?.prompts || []);
+    const [chatName, setChatName] = useState<string>(loadedChat?.chat?.name || 'New Chat');
+
     let immediateFollowupPrompts = followupPrompts || loadedChat?.chat?.messages[1]?.prompts || [];
     const promptChatResponseKey: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
     const savedFallback = JSON.parse(JSON.stringify(fallback));
@@ -149,7 +174,7 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
-    console.log("==> CHATS.TSX loadedChat", { promptUUId, savedPromptUUId, loadedChat, savedFallback, fallback });
+    console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat/*, savedFallback, fallback */ }));
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
@@ -474,55 +499,56 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                setTimeout(() => {
-                    actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
-                        (data) => {
-                            if (!bot) {
-                                actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
-                                    .then((r: any) => {
-                                        //console.log("recordEvent", r);
-                                    });
-                            }
-                            const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
-                            if (nocredits) {
-                                setIsLoading(false);
-                                setUpdateMessage("No credits remaining");
-                                return;
-                            }
-                            if (pumpUUIdRef.current != newPumpUUId) {
-                                setPumpUUId((prev) => {
-                                    return newPumpUUId;
-                                });
-                            }
-                            if (chatUUId != newChatUUId) {
-                                setChatUUId((prev) => {
-                                    return newChatUUId;
-                                });
-                            }
-                            if (chatName != newName) {
-                                setChatName(newName);
-                            }
-                            if (league != newLeague) {
-                                if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
-                                    setToastMessage(`Switching to ${newLeague} tab...`);
-                                    // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
-                                    // Automatically clear the toast message after 3 seconds
-                                    setTimeout(() => {
-                                        setToastMessage("");
-                                    }, 3000);
+                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
+                    (data) => {
+                        if (!bot) {
+                            actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                                .then((r: any) => {
+                                    //console.log("recordEvent", r);
+                                });
+                        }
+                        const { pumpUUId: newPumpUUId, nocredits, name: newName, league: newLeague, chatUUId: newChatUUId } = data;
+                        if (nocredits) {
+                            setIsLoading(false);
+                            setUpdateMessage("No credits remaining");
+                            return;
+                        }
+                        if (pumpUUIdRef.current != newPumpUUId) {
+                            setPumpUUId((prev) => {
+                                return newPumpUUId;
+                            });
+                            mutateLoadedChat();
+                        }
+                        if (chatUUId != newChatUUId) {
+                            setChatUUId((prev) => {
+                                return newChatUUId;
+                            });
+                        }
+                        if (chatName != newName) {
+                            setChatName(newName);
+                        }
+                        if (league != newLeague) {
+                            if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
+                                setToastMessage(`Switching to ${newLeague} tab...`);
+                                // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
 
-                                    // Navigate to the new league view
-                                    window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}?tab=chat`);
-                                    // console.log('*********************** CHAT onLeagueUpdate:', content);
-                                }
+                                // Automatically clear the toast message after 3 seconds
+                                setTimeout(() => {
+                                    setToastMessage("");
+                                }, 3000);
+
+                                // Navigate to the new league view
+                                window.history.pushState({}, '', `/${newLeague.trim().toUpperCase()}?tab=chat`);
+                                // console.log('*********************** CHAT onLeagueUpdate:', content);
                             }
                         }
-                    );
+                    }
+                );
 
 
-                }, 100);
             }
+
             /* else {
                 userRequest();
             }*/
@@ -571,10 +597,10 @@ const ChatsComponent: React.FC<Props> = ({
         }
     };
     useEffect(() => {
-        if (textareaRef.current) {
+        if (textareaRef.current && !promptUUId) {
             textareaRef.current.focus();
         }
-    }, []);
+    }, [promptUUId]);
 
     const handlePromptClick = (prompt: string) => {
         if (textareaRef.current) {
