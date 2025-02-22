@@ -160,7 +160,7 @@ const ChatsComponent: React.FC<Props> = ({
     const [lastMessageUUID, setLastMessageUUID] = useState<string>(loadedChat?.chat?.lastMessageUUID || '');
 
     const [messages, setMessages] = useState<Message[]>(loadedChat?.chat?.messages || []);
-    const [followupPrompts, setFollowupPrompts] = useState<string[]>(loadedChat?.chat?.messages[1]?.prompts || []);
+    const [followupPrompts, setFollowupPrompts] = useState<string[]>(loadedChat?.chat?.messages ? loadedChat?.chat?.messages[1]?.prompts || [] : []);
     const [chatName, setChatName] = useState<string>(loadedChat?.chat?.name || 'New Chat');
 
     let immediateFollowupPrompts = followupPrompts || loadedChat?.chat?.messages[1]?.prompts || [];
@@ -1205,7 +1205,7 @@ const ChatsComponent: React.FC<Props> = ({
                             <textarea
                                 ref={textareaRef}
                                 defaultValue={userInput}
-                                onKeyDown={handleKeyDown}
+                                onKeyDown={handleKeyDown} //787508
                                 onChange={() => {
                                     setIsPromptSelected(false);
                                     setIsMessageSubmitted(false);  // Reset on manual input
