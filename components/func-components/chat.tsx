@@ -128,6 +128,7 @@ const ChatsComponent: React.FC<Props> = ({
         typeof fallback === 'object' ? fallback : {}
     );
     const [autoPrompt, setAutoPrompt] = useState<boolean>(false);
+    //const initialPromptUUIdRef = useRef<string | null>(promptUUId); // Initialize with promptUUId
 
     /* DATA FETCHING */
     const createChatKey: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
@@ -174,7 +175,7 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
-    console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat/*, savedFallback, fallback */ }));
+    console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat, messages/*, savedFallback, fallback */ }));
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
@@ -213,7 +214,6 @@ const ChatsComponent: React.FC<Props> = ({
     const searchParams = useSearchParams();
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
-    const initialPromptUUIdRef = useRef<string | null>(promptUUId); // Initialize with promptUUId
 
     //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
@@ -236,6 +236,13 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }
     }, [promptUUId, loadedChat]);
+    /*useEffect(() => {
+        if (promptUUId != initialPromptUUIdRef.current) {
+            setMessages([]);
+            setChatName('New Chat');
+            setFollowupPrompts([]);
+        }
+    }, [promptUUId]);*/
     const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
 
     // Update the ref whenever pumpUUId changes
@@ -274,7 +281,9 @@ const ChatsComponent: React.FC<Props> = ({
                         setMessages(prevMessages => {
                             const updatedMessages = [...prevMessages];
                             if (updatedMessages.length > 0) {
-                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                                if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
+                                    updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                                }
                             }
                             return updatedMessages;
                         });
@@ -286,9 +295,18 @@ const ChatsComponent: React.FC<Props> = ({
                     userAccountMutate();
                     setIsLoading(false);
                     setStreamingMessageIndex(null);
+                    setMessages(prevMessages => {
+                        const updatedMessages = [...prevMessages];
+                        if (updatedMessages.length > 0) {
+                            if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
+                                updatedMessages[updatedMessages.length - 1].role = 'assistant';
+                            }
+                        }
+                        return updatedMessages;
+                    });
 
                     if (!bot) {
-                        actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
+                        actionRecordEvent(`chat-done`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${promptUUId}","prompt":"${prompt}","response":"${response}","params":"${params}"}`)
                             .then((r: any) => {
                                 //console.log("recordEvent", r);
                             });
@@ -382,7 +400,9 @@ const ChatsComponent: React.FC<Props> = ({
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
                         if (updatedMessages.length > 0) {
-                            updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
+                                updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            }
                         }
                         return updatedMessages;
                     });
@@ -393,13 +413,16 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [pumpUUId, chatUUId]);
 
-    useEffect(() => {
-        const prompt = searchParams?.get('prompt') || "";
-        const promptUUId = searchParams?.get('promptUUId') || "";
-        if (promptUUId) {
-            initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
-        }
-    }, [searchParams]);
+    /* useEffect(() => {
+         const prompt = searchParams?.get('prompt') || "";
+         const promptUUId = searchParams?.get('promptUUId') || "";
+         if (promptUUId && promptUUId != initialPromptUUIdRef.current) {
+             console.log("==> CHAT.TSX useEffect searchParams", promptUUId, initialPromptUUIdRef.current);
+             initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
+             //  setMessages([{ role: 'user', content: prompt }, { role: 'assistant', content: '' }]);
+            
+         }
+     }, [searchParams]);*/
 
 
     useEffect(() => {
@@ -438,7 +461,14 @@ const ChatsComponent: React.FC<Props> = ({
             setChatUUId(loadedChat.chat.chatUUId);
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
-                setMessages(loadedChat.chat.messages);
+                const lastMessage = messages[messages.length - 1];
+                console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
+                if (lastMessage.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
+                    setMessages([...loadedChat.chat.messages, lastMessage]);
+                }
+                else {
+                    setMessages(messages);
+                }
                 setIsLoading(false);
 
             }
@@ -499,11 +529,11 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                console.log("==> CHAT.TSX handleSubmit actionChatInit", { userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' });
-                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId: initialPromptUUIdRef.current || '' }).then(
+                console.log("==> CHAT.TSX handleSubmit actionChatInit", { userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId });
+                actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId }).then(
                     (data) => {
                         if (!bot) {
-                            actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
+                            actionRecordEvent(`chat-init`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${promptUUId}","prompt":"${prompt}","data":"${JSON.stringify(data)}","params":"${params}"}`)
                                 .then((r: any) => {
                                     //console.log("recordEvent", r);
                                 });
@@ -519,7 +549,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 return newPumpUUId;
                             });
                             console.log("==> CHAT.TSX handleSubmit actionChatInit mutateLoadedChat", { newPumpUUId, newChatUUId });
-                            mutateLoadedChat();
+                            // mutateLoadedChat();
                         }
                         if (chatUUId != newChatUUId) {
                             setChatUUId((prev) => {
@@ -546,6 +576,7 @@ const ChatsComponent: React.FC<Props> = ({
                         }
                     }
                 );
+                // mutateLoadedChat();
 
 
             }
@@ -612,7 +643,7 @@ const ChatsComponent: React.FC<Props> = ({
     };
     useEffect(() => {
         if (!bot) {
-            actionRecordEvent(`chat-component-open`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","league":"${league}","params":"${params}"}`)
+            actionRecordEvent(`chat-component-open`, `{"utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${promptUUId}","prompt":"${prompt}","league":"${league}","params":"${params}"}`)
                 .then((r: any) => {
                     //console.log("recordEvent", r);
                 });
@@ -684,7 +715,7 @@ const ChatsComponent: React.FC<Props> = ({
         />
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
-    const drawMessages = loadedChat?.chat?.messages || (messages && messages.length > 0) ? messages : [];
+    const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
     // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
 
     const handleRetry = () => {
@@ -839,7 +870,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         url.searchParams.delete('prompt');
                                         url.searchParams.delete('promptUUId');
                                         window.history.replaceState({}, '', url.toString());
-                                        initialPromptUUIdRef.current = '';
+                                        // initialPromptUUIdRef.current = '';
 
                                         setMessages([]);
                                         setChatName('New Chat');
@@ -1043,16 +1074,16 @@ const ChatsComponent: React.FC<Props> = ({
                                                     role: 'user',
                                                     content: 'Your new user message here' // Replace with the actual message content
                                                 };
-                                                mutateLoadedChat({
-                                                    ...loadedChat, // Spread existing chat data
-                                                    chat: {
-                                                        ...loadedChat.chat, // Spread existing chat attributes
-                                                        messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
-                                                    }
-                                                });
-                                                setTimeout(() => {
-                                                    mutateLoadedChat();
-                                                }, 1000);
+                                                /* mutateLoadedChat({
+                                                     ...loadedChat, // Spread existing chat data
+                                                     chat: {
+                                                         ...loadedChat.chat, // Spread existing chat attributes
+                                                         messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
+                                                     }
+                                                 });
+                                                 setTimeout(() => {
+                                                     mutateLoadedChat();
+                                                 }, 2000);*/
                                             }
 
                                         }
@@ -1060,7 +1091,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         More details...
                                     </button>
                                 </div>}
-                                {isLoading && index === messages.length - 1 && message.role === 'Qwiket AI' && (
+                                {index === drawMessages.length - 1 && message.role === 'Qwiket AI' && (
                                     <>
                                         <BlinkingDot />
                                         {false && <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
@@ -1072,7 +1103,7 @@ const ChatsComponent: React.FC<Props> = ({
                         </div>
                     ))}
 
-                    {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user' && (
+                    {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role == 'assistant' && (
                         <div className="mt-4 mb-4 ml-4 mr-4">
                             <hr className="w-full border-gray-300 dark:border-gray-700" ></hr>
 
@@ -1134,7 +1165,7 @@ const ChatsComponent: React.FC<Props> = ({
                     <div className="flex justify-center items-center h-2 pt-4 text-xs text-gray-500 dark:text-gray-400">
                         {updateMessage || "***"}
                     </div>
-                    {chatName !== "New Chat" && immediateFollowupPrompts.length > 0 && (
+                    {chatName !== "New Chat" && immediateFollowupPrompts.length > 0 && !isLoading && !pumpUUId && (
                         <div className="mt-4 mb-8"> {/* Added mb-4 for margin-bottom */}
                             {false && <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Follow-up suggestions:</h4>}
                             <div className="flex flex-wrap gap-2">
@@ -1160,7 +1191,7 @@ const ChatsComponent: React.FC<Props> = ({
                     {level == 'trial' && !isLoading && drawMessages.length >= 6 && (
                         <div className="text-xs text-green-600 dark:text-green-400 mb-6 mt-4 ml-4 mr-4">
                             You have {totalCredits} trial credits remaining. Consider&nbsp;
-                            <Link href="/account/upgrade" className="text-blue-500 hover:underline" onClick={() => recordEvent(`reasoning-trial-upgrade-click`, `{"creator":"${!creator}","utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${initialPromptUUIdRef.current}","prompt":"${prompt}","remainingCredits":"${totalCredits}","params":"${JSON.stringify(params)}"}`)
+                            <Link href="/account/upgrade" className="text-blue-500 hover:underline" onClick={() => recordEvent(`reasoning-trial-upgrade-click`, `{"creator":"${!creator}","utm_content":"${utm_content}","isMobile":${isMobile},"promptUUId":"${promptUUId}","prompt":"${prompt}","remainingCredits":"${totalCredits}","params":"${JSON.stringify(params)}"}`)
                                 .then((r: any) => {
                                     //console.log("recordEvent", r);
                                 })}>

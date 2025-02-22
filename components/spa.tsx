@@ -195,6 +195,9 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     const qcm = query?.get('cm');
     const qprompt = query?.get('prompt') || '';
     const qpromptUUId = query?.get('promptUUId') || '';
+    if (qpromptUUId != promptUUId) {
+      setPromptUUId(qpromptUUId);
+    }
     // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
     console.log("==> query", { story, slug, qcstory, cm });
     if (story !== slug && qcstory != slug) {
