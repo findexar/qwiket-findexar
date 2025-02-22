@@ -282,7 +282,7 @@ const ChatsComponent: React.FC<Props> = ({
                             const updatedMessages = [...prevMessages];
                             if (updatedMessages.length > 1) {
                                 if (updatedMessages[updatedMessages.length - 1]?.role == 'Qwiket AI') {
-                                    updatedMessages[updatedMessages.length - 1]?.content = updatedContent;
+                                    updatedMessages[updatedMessages.length - 1].content = updatedContent;
                                 }
                             }
                             return updatedMessages;
@@ -297,9 +297,9 @@ const ChatsComponent: React.FC<Props> = ({
                     setStreamingMessageIndex(null);
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        if (updatedMessages.length >1) {
+                        if (updatedMessages.length > 1) {
                             if (updatedMessages[updatedMessages.length - 1]?.role == 'Qwiket AI') {
-                                updatedMessages[updatedMessages.length - 1]?.role = 'assistant';
+                                updatedMessages[updatedMessages.length - 1].role = 'assistant';
                             }
                         }
                         return updatedMessages;
