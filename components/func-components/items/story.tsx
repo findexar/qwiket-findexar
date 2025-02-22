@@ -291,7 +291,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
-    console.log("==> STORY.TSX", { title });
+    //console.log("==> STORY.TSX", { title });
     const prepDigest = useMemo(() => {
         return digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "";
     }, [digest]);

@@ -789,6 +789,7 @@ const ChatsComponent: React.FC<Props> = ({
             </div>
         </div>
     )
+    const formRef = useRef<HTMLFormElement>(null); // Create a ref for the form
     return (
         <>
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
@@ -1035,8 +1036,23 @@ const ChatsComponent: React.FC<Props> = ({
                                             if (textareaRef.current) {
                                                 textareaRef.current.value = 'Please expand the answer'; // Load prompt into textarea
                                                 const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-                                                handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
-                                                hasSubmittedPromptRef.current = true; // Mark as submitted
+                                                // handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                                                // hasSubmittedPromptRef.current = true; // Mark as submitted
+                                                formRef.current?.dispatchEvent(formEvent);
+                                                const newMessage: Message = {
+                                                    role: 'user',
+                                                    content: 'Your new user message here' // Replace with the actual message content
+                                                };
+                                                mutateLoadedChat({
+                                                    ...loadedChat, // Spread existing chat data
+                                                    chat: {
+                                                        ...loadedChat.chat, // Spread existing chat attributes
+                                                        messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
+                                                    }
+                                                });
+                                                setTimeout(() => {
+                                                    mutateLoadedChat();
+                                                }, 1000);
                                             }
 
                                         }
@@ -1154,7 +1170,7 @@ const ChatsComponent: React.FC<Props> = ({
                     )}
 
                     <div className="p-0 mt-4 mx-4">
-                        <form onSubmit={handleSubmit} className="relative">
+                        <form ref={formRef} onSubmit={handleSubmit} className="relative">
                             <textarea
                                 ref={textareaRef}
                                 defaultValue={userInput}

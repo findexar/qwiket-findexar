@@ -282,7 +282,13 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     //console.log("****** loadLatestChat", props)
     userId = userId || sessionid;
     const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v50/findexar/ai-chat/load-latest?api_key=${api_key}&userid=${userId}&sessionid=${sessionid}&promptUUId=${promptUUId}`;
-    console.log("====================> loadLatestChat", promptUUId, url)
+    console.log("====================> loadLatestChat", promptUUId, url, JSON.stringify({
+        athleteUUId,
+        teamid,
+        league,
+        fantasyTeam,
+        chatUUId,
+    }))
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -295,7 +301,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
             fantasyTeam,
             chatUUId,
         }),
-        
+
     });
 
     if (!res.ok) {
@@ -310,6 +316,7 @@ const loadLatestChat = async (props: CreateChatKey, userId: string, sessionid: s
     }
     // console.log("RET loadLatestChat:", { success: true, chat: data.chat, error: '' })
     const t2 = new Date().getTime();
+    console.log("==> LOAD LATEST CHAT RESULT ", JSON.stringify(data.chat, null, 2));
     //  console.log("==> LOAD LATEST CHAT TIME", t2 - t1);
     return { success: true, chat: data.chat, error: '' };
 }
