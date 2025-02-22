@@ -175,7 +175,7 @@ const ChatsComponent: React.FC<Props> = ({
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
     /****************/
-    console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat, messages/*, savedFallback, fallback */ }));
+    // console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat, messages/*, savedFallback, fallback */ }));
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
@@ -266,7 +266,7 @@ const ChatsComponent: React.FC<Props> = ({
             if (status == 'yellow') {
                 setStatus('green');
             }
-            console.log("==> CHAT.TSX actionChatStream", provisionalChatUUId || chatUUId, pumpUUIdRef.current);
+            // console.log("==> CHAT.TSX actionChatStream", provisionalChatUUId || chatUUId, pumpUUIdRef.current);
             actionChatStream({
                 chatUUId: provisionalChatUUId || chatUUId,
                 pumpUUId: pumpUUIdRef.current,
@@ -277,7 +277,7 @@ const ChatsComponent: React.FC<Props> = ({
                     }
                     setResponse(prev => {
                         const updatedContent = prev + content;
-                        console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
+                        //console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
                         setMessages(prevMessages => {
                             const updatedMessages = [...prevMessages];
                             if (updatedMessages.length > 0) {
@@ -462,7 +462,7 @@ const ChatsComponent: React.FC<Props> = ({
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
                 const lastMessage = messages[messages.length - 1];
-                console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
+                //console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
                 if (lastMessage.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
                     setMessages([...loadedChat.chat.messages, lastMessage]);
                 }
@@ -518,7 +518,7 @@ const ChatsComponent: React.FC<Props> = ({
             role: 'Qwiket AI',
             content: ''
         };
-        console.log("==> CHAT.TSX handleSubmit newMessage", messages, newMessage, assistantMessage);
+        // console.log("==> CHAT.TSX handleSubmit newMessage", messages, newMessage, assistantMessage);
         setMessages(prevMessages => [...prevMessages, newMessage, assistantMessage]);
 
         try {
@@ -529,7 +529,7 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 setIsLoading(true);
                 setPendingUserRequest(true);
-                console.log("==> CHAT.TSX handleSubmit actionChatInit", { userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId });
+                //console.log("==> CHAT.TSX handleSubmit actionChatInit", { userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId });
                 actionChatInit({ userRequest: userInputCleaned, chatUUId: paramChatUUId, teamid, league, athleteUUId, insider, fantasyTeam: isFantasyTeam || false, styleDocument: "", dataDocumentsString: "", creator, promptUUId }).then(
                     (data) => {
                         if (!bot) {
@@ -548,7 +548,7 @@ const ChatsComponent: React.FC<Props> = ({
                             setPumpUUId((prev) => {
                                 return newPumpUUId;
                             });
-                            console.log("==> CHAT.TSX handleSubmit actionChatInit mutateLoadedChat", { newPumpUUId, newChatUUId });
+                            // console.log("==> CHAT.TSX handleSubmit actionChatInit mutateLoadedChat", { newPumpUUId, newChatUUId });
                             // mutateLoadedChat();
                         }
                         if (chatUUId != newChatUUId) {
@@ -604,7 +604,7 @@ const ChatsComponent: React.FC<Props> = ({
             // setIsLoading(false);
             // setStreamingMessageIndex(null);
             setUserInput(lastUserInput);
-            console.log("setting lastUserInput3", lastUserInput);
+            //console.log("setting lastUserInput3", lastUserInput);
             setIsLoading(false);
         }
 
@@ -781,7 +781,7 @@ const ChatsComponent: React.FC<Props> = ({
                 }
                 recordEvent(`chat-feedback-submit`, `{"stars":${feedback.stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
                     .then((r: any) => {
-                        console.log("recordEvent", r);
+                        //console.log("recordEvent", r);
                     })
             }, 2000);
         }
@@ -832,7 +832,7 @@ const ChatsComponent: React.FC<Props> = ({
                             className={`text-xs ${creditColorClass} hover:underline mr-2`}
                             onClick={() => recordEvent(`credits-chat-dashboard-click`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
                                 .then((r: any) => {
-                                    console.log("recordEvent", r);
+                                    //console.log("recordEvent", r);
                                 })}
                         >
                             {creditsString}
@@ -842,7 +842,7 @@ const ChatsComponent: React.FC<Props> = ({
                                 setShowCreditsInfo(!showCreditsInfo);
                                 recordEvent(`credits-chat-info-click`, `{"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
                                     .then((r: any) => {
-                                        console.log("recordEvent", r);
+                                        // console.log("recordEvent", r);
                                     });
                             }}
                             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -1124,7 +1124,7 @@ const ChatsComponent: React.FC<Props> = ({
                                         setFeedback({ messageUUId: lastMessageUUID, feedback: feedback.feedback, stars: feedback.stars, open: !feedback.open });
                                         recordEvent(`chat-feedback-click`, `{"stars":${feedback.stars},"feedback":"${feedback.feedback}","messageUUId":"${lastMessageUUID}","creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
                                             .then((r: any) => {
-                                                console.log("recordEvent", r);
+                                                //console.log("recordEvent", r);
                                             })
                                     }
                                     //setLastMessageUpdate(prev => prev + 1);
@@ -1213,14 +1213,14 @@ const ChatsComponent: React.FC<Props> = ({
                                 placeholder={messages.length ? "Ask a follow-up question..." : creator ? `Compose your prompt for AI. For example: "In 400 words, create a post about ..."` : `Ask me about sports...`}
                                 className={`w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
                                 rows={3}
-                                disabled={isLoading}
+                                disabled={isLoading || (pumpUUId ? true : false)}
                             />
                             <button
                                 type="submit"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-600 dark:text-cyan-400 dark:hover:text-cyan-300"
-                                disabled={isLoading}
+                                disabled={isLoading || (pumpUUId ? true : false)}
                             >
-                                {isLoading ? (
+                                {isLoading || pumpUUId ? (
                                     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-800 dark:border-gray-200"></div>
                                 ) : (
                                     <div className="relative p-1.5">
