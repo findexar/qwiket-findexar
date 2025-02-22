@@ -399,8 +399,8 @@ const ChatsComponent: React.FC<Props> = ({
                     const updatedContent = prev + "Network error. Please try again.";
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        if (updatedMessages.length > 0) {
-                            if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
+                        if (updatedMessages.length > 1) {
+                            if (updatedMessages[updatedMessages.length - 1]?.role == 'Qwiket AI') {
                                 updatedMessages[updatedMessages.length - 1].content = updatedContent;
                             }
                         }
@@ -463,7 +463,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
                 const lastMessage = messages[messages.length - 1];
                 //console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
-                if (lastMessage.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
+                if (lastMessage?.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
                     setMessages([...loadedChat.chat.messages, lastMessage]);
                 }
                 else {
@@ -762,7 +762,7 @@ const ChatsComponent: React.FC<Props> = ({
                 //console.log("recordEvent", r);
             })
     };
-    const starsTrigger = loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role !== 'user'
+    // const starsTrigger = loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1]?.role !== 'user'
     // Function to handle feedback submission
     const handleFeedbackSubmit = () => {
         const feedbackText = feedbackTextareaRef.current?.value || '';
@@ -1103,7 +1103,7 @@ const ChatsComponent: React.FC<Props> = ({
                         </div>
                     ))}
 
-                    {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1].role == 'assistant' && (
+                    {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1]?.role == 'assistant' && (
                         <div className="mt-4 mb-4 ml-4 mr-4">
                             <hr className="w-full border-gray-300 dark:border-gray-700" ></hr>
 
