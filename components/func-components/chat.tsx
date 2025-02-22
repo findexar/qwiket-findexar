@@ -463,7 +463,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
                 const lastMessage = messages[messages.length - 1];
                 //console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
-                if (lastMessage?.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
+                if (lastMessage && lastMessage?.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
                     setMessages([...loadedChat.chat.messages, lastMessage]);
                 }
                 else {
