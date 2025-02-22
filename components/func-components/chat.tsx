@@ -280,9 +280,9 @@ const ChatsComponent: React.FC<Props> = ({
                         //console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
                         setMessages(prevMessages => {
                             const updatedMessages = [...prevMessages];
-                            if (updatedMessages.length > 0) {
-                                if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
-                                    updatedMessages[updatedMessages.length - 1].content = updatedContent;
+                            if (updatedMessages.length > 1) {
+                                if (updatedMessages[updatedMessages.length - 1]?.role == 'Qwiket AI') {
+                                    updatedMessages[updatedMessages.length - 1]?.content = updatedContent;
                                 }
                             }
                             return updatedMessages;
@@ -297,9 +297,9 @@ const ChatsComponent: React.FC<Props> = ({
                     setStreamingMessageIndex(null);
                     setMessages(prevMessages => {
                         const updatedMessages = [...prevMessages];
-                        if (updatedMessages.length > 0) {
-                            if (updatedMessages[updatedMessages.length - 1].role == 'Qwiket AI') {
-                                updatedMessages[updatedMessages.length - 1].role = 'assistant';
+                        if (updatedMessages.length >1) {
+                            if (updatedMessages[updatedMessages.length - 1]?.role == 'Qwiket AI') {
+                                updatedMessages[updatedMessages.length - 1]?.role = 'assistant';
                             }
                         }
                         return updatedMessages;
