@@ -177,7 +177,7 @@ const Desktop: React.FC<Props> = () => {
     teamid,
     slug, m, cm, cstory, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
   } = useAppContext();
-
+  const [loading, setLoading] = React.useState(false);
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
   let tab = initialTab || "all";
   let rtab = initialRtab || "";
@@ -201,7 +201,8 @@ const Desktop: React.FC<Props> = () => {
     /* const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
      const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
      window.history.pushState({}, "", newPath);*/
-    setTimeout(() => setTab(newTab), 0);
+    //setTimeout(() => setTab(newTab), 0);
+    setLoading(true);
     if (rtab !== '') {
       setTimeout(() => setRtab(rtab), 0);
     }
@@ -263,7 +264,11 @@ const Desktop: React.FC<Props> = () => {
   let noshow = (cstory || cm) && tab !== 'blog';
   return (
     <div className="lg:block hidden h-full w-full">
-
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
+        </div>
+      )}
       <ContainerWrap>
         {localFindexarxid && <MentionOverlay setDismiss={() => setView("mentions")} mutate={() => { }} />}
         {(slug || m) && !cstory && !cm && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}

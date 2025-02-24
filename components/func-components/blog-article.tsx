@@ -119,8 +119,8 @@ const Readme = () => {
         { fallback }
     );
     console.log("====>article", article);
-    const { title, articleImage, authorName, date, details, markdown } = article;
-    const { json, links } = article;
+    const { title, articleImage, authorName, date, details, markdown } = article || {};
+    const { json, links } = article || {};
     const content = documentToReactComponents(json, renderOptions(links));
     console.log("slug", cstory)
     const formattedDate = formatDate(article?.date);
