@@ -481,7 +481,9 @@ export async function generateMetadata(
         ogAuthors = blogArticle.authorName;
         //image_width = blogArticle.articleImage.width;
         //image_height = blogArticle.articleImage.height;
-        noindex = 0;
+        if (!leagueid) {
+            noindex = 0;
+        }
     }
     return {
         title: ogTitle,
