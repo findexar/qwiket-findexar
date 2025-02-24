@@ -122,7 +122,7 @@ const Mobile: React.FC<Props> = () => {
           await new Promise(resolve => setTimeout(resolve, 300));
   */
         const tab = option.tab;
-        // setTab(tab);
+        // setTab(tab);  
         //  setIsLoading(true);
         /* if (rtab !== '') {
              setTimeout(() => setRtab(rtab), 0);
