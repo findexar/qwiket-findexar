@@ -211,6 +211,9 @@ const Desktop: React.FC<Props> = () => {
       setTimeout(async () => await actionRecordEvent('tab-nav', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","tab":"${newTab}"}`), 1);
     }
   }
+  useEffect(() => {
+    setLoading(false);
+  }, [tab]);
   const onRTabNav = (option: any) => {
     const newTab = option.tab;
     /* const tabParam = (tab !== 'all' && tab != '') ? params ? `&tab=${tab}&rtab=${newTab}` : `?tab=${tab}&rtab=${newTab}` : params ? `&rtab=${newTab}` : `?rtab=${newTab}`;
