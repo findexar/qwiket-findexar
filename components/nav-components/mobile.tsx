@@ -123,7 +123,7 @@ const Mobile: React.FC<Props> = () => {
   */
         const tab = option.tab;
         // setTab(tab);
-        //  setIsLoading(true);
+        setIsLoading(true);
         if (rtab !== '') {
             setTimeout(() => setRtab(rtab), 0);
         }
