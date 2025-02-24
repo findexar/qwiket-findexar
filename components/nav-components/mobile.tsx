@@ -123,7 +123,7 @@ const Mobile: React.FC<Props> = () => {
   */
         const tab = option.tab;
         // setTab(tab);
-        setIsLoading(true);
+        //  setIsLoading(true);
         if (rtab !== '') {
             setTimeout(() => setRtab(rtab), 0);
         }
@@ -231,12 +231,13 @@ const Mobile: React.FC<Props> = () => {
     let noshow = (cstory || cm) && tab !== 'blog';
     return (
         <div className="block lg:hidden h-full">
-            {isLoading && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
-                </div>
-            )}
+
             <MobileContainerWrap>
+                {isLoading && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
+                    </div>
+                )}
                 {pagetype == "league" && league &&
                     <SecondaryTabs options={[{ name: "Teams", icon: <TeamIcon fontSize="small" />, link: viewPath('teams') }, { name: "Main", icon: <MentionIcon fontSize="small" />, link: viewPath('') }, { name: "My Team", icon: <ListIcon fontSize="small" />, link: viewPath('my team') }]} onChange={async (option: any) => { await onViewNav(option) }} selectedOptionName={view} />
                 }
