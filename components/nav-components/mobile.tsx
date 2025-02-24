@@ -124,9 +124,9 @@ const Mobile: React.FC<Props> = () => {
         const tab = option.tab;
         // setTab(tab);
         setIsLoading(true);
-        if (rtab !== '') {
-            setTimeout(() => setRtab(rtab), 0);
-        }
+        /* if (rtab !== '') {
+             setTimeout(() => setRtab(rtab), 0);
+         }*/
         /*      // setView("main");
               let tp = tab != 'all' ? params ? `&tab=${tab}` : `?tab=${tab}` : ``;
               router.push(league ? `/${league}${level == 1 ? `/${teamid}` : level == 2 ? `/${teamid}/${player}/${athleteUUId}` : ``}${params}${tp}` : params ? `/${params}${tp}` : `/?tab=${tab}`);
@@ -140,10 +140,10 @@ const Mobile: React.FC<Props> = () => {
         }
 
         // Simulate content loading
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // await new Promise(resolve => setTimeout(resolve, 300));
 
 
-        setIsVisible(true);
+        //        setIsVisible(true);
     }, [fbclid, utm_content, league, params, setTab, setView, router]);
 
     useEffect(() => {
