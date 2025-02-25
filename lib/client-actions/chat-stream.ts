@@ -75,8 +75,10 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                         // console.log('*********************** meta: content received', line);
                         const jsonData = JSON.parse(line.slice(5));
                         if (jsonData.content == "followupPrompts") {
+                            console.log('meta *********************** followupPrompts: content received', line);
                             onFollowupPromptsUpdate(jsonData.followupPrompts);
                         } else if (jsonData.content == "lastMessageUUID") {
+                            console.log('meta *********************** lastMessageUUID: content received', line);
                             onLastMessageUUIDUpdate(jsonData.lastMessageUUID);
                         } else {
                             if (jsonData.content.trim() == '[STOP]') {
@@ -89,7 +91,7 @@ export const actionChatStream = async (props: ChatStreamProps) => {
                         }
                     }
                     if (line.startsWith('error: ')) {
-                        // console.log('*********************** meta: content received', line);
+                        console.log('*********************** meta: error received', line);
                         const jsonData = JSON.parse(line.slice(6));
                         onError(jsonData.content);
                     }

@@ -445,9 +445,9 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
           };*/
         if (uuid) {
             return {
-                share: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=sharelink${cidParam}`,
-                twitter: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=xlink${cidParam}`,
-                facebook: `${baseUrl}${typeSpecificPath}?m=${uuid}&utm_content=fblink${cidParam}`,
+                share: `${baseUrl}${typeSpecificPath}?cm=${uuid}&utm_content=sharelink${cidParam}`,
+                twitter: `${baseUrl}${typeSpecificPath}?cm=${uuid}&utm_content=xlink${cidParam}`,
+                facebook: `${baseUrl}${typeSpecificPath}?cm=${uuid}&utm_content=fblink${cidParam}`,
             };
         }
         else {
@@ -470,8 +470,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         team = team || "external";
         const prepName = encodeURIComponent(name);
         return uuid ? type == 'person'
-            ? `/${league}/${team}/${prepName}/${athleteUUId}?m=${uuid}`
-            : `/${league}/${team}?m=${uuid}`
+            ? `/${league}/${team}/${prepName}/${athleteUUId}?cm=${uuid}`
+            : `/${league}/${team}?cm=${uuid}`
             : type == 'person'
                 ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}`
                 : `/${league}/${team}?id=${findexarxid}`;
