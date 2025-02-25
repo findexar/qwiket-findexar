@@ -202,7 +202,7 @@ const Desktop: React.FC<Props> = () => {
      const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
      window.history.pushState({}, "", newPath);*/
     //setTimeout(() => setTab(newTab), 0);
-    setLoading(true);
+    //setLoading(true);
     if (rtab !== '') {
       setTimeout(() => setRtab(rtab), 0);
     }

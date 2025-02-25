@@ -277,7 +277,7 @@ interface Props {
 }
 
 const Story: React.FC<Props> = ({ story, handleClose }) => {
-    const { mode, fbclid, utm_content, params, tp, league, player, userAccount, bot, teamid, athleteUUId, m } = useAppContext();
+    const { isMobile, mode, fbclid, utm_content, params, tp, league, player, userAccount, bot, teamid, athleteUUId, m } = useAppContext();
     const isDarkMode = mode === 'dark';
 
     let { title, url, digest, site_name, image, image_width, image_height, authors, createdTime, mentions, xid, slug, prompts } = story || {};
@@ -458,7 +458,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                 </div>
             )}
             <div ref={ref}>
-                <DesktopWrap>
+                {!isMobile && <DesktopWrap>
                     <Link href={url} scroll={false} onClick={onStoryClick}>
                         <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
                         <Title>{title}</Title>
@@ -525,8 +525,8 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </ShareGroup>
                     </BottomLine>
                     <hr className="border-0 h-px bg-slate-900 dark:bg-slate-400" />
-                </DesktopWrap>
-                <MobileWrap>
+                </DesktopWrap>}
+                {isMobile && <MobileWrap>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate></Topline>
                     <Link href={url} scroll={false} onClick={onStoryClick}><Title>{title}</Title></Link>
                     <Link href={url} scroll={false} onClick={onStoryClick}><Byline>
@@ -576,7 +576,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </ShareGroup>
                     </BottomLine>
                     <hr />
-                </MobileWrap>
+                </MobileWrap>}
             </div>
         </>
     );

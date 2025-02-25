@@ -397,7 +397,7 @@ interface Props {
 }
 
 const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, mutate, handleClose, mutatePlayers, showImage }) => {
-    const { setAthleteUUId, setFindexarxid, setSlug, fallback, bot, league: ll, mode, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
+    const { isMobile, setAthleteUUId, setFindexarxid, setSlug, fallback, bot, league: ll, mode, utm_content, params, tp, pagetype, setTeamid, setTeamName, userAccount } = useAppContext();
     const isDarkMode = mode === 'dark';
     const [toastMessage, setToastMessage] = useState("");
     const [toastIcon, setToastIcon] = useState(<></>);
@@ -866,7 +866,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
             )}
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
             {/* {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />} */}
-            <MentionWrap ref={mentionRef} onMouseEnter={() => onHover('desktop')}>
+            {!isMobile && <MentionWrap ref={mentionRef} onMouseEnter={() => onHover('desktop')}>
                 <MentionSummary>
                     <Topline><LocalDate><i>{localDate}</i></LocalDate>
                         {!localFav ? <StarOutlineIcon className="h-4 w-4"
@@ -1009,8 +1009,8 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Link href={url}>{meta.url.substring(0, 50)}..</Link>
                     </ExtendedMention>}
                 </MentionSummary>
-            </MentionWrap>
-            <MobileMentionWrap ref={mobileMentionRef} $hideit={hide} onMouseEnter={() => onHover('mobile')}>
+            </MentionWrap>}
+            {isMobile && <MobileMentionWrap ref={mobileMentionRef} $hideit={hide} onMouseEnter={() => onHover('mobile')}>
                 <MentionSummary>
                     <div>
                         <Topline><LocalDate><b><i>{localDate}</i></b></LocalDate>
@@ -1140,7 +1140,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
                         <Link href={url} onClick={() => onClick(url)}> {meta.url.substring(0, 30)}...</Link>
                     </MobileExtendedMention>}
                 </MentionSummary>
-            </MobileMentionWrap>
+            </MobileMentionWrap>}
             {toastMessage && <Toast icon={toastIcon} message={toastMessage} onClose={() => setToastMessage("")} />}
         </>
     );
