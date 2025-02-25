@@ -859,11 +859,11 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
     //console.log("====Mention  localLink   ", localUrl);
     return (
         <>
-        `    {loading && (
+            {loading && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-4 border-white border-opacity-30 border-t-white"></div>
                 </div>
-            )}`
+            )}
             {/* {openLimitAccountModal && <LimitAccountModal setOpenCreateUser={setOpenLimitAccountModal} />} */}
             {/* {openLimitSubscriptionModal && <LimitSubscriptionModal setOpenLimitSubscriptionModal={setOpenLimitSubscriptionModal} subscrLevel={subscrLevel} />} */}
             <MentionWrap ref={mentionRef} onMouseEnter={() => onHover('desktop')}>
