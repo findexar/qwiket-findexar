@@ -309,7 +309,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) =>
             </div>
         </div>)
     return (<div>
-        {open && !cstory &&
+        {open && !cstory && !cm &&
             <div className='fixed inset-0 z-50 sm:bg-opacity-50 bg-gray-700 '>
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
@@ -319,7 +319,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) =>
                 </div>
             </div>
         }
-        {open && cstory &&
+        {open && (cstory || cm) &&
             <div>
                 <div className="flex min-h-full items-center justify-center md:p-1 text-left ">
 
