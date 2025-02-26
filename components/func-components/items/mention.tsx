@@ -471,7 +471,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         const prepName = encodeURIComponent(name);
         return uuid ? type == 'person'
             ? `/${league}/${team}/${prepName}/${athleteUUId}?cm=${uuid}`
-            : `/${league}/${team}?c=${uuid}`
+            : `/${league}/${team}?cm=${uuid}`
             : type == 'person'
                 ? `/${league}/${team}/${prepName}/${athleteUUId}?id=${findexarxid}`
                 : `/${league}/${team}?id=${findexarxid}`;
