@@ -175,7 +175,7 @@ interface Props { }
 const Desktop: React.FC<Props> = () => {
   const {
     teamid,
-    slug, m, cm, cstory, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
+    slug, m, cm, cstory, b, tab: initialTab, rtab: initialRtab, view: initialView, setView, setTab, setRtab, fbclid, utm_content, player, athleteUUId, params, league, pagetype, findexarxid, bot
   } = useAppContext();
   const [loading, setLoading] = React.useState(false);
   const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
@@ -201,7 +201,7 @@ const Desktop: React.FC<Props> = () => {
     /* const tabParam = newTab !== 'all' ? params ? `&tab=${newTab}&rtab=${rtab}` : `?tab=${newTab}&rtab=${rtab}` : '';
      const newPath = league ? `/${league}${params}${tabParam}` : params ? `/${params}${tabParam}` : `/?tab=${newTab}&rtab=${rtab}`;
      window.history.pushState({}, "", newPath);*/
-    //setTimeout(() => setTab(newTab), 0);
+    setTimeout(() => setTab(newTab), 0);
     //setLoading(true);
     if (rtab !== '') {
       setTimeout(() => setRtab(rtab), 0);
@@ -274,7 +274,7 @@ const Desktop: React.FC<Props> = () => {
       )}
       <ContainerWrap>
         {localFindexarxid && <MentionOverlay setDismiss={() => setView("mentions")} mutate={() => { }} />}
-        {(slug || m||cm) && !cstory && !cm && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
+        {(slug || m || cm) && !cstory && !cm && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
         <PageWrap>
           <Page>
             {pagetype === "landing" ? <Landing /> : (
@@ -324,8 +324,8 @@ const Desktop: React.FC<Props> = () => {
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'chat') && !noshow && <Chat source="desktop" />}
                   {(pagetype === 'league' && tab === 'myteam') && !noshow && <MyTeam />}
                   {(pagetype === 'team' || pagetype === 'player') && (tab === 'prompts') && !noshow && <PromptsComponent />}
-                  {(pagetype === 'league' && tab === 'blog' && !cstory) && !noshow && <Blog />}
-                  {(pagetype === 'league' && tab === 'blog' && cstory) && !noshow && <BlogArticle />}
+                  {(pagetype === 'league' && tab === 'blog' && !b) && !noshow && <Blog />}
+                  {(pagetype === 'league' && tab === 'blog' && b) && !noshow && <BlogArticle />}
 
                 </CenterPanel>
                 <RightPanel>

@@ -56,6 +56,8 @@ interface AppContextProps {
     cm: string;
     setCm: (cm: string) => void;
     today: Date;
+    b: string;
+    setB: (b: string) => void;
 }
 
 type AppContextState = Omit<AppContextProps, 'children'>;

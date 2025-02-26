@@ -46,7 +46,7 @@ export default async function Page({
 }) {
     const paramsSSR: SSRParams = await params;
     const searchParamsSSR: SSRSearchParams = await searchParams as any;
-    const { page, today, cstory, cm, jsonld, prompt, promptUUId, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, relatedContent } =
+    const { page, today, cstory, cm, b, jsonld, prompt, promptUUId, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, relatedContent } =
         await ssrPrepParams(paramsSSR, searchParamsSSR);
 
     return (
@@ -62,11 +62,11 @@ export default async function Page({
                     ))}
                 </section>
                     <article>
-                        <SPALayout today={today} cstory={cstory} cm={cm} prompt={prompt} promptUUId={promptUUId} userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} relatedContent={relatedContent || undefined} page={page} />
+                        <SPALayout today={today} cstory={cstory} cm={cm} b={b} prompt={prompt} promptUUId={promptUUId} userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} relatedContent={relatedContent || undefined} page={page} />
                     </article>
                 </>
                     :
-                    <SPALayout today={today} cstory={cstory} cm={cm} prompt={prompt} promptUUId={promptUUId} userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} relatedContent={relatedContent || undefined} page={page} />
+                    <SPALayout today={today} cstory={cstory} cm={cm} b={b} prompt={prompt} promptUUId={promptUUId} userInfo={userInfo} dark={dark} view={view} tab={tab} rtab={rtab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} story={story} findexarxid={findexarxid} m={m} league={league} pagetype={pagetype} teamid={teamid} name={name} athleteUUId={athleteUUId} teamName={teamName} ua={ua} relatedContent={relatedContent || undefined} page={page} />
                 }
             </main>
         </SWRProvider>

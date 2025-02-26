@@ -35,6 +35,7 @@ interface LeagueLayoutProps {
   m?: string,
   cstory?: string,
   cm?: string,
+  b?: string,
   league?: string,
   teamid?: string,
   name?: string,
@@ -73,6 +74,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   m: startM,
   cstory: startCstory,
   cm: startCm,
+  b: startB,
   league: startLeague,
   teamid: startTeamid = "",
   name: startName = "",
@@ -104,6 +106,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   const [m, setM] = useState(startM || "");
   const [cstory, setCstory] = useState(startCstory || "");
   const [cm, setCm] = useState(startCm || "");
+  const [b, setB] = useState(startB || "");
   const [slug, setSlug] = useState(story || cstory);
   const [localMode, setLocalMode] = useState(dark === -1 ? 'unknown' : dark === 1 ? 'dark' : 'light');
   const [params, setParams] = useState("");
@@ -301,9 +304,11 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         m={m}
         cstory={cstory}
         cm={cm}
+        b={b}
         setM={setM}
         setCstory={setCstory}
         setCm={setCm}
+        setB={setB}
         league={league || ""}
         view={view}
         tab={tab}
