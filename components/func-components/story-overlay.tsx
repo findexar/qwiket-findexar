@@ -226,7 +226,7 @@ const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) =>
         // console.log("handleClose")
         setOpen(false);
         setSlug("");
-        let newUrl = window.location.href.replace(/([&?])story=[^&]*&?/, '$1').replace(/&$/, '');
+        let newUrl = window.location.href.replace(/([&?])cstory=[^&]*&?/, '$1').replace(/&$/, '');
         window.history.pushState({ path: newUrl }, '', newUrl);
 
         //router.push(newUrl);

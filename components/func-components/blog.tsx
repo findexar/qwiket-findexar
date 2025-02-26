@@ -37,7 +37,7 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 const Readme = () => {
-    let { relatedContent, slug, fallback, cstory, prompt, promptUUId, mode, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback, setCstory, setCm } = useAppContext();
+    let { relatedContent, slug, fallback, b, prompt, promptUUId, mode, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback, setB, setCm } = useAppContext();
 
     const fetchBlogArticlesKey = (pageIndex: number, previousPageData: any): BlogArticlesKey | null => {
         let key: BlogArticlesKey = { type: `fetch-blog-articles`, page: pageIndex };
@@ -52,7 +52,7 @@ const Readme = () => {
     );
 
     let articles = data ? [].concat(...data) : [];
-    console.log("slug", cstory)
+    //console.log("slug", cstory)
     return (
         <Container>
             <WelcomeWrap className="text-left">
@@ -73,7 +73,7 @@ const Readme = () => {
                             <div className="space-y-12 w-full">
                                 <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1 w-full">
                                     {articles.map((article: any) => {
-                                        const link = `/${league ? `${league}/` : ''}?tab=blog&cstory=${article.slug}`;
+                                        const link = `/${league ? `${league}/` : ''}?tab=blog&b=${article.slug}`;
                                         return (
                                             <article key={article.sys.id} className="h-full flex flex-col rounded-lg shadow-lg overflow-hidden">
                                                 <img
