@@ -172,7 +172,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story || cstory }));
     }
     if (m || cm) {
-        calls.push(await fetchSlugStory({ type: "ASlugStory", slug: m || cm }));
+        calls.push(await fetchSlugStory({ type: "ASlugStory", m: m || cm }));
     }
     //  if (!story && !findexarxid && !m)
     if (teamid)
