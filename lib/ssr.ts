@@ -51,7 +51,9 @@ export type SSRSearchParams = {
     story?: string;
     m?: string;
     cstory?: string;    //comments story
-    cm?: string;        //comments mention
+    cm?: string;
+    b?: string;
+    //comments mention
     cid?: string;       //creator id
     aid?: string;       //invited author id
     prompt?: string;
@@ -75,6 +77,7 @@ export type ssrResult = {
     m: string;
     cstory: string;
     cm: string;
+    b: string;
     league: string;
     pagetype: string;
     teamid: string;
@@ -90,7 +93,7 @@ export type ssrResult = {
 }
 export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchParams): Promise<ssrResult> => {
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
-    let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cstory = "", cm = "", cid = "", aid = "" }:
+    let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cstory = "", cm = "", cid = "", aid = "", b = "" }:
         SSRSearchParams = searchParams as any;
     console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
@@ -168,7 +171,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
         calls.push(await fetchMention({ type: "AMention", findexarxid }));
         calls.push(await fetchMetaLink({ func: "meta", findexarxid, long: 1 }));
     }
-    if ((story || cstory) && tab != 'blog') { // if a digest story is opened
+    if (story || cstory) { // if a digest story is opened
         calls.push(await fetchSlugStory({ type: "ASlugStory", slug: story || cstory }));
     }
     if (m || cm) {
@@ -221,14 +224,14 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
 
     let jsonld: string[] = [];
     if (tab == 'blog') {
-        if (cstory) {
-            const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: cstory };
+        if (b) {
+            const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: b };
             const blogArticle = await actionFetchBlogArticle(blogArticleKey);
             fallback[unstable_serialize(blogArticleKey)] = blogArticle;
             articleStructuredData = {
                 '@context': 'https://schema.org',
                 '@type': 'Article',
-                '@id': `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&cstory=${cstory}`,
+                '@id': `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${b}`,
                 headline: blogArticle.title,
                 image: blogArticle.articleImage.url,
                 description: blogArticle.summary,
@@ -336,9 +339,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     const t3 = new Date().getTime();
-    console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm }));
+    console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm, b }));
     const today = new Date();
-    return { today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    return { today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, b, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(
@@ -346,7 +349,7 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     // Read route params
-    const { id, story, tab, view, m, cstory, cm, promptUUId } = searchParams as any;
+    const { id, story, tab, view, m, cstory, cm, promptUUId, b } = searchParams as any;
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
     //console.log("META searchParams", { id, story, tab, view, m, s });
 
@@ -470,8 +473,8 @@ export async function generateMetadata(
         image_height = 1200;
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}${tab ? `?tab=${tab}&utm_content=${encodeURIComponent(tab)}` : ''}`;
     }
-    if (tab == 'blog' && cstory) {
-        const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: cstory };
+    if (tab == 'blog' && b) {
+        const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: b };
         const blogArticle = await actionFetchBlogArticle(blogArticleKey);
         ogTitle = blogArticle.title;
         ogDescription = blogArticle.summary;

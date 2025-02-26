@@ -104,7 +104,7 @@ interface Props { }
 
 const Mobile: React.FC<Props> = () => {
     const router = useRouter();
-    const { tab, rtab, view, cm, cstory, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, m, findexarxid, bot, player, athleteUUId } = useAppContext();
+    const { tab, rtab, view, cm, cstory, b, setView, setTab, setRtab, params2, tp2, fbclid, utm_content, params, league, pagetype, teamid, slug, m, findexarxid, bot, player, athleteUUId } = useAppContext();
     const [localFindexarxid, setLocalFindexarxid] = React.useState(findexarxid);
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -334,8 +334,8 @@ const Mobile: React.FC<Props> = () => {
                     {false && pagetype == "league" && tab == "myfeed" ? <MyfeedMentions league={league} /> : null}
                     {false && pagetype == "league" && tab == "fav" ? <FavMentions /> : null}
                     {tab == 'chat' && <Chat source="mobile" />}
-                    {(pagetype === 'league' && tab === 'blog' && !cstory) && !noshow && <Blog />}
-                    {(pagetype === 'league' && tab === 'blog' && cstory) && !noshow && <BlogArticle />}
+                    {(pagetype === 'league' && tab === 'blog' && !b) && !noshow && <Blog />}
+                    {(pagetype === 'league' && tab === 'blog' && b) && !noshow && <BlogArticle />}
 
                 </CenterPanel>}
                 {view == 'about' && <Readme />}

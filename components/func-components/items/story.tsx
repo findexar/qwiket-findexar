@@ -297,7 +297,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     }, [digest]);
 
     const shareUrls = useMemo(() => {
-        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}${league ? `/${league}` : ''}?story=${slug}`;
+        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}${league ? `/${league}` : ''}?cstory=${slug}`;
         const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
         return {
             share: `${baseUrl}&utm_content=shareslink${cidParam}`,

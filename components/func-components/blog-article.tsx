@@ -109,20 +109,20 @@ const formatDate = (dateString: string) => {
 };
 
 const Readme = () => {
-    let { relatedContent, slug, fallback, cstory, prompt, promptUUId, mode, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, params, tp, league, pagetype, teamid, player, teamName, setTeamName, athleteUUId, userAccount, userAccountMutate, user, utm_content, bot, feedback, setFeedback, setCstory, setCm } = useAppContext();
+    let { fallback, b, bot } = useAppContext();
 
-    const fetchBlogArticleKey = { type: "fetch-blog-article", slug: cstory };
+    const fetchBlogArticleKey = { type: "fetch-blog-article", slug: b };
     console.log("BlogArticle ==> fetchBlogArticleKey", fetchBlogArticleKey);
     const { data: article, mutate, isLoading } = useSWR(
         fetchBlogArticleKey,
         actionFetchBlogArticle,
         { fallback }
     );
-    console.log("====>article", article);
+    // console.log("====>article", article);
     const { title, articleImage, authorName, date, details, markdown } = article || {};
     const { json, links } = article || {};
     const content = documentToReactComponents(json, renderOptions(links));
-    console.log("slug", cstory)
+    // console.log("slug", b)
     const formattedDate = formatDate(article?.date);
 
     function renderOptions(links: any) {
@@ -207,14 +207,14 @@ const Readme = () => {
         };
     }
     const shareUrls = useMemo(() => {
-        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}?tab=blog&cstory=${cstory}`;
+        const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}?tab=blog&cstory=${b}`;
         // const cidParam = isCid ? `&aid=${userAccount.cid}` : '';
         return {
             share: `${baseUrl}&utm_content=bloglink`,
             twitter: `${baseUrl}&utm_content=xslink`,
             facebook: `${baseUrl}&utm_content=fbslink`,
         };
-    }, [cstory]);
+    }, [b]);
 
     const socialLinks = useMemo(() => {
         return {
@@ -234,7 +234,7 @@ const Readme = () => {
 
         if (!bot) {
             try {
-                actionRecordEvent(`blog-share`, `{"url":"${url}","params":"${params}"}`)
+                actionRecordEvent(`blog-share`, `{"url":"${url}","params":""}`)
                     .then((r: any) => {
                         //console.log("recordEvent", r);
                     });
