@@ -274,7 +274,7 @@ const Desktop: React.FC<Props> = () => {
       )}
       <ContainerWrap>
         {localFindexarxid && <MentionOverlay setDismiss={() => setView("mentions")} mutate={() => { }} />}
-        {(slug || m) && !cstory && !cm && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
+        {(slug || m||cm) && !cstory && !cm && <StoryOverlay idx={"desktop"} setDismiss={() => setView("mentions")} mutate={() => { }} />}
         <PageWrap>
           <Page>
             {pagetype === "landing" ? <Landing /> : (

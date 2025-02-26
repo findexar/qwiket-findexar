@@ -188,8 +188,8 @@ interface Props {
 const StoryOverlay = ({ setDismiss, mutate, idx, incolumn, ...props }: Props) => {
     const [promptUUId, setPromptUUId] = useState('');
     let { cstory, cm, fallback, league, teamName, utm_content, params, slug, m, setSlug, setM, bot } = useAppContext();
-    console.log("StoryOverlay", slug, m)
-    const aSlugStoryKey: ASlugStoryKey = slug ? { type: "ASlugStory", slug: slug } : { type: "AMentionStory", m: m };
+    console.log("StoryOverlay", slug, m, cm)
+    const aSlugStoryKey: ASlugStoryKey = slug ? { type: "ASlugStory", slug: slug } : { type: "AMentionStory", m: m || cm };
     let { data: aSlugStory } = useSWR(
         aSlugStoryKey,
         actionASlugStory,
