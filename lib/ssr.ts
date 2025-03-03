@@ -422,7 +422,15 @@ export async function generateMetadata(
         ogImage = astoryImageOgUrl;
     }
     let noindex = !leagueid && !teamid && !athleteUUId && !tab && !view ? 0 : 1;
-
+    if (cstory && astory.publishedTime) {
+        const publishedDate = astory.publishedTime ? new Date(astory.publishedTime) : new Date();
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        noindex = 0;
+        if (publishedDate < oneWeekAgo || !astory.publishedTime) {
+            noindex = 1;
+        }
+    }
     if (promptResponse && promptUUId) {
         ogTitle = ogTitle + ' - ' + promptResponse.prompt;
         ogDescription = promptResponse.response || promptResponse.digest;
@@ -455,7 +463,7 @@ export async function generateMetadata(
         // ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
     }
 
-    if ((athleteUUId || teamid) && (!tab || tab == 'podcasts') && !view && !findexarxid && !story) {
+    if ((athleteUUId || teamid) && (!tab || tab == 'podcasts') && !view && !findexarxid && !story && !cstory) {
 
         let teamName = await actionGetTeamName(teamid);
 
