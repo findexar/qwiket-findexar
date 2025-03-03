@@ -717,7 +717,7 @@ const ChatsComponent: React.FC<Props> = ({
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
     // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
-
+    console.log("==> CHAT.TSX drawMessages", { drawMessages, messages, loadedChat });
     const handleRetry = () => {
         if (textareaRef.current) {
             if (textareaRef.current) {
@@ -799,6 +799,7 @@ const ChatsComponent: React.FC<Props> = ({
     digest: string
     */
     let lastMessage = drawMessages[drawMessages.length - 1];
+    console.log("==> CHAT.TSX drawMessages", { drawMessages });
     let relatedUrl = relatedContent ? `${league}${teamid ? `/${teamid}` : ''}${player ? `/${encodeURIComponent(player)}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}?story=${encodeURIComponent(relatedContent.slug)}` : '';
     const renderedRelatedContent = relatedContent && relatedContent.digest && relatedContent.image && (
         <div className="flex justify-center">
@@ -1028,80 +1029,85 @@ const ChatsComponent: React.FC<Props> = ({
                             </> : renderPrompts(isMobile ? "mobile" : "desktop")}
                         </>
                     )}
-                    {drawMessages.map((message: Message, index: number) => (
-                        <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
+                    {drawMessages.map((message: Message, index: number) => {
+                        const loading = (messages.length === 0 && textareaRef.current?.value.trim() !== '' && !isMessageSubmitted) || (isPromptSelected && !isMessageSubmitted);
+                        return (
+                            <div key={`${index}-${message.content}`} className={`mb-2 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`w-full min-w-[200px] ${message.role === 'user' ? 'lg:max-w-[70%]' : ''} max-w-[95%] p-3 rounded-2xl 
                         ${message.role === 'user'
-                                    ? 'bg-gray-100 dark:bg-gray-800'
-                                    : ''
-                                } text-gray-800 dark:text-gray-200`}>
-                                <div className="flex justify-between items-center mb-1">
-                                    {message.role !== 'user' && (
-                                        <div className="flex items-center">
-                                            {streamingMessageIndex !== index && (
-                                                <>
+                                        ? 'bg-gray-100 dark:bg-gray-800'
+                                        : ''
+                                    } text-gray-800 dark:text-gray-200`}>
+                                    <div className="flex justify-between items-center mb-1">
+                                        {message.role !== 'user' && (
+                                            <div className="flex items-center">
+                                                {streamingMessageIndex !== index && (
+                                                    <>
 
-                                                </>
-                                            )}
-                                            <span className="font-bold ml-0.5">Qwiket AI:</span>
-                                        </div>
-                                    )}
-                                    {message.role !== 'user' && message.content.length >= 20 && (
-                                        <button
-                                            onClick={() => copyToClipboard(message.content, index)}
-                                            className={`${copiedMessageIndex === index
-                                                ? 'text-green-500 dark:text-green-400'
-                                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                                                } transition-colors duration-200`}
-                                        >
-                                            {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                                    </>
+                                                )}
+                                                <span className="font-bold ml-0.5">Qwiket AI:</span>
+                                            </div>
+                                        )}
+                                        {message.role !== 'user' && message.content.length >= 20 && (
+                                            <button
+                                                onClick={() => copyToClipboard(message.content, index)}
+                                                className={`${copiedMessageIndex === index
+                                                    ? 'text-green-500 dark:text-green-400'
+                                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                                    } transition-colors duration-200`}
+                                            >
+                                                {copiedMessageIndex === index ? <FaCheck size={14} /> : <FaCopy size={14} />}
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className={message?.content == "" ? "text-yellow-900 dark:text-yellow-400" : ""}>
+                                        <ReactMarkdown components={MarkdownComponents}>
+                                            {!message?.content && message?.role == 'assistant' ? 'Sorry, the answer has been archived...' : message?.content}
+                                        </ReactMarkdown>
+                                    </div>
+                                    {promptUUId && index === drawMessages.length - 1 && drawMessages.length < 3 && drawMessages.length > 1 && <div className=" mb-4  flex justify-center">
+                                        <button className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300" onClick={() => {
+                                            if (textareaRef.current) {
+                                                if (textareaRef.current) {
+                                                    textareaRef.current.value = message?.content ? 'Please expand the answer' : 'Please provide a fresh answer'; // Load prompt into textarea
+                                                    const formEvent = new Event('submit', { bubbles: true }); // Create a new event
+                                                    // handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
+                                                    // hasSubmittedPromptRef.current = true; // Mark as submitted
+                                                    formRef.current?.dispatchEvent(formEvent);
+                                                    const newMessage: Message = {
+                                                        role: 'user',
+                                                        content: 'Your new user message here' // Replace with the actual message content
+                                                    };
+                                                    /* mutateLoadedChat({
+                                                         ...loadedChat, // Spread existing chat data
+                                                         chat: {
+                                                             ...loadedChat.chat, // Spread existing chat attributes
+                                                             messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
+                                                         }
+                                                     });
+                                                     setTimeout(() => {
+                                                         mutateLoadedChat();
+                                                     }, 2000);*/
+                                                }
+
+                                            }
+                                        }}>
+                                            {index == drawMessages.length - 1 && drawMessages[index].content.length > 0 ? `More details...` : `Generate new answer...`}
                                         </button>
+                                    </div>}
+                                    {index === drawMessages.length - 1 && message.role === 'Qwiket AI' && (
+                                        <>
+                                            <BlinkingDot />
+                                            {false && <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
+                                                <FaRedo size={8} /> {/* Retry icon */}
+                                            </button>}
+                                        </>
                                     )}
                                 </div>
-                                <ReactMarkdown components={MarkdownComponents}>
-                                    {message?.content || ''}
-                                </ReactMarkdown>
-                                {promptUUId && index === drawMessages.length - 1 && drawMessages.length < 3 && <div className=" mb-4  flex justify-center">
-                                    <button className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300" onClick={() => {
-                                        if (textareaRef.current) {
-                                            if (textareaRef.current) {
-                                                textareaRef.current.value = 'Please expand the answer'; // Load prompt into textarea
-                                                const formEvent = new Event('submit', { bubbles: true }); // Create a new event
-                                                // handleSubmit(formEvent as unknown as React.FormEvent); // Trigger handleSubmit
-                                                // hasSubmittedPromptRef.current = true; // Mark as submitted
-                                                formRef.current?.dispatchEvent(formEvent);
-                                                const newMessage: Message = {
-                                                    role: 'user',
-                                                    content: 'Your new user message here' // Replace with the actual message content
-                                                };
-                                                /* mutateLoadedChat({
-                                                     ...loadedChat, // Spread existing chat data
-                                                     chat: {
-                                                         ...loadedChat.chat, // Spread existing chat attributes
-                                                         messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
-                                                     }
-                                                 });
-                                                 setTimeout(() => {
-                                                     mutateLoadedChat();
-                                                 }, 2000);*/
-                                            }
-
-                                        }
-                                    }}>
-                                        More details...
-                                    </button>
-                                </div>}
-                                {index === drawMessages.length - 1 && message.role === 'Qwiket AI' && (
-                                    <>
-                                        <BlinkingDot />
-                                        {false && <button onClick={handleRetry} className="ml-2 text-gray-500 hover:text-gray-700">
-                                            <FaRedo size={8} /> {/* Retry icon */}
-                                        </button>}
-                                    </>
-                                )}
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
 
                     {!isLoading && loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1]?.role == 'assistant' && (
                         <div className="mt-4 mb-4 ml-4 mr-4">
