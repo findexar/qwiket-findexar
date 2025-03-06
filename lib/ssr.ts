@@ -422,7 +422,7 @@ export async function generateMetadata(
         ogImage = astoryImageOgUrl;
     }
     let noindex = !leagueid && !teamid && !athleteUUId && !tab && !view ? 0 : 1;
-    if (cstory && astory.publishedTime) {
+    if (cstory && astory?.publishedTime) {
         const publishedDate = astory.publishedTime ? new Date(astory.publishedTime) : new Date();
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);

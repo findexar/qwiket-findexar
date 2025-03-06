@@ -22,8 +22,9 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     athleteUUId = athleteUUId || "";
     const url = `${lake_api}/api/v50/findexar/get-stories?api_key=${api_key}&userid=${userId || ""}&league=${league}&teamid=${teamid}&athleteUUId=${athleteUUId}&sessionid=${sessionid}&page=${page}&type=${t}`;
     const t1 = Date.now();
-   // console.log("fetchStories", url);
+    //console.log("fetchStories", url);
     const fetchResponse = await fetch(url);
+    //console.log("fetchStories fetchResponse", fetchResponse.status);
     const t2 = Date.now();
 
     const res = await fetchResponse.json();
@@ -31,7 +32,7 @@ const fetchStories = async (key: StoriesKey, userId: string, sessionid: string) 
     if (page == 0) {
         //console.log("=====>fetchStories", url, t2 - t1, JSON.stringify(res, null, 2));
 
-       // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
+        // console.log("fetchStories fetchResponse", JSON.stringify({ stories: res.stories, time: t2 - t1 }, null, 2));
     }
     return res.stories;
 }
