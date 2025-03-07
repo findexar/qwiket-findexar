@@ -39,12 +39,12 @@ const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, ic
   const [isActive, setIsActive] = useState(false); // State to manage active status
 
   const handleClick = (event: React.SyntheticEvent) => {
-    setIsActive(true); // Set active state on click
+    // setIsActive(true); // Set active state on click
     if (onClick) {
       onClick();
     }
     // Optionally, reset the active state after a timeout
-    setTimeout(() => setIsActive(false), 200); // Adjust timeout as needed
+    // setTimeout(() => setIsActive(false), 200); // Adjust timeout as needed
   };
 
   // Determine the class based on active state
