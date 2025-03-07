@@ -178,7 +178,9 @@ const Mobile: React.FC<Props> = () => {
                  setView('mentions');
              }
          }*/
-        setView(name);
+        setTimeout(() => {
+            setView(name);
+        }, 10);
         /*  if (!teamid) {
               window.history.replaceState({}, "", league ? `/${league}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}` : `/?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
           }
