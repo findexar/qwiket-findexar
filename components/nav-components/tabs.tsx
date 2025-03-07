@@ -2,21 +2,22 @@ import Link from 'next/link';
 import React from 'react';
 
 const tabClasses = {
-  tabs1: ["py-2 px-1 text-sm font-medium text-center focus:outline-none xs:focus:text-slate-500  xs:focus:dark:text-slate-100 text-slate-800 dark:text-slate-50 md:hover:text-slate-500 md:dark:hover:text-slate-100 ",
-    "py-2 px-1 text-sm font-medium text-center focus:outline-nonetext-amber-600 dark:text-amber-200   xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500 md:dark:hover:text-amber-100 transition duration-500 ease-in-out"],
+  tabs1: ["py-2 px-1 text-sm font-medium text-center focus:outline-none xs:focus:outline-none text-slate-800 dark:text-slate-50 md:hover:text-slate-500 md:dark:hover:text-slate-100 ",
+    "py-2 px-1 text-sm font-medium text-center focus:outline-nonetext-amber-600 dark:text-amber-200 md:hover:text-slate-500 md:dark:hover:text-amber-100 transition duration-500 ease-in-out"],
 
-  tabs2: ["py-2 px-4 text-sm font-medium text-center focus:outline-none  text-slate-50 xs:focus:text-slate-500 xs:dark:focus:text-slate-100 md:hover:text-slate-500",
+  tabs2: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-slate-50 md:hover:text-slate-500",
     "py-2 px-4 text-sm font-medium text-center focus:outline-none  text-amber-200  dark:text-amber-200 transition duration-500 ease-in-out"],
 
-  tabs3: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 xs:focus:text-slate-500 xs:dark:focus:text-slate-100 md:hover:text-slate-500",
-    "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500 md:dark:hover:text-amber-100 transition duration-500 ease-in-out"],
-  tabs4: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-green-800 dark:text-green-200 xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500",
-    "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500 md:dark:hover:text-amber-100 transition duration-500 ease-in-out"],
+  tabs3: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 md:hover:text-slate-500 ",
+    "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 md:hover:text-slate-500 dark:text-amber-200 md:dark:hover:text-slate-100 transition duration-500 ease-in-out"],
 
-  tabs5: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-green-200 xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500",
+  tabs4: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-green-800 dark:text-green-200 md:hover:text-slate-500 ",
+    "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 md:hover:text-slate-500 dark:text-amber-200 md:dark:hover:text-slate-100 transition duration-500 ease-in-out"],
+
+  tabs5: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-green-200 md:hover:text-slate-500 ",
     "py-2 px-4 text-sm font-medium text-center focus:outline-none text-amber-200  dark:text-amber-200 transition duration-500 ease-in-out"],
 
-  tabs6: ["py-1 px-4 text-xs font-small text-center focus:outline-none text-slate-900 dark:text-slate-200 xs:focus:text-slate-500 xs:dark:focus:text-amber-100 md:hover:text-slate-500",
+  tabs6: ["py-1 px-4 text-xs font-small text-center focus:outline-none text-slate-900 dark:text-slate-200 md:hover:text-slate-500 ",
     "py-1 px-4 text-xs font-small text-center focus:outline-none  text-amber-700  dark:text-amber-200 transition duration-500 ease-in-out"],
 
 }
