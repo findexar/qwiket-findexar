@@ -185,11 +185,13 @@ const Mobile: React.FC<Props> = () => {
           else {
               window.history.replaceState({}, "", `/${league}/${teamid}?view=${encodeURIComponent(name)}${params2}${tp2.replace('?', '&')}`);
           }*/
-        await actionRecordEvent(
-            'view-nav',
-            `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
-        );
-    }, [teamid, league, params2, tp2, fbclid, utm_content]);
+        setTimeout(async () => {
+            await actionRecordEvent(
+                'view-nav',
+                `{"fbclid":"${fbclid}","utm_content":"${utm_content}","view":"${name}"}`
+            );
+        }, 10);
+    }, [fbclid, utm_content]);
 
     const tabPath = (tab: string) => {
         const leaguePath = league ? `/${league}` : `/`;
