@@ -108,6 +108,9 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (bot) {
         await actionRecordEvent("bot-ssr", `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
     }
+    else {
+        await actionRecordEvent("human-ssr", `{"utm_content":"${utm_content}","params":"${{ tab, view, rtab, prompt, promptUUId, page, leagueid, teamid, name, athleteUUId }}","ua":"${ua || ""}"}`)
+    }
     let userId = "";
     try {
         let { userId: authId } = !bot ? await auth() : { userId: "" };
