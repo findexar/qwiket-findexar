@@ -1,23 +1,23 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 
 const tabClasses = {
-  tabs1: ["py-2 px-1 text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 hover:text-slate-500 dark:hover:text-slate-100 focus:text-slate-500 dark:focus:text-slate-100 md:hover:text-slate-500 md:dark:hover:text-slate-100 ",
+  tabs1: ["py-2 px-1 text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 md:hover:text-slate-500 md:dark:hover:text-slate-100 ",
     "py-2 px-1 text-sm font-medium text-center focus:outline-nonetext-amber-600 dark:text-amber-200 md:hover:text-slate-500 md:dark:hover:text-amber-100 transition duration-500 ease-in-out"],
 
-  tabs2: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-slate-50 hover:text-slate-500 focus:text-slate-500 md:hover:text-slate-500",
+  tabs2: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-slate-50 md:hover:text-slate-500",
     "py-2 px-4 text-sm font-medium text-center focus:outline-none  text-amber-200  dark:text-amber-200 transition duration-500 ease-in-out"],
 
-  tabs3: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 hover:text-slate-500 focus:text-slate-500 ",
+  tabs3: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-slate-800 dark:text-slate-50 md:hover:text-slate-500 ",
     "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 md:hover:text-slate-500 dark:text-amber-200 md:dark:hover:text-slate-100 transition duration-500 ease-in-out"],
 
-  tabs4: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-green-800 dark:text-green-200 hover:text-slate-500 focus:text-slate-500 ",
+  tabs4: ["py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none text-green-800 dark:text-green-200 md:hover:text-slate-500 ",
     "py-2 px-4 text-xs md:text-sm font-medium text-center focus:outline-none box-border border-b-2 border-blue-300 dark:border-amber-500  text-amber-600 md:hover:text-slate-500 dark:text-amber-200 md:dark:hover:text-slate-100 transition duration-500 ease-in-out"],
 
-  tabs5: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-green-200 hover:text-slate-500 focus:text-slate-500 ",
+  tabs5: ["py-2 px-4 text-sm font-medium text-center focus:outline-none text-green-200 md:hover:text-slate-500 ",
     "py-2 px-4 text-sm font-medium text-center focus:outline-none text-amber-200  dark:text-amber-200 transition duration-500 ease-in-out"],
 
-  tabs6: ["py-1 px-4 text-xs font-small text-center focus:outline-none text-slate-900 dark:text-slate-200 hover:text-slate-500 focus:text-slate-500 ",
+  tabs6: ["py-1 px-4 text-xs font-small text-center focus:outline-none text-slate-900 dark:text-slate-200 md:hover:text-slate-500 ",
     "py-1 px-4 text-xs font-small text-center focus:outline-none  text-amber-700  dark:text-amber-200 transition duration-500 ease-in-out"],
 
 }
@@ -36,20 +36,7 @@ interface TabProps {
 }
 
 const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, iconPosition = "start", id = "tabs1", isnew = false, link = '' }) => {
-  const [isActive, setIsActive] = useState(false); // State to manage active status
-
-  const handleClick = (event: React.SyntheticEvent) => {
-    // setIsActive(true); // Set active state on click
-    if (onClick) {
-      onClick();
-    }
-    // Optionally, reset the active state after a timeout
-    // setTimeout(() => setIsActive(false), 200); // Adjust timeout as needed
-  };
-
-  // Determine the class based on active state
-  const activeClass = isActive ? 'hover:text-slate-500 dark:hover:text-slate-100' : '';
-
+  // console.log("TAB,selected ",selected,"id ",id)
   if (isnew) {
     if (id == 'tabs2')
       id = "tabs5";
@@ -59,8 +46,8 @@ const Tab: React.FC<TabProps> = ({ label, selected, onClick, value, disabled, ic
   // console.log("TAB, id", id, { tabClasses })
   return (
     <button
-      className={`${tabClasses[id as keyof typeof tabClasses][selected ? 1 : 0]} relative ${activeClass}`}
-      onClick={handleClick}
+      className={`${tabClasses[id as keyof typeof tabClasses][selected ? 1 : 0]} relative`}
+      onClick={onClick}
       value={value}
       disabled={disabled}
     // Ensures that the button size doesn't change when selected
