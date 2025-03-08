@@ -220,7 +220,7 @@ const Subhead = styled.div<HeaderProps>`
 `;
 
 const SubheadMobile = styled.div`
-  margin-top: 4px;
+  margin-top: 2px;
   text-align: left;
   color: var(--mobile-subheader-color);    
   font-size: 12px;
