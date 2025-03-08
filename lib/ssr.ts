@@ -417,7 +417,7 @@ export async function generateMetadata(
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     if (!astoryImageOgUrl) image_height = 630;
-    let ogTitle = ogTarget || `Qwiket AI: Helping Fantasy Sports and Sports Betting Fans to Elevate their Game`;
+    let ogTitle = ogTarget || `Qwiket : Helping Fantasy Sports and Sports Betting Fans to Elevate their Game`;
     if (astory) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
         ogTitle = astoryTitle;
@@ -454,7 +454,7 @@ export async function generateMetadata(
     }
     if (tab == 'prompts') {
         noindex = 0;
-        ogTitle = `Qwiket AI: ${name ? name : ''} FAQ`;
+        ogTitle = `Qwiket: ${name ? name : ''} FAQ`;
         ogDescription = "Qwiket AI: Frequently Asked Questions";
         ogImage = "/q-logo-og-1200.png";
         image_width = 1200;
@@ -473,10 +473,10 @@ export async function generateMetadata(
         noindex = 0;
         if (athleteUUId) {
             name = decodeURIComponent(name);
-            ogTitle = `${name} - ${teamName} : Qwiket AI: Interactive Sports Knowledge`;
+            ogTitle = `${name} - ${teamName} : Qwiket: Integrated Sports Knowledge`;
         }
         else {
-            ogTitle = `${teamName} : Qwiket AI: Interactive Sports Knowledge`;
+            ogTitle = `${teamName} : Qwiket: Integrated Sports Knowledge`;
         }
         ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
         ogImage = "/q-logo-og-1200.png";

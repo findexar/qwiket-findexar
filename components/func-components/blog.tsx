@@ -66,7 +66,7 @@ const Readme = () => {
                                         The Founders Blog
                                     </h1>
                                     <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
-                                        Discover our latest articles and stay up to date with Qwiket AI updates, thoughts on fantasy sports future and technology.
+                                        Discover our latest articles and stay up to date with Qwiket updates, thoughts on fantasy sports future and technology.
                                     </p>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@ const Readme = () => {
                             </div>
                         </div>
                     </section>
-                </main>                <hr />Copyright &#169; 2024,2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.
+                </main>                <hr />Copyright &#169; 2024,2025 Findexar, Inc. <br />Made in Minnesota. L&apos;Étoile du Nord.
             </WelcomeWrap>
         </Container >
     )

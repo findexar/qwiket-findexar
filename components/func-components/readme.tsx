@@ -31,7 +31,7 @@ const Readme = () => {
     return (
         <Container>
             <WelcomeWrap className="text-left">
-                <span style={{ fontSize: 18 }}> Welcome to Qwiket AI!</span><br /><br /><hr />
+                <span style={{ fontSize: 18 }}> Welcome to Qwiket!</span><br /><br /><hr />
                 <br />
 
                 <p>We believe that knowledge elevates the quality of our reasoning, improves our productivity and decision-making, and creates wealth and fulfillment in every endeavor we pursue.</p>

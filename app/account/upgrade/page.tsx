@@ -81,7 +81,7 @@ export async function generateMetadata(
         ogTarget = `${amentionTeamName} on ${process.env.NEXT_PUBLIC_APP_NAME}`;
     }
 
-    let ogDescription = amentionSummary || "Elevate your fantasy game with Qwiket AI: Interactive Sports Knowledge and Reasoning Support for Fantasy Sports and Betting Enthusiasts that cuts time and effort required to make winning decisions.";
+    let ogDescription = amentionSummary || "Elevate your fantasy game with Qwiket: Interactive Sports Knowledge and Reasoning Support for Fantasy Sports and Betting Enthusiasts that cuts time and effort required to make winning decisions.";
     let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
     let ogTitle = ogTarget || `Qwiket`;
 

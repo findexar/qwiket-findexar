@@ -260,7 +260,7 @@ const Readme = () => {
                             </ReactMarkdown>
 
                             <hr className="my-8" />
-                            <p className="text-sm text-gray-800 dark:text-gray-200">Copyright &#169; 2024, 2025 Qwiket AI <br />Made in Minnesota. L&apos;Étoile du Nord.</p><p>Contact: support @ qwiket.com</p>
+                            <p className="text-sm text-gray-800 dark:text-gray-200">Copyright &#169; 2024, 2025 Findexar, Inc <br />Made in Minnesota. L&apos;Étoile du Nord.</p><p>Contact: support @ qwiket.com</p>
 
                         </article>
                         <BottomLine>
