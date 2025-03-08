@@ -611,7 +611,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
 
                 <Superhead $scrolled={scrollY != 0}>
                   {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ?
-                    <Link className="text-red bg-magenta-800" href={`/`}>{`QWIKET` + (league ? ` : ${league}` : ``)}</Link> :
+                    <Link className="text-red bg-magenta-800" href={`/`}><b>{`QWIKET` + (league ? ` : ${league}` : ``)}</b></Link> :
                     !teamid ? `${league}` : player ?
                       <PlayerNameGroup><PlayerName><Link prefetch={true} href={`/${league}/${teamid}`}>
                         <TeamNameGroup $scrolled={scrollY != 0}>
@@ -623,7 +623,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
                         {teamLogo && <img src={teamLogo} alt={teamName} />}
                       </TeamNameGroup>
                   }</Superhead>
-                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/`}>{league ? `QWIKET : ${league}` : `QWIKET`}</Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
+                <SuperheadMobile>{(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) ? <Link href={`/`}><b>{league ? `QWIKET : ${league}` : `QWIKET`}</b></Link> : !teamid ? `${league}` : player ? <PlayerNameGroup><PlayerName><Link href={`${league}/${teamid}`}>{teamName}</Link></PlayerName> </PlayerNameGroup> : `${league} : ${teamName}`}</SuperheadMobile>
                 {(pagetype == "league" || pagetype == "landing" || pagetype.includes("account")) && <div><Subhead $scrolled={scrollY != 0}>Elevate your fantasy game! Knowledge, reasoning and decision support for fantasy sports enthusiasts.</Subhead><SubheadMobile>Elevate your fantasy game!</SubheadMobile></div>}
                 {pagetype == "player" && player && <div><Subhead $scrolled={scrollY != 0}>{player ? player : ''}</Subhead><SubheadMobile>{player ? player : ''}</SubheadMobile></div>}
               </HeaderCenter>
