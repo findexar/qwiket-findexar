@@ -226,33 +226,38 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let fallback: { [key: string]: any } = {}; // Add index signature
 
     let jsonld: string[] = [];
-    if (tab == 'blog') {
-        if (b) {
-            const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: b };
-            const blogArticle = await actionFetchBlogArticle(blogArticleKey);
-            fallback[unstable_serialize(blogArticleKey)] = blogArticle;
-            articleStructuredData = {
-                '@context': 'https://schema.org',
-                '@type': 'Article',
-                '@id': `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${b}`,
-                headline: blogArticle.title,
-                image: blogArticle.articleImage.url,
-                description: blogArticle.summary,
-                dateCreated: blogArticle.date,
-                datePublished: blogArticle.date,
-                author: {
-                    '@type': 'Person',
-                    'name': blogArticle.authorName,
-                    'email': `support@qwiket.com`
-                },
-                publisher: 'QwiketAI',
-                articleBody: blogArticle.markdown,
+    try {
+        if (tab == 'blog') {
+            if (b) {
+                const blogArticleKey: BlogArticleKey = { type: "fetch-blog-article", slug: b };
+                const blogArticle = await actionFetchBlogArticle(blogArticleKey);
+                fallback[unstable_serialize(blogArticleKey)] = blogArticle;
+                articleStructuredData = {
+                    '@context': 'https://schema.org',
+                    '@type': 'Article',
+                    '@id': `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${b}`,
+                    headline: blogArticle?.title,
+                    image: blogArticle?.articleImage?.url,
+                    description: blogArticle?.summary,
+                    dateCreated: blogArticle?.date,
+                    datePublished: blogArticle?.date,
+                    author: {
+                        '@type': 'Person',
+                        'name': blogArticle?.authorName,
+                        'email': `support@qwiket.com`
+                    },
+                    publisher: 'Qwiket',
+                    articleBody: blogArticle?.markdown,
+                }
+                jsonld.push(JSON.stringify(articleStructuredData));
             }
-            jsonld.push(JSON.stringify(articleStructuredData));
+            else {
+                calls.push(await promiseFetchBlogArticles({ type: "fetch-blog-articles", page: 0 }));
+            }
         }
-        else {
-            calls.push(await promiseFetchBlogArticles({ type: "fetch-blog-articles", page: 0 }));
-        }
+    }
+    catch (x) {
+        console.log("error fetching blog article", x);
     }
 
     let response;
@@ -415,8 +420,11 @@ export async function generateMetadata(
     }
 
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
-    let ogImage = astoryImageOgUrl || '/q-logo-og-1200.png';
-    if (!astoryImageOgUrl) image_height = 630;
+    let ogImage = astoryImageOgUrl || '/q-logo-white-2400.png';
+    if (!astoryImageOgUrl) {
+        image_height = 1200;
+        image_width = 1200;
+    }
     let ogTitle = ogTarget || `Qwiket : Helping Fantasy Sports and Sports Betting Fans to Elevate their Game`;
     if (astory) {
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?story=${encodeURIComponent(story)}`;
@@ -455,14 +463,11 @@ export async function generateMetadata(
     if (tab == 'prompts') {
         noindex = 0;
         ogTitle = `Qwiket: ${name ? name : ''} FAQ`;
-        ogDescription = "Qwiket AI: Frequently Asked Questions";
-        ogImage = "/q-logo-og-1200.png";
-        image_width = 1200;
-        image_height = 1200;
+        ogDescription = "Qwiket: Frequently Asked Questions";
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}?tab=prompts`;
-        ogImage = "/q-logo-og-1200.png";
-        image_width = 1200;
-        image_height = 1200;
+        ogImage = "/q-logo-light-512-bck.png";
+        image_width = 512;
+        image_height = 512;
         // ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${athleteUUId}/` : ''}`;
     }
 
@@ -479,9 +484,9 @@ export async function generateMetadata(
             ogTitle = `${teamName} : Qwiket: Integrated Sports Knowledge`;
         }
         ogDescription = `Elevate your fantasy game with Qwiket! For Fantasy Sports and Sports betting Enthusiasts: Interactive up-to-minute knowledge accessible via AI Chat and Qwiket Mentions Index.`;
-        ogImage = "/q-logo-og-1200.png";
-        image_width = 1200;
-        image_height = 1200;
+        ogImage = "/q-logo-light-512-bck.png";
+        image_width = 512;
+        image_height = 512;
         ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/${leagueid}/${teamid}/${athleteUUId ? `${encodeURIComponent(name)}/${athleteUUId}/` : ''}${tab ? `?tab=${tab}&utm_content=${encodeURIComponent(tab)}` : ''}`;
     }
     if (tab == 'blog' && b) {
