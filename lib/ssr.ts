@@ -490,8 +490,8 @@ export async function generateMetadata(
         ogTitle = blogArticle.title;
         ogDescription = blogArticle.summary;
         ogImage = blogArticle.articleImage.url;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&cstory=${cstory}`;
-        ogSiteName = 'QwiketAI';
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${cstory}`;
+        ogSiteName = 'Qwiket';
         ogAuthors = blogArticle.authorName;
         //image_width = blogArticle.articleImage.width;
         //image_height = blogArticle.articleImage.height;
@@ -518,7 +518,7 @@ export async function generateMetadata(
         },
         robots: (noindex === 1) ? 'noindex, follow' : 'index, follow',
         alternates: {
-            canonical: tab == 'blog' && cstory ? ogUrl : null,
+            canonical: tab == 'blog' && b ? ogUrl : null,
         },
         icons: {
             icon: [
