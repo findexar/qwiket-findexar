@@ -420,7 +420,7 @@ export async function generateMetadata(
     }
 
     let ogDescription = amentionSummary || promptResponse || "Interactive sports knowledge for fantasy sports and sports betting Fans";
-    let ogImage = astoryImageOgUrl || '/q-logo-white-2408.png';
+    let ogImage = astoryImageOgUrl || '/q-logo-white-2048.png';
     if (!astoryImageOgUrl) {
         image_height = 1200;
         image_width = 1200;
