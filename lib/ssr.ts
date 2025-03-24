@@ -490,7 +490,7 @@ export async function generateMetadata(
         ogTitle = blogArticle.title;
         ogDescription = blogArticle.summary;
         ogImage = blogArticle.articleImage.url;
-        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${cstory}`;
+        ogUrl = `${process.env.NEXT_PUBLIC_SERVER}/tab=blog&b=${b}`;
         ogSiteName = 'Qwiket';
         ogAuthors = blogArticle.authorName;
         //image_width = blogArticle.articleImage.width;
