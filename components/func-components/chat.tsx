@@ -275,6 +275,7 @@ const ChatsComponent: React.FC<Props> = ({
                     if (status != 'white') {
                         setStatus('white');
                     }
+                    console.log("==> CHAT.TSX actionChatStream onUpdate", content);
                     setResponse(prev => {
                         const updatedContent = prev + content;
                         //console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
@@ -291,6 +292,7 @@ const ChatsComponent: React.FC<Props> = ({
                     });
                 },
                 onDone: () => {
+                    console.log("==> CHAT.TSX onDone", response);
                     setUpdateMessage('');
                     userAccountMutate();
                     setIsLoading(false);
@@ -322,6 +324,7 @@ const ChatsComponent: React.FC<Props> = ({
                     }
                 },
                 onMetaUpdate: (content: string) => {
+                    console.log("==> CHAT.TSX onMetaUpdate", content);
                     setUpdateMessage(content);
                 },
                 onFollowupPromptsUpdate: (content: string[]) => {
