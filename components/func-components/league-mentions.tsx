@@ -12,28 +12,23 @@ interface Props {
 }
 let lastMutate = 0;
 let scrollY = 0;
-const Stories: React.FC<Props> = () => {
+const LeagueMentions: React.FC<Props> = () => {
     let { fallback, league, teamid, } = useAppContext();
-    // const [mentions, setMentions] = React.useState([]);
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): LeagueMentionsKey | null => {
         let key: LeagueMentionsKey = { type: "fetch-league-mentions", league: league?.toUpperCase() || '', page: pageIndex };
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     }
-    // console.log("CLIENT====> fetchMentionsKey", fetchMentionsKey(0, null));
-    // now swrInfinite code:
+    // swrInfinite fetch code:
     const { data, error, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
         fetchMentionsKey,
         actionLeagueMentions,
         { initialSize: 1, revalidateAll: true, parallel: true, fallback }
     )
-    /* useEffect(()=>{
-         setMentions(data ? [].concat(...data) : []);
-     },[data])*/
 
 
     let mentions = data ? [].concat(...data) : [];
-    // console.log("stories", stories);
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {
@@ -70,8 +65,8 @@ const Stories: React.FC<Props> = () => {
         return () => window.removeEventListener("scroll", listener);
     }, [scrollY]);
 
-    const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    //console.log("team-mentions teamPlayersKey",teamPlayersKey)
+    const teamPlayersKey = { type: 'team-players', teamid };
+
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(
         teamPlayersKey,
         actionFetchLeagueTeams,
@@ -91,4 +86,4 @@ const Stories: React.FC<Props> = () => {
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} showImage={true} />
     </>
 }
-export default Stories;
+export default LeagueMentions;

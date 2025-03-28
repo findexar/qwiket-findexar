@@ -10,9 +10,9 @@ import { actionFetchLeagueTeams } from '@lib/server-actions/team-players';
 
 interface Props {
 }
-const Stories: React.FC<Props> = () => {
+const TeamMentions: React.FC<Props> = () => {
     let { fallback, mode, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, teamid, player, teamName, setTeamName } = useAppContext();
-    // const [mentions, setMentions] = React.useState([]);
+
     const fetchMentionsKey = (pageIndex: number, previousPageData: any): TeamMentionsKey | null => {
         let key: TeamMentionsKey = { type: "fetch-team-mentions", teamid, page: pageIndex, league };
         if (previousPageData && !previousPageData.length) return null; // reached the end
@@ -24,18 +24,13 @@ const Stories: React.FC<Props> = () => {
         actionTeamMentions,
         { initialSize: 1, revalidateAll: true, parallel: true, fallback }
     );
-    /* useEffect(()=>{
-         setMentions(data ? [].concat(...data) : []);
-     },[data])*/
+
     let mentions = data ? [].concat(...data) : [];
 
-    const teamPlayersKey = { type: 'team-players', teamid }; // Adjust accordingly
-    //console.log("team-mentions teamPlayersKey",teamPlayersKey)
+    const teamPlayersKey = { type: 'team-players', teamid };
+
     const { data: players, error: playersError, mutate: mutatePlayers } = useSWR(teamPlayersKey, actionFetchLeagueTeams);
 
-    if (playersError) {
-        console.log("playersError", playersError)
-    }
     const isLoadingMore =
         isLoading || (size > 0 && data && typeof data[size - 1] === "undefined") || false;
     let isEmpty = data?.[0]?.length === 0;
@@ -46,4 +41,4 @@ const Stories: React.FC<Props> = () => {
         <Mentions mentions={mentions} setSize={setSize} size={size} error={error} isValidating={isValidating} isEmpty={isEmpty} isReachingEnd={isReachingEnd} isLoadingMore={isLoadingMore} mutate={mutate} mutatePlayers={mutatePlayers} showImage={true} />
     </>
 }
-export default Stories;
+export default TeamMentions;

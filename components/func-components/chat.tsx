@@ -138,24 +138,6 @@ const ChatsComponent: React.FC<Props> = ({
         isLoading: boolean,
         mutate: any
     } = useSWR(createChatKey, actionLoadLatestChat, { fallback: localFallback });
-    /*
-    if (loadedChat && !loadedChatError && !isLoadingChat && loadedChat.success) {
-            setChatUUId(loadedChat.chat.chatUUId);
-            if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
-                setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
-                setMessages(loadedChat.chat.messages);
-                setIsLoading(false);
-
-            }
-            if (loadedChat?.chat?.name?.includes("ChatGPT")) {
-                setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
-            } else {
-                if (loadedChat?.chat?.name != "New Chat" && loadedChat?.chat?.name != chatName) {
-                    setChatName(loadedChat?.chat?.name || 'New Chat');
-                }
-            }
-            setLastMessageUUID(loadedChat?.chat?.lastMessageUUID || '');
-            */
 
     const [lastMessageUUID, setLastMessageUUID] = useState<string>(loadedChat?.chat?.lastMessageUUID || '');
 
@@ -167,6 +149,7 @@ const ChatsComponent: React.FC<Props> = ({
     const promptChatResponseKey: PromptChatResponseKey = { type: 'prompt-response', promptUUId, prompt };
     const savedFallback = JSON.parse(JSON.stringify(fallback));
     const savedPromptUUId = promptUUId;
+
     const { data: promptResponse, error: promptResponseError, isLoading: isLoadingPromptResponse, mutate: mutatePromptResponse }: {
         data: any,
         error: any,
@@ -174,8 +157,7 @@ const ChatsComponent: React.FC<Props> = ({
         mutate: any
     } = useSWR(promptChatResponseKey, actionPromptChatResponse, { fallback });
     relatedContent = promptResponse;
-    /****************/
-    // console.log("==> CHATS.TSX loadedChat", JSON.stringify({ promptUUId, savedPromptUUId, loadedChat, messages/*, savedFallback, fallback */ }));
+
     let { extraCreditsRemaining, creditsRemaining, subscriptionType } = userAccount as UserAccount || {};
 
     const level = useMemo(() => {
@@ -195,15 +177,17 @@ const ChatsComponent: React.FC<Props> = ({
     const isCid = useMemo(() => {
         return userAccount?.cid && userAccount?.cid.length > 0;
     }, [userAccount]);
+
     const tag = useMemo(() => {
         return userAccount?.tag || "base";
     }, [userAccount]);
+
     useEffect(() => {
         if (isCid) {
             setCreator(true);
         }
     }, [isCid]);
-    // console.log("==> CHATS.TSX isCid", isCid);
+
     const creditColorClass = totalCredits === 0
         ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
         : totalCredits < 5
@@ -215,7 +199,6 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
 
-    //console.log(`==>CHATS.TSX selectedDocuments: ${JSON.stringify(selectedDocuments)}`);
     useEffect(() => {
         if (loadedChat) {
             setCreator(loadedChat.chat.creator || isCid);
@@ -236,19 +219,13 @@ const ChatsComponent: React.FC<Props> = ({
             }
         }
     }, [promptUUId, loadedChat]);
-    /*useEffect(() => {
-        if (promptUUId != initialPromptUUIdRef.current) {
-            setMessages([]);
-            setChatName('New Chat');
-            setFollowupPrompts([]);
-        }
-    }, [promptUUId]);*/
+
     const pumpUUIdRef = useRef(pumpUUId); // Create a ref to hold the current pumpUUId
 
-    // Update the ref whenever pumpUUId changes
     useEffect(() => {
         pumpUUIdRef.current = pumpUUId;
     }, [pumpUUId]);
+
     useEffect(() => {
         if (chatUUId == '' && loadedChat && loadedChat.chat && loadedChat.chat.chatUUId != '') {
             const createChatKey2: CreateChatKey = { promptUUId, email: user.email, type: "create-chat", chatUUId: loadedChat.chat.chatUUId, league: league?.toUpperCase() || '', teamid, athleteUUId, fantasyTeam: false };
@@ -266,7 +243,7 @@ const ChatsComponent: React.FC<Props> = ({
             if (status == 'yellow') {
                 setStatus('green');
             }
-            // console.log("==> CHAT.TSX actionChatStream", provisionalChatUUId || chatUUId, pumpUUIdRef.current);
+
             actionChatStream({
                 chatUUId: provisionalChatUUId || chatUUId,
                 pumpUUId: pumpUUIdRef.current,
@@ -278,7 +255,7 @@ const ChatsComponent: React.FC<Props> = ({
                     console.log("==> CHAT.TSX actionChatStream onUpdate", content);
                     setResponse(prev => {
                         const updatedContent = prev + content;
-                        //console.log("==> CHAT.TSX actionChatStream onUpdate", updatedContent, messages);
+
                         setMessages(prevMessages => {
                             const updatedMessages = [...prevMessages];
                             if (updatedMessages.length > 1) {
@@ -324,7 +301,6 @@ const ChatsComponent: React.FC<Props> = ({
                     }
                 },
                 onMetaUpdate: (content: string) => {
-                    console.log("==> CHAT.TSX onMetaUpdate", content);
                     setUpdateMessage(content);
                 },
                 onFollowupPromptsUpdate: (content: string[]) => {
@@ -340,25 +316,7 @@ const ChatsComponent: React.FC<Props> = ({
                     console.log("==> CHAT.TSX onError", content);
                     setStatus('red');
                     setUpdateMessage(content);
-                    /*  setMessages(prevMessages => {
-                          const updatedMessages = [...prevMessages];
-                          if (updatedMessages.length > 1) {
-                              updatedMessages.pop(); // Remove last AI response
-                              updatedMessages.pop(); // Remove last user request
-                          }
-                          return updatedMessages;
-                      });*/
-                    /* setResponse(prev => {
-                         const updatedContent = prev + content;
-                         setMessages(prevMessages => {
-                             const updatedMessages = [...prevMessages];
-                             if (updatedMessages.length > 0) {
-                                 updatedMessages[updatedMessages.length - 1].content = updatedContent;
-                             }
-                             return updatedMessages;
-                         });
-                         return updatedContent;
-                     });*/
+
                     setUserInput(lastUserInput);
                     if (false && content.includes('Server error')) {
                         setStatus('red');
@@ -366,7 +324,7 @@ const ChatsComponent: React.FC<Props> = ({
                         setPumpUUId('');
                         setTimeout(() => {
                             const formEvent = new Event('submit', { bubbles: true });
-                            //console.log("==> CHAT.TSX onError setting formEvent and retrying handleSubmit");
+
                             handleSubmit(formEvent as unknown as React.FormEvent);
                         }, 1);
                         setResponse(prev => {
@@ -382,18 +340,11 @@ const ChatsComponent: React.FC<Props> = ({
                         });
                     }
                     else {
-
-                        /*if (textareaRef.current) {
-                            textareaRef.current.value = lastUserInput;
-                            const formEvent = new Event('submit', { bubbles: true });
-                            handleSubmit(formEvent as unknown as React.FormEvent);
-                        }*/
                         setPumpUUId('');
                         setTimeout(() => {
                             setPumpUUId(pumpUUId); //to trigger useEffect
                         }, 100);
                     }
-
                 },
             }).catch(error => {
                 console.error("Error in actionUserRequest:", error);
@@ -416,44 +367,6 @@ const ChatsComponent: React.FC<Props> = ({
         }
     }, [pumpUUId, chatUUId]);
 
-    /* useEffect(() => {
-         const prompt = searchParams?.get('prompt') || "";
-         const promptUUId = searchParams?.get('promptUUId') || "";
-         if (promptUUId && promptUUId != initialPromptUUIdRef.current) {
-             console.log("==> CHAT.TSX useEffect searchParams", promptUUId, initialPromptUUIdRef.current);
-             initialPromptUUIdRef.current = promptUUId; // Update the ref instead of state
-             //  setMessages([{ role: 'user', content: prompt }, { role: 'assistant', content: '' }]);
-            
-         }
-     }, [searchParams]);*/
-
-
-    useEffect(() => {
-        if (utm_content && utm_content.includes("xad")) {
-            actionFetchPrompts({ league }).then(setPrompts);
-        }
-    }, [league, utm_content]);
-
-    /*   useEffect(() => {
-           if (initialPrompt) {
-               setUserInput(initialPrompt);
-           }
-       }, [initialPrompt]);*/
-
-    /*useEffect(() => {
-        if (!loadedChat) {
-            setChatUUId('_new');
-            // setChatUUId(promptUUId ? "_new" : (chatUUIdProp || ""));
-            setMessages([]);
-            setChatName('New Chat');
-            setFollowupPrompts([]);
-        }
-        // console.log('==> useEffect league', league);
-    }, [league])*/
-    /* useEffect(() => {
-         setIsLoading(isLoadingChat);
-     }, [isLoadingChat]);*/
-
     const update = useCallback((message: string) => {
         setUpdateMessage(message);
 
@@ -465,7 +378,7 @@ const ChatsComponent: React.FC<Props> = ({
             if (loadedChat.chat.messages && loadedChat.chat.messages.length > 0) {
                 setFollowupPrompts(loadedChat.chat.messages.length > 0 ? loadedChat.chat.messages[loadedChat.chat.messages.length - 1].prompts || [] : []);
                 const lastMessage = messages[messages.length - 1];
-                //console.log("==> CHAT.TSX useEffect loadedChat", { loadedChatMessages: loadedChat.chat.messages, messages: messages, lastMessage: lastMessage });
+
                 if (lastMessage && lastMessage?.role == 'Qwiket AI' && loadedChat.chat.promptUUId == promptUUId && loadedChat.chat.messages.length > messages.length) {
                     setMessages([...loadedChat.chat.messages, lastMessage]);
                 }
@@ -475,6 +388,7 @@ const ChatsComponent: React.FC<Props> = ({
                 setIsLoading(false);
 
             }
+
             if (loadedChat?.chat?.name?.includes("ChatGPT")) {
                 setChatName(loadedChat?.chat?.name?.replace("ChatGPT", "Qwiket AI") || 'New Chat');
             } else {
@@ -551,8 +465,6 @@ const ChatsComponent: React.FC<Props> = ({
                             setPumpUUId((prev) => {
                                 return newPumpUUId;
                             });
-                            // console.log("==> CHAT.TSX handleSubmit actionChatInit mutateLoadedChat", { newPumpUUId, newChatUUId });
-                            // mutateLoadedChat();
                         }
                         if (chatUUId != newChatUUId) {
                             setChatUUId((prev) => {
@@ -565,8 +477,6 @@ const ChatsComponent: React.FC<Props> = ({
                         if (league != newLeague) {
                             if (['NFL', 'MLB', 'NBA', 'NHL'].includes(newLeague)) {
                                 setToastMessage(`Switching to ${newLeague} tab...`);
-                                // setToastIcon(<TeamAddIcon className="text-2xl inline" />); // Example icon, adjust as needed
-
                                 // Automatically clear the toast message after 3 seconds
                                 setTimeout(() => {
                                     setToastMessage("");
@@ -578,17 +488,8 @@ const ChatsComponent: React.FC<Props> = ({
                             }
                         }
                     }
-                );
-                // mutateLoadedChat();
-
-
+                )
             }
-
-            /* else {
-                userRequest();
-            }*/
-
-
         } catch (error) {
             console.error("Error in actionUserRequest:", error);
             setUpdateMessage("Streaming network error");
@@ -596,7 +497,6 @@ const ChatsComponent: React.FC<Props> = ({
                 const updatedContent = prev + "Network error. Please try again.";
                 setMessages(prevMessages => {
                     const updatedMessages = [...prevMessages];
-                    //setStreamingMessageIndex(updatedMessages.length - 1);
                     if (updatedMessages.length > 0) {
                         updatedMessages[updatedMessages.length - 1].content = updatedContent;
                     }
@@ -604,10 +504,8 @@ const ChatsComponent: React.FC<Props> = ({
                 });
                 return updatedContent;
             });
-            // setIsLoading(false);
-            // setStreamingMessageIndex(null);
+
             setUserInput(lastUserInput);
-            //console.log("setting lastUserInput3", lastUserInput);
             setIsLoading(false);
         }
 
@@ -719,8 +617,6 @@ const ChatsComponent: React.FC<Props> = ({
     );
     const drawChatName = chatName && chatName.length > 0 ? chatName : loadedChat?.chat?.name || 'New Chat';
     const drawMessages = (messages && messages.length > 0) ? messages : loadedChat?.chat?.messages || [];
-    // const relatedContentBox = relatedContent ? <RelatedContentBox relatedContent={relatedContent} /> : null;
-    console.log("==> CHAT.TSX drawMessages", { drawMessages, messages, loadedChat });
     const handleRetry = () => {
         if (textareaRef.current) {
             if (textareaRef.current) {
@@ -735,23 +631,7 @@ const ChatsComponent: React.FC<Props> = ({
 
     const [componentId, setComponentId] = useState(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
     let singularity = 0;
-    /* useEffect(() => {
-         if (prompt && !singularity && !bot) {
-             singularity++;
-             recordEvent(`chat-auto-start`, `{"text":"${prompt}","componentId":"${componentId}","isMobile":${isMobile},"creator":"${!creator}","params":"${JSON.stringify(params)}"}`)
-             setTimeout(() => {
-                 //console.log("==> CHAT.TSX useEffect333 handleRetry prompt", { chatUUId, componentId, prompt, isMobile });
-                 setTimeout(() => {
-                     singularity = 0;
-                 }, 2000);
-                 handleRetry();
-             }, 2000);
-         }
-     }, [prompt]);*/
-    // const [starRating, setStarRating] = useState<number>(0);
-    // const [feedbackText, setFeedbackText] = useState<string>('');
 
-    // Function to handle star click
     const handleStarClick = (index: number) => {
 
         const lastMessage = drawMessages[drawMessages.length - 1]; // Get the last message
@@ -765,7 +645,7 @@ const ChatsComponent: React.FC<Props> = ({
                 //console.log("recordEvent", r);
             })
     };
-    // const starsTrigger = loadedChat?.chat?.lastMessageUUID && drawMessages.length > 0 && drawMessages[drawMessages.length - 1]?.role !== 'user'
+
     // Function to handle feedback submission
     const handleFeedbackSubmit = () => {
         const feedbackText = feedbackTextareaRef.current?.value || '';
@@ -775,7 +655,7 @@ const ChatsComponent: React.FC<Props> = ({
 
             actionFeedback({ stars: 0, feedback: feedbackText, messageUUId: lastMessageUUID }).then(() => {
             });
-            //setLastMessageUpdate(prev => prev + 1); // Trigger re-render
+
             setTimeout(() => {
                 setFeedback({ messageUUId: lastMessageUUID, feedback: 'Thank you for your feedback!', stars: feedback.stars, open: feedback.open });
 
@@ -789,20 +669,9 @@ const ChatsComponent: React.FC<Props> = ({
             }, 2000);
         }
     };
-    /*
-    *
-     prompt: string,
-    response: string,
-    slug: string,
-    image: string,
-    image_width: number,
-    image_height: number,
-    publishedTime: string,
-    title: string,
-    digest: string
-    */
+
     let lastMessage = drawMessages[drawMessages.length - 1];
-    console.log("==> CHAT.TSX drawMessages", { drawMessages });
+
     let relatedUrl = relatedContent ? `${league}${teamid ? `/${teamid}` : ''}${player ? `/${encodeURIComponent(player)}` : ''}${athleteUUId ? `/${athleteUUId}` : ''}?story=${encodeURIComponent(relatedContent.slug)}` : '';
     const renderedRelatedContent = relatedContent && relatedContent.digest && relatedContent.image && (
         <div className="flex justify-center">
@@ -1082,18 +951,7 @@ const ChatsComponent: React.FC<Props> = ({
                                                         role: 'user',
                                                         content: 'Your new user message here' // Replace with the actual message content
                                                     };
-                                                    /* mutateLoadedChat({
-                                                         ...loadedChat, // Spread existing chat data
-                                                         chat: {
-                                                             ...loadedChat.chat, // Spread existing chat attributes
-                                                             messages: [...loadedChat.chat.messages, newMessage] // Add the new user message
-                                                         }
-                                                     });
-                                                     setTimeout(() => {
-                                                         mutateLoadedChat();
-                                                     }, 2000);*/
                                                 }
-
                                             }
                                         }}>
                                             {index == drawMessages.length - 1 && drawMessages[index].content.length > 0 ? `More details...` : `Generate new answer...`}
@@ -1136,7 +994,6 @@ const ChatsComponent: React.FC<Props> = ({
                                                 //console.log("recordEvent", r);
                                             })
                                     }
-                                    //setLastMessageUpdate(prev => prev + 1);
                                 }
 
                                 }
@@ -1151,11 +1008,8 @@ const ChatsComponent: React.FC<Props> = ({
                                             onKeyDown={handleFeedbackKeyDown}
                                             ref={feedbackTextareaRef}
                                             defaultValue={feedback.feedback || ''}
-                                            // onChange={(e) => { lastMessage.feedback = e.target.value }}
                                             placeholder="Your feedback..."
-                                            //className="w-full p-3 pr-16 border rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none"
                                             className={`w-full p-3 pr-16 border mh-4 rounded-lg text-gray-800 dark:text-gray-200 bg-white dark:bg-black resize-none ${openMyChats ? 'opacity-50' : ''}`}
-
                                             rows={3}
                                             disabled={isLoading || feedback.feedback}
                                         />

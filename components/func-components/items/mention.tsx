@@ -4,8 +4,7 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import { styled, useTheme } from "styled-components";
-//import { RWebShare } from "react-web-share";
-//import { WebShareApi } from 'react-web-share';
+
 import FacebookIcon from '@/components/icons/facebook';
 import XIcon from '@/components/icons/twitter';
 import StarOutlineIcon from '@/components/icons/star-outline';
@@ -29,6 +28,7 @@ import { MyTeamRosterKey,/* UserSubscriptionKey as SubscriptionKey */ } from '@/
 import Toast from '@/components/func-components/toaster';
 import ErrorBoundary from '@/components/util-components/error-boundary';
 import CustomImage from '@/components/util-components/custom-image';
+
 declare global {
     interface Window {
         Clerk: any;
@@ -59,9 +59,7 @@ const MentionWrap = styled.div<MentionsProps>`
     border: 1px solid #ccc;
     border-radius: 2px;
     padding: 4px;
-  
     font-size: 16px;
-
     a {
         color: var(--mention-text);
         text-decoration: none;

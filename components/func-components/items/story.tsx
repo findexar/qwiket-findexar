@@ -1,8 +1,7 @@
 import React, { useEffect, useCallback, useRef, useMemo } from "react";
 import Link from 'next/link';
-import { styled, useTheme } from "styled-components";
+import { styled } from "styled-components";
 import XIcon from '@/components/icons/twitter';
-//import FacebookIcon from '@/components/icons/facebook';
 import IosShareIcon from '@/components/icons/share';
 import ContentCopyIcon from '@/components/icons/content-copy';
 import { actionRecordEvent } from "@lib/server-actions/event";
@@ -12,10 +11,8 @@ import MiniMention from '@/components/func-components/items/mini-mention';
 import { useAppContext } from '@/lib/context';
 import { useInView } from 'react-intersection-observer';
 import { FaFacebook as FacebookIcon, FaComments as CommentsIcon } from 'react-icons/fa';
-import { LiaCommentDots } from "react-icons/lia";
-import { BiCommentDots } from "react-icons/bi";
-import { BiCommentAdd } from "react-icons/bi";
-import CustomImage from '@/components/util-components/custom-image';
+import { BiCommentDots, BiCommentAdd } from "react-icons/bi";
+
 declare global {
     interface Window {
         Clerk: any;
@@ -220,7 +217,7 @@ const MobileWrap = styled.div`
     flex-direction:column;
     width:100%;
     padding:30px;
-   // margin-bottom:20px;
+   
     background-color:var(--background);
     padding:10px;
     a{
@@ -280,21 +277,18 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const { isMobile, mode, fbclid, utm_content, params, tp, league, player, userAccount, bot, teamid, athleteUUId, m } = useAppContext();
     const isDarkMode = mode === 'dark';
 
-    let { title, url, digest, site_name, image, image_width, image_height, authors, createdTime, mentions, xid, slug, prompts } = story || {};
-    url = url || "";
+    const { title = "", url = "", digest = "", site_name = "", image, image_width, image_height, authors, createdTime, mentions, slug, prompts } = story || {};
+
     const [localDate, setLocalDate] = React.useState(convertToUTCDateString(createdTime));
     const [digestCopied, setDigestCopied] = React.useState(false);
     const [selectedXid, setSelectedXid] = React.useState("");
     const [value, copy] = useCopyToClipboard();
     const [visible, setVisible] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const isCid = useMemo(() => {
-        return userAccount?.cid && userAccount?.cid.length > 0;
-    }, [userAccount]);
-    //console.log("==> STORY.TSX", { title });
-    const prepDigest = useMemo(() => {
-        return digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "";
-    }, [digest]);
+
+    const isCid = useMemo(() => userAccount?.cid?.length > 0, [userAccount]);
+
+    const prepDigest = useMemo(() => digest ? digest.replaceAll('<p>', '').replaceAll('</p>', '\n\n') : "", [digest]);
 
     const shareUrls = useMemo(() => {
         const baseUrl = `${process.env.NEXT_PUBLIC_SERVER}${league ? `/${league}` : ''}?cstory=${slug}`;
@@ -306,54 +300,40 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
         };
     }, [league, slug, isCid, userAccount]);
 
-    const socialLinks = useMemo(() => {
-        return {
-            twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(prepDigest.substring(0, 230) + '...')}&url=${shareUrls.twitter}&via=findexar`,
-            facebook: `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(shareUrls.facebook)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(prepDigest.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`,
-        };
-    }, [prepDigest, shareUrls]);
+    const socialLinks = useMemo(() => ({
+        twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(prepDigest.substring(0, 230) + '...')}&url=${shareUrls.twitter}&via=findexar`,
+        facebook: `https://www.facebook.com/sharer.php?kid_directed_site=0&sdk=joey&u=${encodeURIComponent(shareUrls.facebook)}&t=${encodeURIComponent('Findexar')}&quote=${encodeURIComponent(prepDigest.substring(0, 140) + '...')}&hashtag=%23findexar&display=popup&ref=plugin&src=share_button`,
+    }), [prepDigest, shareUrls]);
 
-    const { ref, inView, entry } = useInView({
-        /* Optional options */
-        threshold: 0,
-    });
+    const { ref, inView } = useInView({ threshold: 0 });
 
     useEffect(() => {
         if (inView && !visible) {
             setVisible(true);
             if (!bot) {
-                actionRecordEvent(`story-inview`, `{"utm_content":"${utm_content}","slug":"${slug}","url":"${url}","params":"${params}"}`)
-                    .then((r: any) => {
-                        //console.log("recordEvent", r);
-                    });
+                actionRecordEvent(`story-inview`, `{"utm_content":"${utm_content}","slug":"${slug}","url":"${url}","params":"${params}"}`);
             }
         }
     }, [inView]);
 
     useEffect(() => {
-        if (!site_name) {
-            if (!bot) {
-                actionRecordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${url}"}`).then((r: any) => {
-                    //console.log("recordEvent", r);
-                });;
-            }
+        if (!site_name && !bot) {
+            actionRecordEvent('bad-site_name', `{"fbclid":"${fbclid}","utm_content":"${utm_content}","slug":"${slug}","url":"${url}"}`);
         }
     }, [site_name]);
 
     useEffect(() => {
-        setTimeout(() => {
-            setDigestCopied(false);
-        }, 2000);
+        const timer = setTimeout(() => setDigestCopied(false), 2000);
+        return () => clearTimeout(timer); // Cleanup timer
     }, [digestCopied]);
 
     useEffect(() => {
         try {
             setLocalDate(convertToReadableLocalTime(createdTime));
-        }
-        catch (x) {
+        } catch (x) {
             console.log("EXCEPTION CONVERTING DATE");
         }
-    }, [createdTime])
+    }, [createdTime]);
 
     const onShare = useCallback((url: string) => {
         if (navigator.share) {
@@ -366,10 +346,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
 
         if (!bot) {
             try {
-                actionRecordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`)
-                    .then((r: any) => {
-                        //console.log("recordEvent", r);
-                    });
+                actionRecordEvent(`story-share`, `{"url":"${url}","params":"${params}"}`);
             } catch (x) {
                 console.log('recordEvent', x);
             }
@@ -384,10 +361,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const onMentionClick = useCallback((mention: any) => {
         if (!bot) {
             try {
-                actionRecordEvent(`mini-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`)
-                    .then((r: any) => {
-                        //console.log("recordEvent", r);
-                    });
+                actionRecordEvent(`mini-mention-click`, `{"mention","${JSON.stringify(mention)}","params":"${params}"}`);
             } catch (x) {
                 console.log('recordEvent', x);
             }
@@ -397,10 +371,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
     const onStoryClick = useCallback(() => {
         if (!bot) {
             try {
-                actionRecordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`)
-                    .then((r: any) => {
-                        //console.log("recordEvent", r);
-                    });
+                actionRecordEvent(`story-click`, `{"url":"${url}","story","${JSON.stringify(story)}","params":"${params}"}`);
             } catch (x) {
                 console.log('recordEvent', x);
             }
@@ -447,9 +418,6 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
         </MentionsWrap>
     ), [mentions, handleClose, onMentionClick, params, tp, selectedXid]);
 
-    // if (image && image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0)
-    //    return null;
-    // console.log("==> STORY.TSX RENDER", { title });
     return (
         <>
             {loading && (
@@ -470,7 +438,6 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                         </Byline>
                     </Link>
                     <HorizontalContainer>
-
                         <ImageWrapper>
                             <Link href={url} scroll={false} onClick={onStoryClick}>
                                 {image && !(image.indexOf("thestar.com/content/tncms/custom/image/f84403b8-7d76-11ee-9d02-a72a4951957f.png") >= 0) &&
@@ -479,27 +446,19 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                                         alt={title}
                                         width={image_width}
                                         height={image_height}
-
                                     />
                                 }
                             </Link>
                         </ImageWrapper>
-
                         <Body>
-                            {false && <Link href={url} onClick={onStoryClick} target="_blank"><ArticleDigest>
-                                <b>{true ? 'Digest:' : 'Short Digest:'}</b>
-                            </ArticleDigest></Link>}
                             <Digest>
                                 <Link href={url} scroll={false} onClick={onStoryClick} target="_blank">
                                     <div dangerouslySetInnerHTML={{ __html: digest }} />
                                 </Link>
                                 <div className="flex flex-row justify-center mt-2 mb-2">
-                                    <ContentCopyIcon className={digestCopied ? "cursor-pointer text-green-500 w-10" : "cursor-pointer w-10"} fontSize="medium" onClick={() => onDigestCopyClick()} />
-
-                                    <BiCommentDots className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
-                                    <BiCommentAdd className="cursor-pointer w-10" fontSize="large" onClick={() => onDigestCopyClick()} />
-
-
+                                    <ContentCopyIcon className={digestCopied ? "cursor-pointer text-green-500 w-10" : "cursor-pointer w-10"} fontSize="medium" onClick={onDigestCopyClick} />
+                                    <BiCommentDots className="cursor-pointer w-10" fontSize="large" onClick={onDigestCopyClick} />
+                                    <BiCommentAdd className="cursor-pointer w-10" fontSize="large" onClick={onDigestCopyClick} />
                                 </div>
                             </Digest>
                         </Body>
@@ -513,7 +472,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <Link style={{ marginLeft: 10 }} href={url} onClick={onStoryClick} target="_blank">{url?.substring(0, 50)}..</Link>
                     <BottomLine>
                         <ShareGroup>
-                            <ShareContainer onClick={async () => onShare(shareUrls.share)}>
+                            <ShareContainer onClick={() => onShare(shareUrls.share)}>
                                 <ShareIcon><IosShareIcon style={{ fontSize: 16 }} /></ShareIcon>
                             </ShareContainer>
                             <Link href={socialLinks.facebook} target="_blank">
@@ -542,16 +501,14 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                                     alt={title}
                                     width={image_width}
                                     height={image_height}
-
                                 />
                             </ImageWrapper>
                         </Link>
                         <Body>
-
                             <Digest>
                                 <Link href={url || ""} scroll={false} onClick={onStoryClick}> <div dangerouslySetInnerHTML={{ __html: digest }} /></Link>
                                 <ShareContainerInline>
-                                    <ContentCopyIcon style={{ paddingTop: 0, marginBottom: 0, color: digestCopied ? 'green' : '' }} fontSize="medium" onClick={() => onDigestCopyClick()} />
+                                    <ContentCopyIcon style={{ paddingTop: 0, marginBottom: 0, color: digestCopied ? 'green' : '' }} fontSize="medium" onClick={onDigestCopyClick} />
                                 </ShareContainerInline>
                             </Digest>
                         </Body>
@@ -564,7 +521,7 @@ const Story: React.FC<Props> = ({ story, handleClose }) => {
                     <Link href={url || ""} scroll={false} onClick={onStoryClick}> {url?.substring(0, 30)}...</Link>
                     <BottomLine>
                         <ShareGroup>
-                            <ShareContainer onClick={async () => await onShare(shareUrls.share)}>
+                            <ShareContainer onClick={() => onShare(shareUrls.share)}>
                                 <ShareIcon><IosShareIcon /></ShareIcon>
                             </ShareContainer>
                             <Link href={socialLinks.facebook} target="_blank">

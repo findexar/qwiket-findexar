@@ -61,13 +61,12 @@ interface Props {
     mutatePlayers?: any;
     showImage: boolean;
 }
+
 const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidating, isEmpty, isReachingEnd, isLoadingMore, mutate, mutatePlayers, showImage }) => {
     let { mode, view, tab, isMobile, setLeague, setView, setPagetype, setPlayer, setMode, fbclid, utm_content, params, tp, league, pagetype, player, teamName, setTeamName } = useAppContext();
 
     if (!view)
         view = "mentions";
-    //   console.log("mention Mentions", mentions)
-
     // Check if mentions is not just an array of undefined
     const hasValidMentions = mentions && mentions.some((m: any) => m !== undefined);
 
@@ -84,8 +83,7 @@ const Mentions: React.FC<Props> = ({ mentions, setSize, size, error, isValidatin
                 showImage={showImage}
             />)
     }) : null;
-    //  console.log("REACT Mentions", Mentions, hasValidMentions);
-    // console.log("isEmpty", isEmpty, "isLoadingMore", isLoadingMore, "isReachingEnd", isReachingEnd)
+
     return (
         <div>
             <MentionsOuterContainer className="hidden lg:block">

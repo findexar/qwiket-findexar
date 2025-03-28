@@ -8,7 +8,7 @@ import LoadMore from "@/components/func-components/load-more";
 import { actionStories } from '@lib/server-actions/stories';
 import { StoriesKey } from '@/lib/keys';
 
-const MentionsBody = styled.div`
+const StoriesBody = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@ const MentionsBody = styled.div`
     align-items: flex-start;
 `;
 
-const MentionsOuterContainer = styled.div`
+const StoriesOuterContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -38,7 +38,7 @@ const ButtonContainer = styled.div`
     margin-bottom: 100px;
 `;
 
-const MobileMentionsOuterContainer = styled.div`
+const MobileStoriesOuterContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -74,7 +74,7 @@ const Stories: React.FC<Props> = ({ type }) => {
     };
     console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
     const savedFallback = JSON.parse(JSON.stringify(fallback));
-    //console.log("Stories ==> savedFallback", savedFallback);
+
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(
         fetchStoriesKey,
         actionStories,
@@ -82,7 +82,7 @@ const Stories: React.FC<Props> = ({ type }) => {
     );
 
     let stories = data ? [].concat(...data) : [];
-    //console.log("stories", stories);
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             if (Date.now() - lastMutate > 60 * 1000 && (window.scrollY === 0)) {
@@ -138,21 +138,21 @@ const Stories: React.FC<Props> = ({ type }) => {
     return (
         <>
             <div className="">
-                <MentionsOuterContainer className="hidden lg:block">
-                    <MentionsBody>
+                <StoriesOuterContainer className="hidden lg:block">
+                    <StoriesBody>
                         {Stories}
-                    </MentionsBody>
+                    </StoriesBody>
                     <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
-                </MentionsOuterContainer>
+                </StoriesOuterContainer>
             </div>
 
-            <MobileMentionsOuterContainer className="h-full lg:hidden">
-                <MentionsBody>
+            <MobileStoriesOuterContainer className="h-full lg:hidden">
+                <StoriesBody>
                     {Stories}
-                </MentionsBody>
+                </StoriesBody>
                 <LoadMore setSize={setSize} size={size} isLoadingMore={isLoadingMore || false} isReachingEnd={isReachingEnd || false} />
                 <ButtonContainer />
-            </MobileMentionsOuterContainer>
+            </MobileStoriesOuterContainer>
         </>
     );
 };
