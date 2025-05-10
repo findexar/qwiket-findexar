@@ -263,7 +263,7 @@ const Desktop: React.FC<Props> = () => {
 
   };
   // tab = tab || 'all';
-  console.log("==> pagetype", pagetype, tab, view, cstory, cm);
+ // console.log("==> pagetype", pagetype, tab, view, cstory, cm);
   let noshow = (cstory || cm) && tab !== 'blog';
   return (
     <div className="lg:block hidden h-full w-full">

@@ -461,7 +461,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     fetchLeagues,
     { fallback }
   );
-  console.log("==============> leagues", leagues);
+ // console.log("==============> leagues", leagues);
   const { getToken } = useAuth();
   // console.log("===>teamLogo", teamLogo);
   useEffect(() => {
@@ -485,7 +485,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const onLeagueNavClick = useCallback((l: string, url: string) => {
-    console.log("onLeagueNavClick", l, url);
+   // console.log("onLeagueNavClick", l, url);
     setLeague(l);
     setPagetype('league');
     if (tab == 'mentions') {
@@ -549,13 +549,13 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   
    
     setMode(mode);
-    console.log("==> updateMode", mode);
+   // console.log("==> updateMode", mode);
    
     document.cookie =
     `mode=${mode=='dark' ? 1 : 0}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax` +
     (location.protocol === 'https:' ? '; Secure' : '')
     // await setModeAction(mode == 'dark' ? 1 : 0)
-    console.log("==> updateMode after saveSession");
+  //  console.log("==> updateMode after saveSession");
     document.body.setAttribute("data-theme", mode);
     const className = 'dark';
     const bodyClassList = document.body.classList;

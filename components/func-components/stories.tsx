@@ -72,7 +72,7 @@ const Stories: React.FC<Props> = ({ type }) => {
         if (previousPageData && !previousPageData.length) return null; // reached the end
         return key;
     };
-    console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
+   // console.log("Stories ==> fetchStoriesKey", fetchStoriesKey(0, null));
     const savedFallback = JSON.parse(JSON.stringify(fallback));
 
     const { data, mutate, size, setSize, isLoading } = useSWRInfinite(

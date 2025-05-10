@@ -124,7 +124,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
-  console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
+ // console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
   useEffect(() => {
     if (!bot) {
       actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
