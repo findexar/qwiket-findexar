@@ -1,116 +1,163 @@
 import { cookies, headers } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
-import { SWRProvider } from '@/app/swr-provider';
+import { SWRProvider } from "@/app/swr-provider";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserAccountKey } from "@/lib/keys";
-import fetchData from '@lib/server-actions/fetch-data';
+import fetchData from "@lib/server-actions/fetch-data";
 import promiseUser from "@lib/server-actions/account";
-import Dashboard from '@/components/func-components/account/dashboard';
-import SPALayout from '@/components/spa';
-import type { Metadata } from 'next';
-import { isbot } from '@/lib/is-bot';
+import Dashboard from "@/components/func-components/account/dashboard";
+import SPALayout from "@/components/spa";
+import type { Metadata } from "next";
+import { isbot } from "@/lib/is-bot";
 //migration to Next.js 15
-type Params = Promise<{}>
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+type Params = Promise<{}>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export const metadata: Metadata = {
-    title: 'Account Dashboard',
-    description: 'View your account usage and information',
-    openGraph: {
-        images: ['/q-logo-og-1200.png'],
-    },
-    icons: {
-        icon: [
-            { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
-            { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
-        ],
-        shortcut: [
-            { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
-            { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" }
-        ],
-    },
+  title: "Account Dashboard",
+  description: "View your account usage and information",
+  openGraph: {
+    images: ["/q-logo-og-1200.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+      { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" },
+    ],
+    shortcut: [
+      { url: "/q-logo-light-42.png", media: "(prefers-color-scheme: light)" },
+      { url: "/q-logo-dark-42.png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 export default async function Page({
-    params,
-    searchParams,
+  params,
+  searchParams,
 }: {
-    params: Params,
-    searchParams: SearchParams
+  params: Params;
+  searchParams: SearchParams;
 }) {
-    let { tab = "", fbclid, utm_content = "", view = "mentions", id, story, cid = "", aid = "" } = await searchParams as any;
+  let {
+    tab = "",
+    fbclid,
+    utm_content = "",
+    view = "mentions",
+    id,
+    story,
+    cid = "",
+    aid = "",
+  } = (await searchParams) as any;
 
-    const fetchSession = async () => {
-        "use server";
-        let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
-        if (!session.sessionid) {
-            var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            session.sessionid = randomstring();
-            session.dark = -1;
-        }
-        return session;
-    };
-
-    const t1 = new Date().getTime();
-    let headerslist = await headers();
-
-    let findexarxid = id || "";
-    let pagetype = "admin-invite";
-    console.log("*** *** *** pagetype", pagetype);
-    let league = "";
-
-    fbclid = fbclid || '';
-    const ua = headerslist.get('user-agent') || "";
-
-    const botInfo = isbot({ ua });
-    let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
-    if (!ua) {
-        bot = true;
-    }
-    let isMobile = Boolean(ua.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-    view = view.toLowerCase();
-    if (view == 'main' || view == 'feed' || view == 'home') {
-        view = 'mentions';
-    }
-    console.log("VIEW:", view, isMobile);
-
-    let sessionid = "";
-    let dark = 0;
-    let { userId } = !botInfo.bot ? await auth() : { userId: "" };
-
-    if (!userId) {
-        userId = "";
-    }
-    console.log("*** *** *** userId", userId);
-    try {
-        const session = await fetchSession();
-        console.log("*** *** *** session", session);
-        sessionid = session.sessionid;
-        dark = session.dark;
-    } catch (x) {
-        console.log("error fetching sessionid", x);
-    }
-    console.log("sessionid", sessionid);
-
-    let fallback: { [key: string]: any } = {};
-    let calls: { key: any; call: Promise<any> }[] = [];
-    let userInfo: { email: string } = { email: "" };
-    if (userId) {
-        const user = await currentUser();
-        const email = user?.emailAddresses[0]?.emailAddress;
-        userInfo.email = email || '';
-    }
-    if (!bot) {
-        calls.push(await promiseUser({ type: "user-account", email: userInfo.email, bot: bot || false }, userId, sessionid, utm_content, ua, cid, aid));
-    }
-
-    await fetchData(t1, fallback, calls);
-
-    return (
-        <SWRProvider value={{ fallback }}>
-            <main className="w-full h-full">
-                <SPALayout dark={dark || 0} view={view} tab={tab} fbclid={fbclid} utm_content={utm_content} fallback={fallback} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} userInfo={userInfo} />
-            </main>
-        </SWRProvider>
+  const fetchSession = async () => {
+    "use server";
+    let session = await getIronSession<SessionData>(
+      await cookies(),
+      sessionOptions
     );
+    if (!session.sessionid) {
+      var randomstring = () =>
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+      session.sessionid = randomstring();
+    }
+    return session;
+  };
+
+  const t1 = new Date().getTime();
+  let headerslist = await headers();
+
+  let findexarxid = id || "";
+  let pagetype = "admin-invite";
+  console.log("*** *** *** pagetype", pagetype);
+  let league = "";
+
+  fbclid = fbclid || "";
+  const ua = headerslist.get("user-agent") || "";
+
+  const botInfo = isbot({ ua });
+  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
+  if (!ua) {
+    bot = true;
+  }
+  let isMobile = Boolean(
+    ua.match(
+      /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+    )
+  );
+  view = view.toLowerCase();
+  if (view == "main" || view == "feed" || view == "home") {
+    view = "mentions";
+  }
+  console.log("VIEW:", view, isMobile);
+
+  let sessionid = "";
+  let dark = 0;
+  let { userId } = !botInfo.bot ? await auth() : { userId: "" };
+
+  if (!userId) {
+    userId = "";
+  }
+  console.log("*** *** *** userId", userId);
+  try {
+    const session = await fetchSession();
+    console.log("*** *** *** session", session);
+    sessionid = session.sessionid;
+    let cookieStore = await cookies();
+    let dark = -1;
+    if (cookieStore.has("mode")) {
+      dark = parseInt(cookieStore.get("mode")?.value || "0");
+    }
+  } catch (x) {
+    console.log("error fetching sessionid", x);
+  }
+  console.log("sessionid", sessionid);
+
+  let fallback: { [key: string]: any } = {};
+  let calls: { key: any; call: Promise<any> }[] = [];
+  let userInfo: { email: string } = { email: "" };
+  if (userId) {
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    userInfo.email = email || "";
+  }
+  if (!bot) {
+    calls.push(
+      await promiseUser(
+        { type: "user-account", email: userInfo.email, bot: bot || false },
+        userId,
+        sessionid,
+        utm_content,
+        ua,
+        cid,
+        aid
+      )
+    );
+  }
+
+  await fetchData(t1, fallback, calls);
+
+  return (
+    <SWRProvider value={{ fallback }}>
+      <main className="w-full h-full">
+        <SPALayout
+          newSessionToSave={false}
+          sessionid={sessionid}
+          dark={dark || 0}
+          view={view}
+          tab={tab}
+          fbclid={fbclid}
+          utm_content={utm_content}
+          fallback={fallback}
+          bot={bot || false}
+          isMobile={isMobile}
+          league=""
+          story={story}
+          findexarxid={findexarxid}
+          pagetype={pagetype}
+          userInfo={userInfo}
+        />
+      </main>
+    </SWRProvider>
+  );
 }

@@ -142,7 +142,7 @@ export default async function Page({
         if (!session.sessionid) {
             var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             session.sessionid = randomstring();
-            session.dark = -1;
+           // session.dark = -1;
         }
         return session;
     };
@@ -176,7 +176,11 @@ export default async function Page({
         const session = await fetchSession();
         // console.log("*** *** *** session", session);
         sessionid = session.sessionid;
-        dark = session.dark;
+        let cookieStore = await cookies();
+        let dark = -1;
+        if (cookieStore.has("mode")) {
+          dark = parseInt(cookieStore.get("mode")?.value || "0");
+        }
     } catch (x) {
         console.log("error fetching sessionid", x);
     }
@@ -214,7 +218,7 @@ export default async function Page({
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full">
-                <SPALayout userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
+                <SPALayout newSessionToSave={false} sessionid={sessionid} userInfo={userInfo} dark={dark || 0} view={view} tab={tab} fallback={fallback} fbclid={fbclid} utm_content={utm_content} bot={bot || false} isMobile={isMobile} league="" story={story} findexarxid={findexarxid} pagetype={pagetype} />
             </main>
         </SWRProvider>
     );
