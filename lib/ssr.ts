@@ -1,5 +1,5 @@
 'use server';
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { unstable_serialize } from 'swr'
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { SWRProvider } from '@/app/swr-provider'
@@ -61,6 +61,8 @@ export type SSRSearchParams = {
     page?: string;
 }
 export type ssrResult = {
+    newSessionToSave: boolean;
+    sessionid: string;
     today: Date;
     userInfo: { email: string };
     dark: number;
@@ -124,12 +126,27 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }
     //  console.log("===============>SSR userId", userId);
     let sessionid = "";
-    let dark = 0;
+    let cookieStore = await cookies();
+    let dark=-1;
+    if(cookieStore.has('mode')){
+        dark=parseInt(cookieStore.get('mode')?.value || '0');
+    }
+    let newSessionToSave=false;
     try {
         const session = await fetchSession();
+        if(session.newSession){
+            try{
+                //await session.save();
+                newSessionToSave=true;
+                session.newSession=false;
+            }
+            catch(x){
+                console.log("error saving session", x);
+            }
+        }
         console.log("fetchSession============>", JSON.stringify(session))
         sessionid = session.sessionid;
-        dark = session.dark;
+      
     }
     catch (x) {
         console.log("error fetching sessionid", x);
@@ -349,7 +366,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     const t3 = new Date().getTime();
     console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm, b }));
     const today = new Date();
-    return { today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, b, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
+    return { newSessionToSave, sessionid, today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, b, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }
 
 export async function generateMetadata(

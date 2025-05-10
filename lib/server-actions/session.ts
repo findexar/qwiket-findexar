@@ -9,10 +9,11 @@ const fetchSession = async () => {
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
-        session.dark = -1;
+      //  session.dark = -1;
+        session.newSession = true;
         console.log("********** action: NEW SESSION2", session)
         try {
-            await session.save();
+           // await session.save();
             console.log("after save")
         } catch (x) {
             console.log("error saving session", x)

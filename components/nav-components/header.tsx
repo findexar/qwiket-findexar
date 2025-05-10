@@ -20,7 +20,8 @@ import { UserButton, SignInButton, SignedOut, SignedIn, useAuth } from "@clerk/n
 import { useAppContext } from '@lib/context';
 import { actionRecordEvent } from "@lib/server-actions/event";
 import PlayerPhoto from "@components/util-components/player-photo";
-import saveSession from '@lib/server-actions/save-session';
+//import saveSession from '@lib/server-actions/save-session';
+import { setMode as setModeAction } from '@lib/server-actions/mode';
 import { actionUserSubscription } from '@lib/server-actions/user-subscription';
 import { FaChartBar as FaChartBarIcon, FaArrowUp as FaArrowUpIcon, FaUserCog as FaUserCogIcon, FaCreditCard as FaCreditCardIcon, FaCode as FaCodeIcon } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
@@ -545,8 +546,12 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   }, [fbclid, utm_content, scrolled]);
 
   const updateMode = useCallback(async (mode: string) => {
+  
+   
     setMode(mode);
-    await saveSession({ dark: mode == 'dark' ? 1 : 0 })
+    console.log("==> updateMode", mode);
+    await setModeAction(mode == 'dark' ? 1 : 0)
+    console.log("==> updateMode after saveSession");
     document.body.setAttribute("data-theme", mode);
     const className = 'dark';
     const bodyClassList = document.body.classList;

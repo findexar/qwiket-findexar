@@ -21,9 +21,12 @@ import Invites from './func-components/invites';
 import RevenueSharedContent from './func-components/revenue-sharing-content';
 import { actionRecordEvent } from '@/lib/server-actions/event';
 import { RelatedContent } from '@/lib/types/chat';
+import { setMode as setModeAction } from '@/lib/server-actions/mode';
 
 
 interface LeagueLayoutProps {
+  newSessionToSave: boolean,
+  sessionid: string,
   today?: Date,
   fallback: any,
   isMobile: boolean,
@@ -60,6 +63,8 @@ interface LeagueLayoutProps {
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
 
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({
+  newSessionToSave,
+  sessionid,
   today,
   view: startView,
   tab: startTab,
@@ -134,6 +139,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
         });
     }
   }, []);
+  useEffect(() => {
+    if (newSessionToSave) {
+      saveSession({ sessionid }).then((r: any) => {
+        console.log("saveSession", r);
+      });
+    }
+  }, [newSessionToSave]);
 
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
@@ -179,7 +191,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       const matches = matchMedia.matches;
       document.body.setAttribute("data-theme", matches ? 'dark' : 'light');
       setLocalMode(matches ? 'dark' : 'light');
-      saveSession({ dark: matches ? 1 : 0 });
+   //   saveSession({ sessionid, dark: matches ? 1 : 0 });
+      setModeAction(matches ? 1 : 0);
     }
   }, []);
 
