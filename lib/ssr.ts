@@ -97,7 +97,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let { leagueid = "", teamid = "", name = "", athleteUUId = "" } = params;
     let { page = "", prompt = "", promptUUId = "", tab = "", rtab = "", fbclid = "", utm_content = "", view = "", id = "", story = "", m = "", cstory = "", cm = "", cid = "", aid = "", b = "" }:
         SSRSearchParams = searchParams as any;
-    console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
+  // console.log("********** ssrPrepParams", JSON.stringify({ params, searchParams }));
     const t1 = new Date().getTime();
     let headerslist = await headers();
     const ua = headerslist.get('user-agent') || "";
@@ -156,7 +156,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let pagetype = athleteUUId ? "player" : teamid ? "team" : "league";
     let league = leagueid.toUpperCase();
     if (league && !['NFL', 'MLB', 'NBA', 'NHL', ''].includes(league.toUpperCase())) {
-        console.log("==> SSR PAGE.TSX FOUND invalid league",league);
+       // console.log("==> SSR PAGE.TSX FOUND invalid league",league);
         return notFound();
     }
     name = name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;

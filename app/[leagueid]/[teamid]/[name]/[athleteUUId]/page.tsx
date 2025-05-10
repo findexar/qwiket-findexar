@@ -46,10 +46,10 @@ export default async function Page({
 }) {
     const paramsSSR: SSRParams = await params;
     const searchParamsSSR: SSRSearchParams = await searchParams as any;
-    console.log("===>PAGE.TSX athleteUUID, calling SSR", paramsSSR, searchParamsSSR);
+   // console.log("===>PAGE.TSX athleteUUID, calling SSR", paramsSSR, searchParamsSSR);
     const { newSessionToSave, sessionid, page, today, cstory, cm, b, jsonld, prompt, promptUUId, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, league, pagetype, teamid, name, athleteUUId, teamName, ua, relatedContent } =
         await ssrPrepParams(paramsSSR, searchParamsSSR);
-    console.log("===>PAGE.TSX athleteUUID, calling SSR2=================", paramsSSR, searchParamsSSR);
+    //console.log("===>PAGE.TSX athleteUUID, calling SSR2=================", paramsSSR, searchParamsSSR);
     return (
         <SWRProvider value={{ fallback }}>
             <main className="w-full h-full" >
