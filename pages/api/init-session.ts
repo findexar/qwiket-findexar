@@ -30,7 +30,7 @@ async function handler(
         // session=defaultSession;
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
-        session.dark = -1;
+       // session.dark = -1;
         console.log("********** NEW SESSION3", session)
         await session.save();
     }

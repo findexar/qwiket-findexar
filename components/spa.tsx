@@ -127,13 +127,13 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
   useEffect(() => {
     if (!bot) {
-      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
+      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
         .then((r: any) => {
           //console.log("recordEvent", r);
         });
     }
     else {
-      actionRecordEvent(`bot-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
+      actionRecordEvent(`bot-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
         .then((r: any) => {
           //console.log("recordEvent", r);
         });

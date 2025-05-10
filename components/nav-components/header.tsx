@@ -550,7 +550,11 @@ const HeaderNav: React.FC<Props> = ({ }) => {
    
     setMode(mode);
     console.log("==> updateMode", mode);
-    await setModeAction(mode == 'dark' ? 1 : 0)
+   
+    document.cookie =
+    `mode=${mode=='dark' ? 1 : 0}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax` +
+    (location.protocol === 'https:' ? '; Secure' : '')
+    // await setModeAction(mode == 'dark' ? 1 : 0)
     console.log("==> updateMode after saveSession");
     document.body.setAttribute("data-theme", mode);
     const className = 'dark';

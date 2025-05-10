@@ -30,7 +30,7 @@ const fetchSession = async () => {
         const respJson=await resp.json();
         session=respJson.session;
      }*/
-    // console.log("===>FETCH SESSION", session);
+     console.log("===>FETCH SESSION", session);
     return session;
 }
 export default fetchSession;

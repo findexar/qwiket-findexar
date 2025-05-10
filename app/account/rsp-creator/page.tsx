@@ -61,7 +61,6 @@ export default async function Page({
         Math.random().toString(36).substring(2, 15) +
         Math.random().toString(36).substring(2, 15);
       session.sessionid = randomstring();
-      session.dark = -1;
     }
     return session;
   };

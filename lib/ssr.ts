@@ -107,12 +107,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     if (!ua) {
         bot = true;
     }
-    if (bot) {
-        await actionRecordEvent("bot-ssr", `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
-    }
-    else {
-        await actionRecordEvent("human-ssr", `{"utm_content":"${utm_content}","params":"${JSON.stringify({ tab, view, rtab, prompt, promptUUId, page, leagueid, teamid, name, athleteUUId })}","ua":"${ua || ""}"}`)
-    }
+   
     let userId = "";
     try {
         let { userId: authId } = !bot ? await auth() : { userId: "" };
@@ -129,7 +124,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let cookieStore = await cookies();
     let dark=-1;
     if(cookieStore.has('mode')){
-        dark=parseInt(cookieStore.get('mode')?.value || '0');
+        dark=+(parseInt(cookieStore.get('mode')?.value || '0'));
     }
     let newSessionToSave=false;
     try {
@@ -150,6 +145,12 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     }
     catch (x) {
         console.log("error fetching sessionid", x);
+    }
+    if (bot) {
+        await actionRecordEvent("bot-ssr", `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
+    }
+    else {
+        await actionRecordEvent("human-ssr", `{"utm_content":"${utm_content}","params":"${JSON.stringify({ tab, view, rtab, prompt, promptUUId, page, leagueid, teamid, name, athleteUUId })}","ua":"${ua || ""}"}`, sessionid)
     }
     let findexarxid = id || "";
     let pagetype = athleteUUId ? "player" : teamid ? "team" : "league";

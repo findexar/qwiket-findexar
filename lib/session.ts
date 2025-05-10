@@ -3,13 +3,11 @@ import { env } from "process";
 
 export interface SessionData {
   sessionid: string;
-  dark: number;
   newSession: boolean;
 }
 
 export const defaultSession: SessionData = {
   sessionid: "",
-  dark: -1,
   newSession: false,
 };
 
