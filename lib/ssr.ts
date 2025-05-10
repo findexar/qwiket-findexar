@@ -139,7 +139,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
                 console.log("error saving session", x);
             }
         }
-        console.log("fetchSession============>", JSON.stringify(session))
+       // console.log("fetchSession============>", JSON.stringify(session))
         sessionid = session.sessionid;
       
     }
@@ -365,7 +365,7 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let teams = fallback[unstable_serialize(key)];
     let teamName = teams?.find((x: any) => x.id == teamid)?.name;
     const t3 = new Date().getTime();
-    console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm, b }));
+   // console.log("==> common SSR", JSON.stringify({ ssrTime: t3 - t1, teamName, teamid, athleteUUId, tab, view, dark, jsonld, cstory, cm, b }));
     const today = new Date();
     return { newSessionToSave, sessionid, today, relatedContent, page, jsonld, userInfo, dark, view, tab, rtab, fallback, fbclid, utm_content, bot, isMobile, story, findexarxid, m, cstory, cm, b, league, pagetype, teamid, name, athleteUUId, teamName, ua, prompt, promptUUId };
 }

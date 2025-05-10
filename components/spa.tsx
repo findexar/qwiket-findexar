@@ -215,7 +215,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       setPromptUUId(qpromptUUId);
     }
     // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
-    console.log("==> query", { story, slug, qcstory, cm });
+   // console.log("==> query", { story, slug, qcstory, cm });
     if (story !== slug && qcstory != slug) {
       const s = story || qcstory;
       if (s !== slug) {

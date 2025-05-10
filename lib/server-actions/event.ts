@@ -23,11 +23,11 @@ const workRecordEvent = async (name: string, params: string, passedSessionid?: s
     const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
     const { userId } = await auth() || { userId: "" };
     let sessionid = session.sessionid;
-    console.log("===>WORK RECORD EVENT", { sessionid, passedSessionid });
+    //console.log("===>WORK RECORD EVENT", { sessionid, passedSessionid });
     if (!sessionid && passedSessionid) {
         sessionid = passedSessionid;
     }
-    console.log("===>WORK RECORD EVENT=>>", { name, params, sessionid,  });
+    //console.log("===>WORK RECORD EVENT=>>", { name, params, sessionid,  });
     return await recordEvent({ name, params }, userId || "", sessionid);
 }
 export const actionRecordEvent = async (name: string, params: string, sessionid?: string) => {
