@@ -5,7 +5,9 @@ import { sessionOptions, SessionData } from "@/lib/session";
 //Simport { withIronSessionApiRoute } from 'iron-session/next'
 const fetchSession = async () => {
     "use server";
+    console.log("===>FETCH SESSION1",sessionOptions)
     let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
+    console.log("===>FETCH SESSION2",session)
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         session.sessionid = randomstring();
@@ -13,7 +15,7 @@ const fetchSession = async () => {
         session.newSession = true;
         console.log("********** action: NEW SESSION2", session)
         try {
-           // await session.save();
+            await session.save();
             console.log("after save")
         } catch (x) {
             console.log("error saving session", x)

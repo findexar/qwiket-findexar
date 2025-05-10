@@ -156,8 +156,8 @@ export const ssrPrepParams = async (params: SSRParams, searchParams: SSRSearchPa
     let pagetype = athleteUUId ? "player" : teamid ? "team" : "league";
     let league = leagueid.toUpperCase();
     if (league && !['NFL', 'MLB', 'NBA', 'NHL', ''].includes(league.toUpperCase())) {
-        console.log("==> SSR PAGE.TSX FOUND invalid league");
-        notFound();
+        console.log("==> SSR PAGE.TSX FOUND invalid league",league);
+        return notFound();
     }
     name = name.replaceAll('_', ' ').replaceAll('%20', ' ').replace('!', '.');;
 
