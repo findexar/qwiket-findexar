@@ -148,7 +148,6 @@ export const ssrPrepParams = async (
   if (!ua) {
     bot = true;
   }
-  console.log("SSR ==>", {ua,botInfo,bot,utm_content});
   let userId = "";
   try {
     let { userId: authId } = !bot ? await auth() : { userId: "" };
@@ -184,6 +183,8 @@ export const ssrPrepParams = async (
   } catch (x) {
     console.log("error fetching sessionid", x);
   }
+  console.log("SSR ==>", {ua,botInfo,bot,utm_content,sessionid,newSession:newSessionToSave});
+ 
   if (bot) {
     await actionRecordEvent(
       "bot-ssr",
