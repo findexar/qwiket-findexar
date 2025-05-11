@@ -169,7 +169,7 @@ export const ssrPrepParams = async (
   }
   let newSessionToSave = false;
   try {
-    const session = await fetchSession();
+    const session = await fetchSession(false);
     if (session.newSession) {
       try {
         //await session.save();

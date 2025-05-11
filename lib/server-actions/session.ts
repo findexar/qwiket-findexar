@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 //Simport { withIronSessionApiRoute } from 'iron-session/next'
-const fetchSession = async () => {
+const fetchSession = async (saveSession: boolean = true) => {
     "use server";
    // console.log("===>FETCH SESSION1",sessionOptions)
     let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
@@ -15,8 +15,10 @@ const fetchSession = async () => {
         session.newSession = true;
        // console.log("********** action: NEW SESSION2", session)
         try {
-            await session.save();
-           // console.log("after save")
+            if (saveSession) {
+                await session.save();
+            }
+            // console.log("after save")
         } catch (x) {
             console.log("error saving session", x)
         }
