@@ -13,7 +13,7 @@ const fetchSession = async (saveSession: boolean = true) => {
         session.sessionid = randomstring();
       //  session.dark = -1;
         session.newSession = true;
-       // console.log("********** action: NEW SESSION2", session)
+        console.log("********** action: NEW SESSION2", session)
         try {
             if (saveSession) {
                 console.log("saveSession !!!",session)
