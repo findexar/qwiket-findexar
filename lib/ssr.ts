@@ -144,7 +144,7 @@ export const ssrPrepParams = async (
   const ua = headerslist.get("user-agent") || "";
 
   const botInfo = isbot({ ua });
-  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|Googlebot/i);
+  let bot = botInfo.bot || ua.match(/vercel|spider|crawl|curl|ShortLinkTranslate|Googlebot/i);
   if (!ua) {
     bot = true;
   }
