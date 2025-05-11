@@ -45,7 +45,8 @@ export const fetchUser = async (
     utm_content: string = "",
     ua: string = "",
     cid: string = "",
-    aid: string = ""
+    aid: string = "",
+    ip: string = ""
 ): Promise<UserAccount> => {
     'use server';
     try {
@@ -70,7 +71,7 @@ export const fetchUser = async (
             return {} as UserAccount;
             // throw new Error("Failed to fetchUser");
         }
-        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${encodeURIComponent(utm_content)}&ua=${encodeURIComponent(ua)}&cid=${encodeURIComponent(cid)}&aid=${encodeURIComponent(aid)}`;
+        const url = `${process.env.NEXT_PUBLIC_LAKEAPI}/api/v41/findexar/account/get-user-account?api_key=${api_key}&userid=${userId || ""}&email=${email}&sessionid=${sessionid}&utm_content=${encodeURIComponent(utm_content)}&ua=${encodeURIComponent(ua)}&cid=${encodeURIComponent(cid)}&aid=${encodeURIComponent(aid)}&ip=${encodeURIComponent(ip)}`;
         // console.log("fetching user", url);
         const fetchResponse = await fetch(url);
         const data = await fetchResponse.json();
@@ -107,7 +108,7 @@ export const actionUserUsage = async (key: UserUsageAccountKey): Promise<UserUsa
     return fetchUserUsage(key, userId, sessionid, 'actionUserUsage');
 }
 
-export const actionUser = async (key: UserAccountKey, utm_content?: string): Promise<UserAccount> => {
+export const actionUser = async (key: UserAccountKey, utm_content?: string, ip?: string): Promise<UserAccount> => {
     'use server';
     const session = await fetchSession();
     let { userId } = await auth() || { userId: "" };
@@ -119,13 +120,13 @@ export const actionUser = async (key: UserAccountKey, utm_content?: string): Pro
     /*if (!userId) {
         return {} as UserAccount;
     }*/
-    return fetchUser(key, userId, sessionid, utm_content);
+    return fetchUser(key, userId, sessionid, utm_content, ip);
 }
 
-const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string, cid?: string, aid?: string) => {
+const promiseUser = async (key: UserAccountKey, userId: string, sessionid: string, utm_content?: string, ua?: string, cid?: string, aid?: string, ip?: string) => {
     'use server';
     // console.log("===============>SSR promiseUser", key, userId, sessionid, utm_content, ua, cid, aid)
-    let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content, ua, cid, aid) };
+    let ret = { key: unstable_serialize(key), call: fetchUser(key, userId, sessionid, utm_content, ua, cid, aid, ip) };
     // console.log("===============>SSR AFTER promiseUser", key, ret)
     return ret;
 }

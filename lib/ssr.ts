@@ -132,7 +132,7 @@ export const ssrPrepParams = async (
 
   const t1 = new Date().getTime();
   let headerslist = await headers();
-  let ip: string | string[] | undefined;
+  let ip;
   try {
     ip =
       headerslist.get("x-forwarded-for") ||
@@ -169,7 +169,7 @@ export const ssrPrepParams = async (
   }
   let newSessionToSave = false;
   try {
-    const session = await fetchSession(false);
+    const session = !bot ? await fetchSession(false) : {sessionid: "bot", newSession: false};
     if (session.newSession) {
       try {
         //await session.save();
@@ -258,7 +258,8 @@ export const ssrPrepParams = async (
         utm_content,
         ua,
         cid,
-        aid
+        aid,
+        ip
       )
     );
   }
