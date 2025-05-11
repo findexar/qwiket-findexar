@@ -16,6 +16,7 @@ const fetchSession = async (saveSession: boolean = true) => {
        // console.log("********** action: NEW SESSION2", session)
         try {
             if (saveSession) {
+                console.log("saveSession !!!",session)
                 await session.save();
             }
             // console.log("after save")
