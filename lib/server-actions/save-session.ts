@@ -9,7 +9,10 @@ const saveSession = async (sessionData: any) => {
     console.log("!!!!!!!!!!!!!!!!!!!! ==> saveSession1", sessionData)
     let session = await getIronSession<SessionData>(await cookies(), sessionOptions);
     session.newSession = false;
-   
+    const oldSessionid = session.sessionid;
+    if(oldSessionid) {
+        sessionData.sessionid = oldSessionid;
+    }
     console.log("==> saveSession2", session,new Date().getTime()-t0)
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
