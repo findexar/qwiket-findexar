@@ -20,6 +20,7 @@ const saveSession = async (sessionData: any) => {
        // session.dark = -1;
         console.log("********** NEW SESSION", session)
         await session.save();
+        sessionData.sessionid = session.sessionid;
     }
     console.log("action: old session", session)
     session = Object.assign(session, sessionData);

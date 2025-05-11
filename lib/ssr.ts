@@ -190,7 +190,7 @@ export const ssrPrepParams = async (
       "bot-ssr",
       `{"utm_content":"${utm_content}","params":"${params}","ua":"${
         ua || ""
-      }"}`,
+      }","ip":"${ip || ""}"}`,
       sessionid
     );
   } else {
@@ -207,7 +207,7 @@ export const ssrPrepParams = async (
         teamid,
         name,
         athleteUUId,
-      })}","ua":"${ua || ""}"}`,
+      })}","ua":"${ua || ""}","ip":"${ip || ""}"}`,
       sessionid
     );
   }

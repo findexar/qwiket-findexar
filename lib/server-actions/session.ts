@@ -10,14 +10,14 @@ const fetchSession = async (saveSession: boolean = true) => {
     console.log("===>FETCH SESSION2",session)
     if (!session.sessionid) {
         var randomstring = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        session.sessionid = randomstring();
+        session.sessionid = 'pending-sessionid';// randomstring();
       //  session.dark = -1;
         session.newSession = true;
         console.log("********** action: NEW SESSION2", session)
         try {
             if (saveSession) {
                 console.log("saveSession !!!",session)
-                await session.save();
+               // await session.save();
             }
             // console.log("after save")
         } catch (x) {

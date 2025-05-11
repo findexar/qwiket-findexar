@@ -140,12 +140,12 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
     }
   }, []);
   useEffect(() => {
-    if (newSessionToSave) {
+    if (newSessionToSave&&!bot) {
       saveSession({ sessionid }).then((r: any) => {
         console.log("saveSession", r);
       });
     }
-  }, [newSessionToSave]);
+  }, [newSessionToSave,bot]);
 
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
