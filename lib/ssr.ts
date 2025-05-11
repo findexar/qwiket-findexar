@@ -148,7 +148,7 @@ export const ssrPrepParams = async (
   if (!ua) {
     bot = true;
   }
-  console.log("SSR UA", {ua,botInfo,bot});
+  console.log("SSR ==>", {ua,botInfo,bot,utm_content});
   let userId = "";
   try {
     let { userId: authId } = !bot ? await auth() : { userId: "" };
