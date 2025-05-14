@@ -20,7 +20,8 @@ import { UserButton, SignInButton, SignedOut, SignedIn, useAuth } from "@clerk/n
 import { useAppContext } from '@lib/context';
 import { actionRecordEvent } from "@lib/server-actions/event";
 import PlayerPhoto from "@components/util-components/player-photo";
-import saveSession from '@lib/server-actions/save-session';
+//import saveSession from '@lib/server-actions/save-session';
+import { setMode as setModeAction } from '@lib/server-actions/mode';
 import { actionUserSubscription } from '@lib/server-actions/user-subscription';
 import { FaChartBar as FaChartBarIcon, FaArrowUp as FaArrowUpIcon, FaUserCog as FaUserCogIcon, FaCreditCard as FaCreditCardIcon, FaCode as FaCodeIcon } from 'react-icons/fa';
 import Notifications from '@components/func-components/notifications'; // Import the Notifications component
@@ -460,7 +461,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
     fetchLeagues,
     { fallback }
   );
-  console.log("==============> leagues", leagues);
+ // console.log("==============> leagues", leagues);
   const { getToken } = useAuth();
   // console.log("===>teamLogo", teamLogo);
   useEffect(() => {
@@ -484,7 +485,7 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   const [scrolled, setScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const onLeagueNavClick = useCallback((l: string, url: string) => {
-    console.log("onLeagueNavClick", l, url);
+   // console.log("onLeagueNavClick", l, url);
     setLeague(l);
     setPagetype('league');
     if (tab == 'mentions') {
@@ -545,8 +546,16 @@ const HeaderNav: React.FC<Props> = ({ }) => {
   }, [fbclid, utm_content, scrolled]);
 
   const updateMode = useCallback(async (mode: string) => {
+  
+   
     setMode(mode);
-    await saveSession({ dark: mode == 'dark' ? 1 : 0 })
+   // console.log("==> updateMode", mode);
+   
+    document.cookie =
+    `mode=${mode=='dark' ? 1 : 0}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax` +
+    (location.protocol === 'https:' ? '; Secure' : '')
+    // await setModeAction(mode == 'dark' ? 1 : 0)
+  //  console.log("==> updateMode after saveSession");
     document.body.setAttribute("data-theme", mode);
     const className = 'dark';
     const bodyClassList = document.body.classList;

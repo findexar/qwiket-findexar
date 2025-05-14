@@ -21,9 +21,12 @@ import Invites from './func-components/invites';
 import RevenueSharedContent from './func-components/revenue-sharing-content';
 import { actionRecordEvent } from '@/lib/server-actions/event';
 import { RelatedContent } from '@/lib/types/chat';
+import { setMode as setModeAction } from '@/lib/server-actions/mode';
 
 
 interface LeagueLayoutProps {
+  newSessionToSave: boolean,
+  sessionid: string,
   today?: Date,
   fallback: any,
   isMobile: boolean,
@@ -60,6 +63,8 @@ interface LeagueLayoutProps {
 const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '700'], style: ['normal', 'italic'] });
 
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({
+  newSessionToSave,
+  sessionid,
   today,
   view: startView,
   tab: startTab,
@@ -119,21 +124,28 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
   //console.log("==>==> pagetype", startPagetype);
   //console.log("==> start spa", { startAthleteUUId });
   // console.log("==> start teamLogo", { startTeamLogo, teamLogo });
-  console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
+ // console.log("==> start spa", { startAthleteUUId, startCstory, startCm, cstory, cm });
   useEffect(() => {
     if (!bot) {
-      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
+      actionRecordEvent(`spa-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
         .then((r: any) => {
           //console.log("recordEvent", r);
         });
     }
     else {
-      actionRecordEvent(`bot-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`)
+      actionRecordEvent(`bot-load`, `{"utm_content":"${utm_content}","params":"${params}","ua":"${ua || ""}"}`, sessionid)
         .then((r: any) => {
           //console.log("recordEvent", r);
         });
     }
   }, []);
+  useEffect(() => {
+    if (newSessionToSave&&!bot) {
+      saveSession({ sessionid }).then((r: any) => {
+        console.log("saveSession", r);
+      });
+    }
+  }, [newSessionToSave,bot]);
 
   useEffect(() => {
     document.body.setAttribute("data-theme", localMode);
@@ -179,7 +191,8 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       const matches = matchMedia.matches;
       document.body.setAttribute("data-theme", matches ? 'dark' : 'light');
       setLocalMode(matches ? 'dark' : 'light');
-      saveSession({ dark: matches ? 1 : 0 });
+   //   saveSession({ sessionid, dark: matches ? 1 : 0 });
+      setModeAction(matches ? 1 : 0);
     }
   }, []);
 
@@ -202,7 +215,7 @@ const LeagueLayout: React.FC<LeagueLayoutProps> = ({
       setPromptUUId(qpromptUUId);
     }
     // console.log("==> query", { query, qtab, qrtab, qview, qprompt, qpromptUUId });
-    console.log("==> query", { story, slug, qcstory, cm });
+   // console.log("==> query", { story, slug, qcstory, cm });
     if (story !== slug && qcstory != slug) {
       const s = story || qcstory;
       if (s !== slug) {

@@ -821,7 +821,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         if (mentionRef.current) {
             observer.observe(mentionRef.current);
         } else {
-            console.warn("Mention ref not found for intersection observer.");
+           // console.warn("Mention ref not found for intersection observer.");
         }
 
         return () => {
@@ -844,7 +844,7 @@ const Mention: React.FC<Props> = ({ mini, startExtended, linkType, mention, muta
         if (mobileMentionRef.current) {
             observer.observe(mobileMentionRef.current);
         } else {
-            console.warn("Mention ref not found for intersection observer.");
+           // console.warn("Mention ref not found for intersection observer.");
         }
 
         return () => {
