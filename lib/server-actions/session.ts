@@ -12,7 +12,7 @@ const fetchSession = async () => {
         session.dark = -1;
         console.log("********** action: NEW SESSION2", session)
         try {
-            await session.save();
+            //await session.save();
             console.log("after save")
         } catch (x) {
             console.log("error saving session", x)
