@@ -6,40 +6,38 @@ export default function HomePage() {
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-white">
             <h1 className="text-2xl font-bold mb-6">Political Cartoon: Tariffs and Prosperity</h1>
-            <svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            <svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
                 {/* Tree trunk */}
-                <rect x="380" y="100" width="40" height="400" fill="#8B5A2B" />
-                <text x="400" y="95" textAnchor="middle" fontSize="16" fill="black">Global Trade</text>
+                <rect x="420" y="150" width="60" height="400" fill="#8B5A2B" />
+                <text x="450" y="140" textAnchor="middle" fontSize="18" fill="black">Global Trade</text>
 
-                {/* Branch */}
-                <rect x="400" y="200" width="250" height="20" fill="#A0522D" transform="rotate(-10 400 200)" />
-                <text x="500" y="190" textAnchor="middle" fontSize="14" fill="black" transform="rotate(-10 500 190)">
-                    US Prosperity
-                </text>
+                {/* Branch (rotated) */}
+                <g transform="rotate(-10 450 250)">
+                    <rect x="450" y="250" width="280" height="25" fill="#A0522D" />
+                    <text x="590" y="245" textAnchor="middle" fontSize="16" fill="black">US Prosperity</text>
+                </g>
+
+                {/* Trump-like figure sitting on the branch */}
+                <circle cx="520" cy="240" r="25" fill="#FFDAB9" /> {/* Head */}
+                <rect x="510" y="265" width="20" height="50" fill="#00008B" /> {/* Body */}
+                <text x="520" y="245" textAnchor="middle" fontSize="14" fill="black">T</text>
 
                 {/* Saw */}
-                <rect x="460" y="210" width="80" height="10" fill="gray" transform="rotate(-10 460 210)" />
-                <text x="500" y="220" textAnchor="middle" fontSize="12" fill="black" transform="rotate(-10 500 220)">
-                    Tariffs
-                </text>
-
-                {/* Saw teeth */}
-                {Array.from({ length: 10 }).map((_, i) => (
-                    <polygon
-                        key={i}
-                        points={`${465 + i * 7},220 ${468 + i * 7},220 ${466.5 + i * 7},230`}
-                        fill="black"
-                        transform="rotate(-10 500 220)"
-                    />
-                ))}
-
-                {/* Trump-like figure */}
-                <circle cx="430" cy="190" r="20" fill="#FFA07A" /> {/* Head */}
-                <path d="M420,210 Q430,230 440,210" fill="#00008B" /> {/* Body */}
-                <text x="430" y="195" textAnchor="middle" fontSize="12" fill="black">T</text>
+                <g transform="rotate(-10 480 270)">
+                    <rect x="480" y="270" width="90" height="12" fill="gray" />
+                    <text x="525" y="265" textAnchor="middle" fontSize="12" fill="black">Tariffs</text>
+                    {/* Teeth */}
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <polygon
+                            key={i}
+                            points={`${485 + i * 10},282 ${490 + i * 10},282 ${487.5 + i * 10},295`}
+                            fill="black"
+                        />
+                    ))}
+                </g>
 
                 {/* Ground */}
-                <rect x="0" y="480" width="800" height="20" fill="#228B22" />
+                <rect x="0" y="580" width="900" height="20" fill="#228B22" />
             </svg>
         </main>
     );
